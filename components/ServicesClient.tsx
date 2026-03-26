@@ -90,30 +90,30 @@ export default function ServicesClient() {
         {SERVICES.map((svc) => (
           <div
             key={svc.id}
-            className="relative rounded-2xl border border-gray-200 bg-white p-6 flex flex-col"
+            className="relative rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 flex flex-col"
           >
             {svc.badge && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gray-900 px-3 py-0.5 text-xs font-bold text-white">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-black">
                 {svc.badge}
               </span>
             )}
             <div className="mb-4 text-3xl text-center">{svc.emoji}</div>
-            <h2 className="text-xl font-black text-gray-900 text-center">{svc.title}</h2>
-            <p className="mt-1 text-3xl font-black text-gray-900 text-center">
+            <h2 className="text-xl font-black text-white text-center">{svc.title}</h2>
+            <p className="mt-1 text-3xl font-black text-white text-center">
               {svc.price}
-              {svc.unit && <span className="text-base font-normal text-gray-500">{svc.unit}</span>}
+              {svc.unit && <span className="text-base font-normal text-zinc-400">{svc.unit}</span>}
             </p>
             <ul className="mt-5 space-y-2 flex-1">
               {svc.features.map((f) => (
-                <li key={f} className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                  <Check size={14} className="text-green-500 flex-shrink-0" />
+                <li key={f} className="flex items-center justify-center gap-2 text-sm text-zinc-300">
+                  <Check size={14} className="text-green-400 flex-shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
             <button
               onClick={() => openInquiry(svc.id, svc.title)}
-              className="mt-6 w-full rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white hover:bg-gray-700 transition-colors min-h-[48px]"
+              className="mt-6 w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors min-h-[48px]"
             >
               Book a Session
             </button>
@@ -128,15 +128,15 @@ export default function ServicesClient() {
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setActiveService(null)}
           />
-          <div className="relative w-full sm:max-w-xl rounded-t-xl sm:rounded-xl border border-gray-200 bg-white p-7 animate-fade-in max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full sm:max-w-xl rounded-t-xl sm:rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-7 animate-fade-in max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-black text-gray-900">Book a Session</h3>
-                <p className="text-xs text-gray-500 mt-0.5">{form.serviceType}</p>
+                <h3 className="text-xl font-black text-white">Book a Session</h3>
+                <p className="text-xs text-zinc-500 mt-0.5">{form.serviceType}</p>
               </div>
               <button
                 onClick={() => setActiveService(null)}
-                className="flex h-9 w-9 items-center justify-center rounded hover:bg-gray-100 transition-colors text-gray-500"
+                className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-zinc-400"
               >
                 <X size={18} />
               </button>
@@ -144,16 +144,16 @@ export default function ServicesClient() {
 
             {sent ? (
               <div className="py-10 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <Check size={30} className="text-green-500" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
+                  <Check size={30} className="text-green-400" />
                 </div>
-                <p className="text-xl font-black text-gray-900">Inquiry Sent!</p>
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="text-xl font-black text-white">Inquiry Sent!</p>
+                <p className="mt-2 text-sm text-zinc-400">
                   I&apos;ll get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => setActiveService(null)}
-                  className="mt-6 rounded border border-gray-200 px-8 py-3 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="mt-6 rounded border border-[#2a2a2a] px-8 py-3 text-sm text-zinc-300 hover:text-white transition-colors"
                 >
                   Close
                 </button>
@@ -161,7 +161,7 @@ export default function ServicesClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-zinc-300 mb-2">
                     Artist Name *
                   </label>
                   <input
@@ -169,12 +169,12 @@ export default function ServicesClient() {
                     type="text"
                     value={form.artistName}
                     onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))}
-                    className="w-full rounded border border-gray-200 bg-white px-4 py-3.5 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors"
                     placeholder="Your artist name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-zinc-300 mb-2">
                     Email *
                   </label>
                   <input
@@ -182,22 +182,22 @@ export default function ServicesClient() {
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full rounded border border-gray-200 bg-white px-4 py-3.5 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-zinc-300 mb-2">
                     Service
                   </label>
                   <input
                     readOnly
                     value={form.serviceType}
-                    className="w-full rounded border border-gray-200 bg-gray-50 px-4 py-3.5 text-base text-gray-500 outline-none cursor-not-allowed"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3.5 text-base text-zinc-500 outline-none cursor-not-allowed"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-zinc-300 mb-2">
                     Project Details *
                   </label>
                   <textarea
@@ -205,15 +205,15 @@ export default function ServicesClient() {
                     rows={6}
                     value={form.projectDetails}
                     onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))}
-                    className="w-full rounded border border-gray-200 bg-white px-4 py-3.5 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors resize-none"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors resize-none"
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && <p className="text-sm text-red-400">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full rounded bg-gray-900 py-4 text-base font-bold text-white hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
                 >
                   {sending ? 'Sending…' : 'Send Inquiry'}
                 </button>

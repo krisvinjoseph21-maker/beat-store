@@ -115,11 +115,11 @@ export default function BottomPlayer() {
         onEnded={() => { setPlaying(false); setProgress(0) }}
         onError={() => setPlaying(false)}
       />
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white animate-fade-in">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#191919] bg-[#0a0a0a] animate-fade-in">
         {/* Progress bar */}
-        <div className="relative h-0.5 w-full bg-gray-200">
+        <div className="relative h-0.5 w-full bg-[#1f1f1f]">
           <div
-            className="h-full bg-gray-900 transition-all duration-100"
+            className="h-full bg-white transition-all duration-100"
             style={{ width: `${pct}%` }}
           />
           <input
@@ -158,10 +158,10 @@ export default function BottomPlayer() {
               </div>
             )}
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-gray-900 leading-tight">
+              <p className="truncate text-sm font-bold text-white leading-tight">
                 {currentBeat.title}
               </p>
-              <p className="text-xs text-gray-500 leading-tight">
+              <p className="text-xs text-zinc-500 leading-tight">
                 {currentBeat.bpm} BPM · {currentBeat.key}
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={playPrev}
-              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-900"
+              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
               aria-label="Previous"
             >
               <SkipBack size={17} />
@@ -179,7 +179,7 @@ export default function BottomPlayer() {
             {previewEnded ? (
               <a
                 href="/store"
-                className="flex h-10 items-center gap-1.5 rounded-sm bg-gray-900 px-4 text-white hover:bg-gray-700 transition-colors"
+                className="flex h-10 items-center gap-1.5 rounded-sm bg-white px-4 text-black hover:bg-zinc-200 transition-colors"
               >
                 <Lock size={13} />
                 <span className="text-xs font-bold">Buy to unlock</span>
@@ -188,25 +188,25 @@ export default function BottomPlayer() {
               <button
                 onClick={togglePlay}
                 disabled={!currentBeat?.preview_url}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-white hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
-                {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                {isPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}
               </button>
             )}
             <button
               onClick={playNext}
-              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-900"
+              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
               aria-label="Next"
             >
               <SkipForward size={17} />
             </button>
-            <span className="hidden sm:block text-[11px] text-gray-400 tabular-nums w-20 text-center">
+            <span className="hidden sm:block text-[11px] text-zinc-600 tabular-nums w-20 text-center">
               {formatTime(cappedProgress)} / {formatTime(Math.min(duration || 0, PREVIEW_LIMIT))}
             </span>
             <button
               onClick={toggleMute}
-              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-900"
+              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
               aria-label={muted ? 'Unmute' : 'Mute'}
             >
               {muted || volume === 0 ? <VolumeX size={15} /> : <Volume2 size={15} />}
@@ -218,7 +218,7 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="hidden sm:block w-10 accent-gray-900 cursor-pointer"
+              className="hidden sm:block w-10 accent-white cursor-pointer"
               aria-label="Volume"
             />
           </div>

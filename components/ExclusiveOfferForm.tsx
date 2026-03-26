@@ -39,33 +39,33 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
   }
 
   return (
-    <div className="mt-4 rounded-sm border border-gray-200 overflow-hidden">
+    <div className="mt-4 rounded-sm border border-[#1f1f1f] overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
+        className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <Crown size={15} className="text-yellow-500 flex-shrink-0" />
           <div>
-            <p className="text-sm font-bold text-gray-900">Make an Exclusive Offer</p>
-            <p className="text-xs text-gray-500">Own the full rights — beat removed from store</p>
+            <p className="text-sm font-bold text-white">Make an Exclusive Offer</p>
+            <p className="text-xs text-zinc-500">Own the full rights — beat removed from store</p>
           </div>
         </div>
         {open ? (
-          <ChevronUp size={15} className="text-gray-400 flex-shrink-0" />
+          <ChevronUp size={15} className="text-zinc-500 flex-shrink-0" />
         ) : (
-          <ChevronDown size={15} className="text-gray-400 flex-shrink-0" />
+          <ChevronDown size={15} className="text-zinc-500 flex-shrink-0" />
         )}
       </button>
 
       {open && (
-        <div className="border-t border-gray-200 px-5 py-5 bg-gray-50">
+        <div className="border-t border-[#1f1f1f] px-5 py-5 bg-[#080808]">
           {sent ? (
             <div className="text-center py-4">
-              <p className="text-emerald-600 font-semibold text-sm">Offer sent!</p>
-              <p className="text-gray-500 text-xs mt-1">
-                We&apos;ll review your offer for <span className="text-gray-900 font-medium">{beatTitle}</span> and get back to you.
+              <p className="text-emerald-400 font-semibold text-sm">Offer sent!</p>
+              <p className="text-zinc-500 text-xs mt-1">
+                We&apos;ll review your offer for <span className="text-white">{beatTitle}</span> and get back to you.
               </p>
             </div>
           ) : (
@@ -78,7 +78,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   value={artistName}
                   onChange={(e) => setArtistName(e.target.value)}
                   maxLength={100}
-                  className="rounded-sm border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
                 />
                 <input
                   required
@@ -86,12 +86,12 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-sm border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
                 />
               </div>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-bold">$</span>
                 <input
                   required
                   type="number"
@@ -100,7 +100,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your offer (e.g. 500)"
                   value={offerPrice}
                   onChange={(e) => setOfferPrice(e.target.value)}
-                  className="w-full rounded-sm border border-gray-200 bg-white pl-7 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
                 />
               </div>
 
@@ -110,10 +110,10 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1000}
                 rows={2}
-                className="w-full resize-none rounded-sm border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
               />
 
-              {error && <p className="text-xs text-red-500">{error}</p>}
+              {error && <p className="text-xs text-red-400">{error}</p>}
 
               <button
                 type="submit"

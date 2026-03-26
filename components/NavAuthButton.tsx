@@ -28,7 +28,7 @@ export default function NavAuthButton() {
     return (
       <Link
         href="/login"
-        className="flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 px-3 text-xs font-semibold text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors"
+        className="flex h-9 items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 text-xs font-semibold text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors"
       >
         <User size={13} />
         <span className="hidden sm:inline">Sign In</span>
@@ -39,10 +39,10 @@ export default function NavAuthButton() {
   return (
     <Link
       href="/purchases"
-      className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
       title={user.email}
     >
-      <User size={15} className="text-gray-700" />
+      <User size={15} className="text-white" />
     </Link>
   )
 }

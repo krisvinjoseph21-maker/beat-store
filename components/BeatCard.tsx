@@ -13,24 +13,24 @@ interface Props {
 }
 
 const GENRE_BG: Record<string, string> = {
-  Trap: 'bg-red-500',
-  Drill: 'bg-blue-500',
-  'R&B': 'bg-purple-500',
-  Afrobeats: 'bg-emerald-500',
+  Trap: 'bg-red-600',
+  Drill: 'bg-blue-600',
+  'R&B': 'bg-purple-600',
+  Afrobeats: 'bg-emerald-600',
 }
 
 const GENRE_TEXT: Record<string, string> = {
-  Trap: 'text-red-600',
-  Drill: 'text-blue-600',
-  'R&B': 'text-purple-600',
-  Afrobeats: 'text-emerald-600',
+  Trap: 'text-red-400',
+  Drill: 'text-blue-400',
+  'R&B': 'text-purple-400',
+  Afrobeats: 'text-emerald-400',
 }
 
 const GENRE_BORDER: Record<string, string> = {
-  Trap: 'border-red-300',
-  Drill: 'border-blue-300',
-  'R&B': 'border-purple-300',
-  Afrobeats: 'border-emerald-300',
+  Trap: 'border-red-500/40',
+  Drill: 'border-blue-500/40',
+  'R&B': 'border-purple-500/40',
+  Afrobeats: 'border-emerald-500/40',
 }
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
@@ -48,9 +48,9 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const hasAudio = !!(beat.preview_url ?? beat.file_url)
   const isNew = beat.created_at && (Date.now() - new Date(beat.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000
 
-  const genreBg = GENRE_BG[beat.genre] ?? 'bg-gray-400'
-  const genreTextColor = GENRE_TEXT[beat.genre] ?? 'text-gray-500'
-  const genreBorderColor = GENRE_BORDER[beat.genre] ?? 'border-gray-300'
+  const genreBg = GENRE_BG[beat.genre] ?? 'bg-zinc-600'
+  const genreTextColor = GENRE_TEXT[beat.genre] ?? 'text-zinc-400'
+  const genreBorderColor = GENRE_BORDER[beat.genre] ?? 'border-zinc-700'
 
   function handlePlay() {
     if (!hasAudio) return
@@ -64,14 +64,14 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
   return (
     <div
-      className={`group flex items-center gap-4 px-5 py-4 border-b border-gray-100 transition-colors ${
-        isThisActive ? 'bg-gray-100' : 'hover:bg-gray-50'
+      className={`group flex items-center gap-4 px-5 py-4 border-b border-[#191919] transition-colors ${
+        isThisActive ? 'bg-[#141414]' : 'hover:bg-[#0f0f0f]'
       }`}
     >
       {/* Row index */}
       <span
         className={`hidden sm:inline-block w-8 flex-shrink-0 text-center text-sm font-mono tabular-nums select-none ${
-          isThisPlaying ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'
+          isThisPlaying ? 'text-white' : 'text-zinc-600 group-hover:text-zinc-400'
         }`}
       >
         {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
@@ -83,10 +83,10 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         disabled={!hasAudio}
         className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full transition-all ${
           !hasAudio
-            ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+            ? 'bg-white/5 text-zinc-600 cursor-not-allowed'
             : isThisActive
-            ? 'bg-gray-900 text-white'
-            : 'bg-gray-200 hover:bg-gray-900 text-gray-700 hover:text-white'
+            ? 'bg-white text-black'
+            : 'bg-white/10 hover:bg-white text-white hover:text-black'
         }`}
         aria-label={isThisPlaying ? 'Pause' : 'Play'}
       >
@@ -108,7 +108,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         />
       ) : (
         <div className={`h-12 w-12 flex-shrink-0 rounded-lg ${genreBg} flex items-center justify-center select-none`}>
-          <span className="text-[11px] font-black text-white uppercase tracking-wider">
+          <span className="text-[11px] font-black text-white/90 uppercase tracking-wider">
             {beat.genre === 'R&B' ? 'R&B' : beat.genre.slice(0, 3)}
           </span>
         </div>
@@ -119,25 +119,25 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         <div className="flex items-center gap-2 min-w-0">
           <p
             className={`truncate text-base font-bold leading-tight transition-colors ${
-              isThisActive ? 'text-gray-900' : 'text-gray-800 group-hover:text-gray-900'
+              isThisActive ? 'text-white' : 'text-zinc-100 group-hover:text-white'
             }`}
           >
             {beat.title}
           </p>
           {isNew && (
-            <span className="flex-shrink-0 rounded bg-orange-100 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-orange-600">
+            <span className="flex-shrink-0 rounded bg-orange-500/20 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-orange-400">
               New
             </span>
           )}
         </div>
         <div className="mt-1 flex items-center gap-2 overflow-hidden">
-          <span className="whitespace-nowrap text-xs text-gray-400">{beat.bpm} BPM</span>
-          <span className="text-gray-300 text-xs">·</span>
-          <span className="whitespace-nowrap text-xs text-gray-400">{beat.key}</span>
+          <span className="whitespace-nowrap text-xs text-zinc-500">{beat.bpm} BPM</span>
+          <span className="text-zinc-700 text-xs">·</span>
+          <span className="whitespace-nowrap text-xs text-zinc-500">{beat.key}</span>
           {beat.subgenre && (
             <>
-              <span className="text-gray-300 text-xs">·</span>
-              <span className="truncate text-xs text-gray-400">{beat.subgenre}</span>
+              <span className="text-zinc-700 text-xs">·</span>
+              <span className="truncate text-xs text-zinc-500">{beat.subgenre}</span>
             </>
           )}
         </div>
@@ -148,7 +148,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         {beat.tags.slice(0, 2).map((tag) => (
           <span
             key={tag}
-            className="rounded bg-gray-100 px-2.5 py-1 text-xs text-gray-500"
+            className="rounded bg-white/5 px-2.5 py-1 text-xs text-zinc-500"
           >
             #{tag}
           </span>
@@ -165,12 +165,12 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
       {/* Favorite button */}
       <button
         onClick={() => toggleFavorite(beat.id)}
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-gray-100"
+        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-white/10"
         aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
       >
         <Heart
           size={16}
-          className={favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}
+          className={favorited ? 'text-red-500' : 'text-zinc-500 hover:text-red-400'}
           fill={favorited ? 'currentColor' : 'none'}
         />
       </button>
@@ -186,8 +186,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         }}
         className={`flex h-10 flex-shrink-0 items-center justify-center gap-2 rounded-sm px-4 text-sm font-bold transition-all ${
           inCart
-            ? 'bg-gray-100 text-gray-400'
-            : 'bg-gray-900 text-white hover:bg-gray-700'
+            ? 'bg-white/10 text-zinc-400'
+            : 'bg-white text-black hover:bg-zinc-200'
         }`}
         aria-label={inCart ? 'In cart' : 'Add to cart'}
       >

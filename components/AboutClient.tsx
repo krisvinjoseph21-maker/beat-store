@@ -29,56 +29,56 @@ export default function AboutClient() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
-      <h2 className="mb-5 text-lg font-black text-gray-900">Get in Touch</h2>
+    <div className="rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 sm:p-8">
+      <h2 className="mb-5 text-lg font-black text-white">Get in Touch</h2>
       {sent ? (
         <div className="py-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
-            <Check size={28} className="text-green-500" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20">
+            <Check size={28} className="text-green-400" />
           </div>
-          <p className="text-lg font-bold text-gray-900">Message Sent!</p>
-          <p className="mt-1 text-sm text-gray-500">I&apos;ll get back to you soon.</p>
+          <p className="text-lg font-bold text-white">Message Sent!</p>
+          <p className="mt-1 text-sm text-zinc-400">I&apos;ll get back to you soon.</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Name *</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Name *</label>
             <input
               required
               type="text"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+              className="w-full rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
               placeholder="Your name"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Email *</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Email *</label>
             <input
               required
               type="email"
               value={form.email}
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
+              className="w-full rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
               placeholder="your@email.com"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Message *</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Message *</label>
             <textarea
               required
               rows={5}
               value={form.message}
               onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors resize-none"
+              className="w-full rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors resize-none"
               placeholder="What's on your mind?"
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-red-400">{error}</p>}
           <button
             type="submit"
             disabled={sending}
-            className="w-full rounded-xl bg-gray-900 py-4 text-sm font-bold text-white hover:bg-gray-700 transition-colors disabled:opacity-50 min-h-[52px]"
+            className="w-full rounded-xl bg-white py-4 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50 min-h-[52px]"
           >
             {sending ? 'Sending…' : 'Send Message'}
           </button>

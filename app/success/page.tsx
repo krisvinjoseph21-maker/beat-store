@@ -6,26 +6,26 @@ export const metadata = { title: 'Order Confirmed — PRODKJBEATS' }
 export default function SuccessPage() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-        <Check size={40} className="text-green-500" />
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/20">
+        <Check size={40} className="text-green-400" />
       </div>
-      <h1 className="mb-3 text-3xl font-black text-gray-900">Order Confirmed!</h1>
-      <p className="mb-2 max-w-md text-gray-500">
+      <h1 className="mb-3 text-3xl font-black text-white">Order Confirmed!</h1>
+      <p className="mb-2 max-w-md text-zinc-400">
         Your payment was successful. Check your email for a secure download link.
       </p>
-      <p className="mb-8 text-xs text-gray-400">
+      <p className="mb-8 text-xs text-zinc-600">
         The download link expires in 48 hours and is one-time use only.
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
           href="/store"
-          className="rounded-xl bg-gray-900 px-6 py-3.5 text-sm font-bold text-white hover:bg-gray-700 transition-colors"
+          className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors"
         >
           Shop More Beats
         </Link>
         <Link
           href="/"
-          className="rounded-xl border border-gray-200 px-6 py-3.5 text-sm font-semibold text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors"
+          className="rounded-xl border border-[#2a2a2a] px-6 py-3.5 text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors"
         >
           Back to Home
         </Link>

@@ -19,8 +19,8 @@ export default function ShareButton({ beatId }: { beatId: string }) {
       onClick={handleCopy}
       className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-all ${
         copied
-          ? 'border-green-200 bg-green-50 text-green-600'
-          : 'border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-900'
+          ? 'border-green-500/40 bg-green-500/10 text-green-400'
+          : 'border-[#2a2a2a] text-zinc-500 hover:border-zinc-500 hover:text-white'
       }`}
       title="Copy link"
     >

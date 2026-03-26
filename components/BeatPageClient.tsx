@@ -19,7 +19,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
-  const genreBg = GENRE_BG[beat.genre] ?? 'bg-gray-400'
+  const genreBg = GENRE_BG[beat.genre] ?? 'bg-zinc-600'
 
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()
@@ -30,15 +30,15 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
     <div className="mx-auto w-full max-w-2xl px-4 py-12">
       <Link
         href="/store"
-        className="mb-8 inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+        className="mb-8 inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors"
       >
         <ArrowLeft size={13} /> Back to Store
       </Link>
 
-      <div className="rounded-sm border border-gray-200 bg-white overflow-hidden">
+      <div className="rounded-sm border border-[#1a1a1a] bg-[#0d0d0d] overflow-hidden">
         {/* Artwork banner */}
         <div className={`${genreBg} h-40 flex items-center justify-center select-none`}>
-          <span className="text-4xl font-black text-white/60 uppercase tracking-widest">
+          <span className="text-4xl font-black text-white/20 uppercase tracking-widest">
             {beat.genre}
           </span>
         </div>
@@ -46,8 +46,8 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
         <div className="p-6">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-black text-gray-900 leading-tight">{beat.title}</h1>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
+              <h1 className="text-2xl font-black text-white leading-tight">{beat.title}</h1>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs text-zinc-500">
                 <span>{beat.bpm} BPM</span>
                 <span>·</span>
                 <span>{beat.key}</span>
@@ -61,7 +61,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
           {beat.tags.length > 0 && (
             <div className="mb-6 flex flex-wrap gap-1.5">
               {beat.tags.map((tag) => (
-                <span key={tag} className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-500">
+                <span key={tag} className="rounded bg-white/5 px-2 py-1 text-xs text-zinc-500">
                   #{tag}
                 </span>
               ))}
@@ -72,16 +72,16 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-900 text-white hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
-              {isThisPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+              {isThisPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}
             </button>
 
             <button
               onClick={() => addBeat(beat)}
               disabled={inCart}
               className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-5 py-3 text-sm font-bold transition-colors ${
-                inCart ? 'bg-gray-100 text-gray-400 cursor-default' : 'bg-gray-900 text-white hover:bg-gray-700'
+                inCart ? 'bg-white/10 text-zinc-400 cursor-default' : 'bg-white text-black hover:bg-zinc-200'
               }`}
             >
               {inCart ? <><Check size={15} /> Added to Cart</> : <><ShoppingCart size={15} /> Add to Cart — From $75</>}

@@ -57,11 +57,11 @@ export default function LicensingPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
           Legal
         </p>
-        <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">Licensing Info</h1>
-        <p className="mt-3 text-sm text-gray-400 max-w-md mx-auto">
+        <h1 className="text-3xl font-black text-white sm:text-4xl">Licensing Info</h1>
+        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
           Understand what you're buying before you check out.
         </p>
       </div>
@@ -69,15 +69,15 @@ export default function LicensingPage() {
       {/* Tier cards */}
       <div className="space-y-4 mb-12">
         {TIERS.map((tier) => (
-          <div key={tier.name} className="rounded-xl border border-gray-200 bg-gray-50 p-6">
+          <div key={tier.name} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-6">
             <div className="flex items-baseline justify-between mb-4">
-              <h2 className="font-black text-gray-900 text-base">{tier.name}</h2>
-              <span className="text-sm font-semibold text-gray-500">{tier.price}</span>
+              <h2 className="font-black text-white text-base">{tier.name}</h2>
+              <span className="text-sm font-semibold text-zinc-400">{tier.price}</span>
             </div>
             <ul className="space-y-2">
               {tier.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-gray-500">
-                  <span className="mt-0.5 text-gray-400">—</span>
+                <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                  <span className="mt-0.5 text-zinc-600">—</span>
                   {f}
                 </li>
               ))}
@@ -88,21 +88,21 @@ export default function LicensingPage() {
 
       {/* General rules */}
       <div>
-        <h2 className="mb-4 text-sm font-black uppercase tracking-[0.15em] text-gray-400">
+        <h2 className="mb-4 text-sm font-black uppercase tracking-[0.15em] text-zinc-500">
           General Rules
         </h2>
         <div className="space-y-3">
           {RULES.map((rule) => (
-            <div key={rule} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <p className="text-sm text-gray-500 leading-relaxed">{rule}</p>
+            <div key={rule} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-4">
+              <p className="text-sm text-zinc-400 leading-relaxed">{rule}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <p className="mt-10 text-xs text-gray-400 text-center">
+      <p className="mt-10 text-xs text-zinc-600 text-center">
         Questions? Contact us through the{' '}
-        <a href="/about" className="underline hover:text-gray-500 transition-colors">
+        <a href="/about" className="underline hover:text-zinc-400 transition-colors">
           Services page
         </a>
         .
