@@ -34,12 +34,17 @@ export default async function BeatPage(
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('beats')
-    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, file_url, cover_url, is_active, created_at, pin_order')
+    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, file_url, is_active, created_at')
     .eq('id', id)
     .eq('is_active', true)
     .single()
 
   if (!data) notFound()
 
-  return <BeatPageClient beat={data as Beat} />
+  const beat: Beat = {
+    ...data,
+    tags: data.tags ?? [],
+    cover_url: null,
+  }
+  return <BeatPageClient beat={beat} />
 }
