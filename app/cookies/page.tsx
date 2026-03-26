@@ -23,7 +23,7 @@ const COOKIE_TYPES = [
     name: 'Preference Cookies',
     required: false,
     description:
-      'These cookies remember settings you've chosen, such as your preferred playback volume or filter selections in the store.',
+      "These cookies remember settings you've chosen, such as your preferred playback volume or filter selections in the store.",
     examples: ['Volume level', 'Last applied genre filter'],
   },
 ]

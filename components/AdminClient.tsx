@@ -179,7 +179,7 @@ export default function AdminClient() {
 
   async function uploadFile(
     file: File,
-    type: 'full' | 'preview'
+    type: 'full' | 'preview' | 'cover'
   ): Promise<{ path: string; url?: string }> {
     const fd = new FormData()
     fd.append('file', file)

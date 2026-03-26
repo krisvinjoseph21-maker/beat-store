@@ -51,12 +51,10 @@ export default function Footer() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
-            {LEGAL_LINKS.map(({ href, label, external }) => (
+            {LEGAL_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noopener noreferrer' : undefined}
                 className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
               >
                 {label}

@@ -34,7 +34,7 @@ export default async function BeatPage(
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('beats')
-    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, is_active, created_at, pin_order')
+    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, file_url, cover_url, is_active, created_at, pin_order')
     .eq('id', id)
     .eq('is_active', true)
     .single()
