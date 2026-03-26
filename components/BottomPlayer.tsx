@@ -36,10 +36,13 @@ export default function BottomPlayer() {
   } = usePlayerStore()
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const beatChangedRef = useRef(false)
+  const isPlayingRef = useRef(isPlaying)
   const [previewEnded, setPreviewEnded] = useState(false)
   const [volume, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
+
+  // Keep ref in sync so canplay callback always reads the latest value
+  useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
 
   function handleVolumeChange(v: number) {
     setVolume(v)
@@ -53,7 +56,7 @@ export default function BottomPlayer() {
     if (audioRef.current) audioRef.current.volume = next ? 0 : volume
   }
 
-  // Runs when the beat changes — loads new src and starts playback via canplay
+  // Runs when the beat changes — loads new src, plays via canplay once ready
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
@@ -64,26 +67,22 @@ export default function BottomPlayer() {
       setPlaying(false)
       return
     }
-    // Mark that we just swapped beats so [isPlaying] skips its play() call
-    // (avoids a race where two concurrent play() calls abort each other)
-    beatChangedRef.current = true
     audio.src = src
     audio.load()
     const handleCanPlay = () => {
-      if (isPlaying) audio.play().catch(() => setPlaying(false))
+      // Use ref so we always get the current isPlaying, not a stale closure
+      if (isPlayingRef.current) audio.play().catch(() => setPlaying(false))
     }
     audio.addEventListener('canplay', handleCanPlay, { once: true })
     return () => audio.removeEventListener('canplay', handleCanPlay)
   }, [currentBeat]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Runs when play/pause is toggled directly (not from a beat change)
+  // Runs when play/pause is toggled — skip if audio is still loading
+  // (readyState < 2 means canplay hasn't fired yet; it will call play() itself)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    if (beatChangedRef.current) {
-      beatChangedRef.current = false
-      return // [currentBeat] effect already owns playback this cycle
-    }
+    if (isPlaying && audio.readyState < 2) return
     if (isPlaying) audio.play().catch(() => setPlaying(false))
     else audio.pause()
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
