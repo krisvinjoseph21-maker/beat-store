@@ -17,7 +17,11 @@ async function getPageData(): Promise<{ featured: Beat | null; latest: Beat[] }>
       .order('created_at', { ascending: false })
       .limit(7)
 
-    const beats = (data ?? []) as Beat[]
+    const beats = (data ?? []).map(({ file_url, ...b }: Record<string, unknown>) => ({
+      ...b,
+      preview_url: (b.preview_url as string | null) ?? ((file_url as string)?.startsWith('http') ? file_url : null),
+      cover_url: (b.cover_url as string | null) ?? null,
+    })) as Beat[]
     const featured = beats.find((b: Beat & { is_featured?: boolean }) => b.is_featured) ?? null
     const latest = beats.filter((b) => b.id !== featured?.id).slice(0, 6)
     return { featured, latest }

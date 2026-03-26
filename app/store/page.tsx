@@ -12,7 +12,11 @@ async function getBeats(): Promise<Beat[]> {
       .eq('is_active', true)
       .order('created_at', { ascending: false })
     if (error || !data?.length) return PLACEHOLDER_BEATS
-    return data as Beat[]
+    return data.map(({ file_url, ...b }: Record<string, unknown>) => ({
+      ...b,
+      preview_url: (b.preview_url as string | null) ?? ((file_url as string)?.startsWith('http') ? file_url : null),
+      cover_url: (b.cover_url as string | null) ?? null,
+    })) as Beat[]
   } catch {
     return PLACEHOLDER_BEATS
   }
