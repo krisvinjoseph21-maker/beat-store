@@ -36,6 +36,7 @@ export default function BottomPlayer() {
   } = usePlayerStore()
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const beatChangedRef = useRef(false)
   const [previewEnded, setPreviewEnded] = useState(false)
   const [volume, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
@@ -52,6 +53,7 @@ export default function BottomPlayer() {
     if (audioRef.current) audioRef.current.volume = next ? 0 : volume
   }
 
+  // Runs when the beat changes — loads new src and starts playback via canplay
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
@@ -62,14 +64,26 @@ export default function BottomPlayer() {
       setPlaying(false)
       return
     }
+    // Mark that we just swapped beats so [isPlaying] skips its play() call
+    // (avoids a race where two concurrent play() calls abort each other)
+    beatChangedRef.current = true
     audio.src = src
     audio.load()
-    if (isPlaying) audio.play().catch(() => {})
+    const handleCanPlay = () => {
+      if (isPlaying) audio.play().catch(() => setPlaying(false))
+    }
+    audio.addEventListener('canplay', handleCanPlay, { once: true })
+    return () => audio.removeEventListener('canplay', handleCanPlay)
   }, [currentBeat]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Runs when play/pause is toggled directly (not from a beat change)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
+    if (beatChangedRef.current) {
+      beatChangedRef.current = false
+      return // [currentBeat] effect already owns playback this cycle
+    }
     if (isPlaying) audio.play().catch(() => setPlaying(false))
     else audio.pause()
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
