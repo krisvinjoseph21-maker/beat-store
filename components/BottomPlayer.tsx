@@ -55,8 +55,7 @@ export default function BottomPlayer() {
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
-    // Only ever play preview_url — never expose the clean file_url
-    const src = currentBeat.preview_url ?? ''
+    const src = currentBeat.preview_url ?? currentBeat.file_url ?? ''
     setPreviewEnded(false)
     audio.pause()
     if (!src) {
