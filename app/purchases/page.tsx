@@ -43,8 +43,8 @@ export default async function PurchasesPage() {
   }))
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-12 text-center">
-      <div className="mb-10">
+    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+      <div className="mb-10 text-center">
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
           Your Account
         </p>
