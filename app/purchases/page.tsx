@@ -45,11 +45,11 @@ export default async function PurchasesPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12 text-center">
       <div className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Your Account
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">Purchases</h1>
-        <p className="mt-2 text-sm text-zinc-500">{user.email}</p>
+        <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">Purchases</h1>
+        <p className="mt-2 text-sm text-gray-500">{user.email}</p>
       </div>
       <PurchasesClient purchases={purchases} />
     </div>

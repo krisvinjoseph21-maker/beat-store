@@ -24,11 +24,11 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 z-40 w-full border-b border-[#191919] bg-[#0a0a0a]/95 backdrop-blur-sm">
+      <nav className="fixed top-0 z-40 w-full border-b border-gray-200 bg-white/95 backdrop-blur-sm">
         <div className="flex h-14 w-full items-center justify-between pl-6 pr-32">
           {/* Logo */}
-          <Link href="/" className="text-base font-black tracking-tight text-white hover:opacity-80 transition-opacity">
-            PRODKJ<span className="text-zinc-500">BEATS</span>
+          <Link href="/" className="text-base font-black tracking-tight text-gray-900 hover:opacity-70 transition-opacity">
+            PRODKJ<span className="text-gray-400">BEATS</span>
           </Link>
 
           {/* Desktop nav */}
@@ -39,8 +39,8 @@ export default function Navbar() {
                 href={href}
                 className={`flex items-center text-sm font-medium transition-colors border-b-2 ${
                   pathname === href
-                    ? 'text-white border-white'
-                    : 'text-zinc-400 hover:text-white border-transparent hover:border-white'
+                    ? 'text-gray-900 border-gray-900'
+                    : 'text-gray-500 hover:text-gray-900 border-transparent hover:border-gray-900'
                 }`}
               >
                 {label}
@@ -53,36 +53,36 @@ export default function Navbar() {
             <NavAuthButton />
             <button
               onClick={() => setCartOpen(true)}
-              className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Open cart"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={20} className="text-gray-700" />
               {items.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-black">
+                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gray-900 text-[10px] font-bold text-white">
                   {items.length}
                 </span>
               )}
             </button>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+              className="md:hidden flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Toggle menu"
             >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileOpen ? <X size={20} className="text-gray-700" /> : <Menu size={20} className="text-gray-700" />}
             </button>
           </div>
         </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-[#1f1f1f] bg-[#0a0a0a]">
+          <div className="md:hidden border-t border-gray-200 bg-white">
             {NAV_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-4 text-base font-medium border-b border-[#1f1f1f] transition-colors ${
-                  pathname === href ? 'text-white' : 'text-zinc-400'
+                className={`block px-4 py-4 text-base font-medium border-b border-gray-100 transition-colors ${
+                  pathname === href ? 'text-gray-900' : 'text-gray-500'
                 }`}
               >
                 {label}

@@ -17,15 +17,15 @@ const LEGAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-[#191919] bg-[#0a0a0a] pb-24">
+    <footer className="w-full border-t border-gray-200 bg-gray-50 pb-24">
       <div className="mx-auto w-full max-w-6xl px-4 py-10">
         {/* Top row — logo + nav links */}
         <div className="mb-8 flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
           <Link
             href="/"
-            className="text-base font-black tracking-tight text-white hover:opacity-80 transition-opacity"
+            className="text-base font-black tracking-tight text-gray-900 hover:opacity-70 transition-opacity"
           >
-            PRODKJ<span className="text-zinc-500">BEATS</span>
+            PRODKJ<span className="text-gray-400">BEATS</span>
           </Link>
 
           <div className="flex flex-wrap justify-center gap-5 sm:gap-6">
@@ -33,7 +33,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="text-sm text-zinc-500 hover:text-white transition-colors"
+                className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
               >
                 {label}
               </Link>
@@ -42,11 +42,11 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mb-6 h-px w-full bg-[#191919]" />
+        <div className="mb-6 h-px w-full bg-gray-200" />
 
         {/* Bottom row — copyright + legal links */}
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-          <p className="text-xs text-zinc-600">
+          <p className="text-xs text-gray-400">
             © {new Date().getFullYear()} PRODKJBEATS. All rights reserved.
           </p>
 
@@ -55,7 +55,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
+                className="text-xs text-gray-400 hover:text-gray-700 transition-colors"
               >
                 {label}
               </Link>

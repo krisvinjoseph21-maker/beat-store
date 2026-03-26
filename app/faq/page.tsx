@@ -39,20 +39,20 @@ export default function FAQPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Help
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">FAQ</h1>
-        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
+        <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">FAQ</h1>
+        <p className="mt-3 text-sm text-gray-500 max-w-md mx-auto">
           Frequently asked questions about beats, licensing, and orders.
         </p>
       </div>
 
       <div className="space-y-3">
         {FAQS.map(({ q, a }) => (
-          <div key={q} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5">
-            <p className="mb-2 font-bold text-white text-sm">{q}</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">{a}</p>
+          <div key={q} className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+            <p className="mb-2 font-bold text-gray-900 text-sm">{q}</p>
+            <p className="text-sm text-gray-500 leading-relaxed">{a}</p>
           </div>
         ))}
       </div>

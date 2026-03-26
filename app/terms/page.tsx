@@ -51,20 +51,20 @@ export default function TermsPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Legal
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">Terms of Use</h1>
-        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
+        <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">Terms of Use</h1>
+        <p className="mt-3 text-sm text-gray-400 max-w-md mx-auto">
           Last updated: March 2026
         </p>
       </div>
 
       <div className="space-y-3">
         {SECTIONS.map(({ title, body }) => (
-          <div key={title} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5">
-            <p className="mb-2 font-bold text-white text-sm">{title}</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">{body}</p>
+          <div key={title} className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+            <p className="mb-2 font-bold text-gray-900 text-sm">{title}</p>
+            <p className="text-sm text-gray-400 leading-relaxed">{body}</p>
           </div>
         ))}
       </div>

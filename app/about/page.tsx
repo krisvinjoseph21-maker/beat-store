@@ -11,24 +11,24 @@ export default function AboutPage() {
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
       <div className="mx-auto max-w-3xl text-center">
       <div className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           The Producer
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">About</h1>
+        <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">About</h1>
       </div>
 
       {/* Bio */}
-      <div className="rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 sm:p-8 mb-8">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 mb-8">
         <div className="flex flex-col items-center gap-3 mb-6">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-3xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-3xl">
             🎹
           </div>
           <div className="text-center">
-            <h2 className="text-xl font-black text-white">PRODKJBEATS</h2>
-            <p className="text-sm text-zinc-500">Producer · Mixer · Sound Designer</p>
+            <h2 className="text-xl font-black text-gray-900">PRODKJBEATS</h2>
+            <p className="text-sm text-gray-500">Producer · Mixer · Sound Designer</p>
           </div>
         </div>
-        <div className="space-y-4 text-zinc-400 leading-relaxed text-center text-sm">
+        <div className="space-y-4 text-gray-500 leading-relaxed text-center text-sm">
           <p>
             PRODKJBEATS is an independent producer specializing in trap, drill, R&amp;B, and Afrobeats.
             With years of experience crafting high-quality instrumentals, every beat is designed to

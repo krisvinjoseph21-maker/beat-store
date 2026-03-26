@@ -61,14 +61,14 @@ export default function AuthClient() {
   return (
     <div className="mx-auto w-full max-w-sm">
       {/* Tab switcher */}
-      <div className="mb-6 flex rounded-lg border border-[#1f1f1f] p-0.5">
+      <div className="mb-6 flex rounded-lg border border-gray-200 p-0.5">
         {(['login', 'signup'] as const).map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => switchTab(t)}
             className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
-              tab === t ? 'bg-white text-black' : 'text-zinc-400 hover:text-white'
+              tab === t ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             {t === 'login' ? 'Sign In' : 'Create Account'}
@@ -83,7 +83,7 @@ export default function AuthClient() {
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+          className="w-full rounded-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
         />
         <input
           required
@@ -92,27 +92,27 @@ export default function AuthClient() {
           minLength={6}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+          className="w-full rounded-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
         />
 
-        {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-        {message && <p className="text-sm text-emerald-400 text-center">{message}</p>}
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        {message && <p className="text-sm text-emerald-600 text-center">{message}</p>}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-sm bg-white py-3 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+          className="w-full rounded-sm bg-gray-900 py-3 text-sm font-bold text-white hover:bg-gray-700 transition-colors disabled:opacity-50"
         >
           {loading ? '…' : tab === 'login' ? 'Sign In' : 'Create Account'}
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs text-zinc-600">
+      <p className="mt-5 text-center text-xs text-gray-400">
         {tab === 'login' ? "Don't have an account? " : 'Already have an account? '}
         <button
           type="button"
           onClick={() => switchTab(tab === 'login' ? 'signup' : 'login')}
-          className="text-zinc-400 hover:text-white transition-colors"
+          className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
         >
           {tab === 'login' ? 'Create one' : 'Sign in'}
         </button>

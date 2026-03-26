@@ -43,7 +43,7 @@ function Select({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none rounded-sm border border-[#2a2a2a] bg-[#111] py-2 pl-3 pr-8 text-xs font-medium text-zinc-300 outline-none focus:border-zinc-500 transition-colors cursor-pointer hover:border-zinc-600"
+        className="w-full appearance-none rounded-sm border border-gray-200 bg-white py-2 pl-3 pr-8 text-xs font-medium text-gray-700 outline-none focus:border-gray-400 transition-colors cursor-pointer hover:border-gray-300"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -51,7 +51,7 @@ function Select({
           </option>
         ))}
       </select>
-      <ChevronDown size={12} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+      <ChevronDown size={12} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
     </div>
   )
 }
@@ -76,8 +76,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     setQueue(initialBeats)
   }, [initialBeats, setQueue])
 
-  // Derive available genres from actual beat data.
-  // Deduplicate case-insensitively so "trap" and "Trap" merge into one entry.
   const categories = useMemo(() => {
     const seen = new Map<string, string>()
     for (const b of initialBeats) {
@@ -112,7 +110,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       case 'bpm_desc': results = [...results].sort((a, b) => b.bpm - a.bpm); break
       case 'newest': results = [...results].sort((a, b) => b.created_at.localeCompare(a.created_at)); break
       case 'oldest': results = [...results].sort((a, b) => a.created_at.localeCompare(b.created_at)); break
-      // 'default' and 'relevance' keep original order (server returns newest first)
     }
 
     return results
@@ -149,19 +146,19 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
       {/* Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-black text-white sm:text-3xl">Beat Store</h1>
-        <p className="mt-1 text-sm text-zinc-500">{initialBeats.length} beats available</p>
+        <h1 className="text-2xl font-black text-gray-900 sm:text-3xl">Beat Store</h1>
+        <p className="mt-1 text-sm text-gray-400">{initialBeats.length} beats available</p>
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] py-3 pl-10 pr-4 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-600 transition-colors"
+          className="w-full rounded-sm border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
         />
       </div>
 
@@ -191,8 +188,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           className={`flex items-center gap-1.5 rounded-sm border px-3 py-2 text-xs font-semibold transition-colors flex-shrink-0 ${
             favoritesOnly
-              ? 'border-red-500/40 bg-red-500/10 text-red-400'
-              : 'border-[#2a2a2a] text-zinc-400 hover:border-zinc-500 hover:text-white'
+              ? 'border-red-300 bg-red-50 text-red-500'
+              : 'border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700'
           }`}
         >
           <Heart size={12} fill={favoritesOnly ? 'currentColor' : 'none'} />
@@ -202,26 +199,26 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
       {/* Beat list */}
       {filtered.length === 0 ? (
-        <div className="flex h-40 items-center justify-center rounded-xl border border-[#1a1a1a] text-zinc-500 text-sm">
+        <div className="flex h-40 items-center justify-center rounded-sm border border-gray-200 text-gray-400 text-sm">
           No beats found. Try a different filter.
         </div>
       ) : (
-        <div className="rounded-xl border border-[#1a1a1a] overflow-hidden">
+        <div className="rounded-sm border border-gray-200 overflow-hidden">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-3 px-4 py-2.5 border-b border-[#1a1a1a] bg-[#0d0d0d]">
+          <div className="hidden sm:flex items-center gap-3 px-4 py-2.5 border-b border-gray-200 bg-gray-50">
             <span className="w-7 flex-shrink-0" />
             <span className="w-9 flex-shrink-0" />
             <span className="w-10 flex-shrink-0" />
-            <span className="flex-1 text-[10px] font-bold uppercase tracking-widest text-zinc-600">
+            <span className="flex-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
               Title
             </span>
-            <span className="hidden lg:block text-[10px] font-bold uppercase tracking-widest text-zinc-600 w-24">
+            <span className="hidden lg:block text-[10px] font-bold uppercase tracking-widest text-gray-400 w-24">
               Tags
             </span>
-            <span className="hidden md:block text-[10px] font-bold uppercase tracking-widest text-zinc-600 w-20">
+            <span className="hidden md:block text-[10px] font-bold uppercase tracking-widest text-gray-400 w-20">
               Genre
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 w-16 text-right">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 w-16 text-right">
               &nbsp;
             </span>
           </div>
