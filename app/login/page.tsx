@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pr-14 py-16 text-center">
+    <div className="mx-auto w-full max-w-3xl px-4 py-16 text-center">
       <div className="mb-10">
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
           Your Account

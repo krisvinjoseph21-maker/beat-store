@@ -24,7 +24,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full border-b border-[#191919] bg-[#0a0a0a]/95 backdrop-blur-sm">
+      <nav className="fixed top-0 z-40 w-full border-b border-[#191919] bg-[#0a0a0a]/95 backdrop-blur-sm">
         <div className="flex h-14 w-full items-center justify-between pl-6 pr-32">
           {/* Logo */}
           <Link href="/" className="text-base font-black tracking-tight text-white hover:opacity-80 transition-opacity">

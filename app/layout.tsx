@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white" style={{ paddingBottom: '80px' }}>
         <Navbar />
-        <main className="flex-1 w-full" style={{ paddingLeft: '55px' }}>{children}</main>
+        <main className="flex-1 w-full" style={{ paddingLeft: '55px', paddingRight: '55px', paddingTop: '56px' }}>{children}</main>
         <Footer />
         <BottomPlayer />
       </body>
