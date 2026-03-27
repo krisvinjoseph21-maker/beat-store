@@ -15,6 +15,7 @@ interface Beat {
   preview_url: string | null
   cover_url: string | null
   is_active: boolean
+  is_featured: boolean
   created_at: string
   pin_order: number | null
 }
@@ -110,7 +111,7 @@ export default function AdminClient() {
 
   async function setFeatured(beat: Beat) {
     // Clear existing featured beat first
-    const current = beats.find((b) => (b as Beat & { is_featured?: boolean }).is_featured)
+    const current = beats.find((b) => b.is_featured)
     if (current && current.id !== beat.id) {
       await fetch('/api/admin/beats', {
         method: 'PATCH',
@@ -121,7 +122,7 @@ export default function AdminClient() {
     await fetch('/api/admin/beats', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
-      body: JSON.stringify({ id: beat.id, is_featured: !(beat as Beat & { is_featured?: boolean }).is_featured }),
+      body: JSON.stringify({ id: beat.id, is_featured: !beat.is_featured }),
     })
     fetchBeats()
   }
@@ -383,13 +384,13 @@ export default function AdminClient() {
                     <button
                       onClick={() => setFeatured(beat)}
                       className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                        (beat as Beat & { is_featured?: boolean }).is_featured
+                        beat.is_featured
                           ? 'text-yellow-400 bg-yellow-400/10'
                           : 'text-zinc-600 hover:text-yellow-400 hover:bg-yellow-400/10'
                       }`}
-                      title={(beat as Beat & { is_featured?: boolean }).is_featured ? 'Remove from featured' : 'Set as featured track'}
+                      title={beat.is_featured ? 'Remove from featured' : 'Set as featured track'}
                     >
-                      <Star size={14} fill={(beat as Beat & { is_featured?: boolean }).is_featured ? 'currentColor' : 'none'} />
+                      <Star size={14} fill={beat.is_featured ? 'currentColor' : 'none'} />
                     </button>
                     {/* Pin control */}
                     {beat.pin_order !== null ? (

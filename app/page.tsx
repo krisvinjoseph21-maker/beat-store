@@ -33,8 +33,20 @@ export default async function HomePage() {
     <div className="flex flex-col w-full">
       {/* Hero */}
       <section className="relative w-full overflow-hidden border-b border-[#191919]">
-        {/* Background glow */}
+        {/* Background texture + glow */}
         <div className="pointer-events-none absolute inset-0">
+          {/* Dot grid */}
+          <div
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+            }}
+          />
+          {/* Fade dot grid toward edges */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/70 via-transparent to-[#0a0a0a]/70" />
+          {/* Glow blobs */}
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-white/[0.03] blur-[120px]" />
           <div className="absolute left-1/4 top-1/3 h-[200px] w-[300px] rounded-full bg-purple-500/[0.04] blur-[80px]" />
           <div className="absolute right-1/4 top-1/4 h-[200px] w-[300px] rounded-full bg-blue-500/[0.04] blur-[80px]" />
@@ -59,14 +71,10 @@ export default async function HomePage() {
 
           <HomeSearch />
 
-          {featured ? (
+          {featured && (
             <div className="w-full">
               <FeaturedTrack beat={featured} />
             </div>
-          ) : (
-            <p className="text-sm text-zinc-600 text-center py-8">
-              No featured track set — go to Admin and click Feature on a beat.
-            </p>
           )}
         </div>
       </section>
