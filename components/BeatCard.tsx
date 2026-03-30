@@ -55,7 +55,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   }
 
   return (
-    <div className="w-full relative overflow-hidden">
+    <div className="w-full relative">
 
       {/* ── Main row ──────────────────────────────────────────── */}
       <div
