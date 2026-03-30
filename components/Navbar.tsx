@@ -1,96 +1,133 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ShoppingCart, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCartStore } from '@/lib/store'
 import CartDrawer from './CartDrawer'
 import NavAuthButton from './NavAuthButton'
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/store', label: 'Store' },
-  { href: '/services', label: 'Services' },
-  { href: '/purchases', label: 'Purchases' },
-  { href: '/about', label: 'About' },
+  { href: '/store',    label: 'Beats'     },
+  { href: '/services', label: 'Services'  },
+  { href: '/licensing',label: 'Licensing' },
+  { href: '/about',    label: 'About'     },
 ]
 
 export default function Navbar() {
-  const pathname = usePathname()
   const { items } = useCartStore()
+  const [cartOpen, setCartOpen]     = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [cartOpen, setCartOpen] = useState(false)
+  const [scrolled, setScrolled]     = useState(false)
+
+  useEffect(() => {
+    function onScroll() { setScrolled(window.scrollY > 50) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <>
-      <nav className="fixed top-0 z-40 w-full border-b border-[#191919] bg-[#0a0a0a]/95 backdrop-blur-sm">
-        <div className="flex h-14 w-full items-center justify-between pl-6 pr-32">
-          {/* Logo */}
-          <Link href="/" className="text-base font-black tracking-tight text-white hover:opacity-80 transition-opacity">
-            PRODKJ<span className="text-zinc-500">BEATS</span>
+      <nav
+        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between transition-colors duration-300"
+        style={{
+          height: '80px',
+          padding: '0 40px',
+          background: scrolled
+            ? 'rgba(8,8,8,0.97)'
+            : 'linear-gradient(rgba(8,8,8,0.95), rgba(0,0,0,0))',
+          fontFamily: 'var(--font-inter)',
+        }}
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          className="text-[15px] font-black tracking-tight text-[#f0ede8] hover:opacity-80 transition-opacity shrink-0"
+        >
+          PRODKJ<span style={{ color: '#555' }}>BEATS</span>
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center gap-6">
+          {NAV_LINKS.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="text-[13px] font-medium uppercase transition-colors duration-200 hover:text-[#f0ede8]"
+              style={{ letterSpacing: '1.3px', color: '#888', fontFamily: 'var(--font-inter)' }}
+            >
+              {label}
+            </Link>
+          ))}
+
+          <NavAuthButton />
+
+          {/* Cart */}
+          <button
+            onClick={() => setCartOpen(true)}
+            className="border text-[#f0ede8] text-[12px] font-semibold transition-colors duration-200 hover:bg-white/5"
+            style={{
+              borderColor: '#2a2a2a',
+              padding: '8px 16px',
+              letterSpacing: '0.6px',
+              fontFamily: 'var(--font-inter)',
+            }}
+          >
+            Cart ({items.length})
+          </button>
+
+          {/* Shop Beats CTA */}
+          <Link
+            href="/store"
+            className="bg-white text-black text-[12px] font-bold uppercase transition-colors duration-200 hover:bg-zinc-100"
+            style={{ padding: '10px 20px', letterSpacing: '1.2px', fontFamily: 'var(--font-inter)' }}
+          >
+            Shop Beats
           </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-stretch gap-6 h-14">
-            {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center text-sm font-medium transition-colors border-b-2 ${
-                  pathname === href
-                    ? 'text-white border-white'
-                    : 'text-zinc-400 hover:text-white border-transparent hover:border-white'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Cart + auth + mobile toggle */}
-          <div className="flex items-center gap-3">
-            <NavAuthButton />
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-              aria-label="Open cart"
-            >
-              <ShoppingCart size={20} />
-              {items.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-black">
-                  {items.length}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
         </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden border-t border-[#1f1f1f] bg-[#0a0a0a]">
-            {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-4 text-base font-medium border-b border-[#1f1f1f] transition-colors ${
-                  pathname === href ? 'text-white' : 'text-zinc-400'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        )}
+        {/* Mobile controls */}
+        <div className="flex lg:hidden items-center gap-4">
+          <button
+            onClick={() => setCartOpen(true)}
+            className="text-[11px] font-semibold text-[#f0ede8]"
+            style={{ letterSpacing: '0.55px' }}
+          >
+            Cart ({items.length})
+          </button>
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            className="flex flex-col gap-[5px] p-1"
+            aria-label="Toggle menu"
+          >
+            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
+            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
+            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
+          </button>
+        </div>
       </nav>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div
+          className="fixed top-[80px] left-0 right-0 z-[99] border-b border-[#1a1a1a]"
+          style={{ background: 'rgba(8,8,8,0.98)' }}
+        >
+          {NAV_LINKS.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center border-b border-[#111] px-10 py-4 text-[13px] font-medium uppercase transition-colors hover:text-[#f0ede8]"
+              style={{ letterSpacing: '1.3px', color: '#888' }}
+            >
+              {label}
+            </Link>
+          ))}
+          <div className="px-10 py-4">
+            <NavAuthButton />
+          </div>
+        </div>
+      )}
 
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>

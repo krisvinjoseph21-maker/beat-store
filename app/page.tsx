@@ -39,12 +39,6 @@ const PARTICLES = [
   { top:420, left:'85%', w:1.5, op:0.3,  dur:'28s', delay:'-14s', dx:'-30px', dy:'20px',  shadow:'rgba(255,255,255,0.2)' },
 ]
 
-const HERO_STATS = [
-  { value: '5+',  label: 'Placements' },
-  { value: '5',   label: 'Artists'    },
-  { value: '10M+',label: 'Streams'    },
-  { value: '4',   label: 'Genres'     },
-]
 
 // Ticker items (shown twice for seamless loop)
 const TICKER_ITEMS = [
@@ -162,25 +156,6 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/* Stats row */}
-          <div className="hero-stats flex items-center justify-center mt-12">
-            {HERO_STATS.map(({ value, label }, i) => (
-              <div
-                key={label}
-                className={`px-6 text-center group cursor-default transition-transform hover:-translate-y-1 ${i > 0 ? 'border-l border-[#1a1a1a]' : ''}`}
-              >
-                <div className="font-display text-[28px] tracking-wider leading-none transition-colors group-hover:text-white" style={{ color: '#707070' }}>
-                  {value}
-                </div>
-                <div
-                  className="text-[7px] tracking-widest uppercase mt-1"
-                  style={{ color: '#444', fontFamily: 'var(--font-inter)' }}
-                >
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Ticker — absolute at bottom (bnoise exact) */}
