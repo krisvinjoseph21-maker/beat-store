@@ -226,7 +226,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
                   style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Contact
@@ -256,7 +256,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
                   style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Select
