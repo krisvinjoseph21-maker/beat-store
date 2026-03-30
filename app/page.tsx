@@ -5,7 +5,6 @@ import { PLACEHOLDER_BEATS } from '@/lib/placeholder-data'
 import type { Beat } from '@/lib/store'
 import HomeFeaturedBeats from '@/components/HomeFeaturedBeats'
 import FeaturedTrack from '@/components/FeaturedTrack'
-import EmailSignup from '@/components/EmailSignup'
 import HeroMouseGlow from '@/components/HeroMouseGlow'
 import HeadlineParallax from '@/components/HeadlineParallax'
 
@@ -256,24 +255,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          EMAIL SIGNUP
-      ═══════════════════════════════════════════════════════ */}
-      <section className="w-full border-b border-[#191919]">
-        <div className="mx-auto max-w-6xl px-4 py-20 flex flex-col items-center text-center gap-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: '#444' }}>Stay Connected</p>
-          <h2 className="font-display text-5xl sm:text-7xl uppercase leading-none max-w-2xl" style={{ color: '#f0ede8' }}>
-            Get a Free Beat<br />
-            <span style={{ color: '#333' }}>When You Sign Up</span>
-          </h2>
-          <p className="text-[13px] max-w-sm leading-relaxed" style={{ color: '#777' }}>
-            Drop your email and get an exclusive free beat straight to your inbox. No spam — just heat.
-          </p>
-          <EmailSignup />
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════
+{/* ═══════════════════════════════════════════════════════
           FINAL CTA
       ═══════════════════════════════════════════════════════ */}
       <section className="relative w-full py-28 flex flex-col items-center text-center px-4 overflow-hidden bg-[#080808]">
