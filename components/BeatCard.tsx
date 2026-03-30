@@ -59,7 +59,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
       {/* ── Main row ──────────────────────────────────────────── */}
       <div
-        className="bg-[#111111] transition-colors duration-200"
+        onClick={!inCart ? () => setLicenseOpen(o => !o) : undefined}
+        className={`bg-[#111111] transition-colors duration-200 ${!inCart ? 'cursor-pointer hover:bg-[#161616]' : ''}`}
         style={{ borderLeft: `3px solid ${isThisActive ? 'rgba(255,255,255,0.25)' : 'transparent'}` }}
       >
         <div
@@ -76,7 +77,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Play button */}
           <button
-            onClick={handlePlay}
+            onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
             className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -134,7 +135,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
 
           {/* Price + CTA + extras */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
             <div
               className="text-sm font-semibold whitespace-nowrap"
               style={{ fontFamily: 'var(--font-inter)' }}
@@ -152,7 +153,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               </button>
             ) : (
               <button
-                onClick={() => setLicenseOpen(o => !o)}
+                onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 className="bg-white text-black text-[11px] font-bold tracking-[1.1px] uppercase px-4 h-[32.5px] flex items-center justify-center whitespace-nowrap hover:bg-zinc-100 transition-all"
                 style={{ fontFamily: 'var(--font-inter)' }}
               >
@@ -162,7 +163,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
             {/* Favorite */}
             <button
-              onClick={() => toggleFavorite(beat.id)}
+              onClick={(e) => { e.stopPropagation(); toggleFavorite(beat.id) }}
               className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
               aria-label={favorited ? 'Unfavorite' : 'Favorite'}
             >
