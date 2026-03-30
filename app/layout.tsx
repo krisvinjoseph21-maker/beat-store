@@ -1,8 +1,22 @@
 import type { Metadata, Viewport } from 'next'
+import { Bebas_Neue, Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import BottomPlayer from '@/components/BottomPlayer'
+
+const bebasNeue = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bebas',
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -25,8 +39,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white" style={{ paddingBottom: '80px' }}>
+    <html lang="en" className={`h-full ${bebasNeue.variable} ${inter.variable}`}>
+      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white font-[family-name:var(--font-inter)]" style={{ paddingBottom: '80px' }}>
         <Navbar />
         <main className="flex-1 w-full" style={{ paddingLeft: '55px', paddingTop: '56px' }}>{children}</main>
         <Footer />

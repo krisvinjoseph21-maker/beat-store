@@ -1,44 +1,86 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { Check, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Licensing Info — PRODKJBEATS',
+  title: 'Beat Licensing — PRODKJBEATS',
 }
 
 const TIERS = [
   {
-    name: 'Standard Lease',
-    price: 'From $29.99',
+    tag: null,
+    name: 'MP3 Lease',
+    price: '$29.99',
+    cta: 'Shop Beats',
+    href: '/store',
     features: [
-      'MP3 + WAV files included',
-      'Up to 500,000 streams (all platforms)',
-      'Up to 5,000 paid downloads',
-      'Up to 3 music videos',
-      'Non-exclusive — beat remains available to others',
-      'Must credit "Prod. PRODKJBEATS" in title and description',
+      { label: 'File Format',         value: 'MP3 (320kbps)' },
+      { label: 'Distribution Limit',  value: '10,000 copies' },
+      { label: 'Streaming Limit',     value: '100,000 streams' },
+      { label: 'Music Videos',        value: '1 music video' },
+      { label: 'Radio Broadcasting',  value: 'Up to 2 stations' },
+      { label: 'Monetization',        value: 'YouTube monetization' },
+      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
+      { label: 'Ownership',           value: 'Non-exclusive' },
+      { label: 'For Sale',            value: '✓' },
+      { label: 'Live Performances',   value: 'Unlimited' },
     ],
   },
   {
-    name: 'Unlimited Lease',
-    price: 'From $74.99',
+    tag: null,
+    name: 'WAV Lease',
+    price: '$74.99',
+    cta: 'Shop Beats',
+    href: '/store',
     features: [
-      'MP3, WAV, and track stems included',
-      'Unlimited streams and downloads',
-      'Unlimited music videos',
-      'Non-exclusive — beat remains available to others',
-      'Must credit "Prod. PRODKJBEATS" in title and description',
-      'Eligible for major-label distribution',
+      { label: 'File Format',         value: 'WAV (24-bit)' },
+      { label: 'Distribution Limit',  value: '25,000 copies' },
+      { label: 'Streaming Limit',     value: '500,000 streams' },
+      { label: 'Music Videos',        value: '1 music video' },
+      { label: 'Radio Broadcasting',  value: 'Up to 5 stations' },
+      { label: 'Monetization',        value: 'YouTube monetization' },
+      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
+      { label: 'Ownership',           value: 'Non-exclusive' },
+      { label: 'For Sale',            value: '✓' },
+      { label: 'Live Performances',   value: 'Unlimited' },
     ],
   },
   {
-    name: 'Exclusive Rights',
-    price: 'Contact for pricing',
+    tag: 'Most Popular',
+    name: 'Stems License',
+    price: '$149.99',
+    cta: 'Shop Beats',
+    href: '/store',
     features: [
-      'MP3, WAV, and full track stems',
-      'Unlimited streams, downloads, and videos',
-      'Beat is removed from store after purchase',
-      'Full ownership transfer of the beat',
-      'No credit requirement (optional but appreciated)',
-      'Includes signed contract',
+      { label: 'File Format',         value: 'WAV Trackout Stems' },
+      { label: 'Distribution Limit',  value: '75,000 copies' },
+      { label: 'Streaming Limit',     value: '1,500,000 streams' },
+      { label: 'Music Videos',        value: 'Unlimited' },
+      { label: 'Radio Broadcasting',  value: 'Unlimited' },
+      { label: 'Monetization',        value: 'Full monetization' },
+      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
+      { label: 'Ownership',           value: 'Non-exclusive' },
+      { label: 'For Sale',            value: '✓' },
+      { label: 'Live Performances',   value: 'Unlimited' },
+    ],
+  },
+  {
+    tag: null,
+    name: 'Exclusive',
+    price: '$500+',
+    cta: 'Contact Us',
+    href: '/about',
+    features: [
+      { label: 'File Format',         value: 'WAV + Stems + MP3' },
+      { label: 'Distribution Limit',  value: 'Unlimited' },
+      { label: 'Streaming Limit',     value: 'Unlimited' },
+      { label: 'Music Videos',        value: 'Unlimited' },
+      { label: 'Radio Broadcasting',  value: 'Unlimited' },
+      { label: 'Monetization',        value: 'Full monetization' },
+      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
+      { label: 'Ownership',           value: 'Full exclusive rights' },
+      { label: 'For Sale',            value: '✓' },
+      { label: 'Live Performances',   value: 'Unlimited' },
     ],
   },
 ]
@@ -55,58 +97,92 @@ const RULES = [
 
 export default function LicensingPage() {
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-12">
-      <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-          Legal
-        </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">Licensing Info</h1>
-        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
-          Understand what you're buying before you check out.
-        </p>
+    <div className="w-full">
+
+      {/* Header */}
+      <div className="w-full border-b border-[#191919] bg-[#0d0d0d]">
+        <div className="mx-auto max-w-6xl px-4 py-16 text-center">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-zinc-600">Beat Licensing</p>
+          <h1 className="font-display text-6xl sm:text-8xl text-white uppercase leading-none mb-4">
+            Choose Your License.
+          </h1>
+          <p className="text-sm text-zinc-500 max-w-lg mx-auto leading-relaxed">
+            Every license includes instant delivery to your inbox. All beats are non-exclusive unless purchased as Exclusive.
+          </p>
+        </div>
       </div>
 
-      {/* Tier cards */}
-      <div className="space-y-4 mb-12">
-        {TIERS.map((tier) => (
-          <div key={tier.name} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-6">
-            <div className="flex items-baseline justify-between mb-4">
-              <h2 className="font-black text-white text-base">{tier.name}</h2>
-              <span className="text-sm font-semibold text-zinc-400">{tier.price}</span>
-            </div>
-            <ul className="space-y-2">
-              {tier.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
-                  <span className="mt-0.5 text-zinc-600">—</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      {/* Tier grid */}
+      <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {TIERS.map((tier) => (
+            <div
+              key={tier.name}
+              className={`relative flex flex-col rounded-sm border bg-[#0f0f0f] overflow-hidden ${
+                tier.tag ? 'border-white/20' : 'border-[#1e1e1e]'
+              }`}
+            >
+              {tier.tag && (
+                <div className="bg-white px-4 py-1.5 text-center">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-black">{tier.tag}</span>
+                </div>
+              )}
 
-      {/* General rules */}
-      <div>
-        <h2 className="mb-4 text-sm font-black uppercase tracking-[0.15em] text-zinc-500">
-          General Rules
-        </h2>
-        <div className="space-y-3">
-          {RULES.map((rule) => (
-            <div key={rule} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-              <p className="text-sm text-zinc-400 leading-relaxed">{rule}</p>
+              <div className="flex flex-col gap-5 p-5 flex-1">
+                {/* Name + Price */}
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-600 mb-1">{tier.name}</p>
+                  <p className="font-display text-4xl text-white leading-none">{tier.price}</p>
+                </div>
+
+                {/* CTA */}
+                <Link
+                  href={tier.href}
+                  className={`inline-flex items-center justify-center gap-2 rounded-sm py-3 text-sm font-black transition-colors ${
+                    tier.tag
+                      ? 'bg-white text-black hover:bg-zinc-100'
+                      : 'border border-[#2a2a2a] text-zinc-300 hover:border-zinc-500 hover:text-white'
+                  }`}
+                >
+                  {tier.cta} <ArrowRight size={13} />
+                </Link>
+
+                {/* Feature table */}
+                <div className="flex flex-col gap-3 pt-2 border-t border-[#1a1a1a]">
+                  {tier.features.map(({ label, value }) => (
+                    <div key={label} className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-700">{label}</span>
+                      <span className={`text-xs font-semibold ${value === '✓' ? 'text-green-400' : 'text-zinc-300'}`}>
+                        {value === '✓' ? <Check size={14} className="text-green-400" /> : value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      <p className="mt-10 text-xs text-zinc-600 text-center">
-        Questions? Contact us through the{' '}
-        <a href="/about" className="underline hover:text-zinc-400 transition-colors">
-          Services page
-        </a>
-        .
-      </p>
+      {/* General rules */}
+      <div className="mx-auto max-w-6xl px-4 pb-16">
+        <h2 className="mb-5 text-[11px] font-black uppercase tracking-[0.2em] text-zinc-600">General Rules</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {RULES.map((rule) => (
+            <div key={rule} className="flex items-start gap-3 rounded-sm border border-[#1a1a1a] bg-[#0d0d0d] p-4">
+              <span className="mt-0.5 text-zinc-700 text-sm flex-shrink-0">—</span>
+              <p className="text-sm text-zinc-500 leading-relaxed">{rule}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-8 text-xs text-zinc-600 text-center">
+          Questions?{' '}
+          <Link href="/about" className="underline hover:text-zinc-400 transition-colors">
+            Contact us here.
+          </Link>
+        </p>
+      </div>
+
     </div>
   )
 }

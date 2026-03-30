@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krisvin Joseph — Software Engineer</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:             #ffffff;
+      --text:           #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-tertiary:  #aeaeb2;
+      --border:         #e8e8ed;
+      --border-strong:  #d2d2d7;
+      --surface:        #f5f5f7;
+      --green:          #34c759;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+                   'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+      background: var(--text);
+      color: #ffffff;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 96px 0 80px;
+    }
+
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      letter-spacing: -0.003em;
+    }
+
+    .availability-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.3); opacity: 0.65; }
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6.5vw, 58px);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .hero-role {
+      font-size: clamp(18px, 2.5vw, 22px);
+      font-weight: 400;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+
+    .hero-bio {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-bottom: 36px;
+      letter-spacing: -0.003em;
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 20px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: all 0.2s ease;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #ffffff;
+      padding: 11px 22px;
+      border-radius: 980px;
+    }
+
+    .btn-primary:hover {
+      background: #3a3a3c;
+      transform: translateY(-1px);
+    }
+
+    .btn-text {
+      color: var(--text-secondary);
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-text:hover {
+      color: var(--text);
+      border-bottom-color: var(--text);
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 52px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 24px;
+    }
+
+    /* ── Project Cards ── */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      background: var(--bg);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .project-card:hover {
+      background: var(--surface);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .project-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+
+    .project-arrow {
+      font-size: 16px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      transition: color 0.15s ease, transform 0.15s ease;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .project-card:hover .project-arrow {
+      color: var(--text);
+      transform: translate(2px, -2px);
+    }
+
+    .project-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .project-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .project-highlights li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .project-highlights li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--text-tertiary);
+    }
+
+    .project-highlights strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .project-card:hover .tag {
+      border-color: var(--border-strong);
+    }
+
+    /* ── Experience Card ── */
+    .exp-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      background: var(--bg);
+    }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .exp-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+
+    .exp-date {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+
+    .exp-role {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .exp-bullets li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .exp-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Skills ── */
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-pill {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 8px 14px;
+      letter-spacing: -0.005em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 0 52px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: -0.005em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 64px 0 60px; }
+
+      .hero h1 { letter-spacing: -0.025em; }
+
+      .exp-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+
+      .project-card { padding: 20px; }
+
+      .exp-card { padding: 18px 20px; }
+
+      section { padding: 40px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Hero -->
+    <header class="hero">
+      <div class="availability">
+        <span class="availability-dot"></span>
+        Open to Opportunities
+      </div>
+      <h1>Krisvin Joseph</h1>
+      <p class="hero-role">Software Engineer</p>
+      <p class="hero-bio">
+        Building full-stack products, AI platforms, and developer tools.
+        CS student at UT Dallas graduating Dec 2029.
+      </p>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="mailto:krisvinjoseph21@gmail.com">Get in Touch</a>
+        <a class="btn btn-text" href="https://github.com/krisvinjoseph21-maker" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-text" href="https://www.linkedin.com/in/krisvin-joseph" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </header>
+
+    <!-- Projects -->
+    <section>
+      <p class="section-label">Projects</p>
+      <div class="projects">
+
+        <a class="project-card" href="https://beat-store-d3iw-dytm1lz3e-krisvinjoseph21-makers-projects.vercel.app/" target="_blank" rel="noopener">
+          <div class="project-header">
+            <span class="project-title">PRODKJBEATS</span>
+            <span class="project-arrow">↗</span>
+          </div>
+          <p class="project-desc">
+            Production music e-commerce platform with Stripe payments, tiered licensing, secure file delivery, and a real-time audio player.
+          </p>
+          <ul class="project-highlights">
+            <li>Stripe Checkout + signed webhook verification → auto-generates <strong>48-hour</strong> expiring download tokens delivered via transactional email</li>
+            <li>Atomic token claiming (compare-and-swap UPDATE) with <strong>5-minute</strong> signed URLs — prevents duplicate downloads without client-side credential exposure</li>
+            <li><strong>3-tier</strong> licensing logic, Zustand cart state, and async audio race condition fix across <strong>8+ concurrent track loads</strong></li>
+            <li>PostgreSQL RLS policies, constant-time HMAC admin auth, and IP rate limiting across <strong>6 API routes</strong></li>
+          </ul>
+          <div class="tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Supabase</span>
+            <span class="tag">Stripe</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">Zustand</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section>
+      <p class="section-label">Experience</p>
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-title">Gamesense AI</span>
+          <span class="exp-date">Nov 2025 – Present</span>
+        </div>
+        <p class="exp-role">CEO &amp; Founder</p>
+        <ul class="exp-bullets">
+          <li>Built and deployed an ML-powered sports analytics platform using AI-driven predictive modeling for real-time player performance analysis</li>
+          <li>Designed a custom Random Forest algorithm for player stat prediction, integrating web-scraped sports data with advanced feature engineering</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section>
+      <p class="section-label">Skills</p>
+      <div class="skills-wrap">
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">JavaScript</span>
+        <span class="skill-pill">TypeScript</span>
+        <span class="skill-pill">React.js</span>
+        <span class="skill-pill">Next.js</span>
+        <span class="skill-pill">Node.js</span>
+        <span class="skill-pill">Java</span>
+        <span class="skill-pill">C#</span>
+        <span class="skill-pill">C++</span>
+        <span class="skill-pill">Unity</span>
+        <span class="skill-pill">Tailwind</span>
+        <span class="skill-pill">SQL</span>
+        <span class="skill-pill">Flask</span>
+        <span class="skill-pill">HTML / CSS</span>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <p class="section-label">Education</p>
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-title">The University of Texas at Dallas</span>
+          <span class="exp-date">Dec 2029</span>
+        </div>
+        <p class="exp-role">B.S. Computer Science</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Krisvin Joseph · Dallas, TX</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
