@@ -3,47 +3,40 @@
 import { useEffect, useRef } from 'react'
 
 export default function HeroMouseGlow() {
-  const glowRef = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const glow = glowRef.current
-    if (!glow) return
+    const el = ref.current
+    if (!el) return
+    // Attach to the parent section directly — no getElementById needed
+    const section = el.parentElement
+    if (!section) return
 
-    function onMouseMove(e: MouseEvent) {
-      const hero = document.getElementById('hero-section')
-      if (!hero || !glow) return
-      const rect = hero.getBoundingClientRect()
+    function onMove(e: MouseEvent) {
+      const rect = section!.getBoundingClientRect()
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
-
-      // Hide glow when cursor leaves the hero
-      if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-        glow.style.opacity = '0'
-        return
-      }
-
-      glow.style.opacity = '1'
-      glow.style.background = `radial-gradient(700px circle at ${x}px ${y}px, rgba(255,255,255,0.05), transparent 55%)`
+      el!.style.opacity = '1'
+      el!.style.background = `radial-gradient(650px circle at ${x}px ${y}px, rgba(255,255,255,0.055), transparent 70%)`
     }
 
-    function onMouseLeave() {
-      if (glow) glow.style.opacity = '0'
+    function onLeave() {
+      if (el) el.style.opacity = '0'
     }
 
-    window.addEventListener('mousemove', onMouseMove)
-    document.getElementById('hero-section')?.addEventListener('mouseleave', onMouseLeave)
-
+    section.addEventListener('mousemove', onMove)
+    section.addEventListener('mouseleave', onLeave)
     return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-      document.getElementById('hero-section')?.removeEventListener('mouseleave', onMouseLeave)
+      section.removeEventListener('mousemove', onMove)
+      section.removeEventListener('mouseleave', onLeave)
     }
   }, [])
 
   return (
     <div
-      ref={glowRef}
-      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300"
-      style={{ zIndex: 2 }}
+      ref={ref}
+      className="pointer-events-none absolute inset-0 opacity-0"
+      style={{ zIndex: 3, transition: 'opacity 0.4s ease' }}
     />
   )
 }

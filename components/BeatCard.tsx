@@ -27,8 +27,7 @@ const LICENSE_OPTIONS = [
 ]
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
-  const { currentBeat, isPlaying, setCurrentBeat, togglePlay, setPlaying } =
-    usePlayerStore()
+  const { currentBeat, isPlaying, setCurrentBeat, togglePlay, setPlaying } = usePlayerStore()
   const { isInCart, addBeat, setLicenseType } = useCartStore()
   const { toggle: toggleFavorite, isFavorited } = useFavoritesStore()
   const [mounted, setMounted] = useState(false)
@@ -40,7 +39,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const isThisActive = currentBeat?.id === beat.id
   const inCart = mounted && isInCart(beat.id)
   const hasAudio = !!(beat.preview_url ?? beat.file_url)
-  const isNew = beat.created_at && (Date.now() - new Date(beat.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000
+  const isNew = beat.created_at &&
+    Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
 
   function handlePlay() {
     if (!hasAudio) return
@@ -55,40 +55,45 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     onBuyClick(beat)
   }
 
+  const STATS = [
+    { value: String(beat.bpm),            label: 'BPM'   },
+    { value: beat.key,                     label: 'Key'   },
+    { value: beat.subgenre ?? beat.genre,  label: 'Genre' },
+  ]
+
   return (
-    <div className={`border-b border-[#191919] transition-colors ${isThisActive ? 'bg-[#111]' : 'hover:bg-[#0e0e0e]'}`}>
-      {/* ── Main row ── */}
-      <div className="flex items-center gap-3 px-4 py-5 sm:px-6">
+    <div className={`border-b border-[#1a1a1a] transition-colors ${isThisActive ? 'bg-[#111]' : 'hover:bg-[#0d0d0d]'}`}>
+
+      {/* ── Main row ─────────────────────────────────────── */}
+      <div className="flex items-center gap-3 sm:gap-5 px-4 sm:px-8 py-5 sm:py-6">
 
         {/* Row number */}
-        <span className="hidden sm:flex w-7 flex-shrink-0 items-center justify-center text-xs font-mono text-zinc-700 select-none">
-          {isThisPlaying
-            ? <span className="text-white text-base leading-none">♪</span>
-            : String(index).padStart(2, '0')}
+        <span className="hidden sm:block w-6 text-center text-xs font-mono text-zinc-700 select-none flex-shrink-0">
+          {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
         </span>
 
         {/* Play button */}
         <button
           onClick={handlePlay}
           disabled={!hasAudio}
-          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all ${
+          aria-label={isThisPlaying ? 'Pause' : 'Play'}
+          className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full transition-all ${
             !hasAudio
               ? 'bg-white/5 text-zinc-700 cursor-not-allowed'
               : isThisActive
               ? 'bg-white text-black scale-105'
               : 'bg-white/10 text-white hover:bg-white hover:text-black'
           }`}
-          aria-label={isThisPlaying ? 'Pause' : 'Play'}
         >
           {isThisPlaying
             ? <Pause size={14} fill="currentColor" />
-            : <Play size={14} fill="currentColor" className="ml-0.5" />}
+            : <Play  size={14} fill="currentColor" className="ml-0.5" />}
         </button>
 
-        {/* Info block */}
+        {/* Title + subgenre */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 min-w-0">
-            <p className={`truncate text-base font-black leading-tight transition-colors ${
+            <p className={`truncate text-base sm:text-lg font-black leading-tight ${
               isThisActive ? 'text-white' : 'text-zinc-100'
             }`}>
               {beat.title}
@@ -102,30 +107,41 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           {beat.subgenre && (
             <p className="mt-0.5 text-xs text-zinc-600 truncate">{beat.subgenre}</p>
           )}
-          <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-            <span className="inline-flex items-center gap-1 text-[11px] text-zinc-600">
-              <span className="text-zinc-700 text-[10px] uppercase tracking-wide">BPM</span>
-              <span className="text-zinc-400 font-semibold">{beat.bpm}</span>
-            </span>
-            <span className="text-zinc-800">·</span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-zinc-600">
-              <span className="text-zinc-700 text-[10px] uppercase tracking-wide">Key</span>
-              <span className="text-zinc-400 font-semibold">{beat.key}</span>
-            </span>
-            <span className="text-zinc-800">·</span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-zinc-600">
-              <span className="text-zinc-700 text-[10px] uppercase tracking-wide">Genre</span>
-              <span className="text-zinc-400 font-semibold">{beat.subgenre ?? beat.genre}</span>
-            </span>
-          </div>
         </div>
 
-        {/* Right controls */}
+        {/* Stats — value large / label small below */}
+        <div className="hidden md:flex items-start gap-6 flex-shrink-0">
+          {STATS.map(({ value, label }) => (
+            <div key={label} className="flex flex-col items-center gap-1">
+              <span className="text-sm font-black text-white leading-none">{value}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-700">{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Price + cart button */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Favorite */}
+          <span className="hidden lg:inline text-xs text-zinc-600">from $75</span>
+          {inCart ? (
+            <button disabled className="flex h-9 items-center gap-1.5 rounded-sm bg-white/10 px-3 text-xs font-bold text-zinc-400">
+              <Check size={12} /> In Cart
+            </button>
+          ) : (
+            <button
+              onClick={() => setLicenseOpen(o => !o)}
+              className="flex h-9 items-center gap-1.5 rounded-sm bg-white px-4 text-xs font-black text-black hover:bg-zinc-100 transition-colors"
+            >
+              Add to Cart
+              {licenseOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+            </button>
+          )}
+        </div>
+
+        {/* Favorite + Share */}
+        <div className="hidden sm:flex items-center gap-0.5 flex-shrink-0">
           <button
             onClick={() => toggleFavorite(beat.id)}
-            className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
             aria-label={favorited ? 'Unfavorite' : 'Favorite'}
           >
             <Heart
@@ -134,53 +150,26 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               fill={favorited ? 'currentColor' : 'none'}
             />
           </button>
-
-          {/* Share */}
-          <div className="hidden sm:block">
-            <ShareButton beatId={beat.id} />
-          </div>
-
-          {/* Price + cart button */}
-          <div className="flex items-center gap-2">
-            <span className="hidden md:inline text-xs text-zinc-600 font-medium">from $75</span>
-            {inCart ? (
-              <button
-                className="flex h-9 items-center gap-1.5 rounded-sm bg-white/10 px-3 text-xs font-bold text-zinc-400"
-                disabled
-              >
-                <Check size={12} /> In Cart
-              </button>
-            ) : (
-              <button
-                onClick={() => setLicenseOpen((o) => !o)}
-                className="flex h-9 items-center gap-1.5 rounded-sm bg-white px-3 text-xs font-black text-black hover:bg-zinc-100 transition-colors"
-              >
-                Add to Cart
-                {licenseOpen
-                  ? <ChevronUp size={12} />
-                  : <ChevronDown size={12} />}
-              </button>
-            )}
-          </div>
+          <ShareButton beatId={beat.id} />
         </div>
       </div>
 
-      {/* ── License panel ── */}
+      {/* ── License panel ────────────────────────────────── */}
       {licenseOpen && !inCart && (
-        <div className="border-t border-[#191919] grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#191919] px-0">
+        <div className="border-t border-[#1a1a1a] grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#161616]">
           {LICENSE_OPTIONS.map((opt) => (
             <button
               key={opt.id}
               onClick={() => handleSelectLicense(opt.id)}
-              className="group flex items-center justify-between bg-[#0d0d0d] hover:bg-[#111] px-6 sm:px-8 py-4 text-left transition-colors"
+              className="group flex items-center justify-between bg-[#0c0c0c] hover:bg-[#111] px-6 sm:px-10 py-5 text-left transition-colors"
             >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-black text-white group-hover:text-white">{opt.name}</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-black text-white">{opt.name}</span>
                 <span className="text-xs text-zinc-600">{opt.desc}</span>
               </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-lg font-black text-white">{opt.price}</span>
-                <span className="rounded-sm border border-[#2a2a2a] px-3 py-1.5 text-xs font-bold text-zinc-400 group-hover:border-zinc-500 group-hover:text-white transition-colors">
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <span className="text-xl font-black text-white">{opt.price}</span>
+                <span className="rounded-sm border border-[#2a2a2a] px-3 py-1.5 text-xs font-bold text-zinc-500 group-hover:border-zinc-500 group-hover:text-white transition-colors">
                   Select
                 </span>
               </div>

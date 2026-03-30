@@ -42,7 +42,7 @@ export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
 
   return (
     <>
-      <div className="rounded-xl border border-[#1a1a1a] overflow-hidden">
+      <div className="border-t border-[#1a1a1a] overflow-hidden">
         {beats.map((beat, i) => (
           <BeatCard
             key={beat.id}
