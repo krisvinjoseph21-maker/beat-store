@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Play, Pause, Check, Heart, ChevronDown, ChevronUp } from 'lucide-react'
+import { Check, Heart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import ShareButton from './ShareButton'
+import Link from 'next/link'
 
 interface Props {
   beat: Beat
@@ -11,36 +12,34 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
+// User's 4 license tiers — prices from licensing page
 const LICENSE_OPTIONS = [
-  {
-    id: 'standard' as const,
-    name: 'Standard Lease',
-    price: '$75',
-    desc: 'Non-exclusive · MP3 + WAV',
-  },
-  {
-    id: 'unlimited' as const,
-    name: 'Unlimited Lease',
-    price: '$150',
-    desc: 'Non-exclusive · MP3 + WAV + Stems',
-  },
+  { id: 'standard' as const, name: 'MP3 Lease',      price: '$29.99',  desc: 'Non-exclusive · MP3'  },
+  { id: 'standard' as const, name: 'WAV Lease',       price: '$74.99',  desc: 'Non-exclusive · WAV'  },
+  { id: 'unlimited' as const,name: 'Stems License',   price: '$149.99', desc: 'Trackout stems'        },
+  { id: null,                 name: 'Exclusive',       price: '$500+',   desc: 'Full ownership'        },
 ]
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
-  const { currentBeat, isPlaying, setCurrentBeat, togglePlay, setPlaying } = usePlayerStore()
+  const { currentBeat, isPlaying, progress, duration, setCurrentBeat, togglePlay, setPlaying } =
+    usePlayerStore()
   const { isInCart, addBeat, setLicenseType } = useCartStore()
   const { toggle: toggleFavorite, isFavorited } = useFavoritesStore()
   const [mounted, setMounted] = useState(false)
   const [licenseOpen, setLicenseOpen] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
-  const favorited = mounted && isFavorited(beat.id)
-  const isThisPlaying = currentBeat?.id === beat.id && isPlaying
+  const favorited    = mounted && isFavorited(beat.id)
   const isThisActive = currentBeat?.id === beat.id
-  const inCart = mounted && isInCart(beat.id)
-  const hasAudio = !!(beat.preview_url ?? beat.file_url)
-  const isNew = beat.created_at &&
+  const isThisPlaying= isThisActive && isPlaying
+  const inCart       = mounted && isInCart(beat.id)
+  const hasAudio     = !!(beat.preview_url ?? beat.file_url)
+  const isNew        = beat.created_at &&
     Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+
+  const progressPct  = isThisActive && duration > 0
+    ? Math.min((progress / duration) * 100, 100)
+    : 0
 
   function handlePlay() {
     if (!hasAudio) return
@@ -48,133 +47,222 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     else { setCurrentBeat(beat); setPlaying(true) }
   }
 
-  function handleSelectLicense(licenseId: 'standard' | 'unlimited') {
-    setLicenseType(licenseId)
+  function handleSelectLicense(id: 'standard' | 'unlimited') {
+    setLicenseType(id)
     addBeat(beat)
     setLicenseOpen(false)
     onBuyClick(beat)
   }
 
-  const STATS = [
-    { value: String(beat.bpm),            label: 'BPM'   },
-    { value: beat.key,                     label: 'Key'   },
-    { value: beat.subgenre ?? beat.genre,  label: 'Genre' },
-  ]
-
   return (
-    <div className={`border-b border-[#1a1a1a] transition-colors ${isThisActive ? 'bg-[#111]' : 'hover:bg-[#0d0d0d]'}`}>
+    <div className="w-full relative overflow-hidden">
 
-      {/* ── Main row ─────────────────────────────────────── */}
-      <div className="flex items-center gap-3 sm:gap-5 px-4 sm:px-8 py-5 sm:py-6">
-
-        {/* Row number */}
-        <span className="hidden sm:block w-6 text-center text-xs font-mono text-zinc-700 select-none flex-shrink-0">
-          {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
-        </span>
-
-        {/* Play button */}
-        <button
-          onClick={handlePlay}
-          disabled={!hasAudio}
-          aria-label={isThisPlaying ? 'Pause' : 'Play'}
-          className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full transition-all ${
-            !hasAudio
-              ? 'bg-white/5 text-zinc-700 cursor-not-allowed'
-              : isThisActive
-              ? 'bg-white text-black scale-105'
-              : 'bg-white/10 text-white hover:bg-white hover:text-black'
-          }`}
+      {/* ── Main row ──────────────────────────────────────────── */}
+      <div
+        className="bg-[#111111] transition-colors duration-200"
+        style={{ borderLeft: `3px solid ${isThisActive ? 'rgba(255,255,255,0.25)' : 'transparent'}` }}
+      >
+        <div
+          className="flex flex-row items-center gap-5 px-6 py-[20px]"
+          style={{ color: '#f0ede8' }}
         >
-          {isThisPlaying
-            ? <Pause size={14} fill="currentColor" />
-            : <Play  size={14} fill="currentColor" className="ml-0.5" />}
-        </button>
-
-        {/* Title + subgenre */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <p className={`truncate text-base sm:text-lg font-black leading-tight ${
-              isThisActive ? 'text-white' : 'text-zinc-100'
-            }`}>
-              {beat.title}
-            </p>
-            {isNew && (
-              <span className="flex-shrink-0 rounded bg-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-zinc-400">
-                New
-              </span>
-            )}
-          </div>
-          {beat.subgenre && (
-            <p className="mt-0.5 text-xs text-zinc-600 truncate">{beat.subgenre}</p>
-          )}
-        </div>
-
-        {/* Stats — value large / label small below */}
-        <div className="hidden md:flex items-start gap-6 flex-shrink-0">
-          {STATS.map(({ value, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <span className="text-sm font-black text-white leading-none">{value}</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-700">{label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Price + cart button */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="hidden lg:inline text-xs text-zinc-600">from $75</span>
-          {inCart ? (
-            <button disabled className="flex h-9 items-center gap-1.5 rounded-sm bg-white/10 px-3 text-xs font-bold text-zinc-400">
-              <Check size={12} /> In Cart
-            </button>
-          ) : (
-            <button
-              onClick={() => setLicenseOpen(o => !o)}
-              className="flex h-9 items-center gap-1.5 rounded-sm bg-white px-4 text-xs font-black text-black hover:bg-zinc-100 transition-colors"
-            >
-              Add to Cart
-              {licenseOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
-            </button>
-          )}
-        </div>
-
-        {/* Favorite + Share */}
-        <div className="hidden sm:flex items-center gap-0.5 flex-shrink-0">
-          <button
-            onClick={() => toggleFavorite(beat.id)}
-            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-            aria-label={favorited ? 'Unfavorite' : 'Favorite'}
+          {/* Track number */}
+          <div
+            className="font-display text-xs w-6 text-center shrink-0 select-none"
+            style={{ color: '#444' }}
           >
-            <Heart
-              size={14}
-              className={favorited ? 'text-red-500' : 'text-zinc-600 hover:text-red-400'}
-              fill={favorited ? 'currentColor' : 'none'}
-            />
+            {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
+          </div>
+
+          {/* Play button */}
+          <button
+            onClick={handlePlay}
+            disabled={!hasAudio}
+            aria-label={isThisPlaying ? 'Pause' : 'Play'}
+            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px' }}>
+              {isThisPlaying ? '⏸' : '▶'}
+            </span>
           </button>
-          <ShareButton beatId={beat.id} />
+
+          {/* Track info */}
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <h3
+              className="text-[15px] font-semibold truncate leading-none mb-1"
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              {beat.title}
+              {isNew && (
+                <span className="ml-2 text-[9px] font-black uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded" style={{ color: '#888' }}>
+                  New
+                </span>
+              )}
+            </h3>
+            <div className="flex flex-wrap gap-[6px]">
+              {beat.subgenre && (
+                <span
+                  className="text-[10px] tracking-[0.6px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+                >
+                  {beat.subgenre}
+                </span>
+              )}
+              <span
+                className="text-[10px] tracking-[0.6px]"
+                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+              >
+                {beat.genre} Type Beat
+              </span>
+            </div>
+          </div>
+
+          {/* Metadata — BPM / Key / Genre */}
+          <div className="hidden md:flex items-center gap-6 shrink-0">
+            <div className="text-center w-[28px]">
+              <div className="text-[13px] font-medium leading-tight">{beat.bpm}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>BPM</div>
+            </div>
+            <div className="text-center w-[46px]">
+              <div className="text-[13px] font-medium leading-tight">{beat.key}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Key</div>
+            </div>
+            <div className="text-center w-[85px]">
+              <div className="text-[13px] font-medium leading-tight truncate">{beat.subgenre ?? beat.genre}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Genre</div>
+            </div>
+          </div>
+
+          {/* Price + CTA + extras */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div
+              className="text-sm font-semibold whitespace-nowrap"
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              from $29.99
+            </div>
+
+            {inCart ? (
+              <button
+                disabled
+                className="flex items-center gap-1 h-[32.5px] px-4 bg-white/10 text-[11px] font-bold tracking-[1.1px] uppercase"
+                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+              >
+                <Check size={11} /> In Cart
+              </button>
+            ) : (
+              <button
+                onClick={() => setLicenseOpen(o => !o)}
+                className="bg-white text-black text-[11px] font-bold tracking-[1.1px] uppercase px-4 h-[32.5px] flex items-center justify-center whitespace-nowrap hover:bg-zinc-100 transition-all"
+                style={{ fontFamily: 'var(--font-inter)' }}
+              >
+                Add to Cart
+              </button>
+            )}
+
+            {/* Favorite */}
+            <button
+              onClick={() => toggleFavorite(beat.id)}
+              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+              aria-label={favorited ? 'Unfavorite' : 'Favorite'}
+            >
+              <Heart
+                size={13}
+                className={favorited ? 'text-red-500' : 'hover:text-red-400'}
+                style={{ color: favorited ? undefined : '#444' }}
+                fill={favorited ? 'currentColor' : 'none'}
+              />
+            </button>
+
+            {/* Share */}
+            <div className="hidden sm:block">
+              <ShareButton beatId={beat.id} />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── License panel ────────────────────────────────── */}
+      {/* ── Progress bar ──────────────────────────────────────── */}
+      <div className="h-[2px] bg-[#1a1a1a] w-full relative">
+        <div
+          className="absolute left-0 top-0 h-full bg-white/30 transition-all duration-100 ease-linear"
+          style={{ width: `${progressPct}%` }}
+        />
+      </div>
+
+      {/* ── License drawer ────────────────────────────────────── */}
       {licenseOpen && !inCart && (
-        <div className="border-t border-[#1a1a1a] grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#161616]">
-          {LICENSE_OPTIONS.map((opt) => (
-            <button
-              key={opt.id}
-              onClick={() => handleSelectLicense(opt.id)}
-              className="group flex items-center justify-between bg-[#0c0c0c] hover:bg-[#111] px-6 sm:px-10 py-5 text-left transition-colors"
-            >
-              <div className="flex flex-col gap-1">
-                <span className="text-sm font-black text-white">{opt.name}</span>
-                <span className="text-xs text-zinc-600">{opt.desc}</span>
-              </div>
-              <div className="flex items-center gap-4 flex-shrink-0">
-                <span className="text-xl font-black text-white">{opt.price}</span>
-                <span className="rounded-sm border border-[#2a2a2a] px-3 py-1.5 text-xs font-bold text-zinc-500 group-hover:border-zinc-500 group-hover:text-white transition-colors">
+        <div
+          className="bg-[#0d0d0d] grid"
+          style={{
+            padding: '16px 40px 16px 88px',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '8px',
+          }}
+        >
+          {LICENSE_OPTIONS.map((opt, i) =>
+            opt.id === null ? (
+              /* Exclusive — link to contact */
+              <Link
+                key={i}
+                href="/about"
+                className="bg-[#111] border border-[#1a1a1a] flex flex-col p-[14px_16px] hover:border-[#2a2a2a] transition-colors"
+                style={{ height: '145px' }}
+              >
+                <div
+                  className="text-[11px] font-semibold uppercase mb-[6px]"
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-inter)', lineHeight: '16.5px' }}
+                >
+                  {opt.name}
+                </div>
+                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px' }}>
+                  {opt.price}
+                </div>
+                <div
+                  className="text-[10px] mb-[12px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-inter)', lineHeight: '15px' }}
+                >
+                  {opt.desc}
+                </div>
+                <div
+                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
+                  style={{ height: '32px', borderColor: '#333', color: '#888', letterSpacing: '1px', fontFamily: 'var(--font-inter)' }}
+                >
+                  Contact
+                </div>
+              </Link>
+            ) : (
+              /* Standard / Unlimited */
+              <button
+                key={i}
+                onClick={() => handleSelectLicense(opt.id as 'standard' | 'unlimited')}
+                className="bg-[#111] border border-[#1a1a1a] flex flex-col p-[14px_16px] text-left hover:border-[#2a2a2a] transition-colors"
+                style={{ height: '145px' }}
+              >
+                <div
+                  className="text-[11px] font-semibold uppercase mb-[6px]"
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-inter)', lineHeight: '16.5px' }}
+                >
+                  {opt.name}
+                </div>
+                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px' }}>
+                  {opt.price}
+                </div>
+                <div
+                  className="text-[10px] mb-[12px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-inter)', lineHeight: '15px' }}
+                >
+                  {opt.desc}
+                </div>
+                <div
+                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
+                  style={{ height: '32px', borderColor: '#333', color: '#888', letterSpacing: '1px', fontFamily: 'var(--font-inter)' }}
+                >
                   Select
-                </span>
-              </div>
-            </button>
-          ))}
+                </div>
+              </button>
+            )
+          )}
         </div>
       )}
     </div>
