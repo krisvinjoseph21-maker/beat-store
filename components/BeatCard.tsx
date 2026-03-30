@@ -195,7 +195,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         <div
           className="bg-[#0d0d0d] grid"
           style={{
-            padding: '16px 40px 16px 88px',
+            padding: '16px 40px 16px 100px',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '8px',
           }}
