@@ -14,10 +14,10 @@ interface Props {
 
 // User's 4 license tiers — prices from licensing page
 const LICENSE_OPTIONS = [
-  { id: 'standard' as const, name: 'MP3 Lease',      price: '$29.99',  desc: 'Non-exclusive · MP3'  },
-  { id: 'standard' as const, name: 'WAV Lease',       price: '$74.99',  desc: 'Non-exclusive · WAV'  },
-  { id: 'unlimited' as const,name: 'Stems License',   price: '$149.99', desc: 'Trackout stems'        },
-  { id: null,                 name: 'Exclusive',       price: '$500+',   desc: 'Full ownership'        },
+  { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3'  },
+  { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV'  },
+  { id: 'unlimited' as const,name: 'Stem License', price: '$99.99',  desc: 'Trackout stems'        },
+  { id: null,                 name: 'Exclusive',    price: '$299.99', desc: 'Full ownership'        },
 ]
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
@@ -139,7 +139,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               className="text-sm font-semibold whitespace-nowrap"
               style={{ fontFamily: 'var(--font-inter)' }}
             >
-              from $29.99
+              from $34.99
             </div>
 
             {inCart ? (
@@ -211,22 +211,22 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               >
                 <div
                   className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-inter)', lineHeight: '16.5px' }}
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
                 >
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px' }}>
+                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: '#f0ede8' }}>
                   {opt.price}
                 </div>
                 <div
                   className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-inter)', lineHeight: '15px' }}
+                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
                 >
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
-                  style={{ height: '32px', borderColor: '#333', color: '#888', letterSpacing: '1px', fontFamily: 'var(--font-inter)' }}
+                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Contact
                 </div>
@@ -241,22 +241,22 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               >
                 <div
                   className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-inter)', lineHeight: '16.5px' }}
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
                 >
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px' }}>
+                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: '#f0ede8' }}>
                   {opt.price}
                 </div>
                 <div
                   className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-inter)', lineHeight: '15px' }}
+                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
                 >
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
-                  style={{ height: '32px', borderColor: '#333', color: '#888', letterSpacing: '1px', fontFamily: 'var(--font-inter)' }}
+                  className="w-full border text-[10px] font-bold uppercase p-2 text-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Select
                 </div>
