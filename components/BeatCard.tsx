@@ -163,7 +163,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 className="text-white text-[10px] font-bold tracking-[1.1px] uppercase px-3 h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
-                style={{ background: '#e01f1f', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '11px', fontWeight: 700 }}
+                style={{ background: '#ffffff', color: '#000000', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '11px', fontWeight: 700 }}
               >
                 Add to Cart
               </button>
@@ -226,8 +226,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
+                  style={{ height: '32px', borderColor: '#ffffff', color: '#ffffff', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Contact
                 </div>
@@ -249,8 +249,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   {opt.desc}
                 </div>
                 <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
+                  style={{ height: '32px', borderColor: '#ffffff', color: '#ffffff', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
                   Select
                 </div>
