@@ -46,7 +46,7 @@ export default function CartDrawer({ open, onClose }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-[200] flex justify-end">
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }} onClick={onClose} />
       <div className="relative flex w-full max-w-sm flex-col border-l border-[#1a1a1a] animate-fade-in overflow-y-auto" style={{ background: '#111111' }}>
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
