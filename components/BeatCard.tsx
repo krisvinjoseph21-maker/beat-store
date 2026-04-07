@@ -73,12 +73,12 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         {isThisActive && (
           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/25" />
         )}
-        <div className="flex flex-row items-center gap-4 px-4 py-6 min-w-0 w-full" style={{ color: '#f0ede8' }}>
+        <div className="flex flex-row items-center w-full" style={{ color: '#f0ede8', gap: '16px', padding: '18px 40px' }}>
 
           {/* Track number */}
           <div
-            className="text-[10px] w-5 text-center shrink-0 select-none tabular-nums"
-            style={{ color: '#3a3a3a', fontFamily: 'var(--font-inter)' }}
+            className="text-center shrink-0 select-none tabular-nums"
+            style={{ width: '24px', fontSize: '12px', color: '#444', fontFamily: 'var(--font-inter)' }}
           >
             {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
           </div>
@@ -88,7 +88,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+            className="rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+            style={{ width: '40px', height: '40px' }}
           >
             <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px', color: '#aaa' }}>
               {isThisPlaying ? '⏸' : '▶'}
@@ -97,10 +98,10 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Track info */}
           <div className="flex-1 flex flex-col justify-center mr-8">
-            <div className="flex items-baseline gap-2 mb-1">
+            <div className="flex items-baseline gap-2" style={{ marginBottom: '4px' }}>
               <h3
-                className="text-xl font-extrabold leading-tight break-words"
-                style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8', wordBreak: 'break-word' }}
+                className="leading-tight break-words"
+                style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '15px', fontWeight: 600, color: '#f0ede8', wordBreak: 'break-word' }}
               >
                 {beat.title}
               </h3>
@@ -115,37 +116,37 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             </div>
             <div className="flex flex-wrap gap-2">
               {beat.subgenre && (
-                <span className="text-sm" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+                <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: '#555' }}>
                   {beat.subgenre.toLowerCase()}
                 </span>
               )}
-              <span className="text-sm" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: '#555' }}>
                 {beat.genre.toLowerCase()} type beat
               </span>
             </div>
           </div>
 
           {/* BPM / Key / Genre */}
-          <div className="hidden md:flex items-center gap-4 shrink-0">
+          <div className="hidden md:flex items-center shrink-0" style={{ gap: '20px' }}>
             <div className="text-center w-[32px]">
-              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.bpm}</div>
-              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>BPM</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: '#f0ede8', lineHeight: 1.2 }}>{beat.bpm}</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '2px' }}>BPM</div>
             </div>
             <div className="text-center w-[40px]">
-              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.key}</div>
-              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Key</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: '#f0ede8', lineHeight: 1.2 }}>{beat.key}</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '2px' }}>Key</div>
             </div>
             <div className="text-center" style={{ minWidth: '120px' }}>
-              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.genre}</div>
-              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Genre</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: '#f0ede8', lineHeight: 1.2 }}>{beat.genre}</div>
+              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '2px' }}>Genre</div>
             </div>
           </div>
 
           {/* Price + CTA + icons */}
           <div className="flex items-center gap-2 shrink-0 pr-6" onClick={(e) => e.stopPropagation()}>
             <div
-              className="text-[13px] font-bold whitespace-nowrap hidden sm:block"
-              style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
+              className="whitespace-nowrap hidden sm:block"
+              style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '14px', fontWeight: 600, color: '#f0ede8' }}
             >
               from $34.99
             </div>
@@ -162,7 +163,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 className="text-white text-[10px] font-bold tracking-[1.1px] uppercase px-3 h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
-                style={{ background: '#e01f1f', fontFamily: 'var(--font-montserrat)' }}
+                style={{ background: '#e01f1f', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '11px', fontWeight: 700 }}
               >
                 Add to Cart
               </button>
@@ -204,6 +205,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '8px',
           }}
+
         >
           {LICENSE_OPTIONS.map((opt, i) =>
             opt.id === null ? (
