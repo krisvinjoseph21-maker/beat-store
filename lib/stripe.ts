@@ -20,8 +20,8 @@ export const stripe = new Proxy({} as Stripe, {
 
 // License pricing matrix
 export const LICENSE_PRICES: Record<string, Record<number, number>> = {
-  standard: { 1: 75, 3: 150, 5: 225 },
-  unlimited: { 1: 150, 3: 300, 5: 450 },
+  standard: { 1: 50, 3: 100, 5: 200 },
+  unlimited: { 1: 100, 3: 200, 5: 400 },
 }
 
 export function getLicensePrice(

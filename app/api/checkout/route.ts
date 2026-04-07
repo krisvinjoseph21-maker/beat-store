@@ -15,8 +15,24 @@ export async function POST(req: NextRequest) {
       discountCode?: string
     }
 
-    if (!beatIds?.length) {
+    // Whitelist validation — never trust client-provided values
+    const VALID_LICENSE_TYPES: LicenseType[] = ['standard', 'unlimited']
+    const VALID_QTY_TIERS: QuantityTier[] = [1, 3, 5]
+
+    if (!beatIds?.length || !Array.isArray(beatIds)) {
       return Response.json({ error: 'No beats selected' }, { status: 400 })
+    }
+    if (beatIds.length > 20) {
+      return Response.json({ error: 'Too many beats' }, { status: 400 })
+    }
+    if (!beatIds.every((id) => typeof id === 'string' && id.length < 128)) {
+      return Response.json({ error: 'Invalid beat ID' }, { status: 400 })
+    }
+    if (!VALID_LICENSE_TYPES.includes(licenseType)) {
+      return Response.json({ error: 'Invalid license type' }, { status: 400 })
+    }
+    if (!VALID_QTY_TIERS.includes(quantityTier)) {
+      return Response.json({ error: 'Invalid quantity tier' }, { status: 400 })
     }
 
     // Fetch beat titles for line item description
