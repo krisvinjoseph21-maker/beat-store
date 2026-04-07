@@ -14,8 +14,7 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
-  const { items } = useCartStore()
-  const [cartOpen, setCartOpen]     = useState(false)
+  const { items, cartOpen, openCart, closeCart } = useCartStore()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled]     = useState(false)
 
@@ -65,7 +64,7 @@ export default function Navbar() {
             <NavAuthButton />
 
             <button
-              onClick={() => setCartOpen(true)}
+              onClick={() => openCart()}
               className="text-[12px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors"
               style={{ letterSpacing: '0.01em' }}
             >
@@ -88,7 +87,7 @@ export default function Navbar() {
           {/* Mobile controls */}
           <div className="flex lg:hidden items-center gap-4">
             <button
-              onClick={() => setCartOpen(true)}
+              onClick={() => openCart()}
               className="text-[11px] text-[#6e6e73]"
             >
               {items.length > 0 && (
@@ -134,7 +133,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartDrawer open={cartOpen} onClose={closeCart} />
     </>
   )
 }

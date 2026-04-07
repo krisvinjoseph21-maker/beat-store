@@ -29,6 +29,7 @@ interface CartStore {
   items: CartItem[]
   licenseType: LicenseType
   quantityTier: QuantityTier
+  cartOpen: boolean
   addBeat: (beat: Beat) => void
   removeBeat: (beatId: string) => void
   clearCart: () => void
@@ -36,11 +37,13 @@ interface CartStore {
   setQuantityTier: (tier: QuantityTier) => void
   isInCart: (beatId: string) => boolean
   total: () => number
+  openCart: () => void
+  closeCart: () => void
 }
 
 const PRICES: Record<LicenseType, Record<QuantityTier, number>> = {
-  standard: { 1: 75, 3: 150, 5: 225 },
-  unlimited: { 1: 150, 3: 300, 5: 450 },
+  standard: { 1: 50, 3: 100, 5: 200 },
+  unlimited: { 1: 100, 3: 200, 5: 400 },
 }
 
 export const useCartStore = create<CartStore>()(
@@ -49,6 +52,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       licenseType: 'standard',
       quantityTier: 1,
+      cartOpen: false,
 
       addBeat: (beat) => {
         const { items } = get()
@@ -72,8 +76,11 @@ export const useCartStore = create<CartStore>()(
         const { licenseType, quantityTier } = get()
         return PRICES[licenseType][quantityTier]
       },
+
+      openCart: () => set({ cartOpen: true }),
+      closeCart: () => set({ cartOpen: false }),
     }),
-    { name: 'prodkj-cart' }
+    { name: 'prodkj-cart', partialize: (s) => ({ items: s.items, licenseType: s.licenseType, quantityTier: s.quantityTier }) }
   )
 )
 

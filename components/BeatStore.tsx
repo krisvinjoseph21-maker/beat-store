@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import BeatCard from './BeatCard'
 import LicenseModal from './LicenseModal'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
@@ -67,11 +67,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const searchParams = useSearchParams()
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
   const [modalOpen, setModalOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const { licenseType, quantityTier, items } = useCartStore()
+  const { licenseType, quantityTier, items, openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
   const { setQueue } = usePlayerStore()
-  const router = useRouter()
 
   useEffect(() => {
     setQueue(initialBeats)
@@ -119,31 +117,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     return results
   }, [initialBeats, category, bpmRange, mood, sortBy, search, favoritesOnly, favoriteIds])
 
-  async function handleCheckout(discountCode?: string) {
-    if (items.length === 0) {
-      alert('Add some beats to your cart first!')
-      return
-    }
-    setLoading(true)
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          beatIds: items.map((i) => i.beat.id),
-          licenseType,
-          quantityTier,
-          discountCode: discountCode || undefined,
-        }),
-      })
-      const data = await res.json()
-      if (data.url) router.push(data.url)
-      else alert('Checkout failed. Please try again.')
-    } catch {
-      alert('Checkout failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+  function handleModalCheckout() {
+    setModalOpen(false)
+    openCart()
   }
 
   return (
@@ -261,10 +237,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       <LicenseModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onCheckout={(discountCode) => {
-          setModalOpen(false)
-          handleCheckout(discountCode)
-        }}
+        onCheckout={handleModalCheckout}
       />
     </div>
   )
