@@ -12,7 +12,6 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
-// User's 4 license tiers — prices from licensing page
 const LICENSE_OPTIONS = [
   { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3'  },
   { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV'  },
@@ -57,21 +56,18 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   return (
     <div className="w-full relative">
 
-      {/* ── Main row ──────────────────────────────────────────── */}
+      {/* ── Main row ──────────────────────────────────────── */}
       <div
         onClick={!inCart ? () => setLicenseOpen(o => !o) : undefined}
-        className={`bg-[#111111] transition-colors duration-200 ${!inCart ? 'cursor-pointer hover:bg-[#161616]' : ''}`}
-        style={{ borderLeft: `3px solid ${isThisActive ? 'rgba(255,255,255,0.25)' : 'transparent'}` }}
+        className={`bg-[#0a0a0a] transition-colors duration-150 ${!inCart ? 'cursor-pointer hover:bg-[#111]' : ''}`}
+        style={{
+          borderLeft: `2px solid ${isThisActive ? 'rgba(255,255,255,0.2)' : 'transparent'}`,
+        }}
       >
-        <div
-          className="flex flex-row items-center gap-5 px-6 py-[20px]"
-          style={{ color: '#f0ede8' }}
-        >
+        <div className="flex flex-row items-center gap-4 px-5 py-5" style={{ color: '#f5f5f7' }}>
+
           {/* Track number */}
-          <div
-            className="font-display text-xs w-6 text-center shrink-0 select-none"
-            style={{ color: '#444' }}
-          >
+          <div className="text-[11px] font-medium w-6 text-center shrink-0 select-none text-[#424245]">
             {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
           </div>
 
@@ -80,102 +76,81 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center shrink-0 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px' }}>
+            <span className="text-[11px]" style={{ marginLeft: isThisPlaying ? '0' : '1px' }}>
               {isThisPlaying ? '⏸' : '▶'}
             </span>
           </button>
 
           {/* Track info */}
           <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <h3
-              className="text-[15px] font-semibold truncate leading-none mb-1"
-              style={{ fontFamily: 'var(--font-inter)' }}
-            >
+            <h3 className="text-[14px] font-semibold truncate leading-none mb-1 text-[#f5f5f7]">
               {beat.title}
               {isNew && (
-                <span className="ml-2 text-[9px] font-black uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded" style={{ color: '#888' }}>
+                <span className="ml-2 text-[8px] font-bold uppercase tracking-wider bg-white/[0.08] px-1.5 py-0.5 rounded-full text-[#6e6e73]">
                   New
                 </span>
               )}
             </h3>
-            <div className="flex flex-wrap gap-[6px]">
+            <div className="flex flex-wrap gap-1.5">
               {beat.subgenre && (
-                <span
-                  className="text-[10px] tracking-[0.6px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
-                >
-                  {beat.subgenre}
-                </span>
+                <span className="text-[10px] text-[#424245]">{beat.subgenre}</span>
               )}
-              <span
-                className="text-[10px] tracking-[0.6px]"
-                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
-              >
-                {beat.genre} Type Beat
-              </span>
+              <span className="text-[10px] text-[#424245]">{beat.genre} Type Beat</span>
             </div>
           </div>
 
-          {/* Metadata — BPM / Key / Genre */}
+          {/* Metadata */}
           <div className="hidden md:flex items-center gap-6 shrink-0">
-            <div className="text-center w-[28px]">
-              <div className="text-[13px] font-medium leading-tight">{beat.bpm}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>BPM</div>
+            <div className="text-center w-[30px]">
+              <div className="text-[12px] font-medium text-[#f5f5f7]">{beat.bpm}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#424245]">BPM</div>
             </div>
             <div className="text-center w-[46px]">
-              <div className="text-[13px] font-medium leading-tight">{beat.key}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Key</div>
+              <div className="text-[12px] font-medium text-[#f5f5f7]">{beat.key}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#424245]">Key</div>
             </div>
-            <div className="text-center w-[85px]">
-              <div className="text-[13px] font-medium leading-tight truncate">{beat.subgenre ?? beat.genre}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Genre</div>
+            <div className="text-center w-[80px]">
+              <div className="text-[12px] font-medium text-[#f5f5f7] truncate">{beat.subgenre ?? beat.genre}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#424245]">Genre</div>
             </div>
           </div>
 
-          {/* Price + CTA + extras */}
-          <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
-            <div
-              className="text-sm font-semibold whitespace-nowrap"
-              style={{ fontFamily: 'var(--font-inter)' }}
-            >
+          {/* Price + CTA */}
+          <div className="flex items-center gap-2.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+            <div className="text-[13px] font-semibold text-[#f5f5f7] whitespace-nowrap hidden sm:block">
               from $34.99
             </div>
 
             {inCart ? (
               <button
                 disabled
-                className="flex items-center gap-1 h-[32.5px] px-4 bg-white/10 text-[11px] font-bold tracking-[1.1px] uppercase"
-                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+                className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-white/[0.06] text-[10px] font-semibold text-[#424245] uppercase tracking-wide cursor-default"
               >
-                <Check size={11} /> In Cart
+                <Check size={10} /> In Cart
               </button>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
-                className="bg-white text-black text-[11px] font-bold tracking-[1.1px] uppercase px-4 h-[32.5px] flex items-center justify-center whitespace-nowrap hover:bg-zinc-100 transition-all"
-                style={{ fontFamily: 'var(--font-inter)' }}
+                className="rounded-full bg-white text-black text-[10px] font-semibold uppercase tracking-wide px-3.5 h-8 flex items-center justify-center whitespace-nowrap hover:bg-[#e8e8ed] transition-all active:scale-95"
               >
                 Add to Cart
               </button>
             )}
 
-            {/* Favorite */}
             <button
               onClick={(e) => { e.stopPropagation(); toggleFavorite(beat.id) }}
-              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.06] transition-colors"
               aria-label={favorited ? 'Unfavorite' : 'Favorite'}
             >
               <Heart
-                size={13}
-                className={favorited ? 'text-red-500' : 'hover:text-red-400'}
-                style={{ color: favorited ? undefined : '#444' }}
+                size={12}
                 fill={favorited ? 'currentColor' : 'none'}
+                className={favorited ? 'text-red-500' : 'text-[#424245] hover:text-red-400'}
               />
             </button>
 
-            {/* Share */}
             <div className="hidden sm:block">
               <ShareButton beatId={beat.id} />
             </div>
@@ -183,82 +158,62 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         </div>
       </div>
 
-      {/* ── Progress bar ──────────────────────────────────────── */}
-      <div className="h-[2px] bg-[#1a1a1a] w-full relative">
+      {/* ── Progress bar ──────────────────────────────────── */}
+      <div className="h-px bg-white/[0.04] w-full relative">
         <div
-          className="absolute left-0 top-0 h-full bg-white/30 transition-all duration-100 ease-linear"
+          className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-100 ease-linear"
           style={{ width: `${progressPct}%` }}
         />
       </div>
 
-      {/* ── License drawer ────────────────────────────────────── */}
+      {/* ── License drawer ────────────────────────────────── */}
       {licenseOpen && !inCart && (
         <div
-          className="bg-[#0d0d0d] grid"
+          className="bg-[#050505] grid border-t border-white/[0.04]"
           style={{
-            padding: '16px 40px 16px 100px',
+            padding: '14px 24px 14px 88px',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '8px',
           }}
         >
           {LICENSE_OPTIONS.map((opt, i) =>
             opt.id === null ? (
-              /* Exclusive — link to contact */
               <Link
                 key={i}
                 href="/about"
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col p-[14px_16px] hover:border-[#2a2a2a] transition-colors"
-                style={{ height: '145px' }}
+                className="rounded-xl border border-white/[0.08] bg-[#0a0a0a] flex flex-col p-4 hover:border-white/[0.15] hover:bg-[#111] transition-all"
+                style={{ minHeight: '130px' }}
               >
-                <div
-                  className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
-                >
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e6e73] mb-2">
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: '#f0ede8' }}>
+                <div className="font-display text-[22px] text-[#f5f5f7] mb-1 leading-none">
                   {opt.price}
                 </div>
-                <div
-                  className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
-                >
+                <div className="text-[10px] text-[#424245] mb-auto leading-relaxed">
                   {opt.desc}
                 </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
+                <div className="mt-3 w-full rounded-full border border-white/[0.12] text-[10px] font-semibold text-[#6e6e73] flex items-center justify-center py-1.5 hover:bg-white hover:text-black hover:border-white transition-all">
                   Contact
                 </div>
               </Link>
             ) : (
-              /* Standard / Unlimited */
               <button
                 key={i}
                 onClick={() => handleSelectLicense(opt.id as 'standard' | 'unlimited')}
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col p-[14px_16px] text-left hover:border-[#2a2a2a] transition-colors"
-                style={{ height: '145px' }}
+                className="rounded-xl border border-white/[0.08] bg-[#0a0a0a] flex flex-col p-4 text-left hover:border-white/[0.15] hover:bg-[#111] transition-all"
+                style={{ minHeight: '130px' }}
               >
-                <div
-                  className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
-                >
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e6e73] mb-2">
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: '#f0ede8' }}>
+                <div className="font-display text-[22px] text-[#f5f5f7] mb-1 leading-none">
                   {opt.price}
                 </div>
-                <div
-                  className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
-                >
+                <div className="text-[10px] text-[#424245] mb-auto leading-relaxed">
                   {opt.desc}
                 </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
+                <div className="mt-3 w-full rounded-full bg-white text-black text-[10px] font-semibold flex items-center justify-center py-1.5 hover:bg-[#e8e8ed] transition-all">
                   Select
                 </div>
               </button>

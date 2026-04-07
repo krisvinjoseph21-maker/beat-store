@@ -187,7 +187,7 @@ export default function BottomPlayer() {
             ) : (
               <button
                 onClick={togglePlay}
-                disabled={!currentBeat?.preview_url && !currentBeat?.file_url}
+                disabled={!currentBeat?.preview_url}
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
