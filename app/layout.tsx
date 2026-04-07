@@ -32,6 +32,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'PRODKJBEATS — Premium Beats',
   description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: 'PRODKJBEATS',
     description: 'Premium beats for serious artists.',
