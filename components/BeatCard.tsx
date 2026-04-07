@@ -13,10 +13,10 @@ interface Props {
 }
 
 const LICENSE_OPTIONS = [
-  { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3'  },
-  { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV'  },
-  { id: 'unlimited' as const,name: 'Stem License', price: '$99.99',  desc: 'Trackout stems'        },
-  { id: null,                 name: 'Exclusive',    price: '$299.99', desc: 'Full ownership'        },
+  { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3' },
+  { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV' },
+  { id: 'unlimited' as const,name: 'Stem License', price: '$99.99',  desc: 'Trackout stems'       },
+  { id: null,                 name: 'Exclusive',    price: '$299.99', desc: 'Full ownership'       },
 ]
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
@@ -28,15 +28,15 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const [licenseOpen, setLicenseOpen] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
-  const favorited    = mounted && isFavorited(beat.id)
-  const isThisActive = currentBeat?.id === beat.id
-  const isThisPlaying= isThisActive && isPlaying
-  const inCart       = mounted && isInCart(beat.id)
-  const hasAudio     = !!(beat.preview_url ?? beat.file_url)
-  const isNew        = beat.created_at &&
+  const favorited     = mounted && isFavorited(beat.id)
+  const isThisActive  = currentBeat?.id === beat.id
+  const isThisPlaying = isThisActive && isPlaying
+  const inCart        = mounted && isInCart(beat.id)
+  const hasAudio      = !!(beat.preview_url ?? beat.file_url)
+  const isNew         = beat.created_at &&
     Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
 
-  const progressPct  = isThisActive && duration > 0
+  const progressPct = isThisActive && duration > 0
     ? Math.min((progress / duration) * 100, 100)
     : 0
 
@@ -54,20 +54,21 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   }
 
   return (
-    <div className="w-full relative">
+    <div className="w-full">
 
-      {/* ── Main row ──────────────────────────────────────── */}
+      {/* ── Main row ─────────────────────────────────────────── */}
       <div
         onClick={!inCart ? () => setLicenseOpen(o => !o) : undefined}
-        className={`bg-[#0a0a0a] transition-colors duration-150 ${!inCart ? 'cursor-pointer hover:bg-[#111]' : ''}`}
-        style={{
-          borderLeft: `2px solid ${isThisActive ? 'rgba(255,255,255,0.2)' : 'transparent'}`,
-        }}
+        className={`bg-[#111111] transition-colors duration-150 border-b border-[#1a1a1a] ${!inCart ? 'cursor-pointer hover:bg-[#161616]' : ''}`}
+        style={{ borderLeft: `3px solid ${isThisActive ? 'rgba(255,255,255,0.25)' : 'transparent'}` }}
       >
-        <div className="flex flex-row items-center gap-4 px-5 py-5" style={{ color: '#f5f5f7' }}>
+        <div className="flex flex-row items-center gap-5 px-6 py-[20px]" style={{ color: '#f0ede8' }}>
 
           {/* Track number */}
-          <div className="text-[11px] font-medium w-6 text-center shrink-0 select-none text-[#424245]">
+          <div
+            className="font-display text-xs w-6 text-center shrink-0 select-none"
+            style={{ color: '#444' }}
+          >
             {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
           </div>
 
@@ -76,64 +77,85 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center shrink-0 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <span className="text-[11px]" style={{ marginLeft: isThisPlaying ? '0' : '1px' }}>
+            <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px' }}>
               {isThisPlaying ? '⏸' : '▶'}
             </span>
           </button>
 
           {/* Track info */}
           <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <h3 className="text-[14px] font-semibold truncate leading-none mb-1 text-[#f5f5f7]">
+            <h3
+              className="text-[15px] font-semibold truncate leading-none mb-[5px]"
+              style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
+            >
               {beat.title}
               {isNew && (
-                <span className="ml-2 text-[8px] font-bold uppercase tracking-wider bg-white/[0.08] px-1.5 py-0.5 rounded-full text-[#6e6e73]">
+                <span
+                  className="ml-2 text-[9px] font-bold uppercase tracking-wider bg-white/10 px-1.5 py-0.5"
+                  style={{ color: '#888' }}
+                >
                   New
                 </span>
               )}
             </h3>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-[6px]">
               {beat.subgenre && (
-                <span className="text-[10px] text-[#424245]">{beat.subgenre}</span>
+                <span
+                  className="text-[10px] tracking-[0.6px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+                >
+                  {beat.subgenre}
+                </span>
               )}
-              <span className="text-[10px] text-[#424245]">{beat.genre} Type Beat</span>
+              <span
+                className="text-[10px] tracking-[0.6px]"
+                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+              >
+                {beat.genre} Type Beat
+              </span>
             </div>
           </div>
 
-          {/* Metadata */}
+          {/* BPM / Key / Genre */}
           <div className="hidden md:flex items-center gap-6 shrink-0">
-            <div className="text-center w-[30px]">
-              <div className="text-[12px] font-medium text-[#f5f5f7]">{beat.bpm}</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#424245]">BPM</div>
+            <div className="text-center w-[28px]">
+              <div className="text-[13px] font-medium leading-tight" style={{ color: '#f0ede8' }}>{beat.bpm}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>BPM</div>
             </div>
             <div className="text-center w-[46px]">
-              <div className="text-[12px] font-medium text-[#f5f5f7]">{beat.key}</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#424245]">Key</div>
+              <div className="text-[13px] font-medium leading-tight" style={{ color: '#f0ede8' }}>{beat.key}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Key</div>
             </div>
-            <div className="text-center w-[80px]">
-              <div className="text-[12px] font-medium text-[#f5f5f7] truncate">{beat.subgenre ?? beat.genre}</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#424245]">Genre</div>
+            <div className="text-center w-[85px]">
+              <div className="text-[13px] font-medium leading-tight truncate" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
+              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Genre</div>
             </div>
           </div>
 
           {/* Price + CTA */}
-          <div className="flex items-center gap-2.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-            <div className="text-[13px] font-semibold text-[#f5f5f7] whitespace-nowrap hidden sm:block">
+          <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="text-sm font-semibold whitespace-nowrap hidden sm:block"
+              style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
+            >
               from $34.99
             </div>
 
             {inCart ? (
               <button
                 disabled
-                className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-white/[0.06] text-[10px] font-semibold text-[#424245] uppercase tracking-wide cursor-default"
+                className="flex items-center gap-1 h-[32px] px-4 text-[11px] font-bold tracking-[1.1px] uppercase"
+                style={{ color: '#555', fontFamily: 'var(--font-montserrat)', background: 'rgba(255,255,255,0.06)' }}
               >
-                <Check size={10} /> In Cart
+                <Check size={11} /> In Cart
               </button>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
-                className="rounded-full bg-white text-black text-[10px] font-semibold uppercase tracking-wide px-3.5 h-8 flex items-center justify-center whitespace-nowrap hover:bg-[#e8e8ed] transition-all active:scale-95"
+                className="text-white text-[11px] font-bold tracking-[1.1px] uppercase px-4 h-[32px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
+                style={{ background: '#e01f1f', fontFamily: 'var(--font-montserrat)' }}
               >
                 Add to Cart
               </button>
@@ -141,13 +163,13 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
             <button
               onClick={(e) => { e.stopPropagation(); toggleFavorite(beat.id) }}
-              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.06] transition-colors"
+              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
               aria-label={favorited ? 'Unfavorite' : 'Favorite'}
             >
               <Heart
-                size={12}
+                size={13}
                 fill={favorited ? 'currentColor' : 'none'}
-                className={favorited ? 'text-red-500' : 'text-[#424245] hover:text-red-400'}
+                className={favorited ? 'text-red-500' : 'text-[#444] hover:text-red-400'}
               />
             </button>
 
@@ -156,22 +178,22 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             </div>
           </div>
         </div>
+
+        {/* Progress bar */}
+        <div className="h-[2px] bg-[#1a1a1a] w-full relative">
+          <div
+            className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
+            style={{ width: `${progressPct}%`, background: 'rgba(255,255,255,0.3)' }}
+          />
+        </div>
       </div>
 
-      {/* ── Progress bar ──────────────────────────────────── */}
-      <div className="h-px bg-white/[0.04] w-full relative">
-        <div
-          className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-100 ease-linear"
-          style={{ width: `${progressPct}%` }}
-        />
-      </div>
-
-      {/* ── License drawer ────────────────────────────────── */}
+      {/* ── License drawer ───────────────────────────────────── */}
       {licenseOpen && !inCart && (
         <div
-          className="bg-[#050505] grid border-t border-white/[0.04]"
+          className="grid bg-[#0d0d0d] border-b border-[#1a1a1a]"
           style={{
-            padding: '14px 24px 14px 88px',
+            padding: '16px 40px 16px 100px',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '8px',
           }}
@@ -181,19 +203,31 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <Link
                 key={i}
                 href="/about"
-                className="rounded-xl border border-white/[0.08] bg-[#0a0a0a] flex flex-col p-4 hover:border-white/[0.15] hover:bg-[#111] transition-all"
-                style={{ minHeight: '130px' }}
+                className="bg-[#111] border border-[#1a1a1a] flex flex-col hover:border-[#2a2a2a] transition-colors"
+                style={{ height: '145px', padding: '14px 16px' }}
               >
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e6e73] mb-2">
+                <div
+                  className="text-[11px] font-semibold uppercase mb-[6px]"
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
+                >
                   {opt.name}
                 </div>
-                <div className="font-display text-[22px] text-[#f5f5f7] mb-1 leading-none">
+                <div
+                  className="font-display text-[20px] mb-[4px]"
+                  style={{ lineHeight: '30px', color: '#f0ede8' }}
+                >
                   {opt.price}
                 </div>
-                <div className="text-[10px] text-[#424245] mb-auto leading-relaxed">
+                <div
+                  className="text-[10px] mb-[12px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
+                >
                   {opt.desc}
                 </div>
-                <div className="mt-3 w-full rounded-full border border-white/[0.12] text-[10px] font-semibold text-[#6e6e73] flex items-center justify-center py-1.5 hover:bg-white hover:text-black hover:border-white transition-all">
+                <div
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
+                >
                   Contact
                 </div>
               </Link>
@@ -201,19 +235,31 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 key={i}
                 onClick={() => handleSelectLicense(opt.id as 'standard' | 'unlimited')}
-                className="rounded-xl border border-white/[0.08] bg-[#0a0a0a] flex flex-col p-4 text-left hover:border-white/[0.15] hover:bg-[#111] transition-all"
-                style={{ minHeight: '130px' }}
+                className="bg-[#111] border border-[#1a1a1a] flex flex-col text-left hover:border-[#2a2a2a] transition-colors"
+                style={{ height: '145px', padding: '14px 16px' }}
               >
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e6e73] mb-2">
+                <div
+                  className="text-[11px] font-semibold uppercase mb-[6px]"
+                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
+                >
                   {opt.name}
                 </div>
-                <div className="font-display text-[22px] text-[#f5f5f7] mb-1 leading-none">
+                <div
+                  className="font-display text-[20px] mb-[4px]"
+                  style={{ lineHeight: '30px', color: '#f0ede8' }}
+                >
                   {opt.price}
                 </div>
-                <div className="text-[10px] text-[#424245] mb-auto leading-relaxed">
+                <div
+                  className="text-[10px] mb-[12px]"
+                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
+                >
                   {opt.desc}
                 </div>
-                <div className="mt-3 w-full rounded-full bg-white text-black text-[10px] font-semibold flex items-center justify-center py-1.5 hover:bg-[#e8e8ed] transition-all">
+                <div
+                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
+                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
+                >
                   Select
                 </div>
               </button>

@@ -209,9 +209,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           No beats found. Try a different filter.
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
+        <div className="border border-[#1a1a1a]">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-3 px-5 py-3 border-b border-white/[0.06] bg-[#050505]">
+          <div className="hidden sm:flex items-center gap-3 px-6 py-3 border-b border-[#1a1a1a] bg-[#0d0d0d]">
             <span className="w-6 flex-shrink-0" />
             <span className="w-9 flex-shrink-0" />
             <span className="flex-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#424245]">
