@@ -43,15 +43,16 @@ function Select({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none rounded-full border border-white/[0.08] bg-[#0a0a0a] py-2 pl-3.5 pr-8 text-[11px] font-medium text-[#6e6e73] outline-none focus:border-white/20 transition-colors cursor-pointer hover:border-white/15 hover:text-[#f5f5f7]"
+        className="w-full appearance-none border border-[#2a2a2a] bg-[#111] py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-[#3a3a3a]"
+        style={{ color: '#888', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
-          <option key={o.value} value={o.value} className="bg-[#1d1d1f]">
+          <option key={o.value} value={o.value} className="bg-[#111]">
             {o.label}
           </option>
         ))}
       </select>
-      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#424245]" />
+      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#555]" />
     </div>
   )
 }
@@ -149,22 +150,35 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-10">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-3">Browse</p>
+        <p
+          className="text-[11px] font-bold uppercase mb-3"
+          style={{ letterSpacing: '0.28em', color: '#555', fontFamily: 'var(--font-montserrat)' }}
+        >
+          Browse
+        </p>
         <div className="flex items-end justify-between">
-          <h1 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">Beat Store.</h1>
-          <p className="text-[12px] text-[#424245] mb-1">{initialBeats.length} beats</p>
+          <h1
+            className="font-display uppercase leading-none"
+            style={{ fontSize: 'clamp(52px, 8vw, 96px)', color: '#f0ede8' }}
+          >
+            Beat Store.
+          </h1>
+          <p className="text-[12px] mb-1" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+            {initialBeats.length} beats
+          </p>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#424245]" />
+        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#555' }} />
         <input
           type="text"
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-full border border-white/[0.08] bg-[#0a0a0a] py-2.5 pl-10 pr-4 text-[13px] text-[#f5f5f7] placeholder-[#424245] outline-none focus:border-white/20 transition-colors"
+          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors"
+          style={{ color: '#f0ede8', fontFamily: 'var(--font-inter)' }}
         />
       </div>
 
@@ -192,11 +206,13 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         />
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
-          className={`flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0 ${
-            favoritesOnly
-              ? 'border-red-500/30 bg-red-500/10 text-red-400'
-              : 'border-white/[0.08] text-[#6e6e73] hover:border-white/20 hover:text-[#f5f5f7]'
-          }`}
+          className="flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0"
+          style={{
+            borderColor: favoritesOnly ? '#e01f1f' : '#2a2a2a',
+            background: favoritesOnly ? 'rgba(224,31,31,0.1)' : '#111',
+            color: favoritesOnly ? '#e01f1f' : '#888',
+            fontFamily: 'var(--font-montserrat)',
+          }}
         >
           <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} />
           Favorites
@@ -205,24 +221,31 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
       {/* Beat list */}
       {filtered.length === 0 ? (
-        <div className="flex h-40 items-center justify-center rounded-2xl border border-white/[0.06] text-[#6e6e73] text-[13px]">
+        <div
+          className="flex h-40 items-center justify-center border border-[#1a1a1a] text-[13px]"
+          style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+        >
           No beats found. Try a different filter.
         </div>
       ) : (
         <div className="border border-[#1a1a1a]">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-3 px-6 py-3 border-b border-[#1a1a1a] bg-[#0d0d0d]">
+          <div className="hidden sm:flex items-center gap-5 px-6 py-3 border-b border-[#1a1a1a] bg-[#0d0d0d]">
             <span className="w-6 flex-shrink-0" />
-            <span className="w-9 flex-shrink-0" />
-            <span className="flex-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#424245]">
+            <span className="w-10 flex-shrink-0" />
+            <span
+              className="flex-1 text-[10px] font-bold uppercase"
+              style={{ letterSpacing: '0.18em', color: '#444', fontFamily: 'var(--font-montserrat)' }}
+            >
               Title
             </span>
-            <span className="hidden md:block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#424245] w-20 text-center">
+            <span
+              className="hidden md:block text-[10px] font-bold uppercase text-center"
+              style={{ letterSpacing: '0.18em', color: '#444', fontFamily: 'var(--font-montserrat)', width: '200px' }}
+            >
               Genre
             </span>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#424245] w-16 text-right pr-2">
-              &nbsp;
-            </span>
+            <span style={{ width: '160px' }} />
           </div>
           {filtered.map((beat, i) => (
             <BeatCard
