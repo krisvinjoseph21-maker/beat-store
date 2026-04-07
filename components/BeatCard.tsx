@@ -73,7 +73,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         {isThisActive && (
           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/25" />
         )}
-        <div className="flex flex-row items-center gap-4 px-4 py-[13px] min-w-0 w-full" style={{ color: '#f0ede8' }}>
+        <div className="flex flex-row items-center gap-4 px-4 py-6 min-w-0 w-full" style={{ color: '#f0ede8' }}>
 
           {/* Track number */}
           <div
@@ -88,18 +88,18 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="w-6 h-6 flex items-center justify-center shrink-0 hover:opacity-70 transition-opacity disabled:opacity-25 disabled:cursor-not-allowed"
+            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
           >
-            <span className="text-[10px]" style={{ marginLeft: isThisPlaying ? '0' : '1px', color: '#888' }}>
+            <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px', color: '#aaa' }}>
               {isThisPlaying ? '⏸' : '▶'}
             </span>
           </button>
 
           {/* Track info */}
-          <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <div className="flex items-baseline gap-2 mb-[3px]">
+          <div className="flex-1 min-w-0 flex flex-col justify-center mr-8">
+            <div className="flex items-baseline gap-2 mb-1">
               <h3
-                className="text-[14px] font-extrabold truncate leading-none"
+                className="text-xl font-extrabold truncate leading-none"
                 style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
               >
                 {beat.title}
@@ -113,13 +113,13 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 </span>
               )}
             </div>
-            <div className="flex flex-wrap gap-[5px]">
+            <div className="flex flex-wrap gap-2">
               {beat.subgenre && (
-                <span className="text-[10px]" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+                <span className="text-sm" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
                   {beat.subgenre.toLowerCase()}
                 </span>
               )}
-              <span className="text-[10px]" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+              <span className="text-sm" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
                 {beat.genre.toLowerCase()} type beat
               </span>
             </div>
