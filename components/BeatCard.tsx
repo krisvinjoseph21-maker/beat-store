@@ -96,11 +96,11 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </button>
 
           {/* Track info */}
-          <div className="flex-1 min-w-0 flex flex-col justify-center mr-8">
+          <div className="flex-1 flex flex-col justify-center mr-8">
             <div className="flex items-baseline gap-2 mb-1">
               <h3
-                className="text-xl font-extrabold leading-tight"
-                style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
+                className="text-xl font-extrabold leading-tight break-words"
+                style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8', wordBreak: 'break-word' }}
               >
                 {beat.title}
               </h3>
