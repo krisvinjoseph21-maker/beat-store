@@ -34,7 +34,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const inCart        = mounted && isInCart(beat.id)
   const hasAudio      = !!(beat.preview_url ?? beat.file_url)
   const isNew         = beat.created_at &&
-    Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+    new Date(beat.created_at).getTime() > new Date('2026-04-07').getTime()
 
   const progressPct = isThisActive && duration > 0
     ? Math.min((progress / duration) * 100, 100)
@@ -59,85 +59,84 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
       {/* ── Main row ─────────────────────────────────────────── */}
       <div
         onClick={!inCart ? () => setLicenseOpen(o => !o) : undefined}
-        className={`bg-[#111111] transition-colors duration-150 border-b border-[#1a1a1a] ${!inCart ? 'cursor-pointer hover:bg-[#161616]' : ''}`}
-        style={{ borderLeft: `3px solid ${isThisActive ? 'rgba(255,255,255,0.25)' : 'transparent'}` }}
+        className={`bg-black transition-colors duration-150 border-b border-[#1a1a1a] relative ${!inCart ? 'cursor-pointer hover:bg-[#0d0d0d]' : ''}`}
       >
-        <div className="flex flex-row items-center gap-5 px-6 py-[20px]" style={{ color: '#f0ede8' }}>
+        {/* Active indicator — absolute so it doesn't shift row content */}
+        {isThisActive && (
+          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/25" />
+        )}
+        <div className="flex flex-row items-center gap-4 px-6 py-[13px]" style={{ color: '#f0ede8' }}>
 
           {/* Track number */}
           <div
-            className="font-display text-xs w-6 text-center shrink-0 select-none"
-            style={{ color: '#444' }}
+            className="text-[10px] w-5 text-center shrink-0 select-none tabular-nums"
+            style={{ color: '#3a3a3a', fontFamily: 'var(--font-inter)' }}
           >
             {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
           </div>
 
-          {/* Play button */}
+          {/* Play button — bare icon, no circle */}
           <button
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-6 h-6 flex items-center justify-center shrink-0 hover:opacity-70 transition-opacity disabled:opacity-25 disabled:cursor-not-allowed"
           >
-            <span className="text-xs" style={{ marginLeft: isThisPlaying ? '0' : '2px' }}>
+            <span className="text-[10px]" style={{ marginLeft: isThisPlaying ? '0' : '1px', color: '#888' }}>
               {isThisPlaying ? '⏸' : '▶'}
             </span>
           </button>
 
           {/* Track info */}
           <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <h3
-              className="text-[15px] font-semibold truncate leading-none mb-[5px]"
-              style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
-            >
-              {beat.title}
+            <div className="flex items-baseline gap-2 mb-[3px]">
+              <h3
+                className="text-[14px] font-extrabold truncate leading-none"
+                style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
+              >
+                {beat.title}
+              </h3>
               {isNew && (
                 <span
-                  className="ml-2 text-[9px] font-bold uppercase tracking-wider bg-white/10 px-1.5 py-0.5"
-                  style={{ color: '#888' }}
+                  className="text-[9px] font-bold uppercase tracking-wider shrink-0"
+                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)' }}
                 >
-                  New
+                  new
                 </span>
               )}
-            </h3>
-            <div className="flex flex-wrap gap-[6px]">
+            </div>
+            <div className="flex flex-wrap gap-[5px]">
               {beat.subgenre && (
-                <span
-                  className="text-[10px] tracking-[0.6px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
-                >
-                  {beat.subgenre}
+                <span className="text-[10px]" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+                  {beat.subgenre.toLowerCase()}
                 </span>
               )}
-              <span
-                className="text-[10px] tracking-[0.6px]"
-                style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
-              >
-                {beat.genre} Type Beat
+              <span className="text-[10px]" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+                {beat.genre.toLowerCase()} type beat
               </span>
             </div>
           </div>
 
           {/* BPM / Key / Genre */}
-          <div className="hidden md:flex items-center gap-6 shrink-0">
-            <div className="text-center w-[28px]">
-              <div className="text-[13px] font-medium leading-tight" style={{ color: '#f0ede8' }}>{beat.bpm}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>BPM</div>
+          <div className="hidden md:flex items-center gap-4 shrink-0">
+            <div className="text-center w-[32px]">
+              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.bpm}</div>
+              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>BPM</div>
             </div>
-            <div className="text-center w-[46px]">
-              <div className="text-[13px] font-medium leading-tight" style={{ color: '#f0ede8' }}>{beat.key}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Key</div>
+            <div className="text-center w-[40px]">
+              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.key}</div>
+              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Key</div>
             </div>
-            <div className="text-center w-[85px]">
-              <div className="text-[13px] font-medium leading-tight truncate" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
-              <div className="text-[10px] tracking-wider uppercase leading-tight" style={{ color: '#555' }}>Genre</div>
+            <div className="text-center w-[75px]">
+              <div className="text-[12px] font-semibold leading-tight truncate" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
+              <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Genre</div>
             </div>
           </div>
 
-          {/* Price + CTA */}
-          <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
+          {/* Price + CTA + icons */}
+          <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
             <div
-              className="text-sm font-semibold whitespace-nowrap hidden sm:block"
+              className="text-[13px] font-bold whitespace-nowrap hidden sm:block"
               style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
             >
               from $34.99
@@ -146,15 +145,15 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             {inCart ? (
               <button
                 disabled
-                className="flex items-center gap-1 h-[32px] px-4 text-[11px] font-bold tracking-[1.1px] uppercase"
+                className="flex items-center gap-1 h-[30px] px-3 text-[10px] font-bold tracking-[1.1px] uppercase"
                 style={{ color: '#555', fontFamily: 'var(--font-montserrat)', background: 'rgba(255,255,255,0.06)' }}
               >
-                <Check size={11} /> In Cart
+                <Check size={10} /> In Cart
               </button>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
-                className="text-white text-[11px] font-bold tracking-[1.1px] uppercase px-4 h-[32px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
+                className="text-white text-[10px] font-bold tracking-[1.1px] uppercase px-3 h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
                 style={{ background: '#e01f1f', fontFamily: 'var(--font-montserrat)' }}
               >
                 Add to Cart
@@ -163,17 +162,17 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
             <button
               onClick={(e) => { e.stopPropagation(); toggleFavorite(beat.id) }}
-              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+              className="flex h-7 w-7 items-center justify-center hover:opacity-70 transition-opacity"
               aria-label={favorited ? 'Unfavorite' : 'Favorite'}
             >
               <Heart
-                size={13}
+                size={12}
                 fill={favorited ? 'currentColor' : 'none'}
-                className={favorited ? 'text-red-500' : 'text-[#444] hover:text-red-400'}
+                className={favorited ? 'text-red-500' : 'text-[#444]'}
               />
             </button>
 
-            <div className="hidden sm:block">
+            <div>
               <ShareButton beatId={beat.id} />
             </div>
           </div>

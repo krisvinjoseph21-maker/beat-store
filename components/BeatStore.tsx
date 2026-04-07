@@ -147,7 +147,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-12">
+    <div className="w-full px-6 py-12">
       {/* Header */}
       <div className="mb-10">
         <p
@@ -230,7 +230,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       ) : (
         <div className="border border-[#1a1a1a]">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-5 px-6 py-3 border-b border-[#1a1a1a] bg-[#0d0d0d]">
+          <div className="hidden sm:flex items-center gap-5 px-6 py-3 border-b border-[#1a1a1a] bg-black">
             <span className="w-6 flex-shrink-0" />
             <span className="w-10 flex-shrink-0" />
             <span
