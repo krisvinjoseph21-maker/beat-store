@@ -252,7 +252,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
               key={beat.id}
               beat={beat}
               index={i + 1}
-              onBuyClick={() => setModalOpen(true)}
+              onBuyClick={(_beat) => setModalOpen(true)}
             />
           ))}
         </div>

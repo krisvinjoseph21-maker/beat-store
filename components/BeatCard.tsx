@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Check, Heart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import ShareButton from './ShareButton'
-import Link from 'next/link'
 
 interface Props {
   beat: Beat
@@ -12,20 +11,12 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
-const LICENSE_OPTIONS = [
-  { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3' },
-  { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV' },
-  { id: 'unlimited' as const,name: 'Stem License', price: '$99.99',  desc: 'Trackout stems'       },
-  { id: null,                 name: 'Exclusive',    price: '$299.99', desc: 'Full ownership'       },
-]
-
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const { currentBeat, isPlaying, progress, duration, setCurrentBeat, togglePlay, setPlaying } =
     usePlayerStore()
-  const { isInCart, addBeat, setLicenseType } = useCartStore()
+  const { isInCart, addBeat } = useCartStore()
   const { toggle: toggleFavorite, isFavorited } = useFavoritesStore()
   const [mounted, setMounted] = useState(false)
-  const [licenseOpen, setLicenseOpen] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
   const favorited     = mounted && isFavorited(beat.id)
@@ -46,10 +37,9 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     else { setCurrentBeat(beat); setPlaying(true) }
   }
 
-  function handleSelectLicense(id: 'standard' | 'unlimited') {
-    setLicenseType(id)
+  function handleAddToCart(e: React.MouseEvent) {
+    e.stopPropagation()
     addBeat(beat)
-    setLicenseOpen(false)
     onBuyClick(beat)
   }
 
@@ -57,11 +47,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     <div className="w-full">
 
       {/* ── Main row ─────────────────────────────────────────── */}
-      <div
-        onClick={!inCart ? () => setLicenseOpen(o => !o) : undefined}
-        className={`bg-black transition-colors duration-150 border-b border-[#1a1a1a] relative ${!inCart ? 'cursor-pointer hover:bg-[#0d0d0d]' : ''}`}
-      >
-        {/* Active indicator — absolute so it doesn't shift row content */}
+      <div className="bg-black transition-colors duration-150 border-b border-[#1a1a1a] relative hover:bg-[#0d0d0d] cursor-default">
         {isThisActive && (
           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/25" />
         )}
@@ -75,7 +61,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             {isThisPlaying ? '♪' : String(index).padStart(2, '0')}
           </div>
 
-          {/* Play button — bare icon, no circle */}
+          {/* Play button */}
           <button
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
@@ -144,15 +130,15 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
             {inCart ? (
               <button
-                disabled
-                className="flex items-center gap-1 h-[30px] px-3 text-[10px] font-bold tracking-[1.1px] uppercase"
-                style={{ color: '#555', fontFamily: 'var(--font-montserrat)', background: 'rgba(255,255,255,0.06)' }}
+                onClick={handleAddToCart}
+                className="flex items-center gap-1 h-[30px] px-3 text-[10px] font-bold tracking-[1.1px] uppercase transition-all hover:opacity-80"
+                style={{ color: '#f0ede8', fontFamily: 'var(--font-montserrat)', background: 'rgba(255,255,255,0.1)' }}
               >
                 <Check size={10} /> In Cart
               </button>
             ) : (
               <button
-                onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
+                onClick={handleAddToCart}
                 className="text-white text-[10px] font-bold tracking-[1.1px] uppercase px-3 h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
                 style={{ background: '#e01f1f', fontFamily: 'var(--font-montserrat)' }}
               >
@@ -186,86 +172,6 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           />
         </div>
       </div>
-
-      {/* ── License drawer ───────────────────────────────────── */}
-      {licenseOpen && !inCart && (
-        <div
-          className="grid bg-[#0d0d0d] border-b border-[#1a1a1a]"
-          style={{
-            padding: '16px 40px 16px 100px',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '8px',
-          }}
-        >
-          {LICENSE_OPTIONS.map((opt, i) =>
-            opt.id === null ? (
-              <Link
-                key={i}
-                href="/about"
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col hover:border-[#2a2a2a] transition-colors"
-                style={{ height: '145px', padding: '14px 16px' }}
-              >
-                <div
-                  className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
-                >
-                  {opt.name}
-                </div>
-                <div
-                  className="font-display text-[20px] mb-[4px]"
-                  style={{ lineHeight: '30px', color: '#f0ede8' }}
-                >
-                  {opt.price}
-                </div>
-                <div
-                  className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
-                >
-                  {opt.desc}
-                </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
-                  Contact
-                </div>
-              </Link>
-            ) : (
-              <button
-                key={i}
-                onClick={() => handleSelectLicense(opt.id as 'standard' | 'unlimited')}
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col text-left hover:border-[#2a2a2a] transition-colors"
-                style={{ height: '145px', padding: '14px 16px' }}
-              >
-                <div
-                  className="text-[11px] font-semibold uppercase mb-[6px]"
-                  style={{ letterSpacing: '1.1px', color: '#888', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}
-                >
-                  {opt.name}
-                </div>
-                <div
-                  className="font-display text-[20px] mb-[4px]"
-                  style={{ lineHeight: '30px', color: '#f0ede8' }}
-                >
-                  {opt.price}
-                </div>
-                <div
-                  className="text-[10px] mb-[12px]"
-                  style={{ color: '#555', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}
-                >
-                  {opt.desc}
-                </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center transition-colors duration-200 hover:bg-[#e01f1f] hover:text-white hover:border-[#e01f1f] mt-auto"
-                  style={{ height: '32px', borderColor: '#e01f1f', color: '#e01f1f', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
-                  Select
-                </div>
-              </button>
-            )
-          )}
-        </div>
-      )}
     </div>
   )
 }
