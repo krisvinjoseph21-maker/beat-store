@@ -34,7 +34,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const inCart        = mounted && isInCart(beat.id)
   const hasAudio      = !!(beat.preview_url ?? beat.file_url)
   const isNew         = beat.created_at &&
-    new Date(beat.created_at).getTime() > new Date('2026-04-07').getTime()
+    new Date(beat.created_at).getTime() > new Date('2026-04-08').getTime()
 
   const progressPct = isThisActive && duration > 0
     ? Math.min((progress / duration) * 100, 100)
@@ -127,14 +127,14 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.key}</div>
               <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Key</div>
             </div>
-            <div className="text-center w-[75px]">
-              <div className="text-[12px] font-semibold leading-tight truncate" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
+            <div className="text-center" style={{ minWidth: '120px' }}>
+              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
               <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Genre</div>
             </div>
           </div>
 
           {/* Price + CTA + icons */}
-          <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-2 shrink-0 pr-4" onClick={(e) => e.stopPropagation()}>
             <div
               className="text-[13px] font-bold whitespace-nowrap hidden sm:block"
               style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
