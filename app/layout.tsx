@@ -33,12 +33,9 @@ export const metadata: Metadata = {
   title: 'PRODKJBEATS — Premium Beats',
   description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.png', type: 'image/png' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+    shortcut: '/android-chrome-512x512.png',
+    apple: '/android-chrome-512x512.png',
   },
   openGraph: {
     title: 'PRODKJBEATS',
