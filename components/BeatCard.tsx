@@ -99,7 +99,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           <div className="flex-1 min-w-0 flex flex-col justify-center mr-8">
             <div className="flex items-baseline gap-2 mb-1">
               <h3
-                className="text-xl font-extrabold truncate leading-none"
+                className="text-xl font-extrabold leading-tight"
                 style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
               >
                 {beat.title}
@@ -136,13 +136,13 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Key</div>
             </div>
             <div className="text-center" style={{ minWidth: '120px' }}>
-              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.subgenre ?? beat.genre}</div>
+              <div className="text-[12px] font-semibold leading-tight" style={{ color: '#f0ede8' }}>{beat.genre}</div>
               <div className="text-[8px] tracking-widest uppercase leading-tight mt-[2px]" style={{ color: '#444' }}>Genre</div>
             </div>
           </div>
 
           {/* Price + CTA + icons */}
-          <div className="flex items-center gap-2 shrink-0 pr-4" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-2 shrink-0 pr-6" onClick={(e) => e.stopPropagation()}>
             <div
               className="text-[13px] font-bold whitespace-nowrap hidden sm:block"
               style={{ fontFamily: 'var(--font-inter)', color: '#f0ede8' }}
