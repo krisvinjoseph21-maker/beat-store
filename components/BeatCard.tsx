@@ -65,7 +65,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         {isThisActive && (
           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/25" />
         )}
-        <div className="flex flex-row items-center gap-4 px-6 py-[13px]" style={{ color: '#f0ede8' }}>
+        <div className="flex flex-row items-center gap-4 px-6 py-[13px] min-w-0 w-full" style={{ color: '#f0ede8' }}>
 
           {/* Track number */}
           <div
