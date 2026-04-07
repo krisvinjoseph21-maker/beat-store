@@ -123,14 +123,14 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden px-6 py-12">
+    <div className="w-full max-w-full overflow-x-hidden px-0 py-12">
       {/* Header */}
       <div className="mb-10">
         <p
           className="text-[11px] font-bold uppercase mb-3"
           style={{ letterSpacing: '0.28em', color: '#555', fontFamily: 'var(--font-montserrat)' }}
         >
-          Browse
+          Full Catalog
         </p>
         <div className="flex items-end justify-between">
           <h1
