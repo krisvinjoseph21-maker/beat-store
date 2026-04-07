@@ -8,39 +8,39 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
-      <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+    <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-16">
+      <div className="mb-12">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-3">
           The Producer
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">About</h1>
+        <h1 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">About.</h1>
       </div>
 
       {/* Bio */}
-      <div className="rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 sm:p-8 mb-8">
-        <div className="flex flex-col items-center gap-3 mb-6">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-3xl">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0a0a0a] p-8 sm:p-10 mb-8">
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-white/[0.06] text-2xl">
             🎹
           </div>
-          <div className="text-center">
-            <h2 className="text-xl font-black text-white">PRODKJBEATS</h2>
-            <p className="text-sm text-zinc-500">Producer · Mixer · Sound Designer</p>
+          <div>
+            <h2 className="text-[17px] font-semibold text-[#f5f5f7] mb-0.5">PRODKJBEATS</h2>
+            <p className="text-[12px] text-[#424245] mb-5">Producer · Mixer · Sound Designer</p>
+            <div className="space-y-3 text-[14px] text-[#6e6e73] leading-[1.7]">
+              <p>
+                PRODKJBEATS is an independent producer specializing in trap, drill, R&amp;B, and Afrobeats.
+                With years of experience crafting high-quality instrumentals, every beat is designed to
+                give artists the foundation they need to create their best work.
+              </p>
+              <p>
+                From dark, hard-hitting 808 trap to smooth neo-soul R&amp;B and infectious Afrobeats grooves —
+                the catalog has something for every artist and every moment.
+              </p>
+              <p>
+                Available for custom beat production, mixing, and mastering. Reach out below to discuss
+                your project.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="space-y-4 text-zinc-400 leading-relaxed text-center text-sm">
-          <p>
-            PRODKJBEATS is an independent producer specializing in trap, drill, R&amp;B, and Afrobeats.
-            With years of experience crafting high-quality instrumentals, every beat is designed to
-            give artists the foundation they need to create their best work.
-          </p>
-          <p>
-            From dark, hard-hitting 808 trap to smooth neo-soul R&amp;B and infectious Afrobeats grooves —
-            the catalog has something for every artist and every moment.
-          </p>
-          <p>
-            Available for custom beat production, mixing, and mastering. Reach out below to discuss
-            your project.
-          </p>
         </div>
       </div>
 

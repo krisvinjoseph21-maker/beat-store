@@ -1,21 +1,14 @@
 'use client'
 
-import { Play, Pause, ShoppingCart, Check, Flame } from 'lucide-react'
+import { Play, Pause, ShoppingCart, Check } from 'lucide-react'
 import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
 import ShareButton from './ShareButton'
 
-const GENRE_BG: Record<string, string> = {
-  Trap: 'from-red-900/60 to-red-600/20',
-  Drill: 'from-blue-900/60 to-blue-600/20',
-  'R&B': 'from-purple-900/60 to-purple-600/20',
-  Afrobeats: 'from-emerald-900/60 to-emerald-600/20',
-}
-
-const GENRE_ACCENT: Record<string, string> = {
-  Trap: 'bg-red-600',
-  Drill: 'bg-blue-600',
-  'R&B': 'bg-purple-600',
-  Afrobeats: 'bg-emerald-600',
+const GENRE_DOT: Record<string, string> = {
+  Trap:      'bg-red-500',
+  Drill:     'bg-blue-500',
+  'R&B':     'bg-purple-500',
+  Afrobeats: 'bg-emerald-500',
 }
 
 export default function FeaturedTrack({ beat }: { beat: Beat }) {
@@ -24,8 +17,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
-  const gradientBg = GENRE_BG[beat.genre] ?? 'from-zinc-900/60 to-zinc-800/20'
-  const accentBg = GENRE_ACCENT[beat.genre] ?? 'bg-zinc-600'
+  const dot = GENRE_DOT[beat.genre] ?? 'bg-zinc-500'
 
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()
@@ -33,39 +25,39 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
   }
 
   return (
-    <div className={`w-full rounded-sm border border-white/10 bg-gradient-to-br ${gradientBg} overflow-hidden relative`}>
-      {/* Glow behind card */}
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <div className={`absolute -top-10 -left-10 h-40 w-40 rounded-full blur-3xl ${accentBg}`} />
-      </div>
-
+    <div className="w-full rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
       <div className="relative flex flex-col sm:flex-row items-stretch">
-        {/* Artwork */}
-        <div className={`${accentBg} w-full sm:w-44 h-36 sm:h-auto flex-shrink-0 flex flex-col items-center justify-center select-none`}>
-          <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.3em] mb-1">Featured</span>
-          <span className="text-3xl font-black text-white uppercase tracking-tight">
-            {beat.genre === 'R&B' ? 'R&B' : beat.genre.slice(0, 3)}
-          </span>
+
+        {/* Artwork slab */}
+        <div className="w-full sm:w-40 h-32 sm:h-auto flex-shrink-0 flex flex-col items-center justify-center select-none bg-[#111] relative overflow-hidden">
+          <div className={`absolute inset-0 opacity-20 ${dot}`} style={{ filter: 'blur(40px)', transform: 'scale(2)' }} />
+          <div className="relative z-10 flex flex-col items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${dot}`} />
+            <span className="text-[9px] font-bold text-[#424245] uppercase tracking-[0.3em] mt-2">Featured</span>
+            <span className="text-[11px] font-semibold text-[#f5f5f7] uppercase tracking-wider mt-0.5">
+              {beat.genre === 'R&B' ? 'R&B' : beat.genre}
+            </span>
+          </div>
         </div>
 
         {/* Info */}
-        <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 gap-4">
+        <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 gap-5">
           <div>
-            <div className="mb-2 flex items-center gap-2">
-              <Flame size={13} className="text-orange-400" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-400">
-                Featured Track
-              </span>
-            </div>
-            <h2 className="text-2xl font-black text-white leading-tight sm:text-3xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#424245] mb-2">
+              Featured Track
+            </p>
+            <h2 className="text-xl font-bold text-[#f5f5f7] leading-tight sm:text-2xl">
               {beat.title}
             </h2>
-            <div className="mt-2 flex flex-wrap gap-2 text-xs text-zinc-400">
-              <span className="rounded bg-white/10 px-2 py-0.5">{beat.bpm} BPM</span>
-              <span className="rounded bg-white/10 px-2 py-0.5">{beat.key}</span>
-              {beat.subgenre && (
-                <span className="rounded bg-white/10 px-2 py-0.5">{beat.subgenre}</span>
-              )}
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[`${beat.bpm} BPM`, beat.key, beat.subgenre].filter(Boolean).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/[0.1] px-2.5 py-0.5 text-[11px] text-[#6e6e73]"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -73,29 +65,29 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0 shadow-lg"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
               aria-label={isThisPlaying ? 'Pause' : 'Play'}
             >
               {isThisPlaying
-                ? <Pause size={18} fill="black" />
-                : <Play size={18} fill="black" />}
+                ? <Pause size={16} fill="black" />
+                : <Play size={16} fill="black" />}
             </button>
 
             <button
               onClick={() => addBeat(beat)}
               disabled={inCart}
-              className={`flex items-center gap-2 rounded-sm px-5 py-2.5 text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-all ${
                 inCart
-                  ? 'bg-white/10 text-zinc-400 cursor-default'
-                  : 'bg-white text-black hover:bg-zinc-100 hover:scale-105 shadow-lg'
+                  ? 'bg-white/[0.06] text-[#424245] cursor-default px-4 py-2'
+                  : 'bg-white text-black hover:bg-[#e8e8ed] hover:scale-105 px-4 py-2'
               }`}
             >
               {inCart
-                ? <><Check size={14} /> Added to Cart</>
-                : <><ShoppingCart size={14} /> Add to Cart — $75</>}
+                ? <><Check size={13} /> Added</>
+                : <><ShoppingCart size={13} /> Add to Cart — $75</>}
             </button>
 
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto">
               <ShareButton beatId={beat.id} />
             </div>
           </div>

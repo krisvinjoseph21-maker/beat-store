@@ -100,60 +100,60 @@ export default function LicensingPage() {
     <div className="w-full">
 
       {/* Header */}
-      <div className="w-full border-b border-[#191919] bg-[#0d0d0d]">
-        <div className="mx-auto max-w-6xl px-4 py-16 text-center">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-zinc-600">Beat Licensing</p>
-          <h1 className="font-display text-6xl sm:text-8xl text-white uppercase leading-none mb-4">
+      <div className="w-full border-b border-white/[0.06] bg-black">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-4">Beat Licensing</p>
+          <h1 className="font-display text-6xl sm:text-8xl text-[#f5f5f7] uppercase leading-none mb-5">
             Choose Your License.
           </h1>
-          <p className="text-sm text-zinc-500 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[14px] text-[#6e6e73] max-w-lg leading-[1.7]">
             Every license includes instant delivery to your inbox. All beats are non-exclusive unless purchased as Exclusive.
           </p>
         </div>
       </div>
 
       {/* Tier grid */}
-      <div className="mx-auto max-w-6xl px-4 py-16">
+      <div className="mx-auto max-w-6xl px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-sm border bg-[#0f0f0f] overflow-hidden ${
-                tier.tag ? 'border-white/20' : 'border-[#1e1e1e]'
+              className={`relative flex flex-col rounded-2xl border bg-[#0a0a0a] overflow-hidden transition-colors hover:bg-[#111] ${
+                tier.tag ? 'border-white/20' : 'border-white/[0.08]'
               }`}
             >
               {tier.tag && (
                 <div className="bg-white px-4 py-1.5 text-center">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-black">{tier.tag}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-black">{tier.tag}</span>
                 </div>
               )}
 
               <div className="flex flex-col gap-5 p-5 flex-1">
                 {/* Name + Price */}
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-600 mb-1">{tier.name}</p>
-                  <p className="font-display text-4xl text-white leading-none">{tier.price}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#424245] mb-2">{tier.name}</p>
+                  <p className="font-display text-4xl text-[#f5f5f7] leading-none">{tier.price}</p>
                 </div>
 
                 {/* CTA */}
                 <Link
                   href={tier.href}
-                  className={`inline-flex items-center justify-center gap-2 rounded-sm py-3 text-sm font-black transition-colors ${
+                  className={`inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[12px] font-semibold transition-all active:scale-95 ${
                     tier.tag
-                      ? 'bg-white text-black hover:bg-zinc-100'
-                      : 'border border-[#2a2a2a] text-zinc-300 hover:border-zinc-500 hover:text-white'
+                      ? 'bg-white text-black hover:bg-[#e8e8ed]'
+                      : 'border border-white/[0.1] text-[#6e6e73] hover:border-white/25 hover:text-[#f5f5f7]'
                   }`}
                 >
-                  {tier.cta} <ArrowRight size={13} />
+                  {tier.cta} <ArrowRight size={12} />
                 </Link>
 
                 {/* Feature table */}
-                <div className="flex flex-col gap-3 pt-2 border-t border-[#1a1a1a]">
+                <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.06]">
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-700">{label}</span>
-                      <span className={`text-xs font-semibold ${value === '✓' ? 'text-green-400' : 'text-zinc-300'}`}>
-                        {value === '✓' ? <Check size={14} className="text-green-400" /> : value}
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#424245]">{label}</span>
+                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-emerald-400' : 'text-[#a1a1a6]'}`}>
+                        {value === '✓' ? <Check size={13} className="text-emerald-400" /> : value}
                       </span>
                     </div>
                   ))}
@@ -165,19 +165,19 @@ export default function LicensingPage() {
       </div>
 
       {/* General rules */}
-      <div className="mx-auto max-w-6xl px-4 pb-16">
-        <h2 className="mb-5 text-[11px] font-black uppercase tracking-[0.2em] text-zinc-600">General Rules</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="mx-auto max-w-6xl px-6 lg:px-8 pb-20">
+        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#424245]">General Rules</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
-            <div key={rule} className="flex items-start gap-3 rounded-sm border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-              <span className="mt-0.5 text-zinc-700 text-sm flex-shrink-0">—</span>
-              <p className="text-sm text-zinc-500 leading-relaxed">{rule}</p>
+            <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-[#050505] p-4">
+              <span className="mt-0.5 text-[#424245] text-[12px] flex-shrink-0">—</span>
+              <p className="text-[13px] text-[#6e6e73] leading-[1.6]">{rule}</p>
             </div>
           ))}
         </div>
-        <p className="mt-8 text-xs text-zinc-600 text-center">
+        <p className="mt-8 text-[12px] text-[#424245] text-center">
           Questions?{' '}
-          <Link href="/about" className="underline hover:text-zinc-400 transition-colors">
+          <Link href="/about" className="underline decoration-white/20 hover:text-[#6e6e73] transition-colors">
             Contact us here.
           </Link>
         </p>

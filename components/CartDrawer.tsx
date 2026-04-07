@@ -48,44 +48,44 @@ export default function CartDrawer({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative flex w-full max-w-sm flex-col bg-[#0d0d0d] border-l border-[#1f1f1f] animate-fade-in overflow-y-auto">
-        <div className="flex items-center justify-between border-b border-[#1f1f1f] px-5 py-4">
-          <h2 className="font-bold text-white text-lg">Cart</h2>
-          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-white/10 transition-colors">
-            <X size={18} />
+      <div className="relative flex w-full max-w-sm flex-col glass border-l border-white/[0.06] animate-fade-in overflow-y-auto">
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
+          <h2 className="text-[15px] font-semibold text-[#f5f5f7]">Cart</h2>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]">
+            <X size={16} />
           </button>
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center text-zinc-500 text-sm p-8 text-center">
-            Your cart is empty. Head to the store to add beats.
+          <div className="flex flex-1 items-center justify-center text-[#424245] text-[13px] p-8 text-center leading-relaxed">
+            Your cart is empty.<br />Head to the store to add beats.
           </div>
         ) : (
           <>
-            <div className="flex-1 px-5 py-4 space-y-3">
+            <div className="flex-1 px-5 py-4 space-y-2">
               {items.map(({ beat }) => (
                 <div
                   key={beat.id}
-                  className="flex items-center justify-between gap-3 rounded-sm bg-white/5 px-3 py-3"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white truncate">{beat.title}</p>
-                    <p className="text-xs text-zinc-500">{beat.bpm} BPM · {beat.key}</p>
+                    <p className="text-[13px] font-semibold text-[#f5f5f7] truncate">{beat.title}</p>
+                    <p className="text-[11px] text-[#6e6e73] mt-0.5">{beat.bpm} BPM · {beat.key}</p>
                   </div>
                   <button
                     onClick={() => removeBeat(beat.id)}
-                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/20 text-zinc-500 hover:text-red-400 transition-colors"
+                    className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-[#424245] hover:text-red-400 transition-colors"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-[#1f1f1f] px-5 py-4 space-y-3">
+            <div className="border-t border-white/[0.06] px-5 py-4">
               <button
                 onClick={() => setLicenseOpen(true)}
-                className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-zinc-200 transition-colors"
+                className="w-full rounded-full bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-[#e8e8ed] transition-colors active:scale-[0.98]"
               >
                 Choose License & Checkout
               </button>

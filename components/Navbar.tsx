@@ -20,7 +20,7 @@ export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false)
 
   useEffect(() => {
-    function onScroll() { setScrolled(window.scrollY > 50) }
+    function onScroll() { setScrolled(window.scrollY > 10) }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -28,106 +28,111 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between transition-colors duration-300"
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+          scrolled ? 'glass border-b border-white/[0.06]' : 'bg-transparent'
+        }`}
         style={{
-          height: '80px',
-          padding: '0 40px',
-          background: scrolled
-            ? 'rgba(8,8,8,0.97)'
-            : 'linear-gradient(rgba(8,8,8,0.95), rgba(0,0,0,0))',
+          height: '48px',
           fontFamily: 'var(--font-inter)',
         }}
       >
-        {/* Logo */}
-        <Link
-          href="/"
-          className="text-[15px] font-black tracking-tight text-[#f0ede8] hover:opacity-80 transition-opacity shrink-0"
-        >
-          PRODKJ<span style={{ color: '#555' }}>BEATS</span>
-        </Link>
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
 
-        {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-6">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-[13px] font-medium uppercase transition-colors duration-200 hover:text-[#f0ede8]"
-              style={{ letterSpacing: '1.3px', color: '#888', fontFamily: 'var(--font-inter)' }}
-            >
-              {label}
-            </Link>
-          ))}
-
-          <NavAuthButton />
-
-          {/* Cart */}
-          <button
-            onClick={() => setCartOpen(true)}
-            className="border text-[#f0ede8] text-[12px] font-semibold transition-colors duration-200 hover:bg-white/5"
-            style={{
-              borderColor: '#2a2a2a',
-              padding: '8px 16px',
-              letterSpacing: '0.6px',
-              fontFamily: 'var(--font-inter)',
-            }}
-          >
-            Cart ({items.length})
-          </button>
-
-          {/* Shop Beats CTA */}
+          {/* Logo */}
           <Link
-            href="/store"
-            className="bg-white text-black text-[12px] font-bold uppercase transition-colors duration-200 hover:bg-zinc-100"
-            style={{ padding: '10px 20px', letterSpacing: '1.2px', fontFamily: 'var(--font-inter)' }}
+            href="/"
+            className="text-[13px] font-bold tracking-tight text-[#f5f5f7] hover:opacity-70 transition-opacity shrink-0"
           >
-            Shop Beats
+            PRODKJ<span style={{ color: '#424245' }}>BEATS</span>
           </Link>
-        </div>
 
-        {/* Mobile controls */}
-        <div className="flex lg:hidden items-center gap-4">
-          <button
-            onClick={() => setCartOpen(true)}
-            className="text-[11px] font-semibold text-[#f0ede8]"
-            style={{ letterSpacing: '0.55px' }}
-          >
-            Cart ({items.length})
-          </button>
-          <button
-            onClick={() => setMobileOpen(o => !o)}
-            className="flex flex-col gap-[5px] p-1"
-            aria-label="Toggle menu"
-          >
-            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
-            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
-            <span className="block w-[22px] bg-[#f0ede8]" style={{ height: '1.5px' }} />
-          </button>
+          {/* Desktop nav — centered */}
+          <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-[12px] font-normal text-[#6e6e73] hover:text-[#f5f5f7] transition-colors duration-150"
+                style={{ letterSpacing: '0.01em' }}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop actions */}
+          <div className="hidden lg:flex items-center gap-3">
+            <NavAuthButton />
+
+            <button
+              onClick={() => setCartOpen(true)}
+              className="text-[12px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors"
+              style={{ letterSpacing: '0.01em' }}
+            >
+              Cart {items.length > 0 && (
+                <span className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold">
+                  {items.length}
+                </span>
+              )}
+            </button>
+
+            <Link
+              href="/store"
+              className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-all hover:bg-[#e8e8ed] active:scale-95"
+              style={{ padding: '6px 16px', letterSpacing: '0.01em' }}
+            >
+              Shop Beats
+            </Link>
+          </div>
+
+          {/* Mobile controls */}
+          <div className="flex lg:hidden items-center gap-4">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="text-[11px] text-[#6e6e73]"
+            >
+              {items.length > 0 && (
+                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1">
+                  {items.length}
+                </span>
+              )}
+              Cart
+            </button>
+            <button
+              onClick={() => setMobileOpen(o => !o)}
+              className="flex flex-col gap-[4.5px] p-1"
+              aria-label="Toggle menu"
+            >
+              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div
-          className="fixed top-[80px] left-0 right-0 z-[99] border-b border-[#1a1a1a]"
-          style={{ background: 'rgba(8,8,8,0.98)' }}
-        >
+      <div
+        className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-all duration-300 ${
+          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="px-6 py-4 flex flex-col gap-1">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center border-b border-[#111] px-10 py-4 text-[13px] font-medium uppercase transition-colors hover:text-[#f0ede8]"
-              style={{ letterSpacing: '1.3px', color: '#888' }}
+              className="py-3 text-[14px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors border-b border-white/[0.05] last:border-0"
             >
               {label}
             </Link>
           ))}
-          <div className="px-10 py-4">
+          <div className="pt-3">
             <NavAuthButton />
           </div>
         </div>
-      )}
+      </div>
 
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>

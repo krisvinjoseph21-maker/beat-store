@@ -54,7 +54,9 @@ export default function AdminClient() {
   const [loading, setLoading] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Beat>>({})
+  const [editTagsStr, setEditTagsStr] = useState('')
   const [newBeat, setNewBeat] = useState({ ...BLANK_BEAT })
+  const [actionError, setActionError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadMsg, setUploadMsg] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
@@ -98,7 +100,8 @@ export default function AdminClient() {
   }
 
   async function toggleActive(beat: Beat) {
-    await fetch('/api/admin/beats', {
+    setActionError(null)
+    const res = await fetch('/api/admin/beats', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -106,10 +109,15 @@ export default function AdminClient() {
       },
       body: JSON.stringify({ id: beat.id, is_active: !beat.is_active }),
     })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      setActionError(err.error ?? 'Failed to update beat')
+    }
     fetchBeats()
   }
 
   async function setFeatured(beat: Beat) {
+    setActionError(null)
     // Clear existing featured beat first
     const current = beats.find((b) => b.is_featured)
     if (current && current.id !== beat.id) {
@@ -119,17 +127,22 @@ export default function AdminClient() {
         body: JSON.stringify({ id: current.id, is_featured: false }),
       })
     }
-    await fetch('/api/admin/beats', {
+    const res = await fetch('/api/admin/beats', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
       body: JSON.stringify({ id: beat.id, is_featured: !beat.is_featured }),
     })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      setActionError(err.error ?? 'Failed to update featured beat')
+    }
     fetchBeats()
   }
 
   async function deleteBeat(beat: Beat) {
     if (!confirm(`Delete "${beat.title}"? This cannot be undone.`)) return
-    await fetch('/api/admin/beats', {
+    setActionError(null)
+    const res = await fetch('/api/admin/beats', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -137,11 +150,16 @@ export default function AdminClient() {
       },
       body: JSON.stringify({ id: beat.id }),
     })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      setActionError(err.error ?? 'Failed to delete beat')
+    }
     fetchBeats()
   }
 
   async function setPinOrder(beat: Beat, order: number | null) {
-    await fetch('/api/admin/beats', {
+    setActionError(null)
+    const res = await fetch('/api/admin/beats', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -149,6 +167,10 @@ export default function AdminClient() {
       },
       body: JSON.stringify({ id: beat.id, pin_order: order }),
     })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      setActionError(err.error ?? 'Failed to update pin order')
+    }
     fetchBeats()
   }
 
@@ -160,20 +182,27 @@ export default function AdminClient() {
       key: beat.key,
       genre: beat.genre,
       subgenre: beat.subgenre,
-      tags: beat.tags,
     })
+    setEditTagsStr(Array.isArray(beat.tags) ? beat.tags.join(', ') : '')
   }
 
   async function saveEdit() {
     if (!editId) return
-    await fetch('/api/admin/beats', {
+    setActionError(null)
+    const tags = editTagsStr.split(',').map((t) => t.trim()).filter(Boolean)
+    const res = await fetch('/api/admin/beats', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'x-admin-password': password,
       },
-      body: JSON.stringify({ id: editId, ...editForm }),
+      body: JSON.stringify({ id: editId, ...editForm, tags }),
     })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      setActionError(err.error ?? 'Failed to save changes')
+      return
+    }
     setEditId(null)
     fetchBeats()
   }
@@ -199,7 +228,7 @@ export default function AdminClient() {
     setUploadMsg('')
     try {
       let filePath: string | null = null
-      let previewUrl: string | null = newBeat.preview_url
+      let previewUrl: string | null = newBeat.preview_url || null
       let previewPath: string | null = null
       let coverUrl: string | null = null
 
@@ -324,6 +353,14 @@ export default function AdminClient() {
       {/* Beats tab */}
       {tab === 'beats' && (
         <div className="space-y-2">
+          {actionError && (
+            <div className="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+              <span>{actionError}</span>
+              <button onClick={() => setActionError(null)} className="ml-3 text-red-400/60 hover:text-red-400">
+                <X size={14} />
+              </button>
+            </div>
+          )}
           {beats.length === 0 && (
             <p className="text-center text-zinc-500 py-12">No beats yet. Add some in the Upload tab.</p>
           )}
@@ -353,11 +390,27 @@ export default function AdminClient() {
                     className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
                     placeholder="Key"
                   />
+                  <select
+                    value={editForm.genre ?? ''}
+                    onChange={(e) => setEditForm((f) => ({ ...f, genre: e.target.value }))}
+                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                  >
+                    <option>Trap</option>
+                    <option>Drill</option>
+                    <option>R&B</option>
+                    <option>Afrobeats</option>
+                  </select>
                   <input
                     value={editForm.subgenre ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, subgenre: e.target.value }))}
-                    className="col-span-2 rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
                     placeholder="Subgenre"
+                  />
+                  <input
+                    value={editTagsStr}
+                    onChange={(e) => setEditTagsStr(e.target.value)}
+                    className="col-span-2 rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    placeholder="Tags (comma separated)"
                   />
                   <div className="col-span-2 flex gap-2">
                     <button onClick={saveEdit} className="flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black">

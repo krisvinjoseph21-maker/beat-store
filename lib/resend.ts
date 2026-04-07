@@ -145,6 +145,104 @@ export async function sendExclusiveOfferEmail({
   })
 }
 
+export async function sendBookingEmail({
+  artistName,
+  email,
+  genre,
+  projectType,
+  deadline,
+  budget,
+  referenceTracks,
+}: {
+  artistName: string
+  email: string
+  genre: string
+  projectType: string
+  deadline: string
+  budget: string
+  referenceTracks: string
+}) {
+  const refHtml = referenceTracks
+    ? `<tr style="border-bottom:1px solid #222"><td style="padding:10px 8px;color:#888;font-size:13px;vertical-align:top">Reference Tracks</td><td style="padding:10px 8px;color:#fff;white-space:pre-wrap">${esc(referenceTracks)}</td></tr>`
+    : ''
+  await getResend().emails.send({
+    from: `PRODKJBEATS <${getFrom()}>`,
+    to: getToAdmin(),
+    replyTo: email,
+    subject: `New Booking: ${esc(projectType)} — ${esc(artistName)}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
+        <h2 style="color:#fff;margin-bottom:4px">New Booking Request</h2>
+        <p style="color:#888;margin-top:0">A new project intake form was submitted.</p>
+        <table style="width:100%;border-collapse:collapse;margin-top:24px">
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Artist Name</td>
+            <td style="padding:10px 8px;color:#fff;font-weight:700">${esc(artistName)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Email</td>
+            <td style="padding:10px 8px;color:#fff"><a href="mailto:${esc(email)}" style="color:#60a5fa">${esc(email)}</a></td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Genre</td>
+            <td style="padding:10px 8px;color:#fff">${esc(genre)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Project Type</td>
+            <td style="padding:10px 8px;color:#fff">${esc(projectType)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Deadline</td>
+            <td style="padding:10px 8px;color:#fff">${esc(deadline)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Budget</td>
+            <td style="padding:10px 8px;color:#22c55e;font-weight:700">${esc(budget)}</td>
+          </tr>
+          ${refHtml}
+        </table>
+        <p style="color:#555;font-size:12px;margin-top:24px">Reply directly to this email to respond to the artist.</p>
+      </div>
+    `,
+  })
+}
+
+export async function sendBookingConfirmationEmail({
+  artistName,
+  email,
+  projectType,
+  deadline,
+}: {
+  artistName: string
+  email: string
+  projectType: string
+  deadline: string
+}) {
+  await getResend().emails.send({
+    from: `PRODKJBEATS <${getFrom()}>`,
+    to: email,
+    subject: 'Booking Request Received — PRODKJBEATS',
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
+        <h1 style="color:#fff;font-size:24px;margin-bottom:8px">We got your request</h1>
+        <p style="color:#aaa">Hey ${esc(artistName)}, thanks for reaching out!</p>
+        <p style="color:#aaa">Your booking request for <strong style="color:#fff">${esc(projectType)}</strong> has been received. I'll review the details and get back to you within 24–48 hours.</p>
+        <table style="width:100%;border-collapse:collapse;margin-top:24px">
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Project</td>
+            <td style="padding:10px 8px;color:#fff">${esc(projectType)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #222">
+            <td style="padding:10px 8px;color:#888;font-size:13px">Deadline</td>
+            <td style="padding:10px 8px;color:#fff">${esc(deadline)}</td>
+          </tr>
+        </table>
+        <p style="color:#555;font-size:12px;margin-top:32px">— PRODKJBEATS</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendContactEmail({
   name,
   email,

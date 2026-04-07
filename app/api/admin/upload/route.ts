@@ -1,11 +1,21 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { headers } from 'next/headers'
+import crypto from 'crypto'
+
+function verifyAdminPassword(input: string): boolean {
+  const expected = process.env.ADMIN_PASSWORD ?? ''
+  if (!expected) return false
+  const secret = 'prodkjbeats-admin'
+  const inputHash = crypto.createHmac('sha256', secret).update(input).digest()
+  const expectedHash = crypto.createHmac('sha256', secret).update(expected).digest()
+  return crypto.timingSafeEqual(inputHash, expectedHash)
+}
 
 async function checkAuth() {
   const headersList = await headers()
-  const auth = headersList.get('x-admin-password')
-  return auth === process.env.ADMIN_PASSWORD
+  const auth = headersList.get('x-admin-password') ?? ''
+  return verifyAdminPassword(auth)
 }
 
 export async function POST(req: NextRequest) {

@@ -46,9 +46,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`h-full ${bebasNeue.variable} ${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white font-[family-name:var(--font-inter)]" style={{ paddingBottom: '80px' }}>
+      <body className="min-h-full flex flex-col bg-black text-[#f5f5f7] font-[family-name:var(--font-inter)]" style={{ paddingBottom: '64px' }}>
         <Navbar />
-        <main className="flex-1 w-full" style={{ paddingLeft: '55px', paddingTop: '56px' }}>{children}</main>
+        <main className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
         <Footer />
         <BottomPlayer />
       </body>

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Play, Pause, SkipBack, SkipForward, Lock, Volume2, VolumeX } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
 
-const PREVIEW_LIMIT = 30 // seconds
+const PREVIEW_LIMIT = 30
 
 function formatTime(s: number) {
   if (!s || isNaN(s)) return '0:00'
@@ -14,11 +14,11 @@ function formatTime(s: number) {
   return `${m}:${sec.toString().padStart(2, '0')}`
 }
 
-const GENRE_BG: Record<string, string> = {
-  Trap: 'bg-red-600',
-  Drill: 'bg-blue-600',
-  'R&B': 'bg-purple-600',
-  Afrobeats: 'bg-emerald-600',
+const GENRE_DOT: Record<string, string> = {
+  Trap:      'bg-red-500',
+  Drill:     'bg-blue-500',
+  'R&B':     'bg-purple-500',
+  Afrobeats: 'bg-emerald-500',
 }
 
 export default function BottomPlayer() {
@@ -41,7 +41,6 @@ export default function BottomPlayer() {
   const [volume, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
 
-  // Keep ref in sync so canplay callback always reads the latest value
   useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
 
   function handleVolumeChange(v: number) {
@@ -56,29 +55,22 @@ export default function BottomPlayer() {
     if (audioRef.current) audioRef.current.volume = next ? 0 : volume
   }
 
-  // Runs when the beat changes — loads new src, plays via canplay once ready
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
     const src = currentBeat.preview_url ?? currentBeat.file_url ?? ''
     setPreviewEnded(false)
     audio.pause()
-    if (!src) {
-      setPlaying(false)
-      return
-    }
+    if (!src) { setPlaying(false); return }
     audio.src = src
     audio.load()
     const handleCanPlay = () => {
-      // Use ref so we always get the current isPlaying, not a stale closure
       if (isPlayingRef.current) audio.play().catch(() => setPlaying(false))
     }
     audio.addEventListener('canplay', handleCanPlay, { once: true })
     return () => audio.removeEventListener('canplay', handleCanPlay)
   }, [currentBeat]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Runs when play/pause is toggled — skip if audio is still loading
-  // (readyState < 2 means canplay hasn't fired yet; it will call play() itself)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -87,16 +79,14 @@ export default function BottomPlayer() {
     else audio.pause()
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Cap progress display at PREVIEW_LIMIT for the bar
   const cappedProgress = Math.min(progress, PREVIEW_LIMIT)
   const barMax = duration > 0 ? Math.min(duration, PREVIEW_LIMIT) : PREVIEW_LIMIT
   const pct = barMax > 0 ? (cappedProgress / barMax) * 100 : 0
 
   if (!currentBeat) return null
 
-  const genreBg = GENRE_BG[currentBeat.genre] ?? 'bg-zinc-600'
-  const genreLabel =
-    currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3)
+  const dot = GENRE_DOT[currentBeat.genre] ?? 'bg-zinc-500'
+  const genreLabel = currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3)
 
   return (
     <>
@@ -115,11 +105,12 @@ export default function BottomPlayer() {
         onEnded={() => { setPlaying(false); setProgress(0) }}
         onError={() => setPlaying(false)}
       />
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#191919] bg-[#0a0a0a] animate-fade-in">
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-fade-in">
         {/* Progress bar */}
-        <div className="relative h-0.5 w-full bg-[#1f1f1f]">
+        <div className="relative h-px w-full bg-white/[0.06]">
           <div
-            className="h-full bg-white transition-all duration-100"
+            className="h-full bg-white/40 transition-all duration-100"
             style={{ width: `${pct}%` }}
           />
           <input
@@ -134,82 +125,90 @@ export default function BottomPlayer() {
               setPreviewEnded(false)
               if (audioRef.current) audioRef.current.currentTime = val
             }}
-            className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
+            className="absolute inset-0 w-full opacity-0 cursor-pointer"
+            style={{ height: '4px', top: '-1.5px' }}
             aria-label="Seek"
           />
         </div>
 
-        <div className="mx-auto flex max-w-6xl items-center justify-between py-3" style={{ paddingLeft: '55px', paddingRight: '55px' }}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" style={{ height: '63px' }}>
+
           {/* Left — artwork + beat info */}
           <div className="flex min-w-0 items-center gap-3 flex-1">
             {currentBeat.cover_url ? (
               <Image
                 src={currentBeat.cover_url}
                 alt={currentBeat.title}
-                width={40}
-                height={40}
-                className="h-10 w-10 flex-shrink-0 rounded-md object-cover"
+                width={36}
+                height={36}
+                className="h-9 w-9 flex-shrink-0 rounded-lg object-cover"
               />
             ) : (
-              <div className={`h-10 w-10 flex-shrink-0 rounded-md ${genreBg} flex items-center justify-center select-none`}>
-                <span className="text-[9px] font-black text-white/90 uppercase tracking-wider">
+              <div className={`h-9 w-9 flex-shrink-0 rounded-lg ${dot} flex items-center justify-center select-none`}>
+                <span className="text-[8px] font-bold text-white/80 uppercase tracking-wider">
                   {genreLabel}
                 </span>
               </div>
             )}
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-white leading-tight">
+              <p className="truncate text-[13px] font-semibold text-[#f5f5f7] leading-tight">
                 {currentBeat.title}
               </p>
-              <p className="text-xs text-zinc-500 leading-tight">
+              <p className="text-[11px] text-[#6e6e73] leading-tight">
                 {currentBeat.bpm} BPM · {currentBeat.key}
               </p>
             </div>
           </div>
 
-          {/* Right — controls + time + volume */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Center — controls */}
+          <div className="flex items-center gap-1">
             <button
               onClick={playPrev}
-              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label="Previous"
             >
-              <SkipBack size={17} />
+              <SkipBack size={15} />
             </button>
+
             {previewEnded ? (
               <a
                 href="/store"
-                className="flex h-10 items-center gap-1.5 rounded-sm bg-white px-4 text-black hover:bg-zinc-200 transition-colors"
+                className="flex h-9 items-center gap-1.5 rounded-full bg-white px-4 text-black hover:bg-[#e8e8ed] transition-colors"
               >
-                <Lock size={13} />
-                <span className="text-xs font-bold">Buy to unlock</span>
+                <Lock size={12} />
+                <span className="text-[11px] font-semibold">Buy to unlock</span>
               </a>
             ) : (
               <button
                 onClick={togglePlay}
                 disabled={!currentBeat?.preview_url}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
-                {isPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}
+                {isPlaying ? <Pause size={16} fill="black" /> : <Play size={16} fill="black" />}
               </button>
             )}
+
             <button
               onClick={playNext}
-              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label="Next"
             >
-              <SkipForward size={17} />
+              <SkipForward size={15} />
             </button>
-            <span className="hidden sm:block text-[11px] text-zinc-600 tabular-nums w-20 text-center">
+          </div>
+
+          {/* Right — time + volume */}
+          <div className="flex items-center gap-3 flex-1 justify-end">
+            <span className="hidden sm:block text-[10px] text-[#424245] tabular-nums">
               {formatTime(cappedProgress)} / {formatTime(Math.min(duration || 0, PREVIEW_LIMIT))}
             </span>
             <button
               onClick={toggleMute}
-              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400 hover:text-white"
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label={muted ? 'Unmute' : 'Mute'}
             >
-              {muted || volume === 0 ? <VolumeX size={15} /> : <Volume2 size={15} />}
+              {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
             </button>
             <input
               type="range"
@@ -218,7 +217,7 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="hidden sm:block w-10 accent-white cursor-pointer"
+              className="hidden sm:block w-16 cursor-pointer"
               aria-label="Volume"
             />
           </div>
