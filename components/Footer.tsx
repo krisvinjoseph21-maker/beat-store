@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Instagram } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -63,7 +62,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-[11px] text-[#767676] hover:text-white transition-colors"
             >
-              <Instagram size={13} aria-hidden="true" />
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="3"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
               @prodkjbeats
             </a>
           </div>
