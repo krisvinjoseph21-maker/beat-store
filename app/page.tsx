@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { PLACEHOLDER_BEATS } from '@/lib/placeholder-data'
 import type { Beat } from '@/lib/store'
 import HomeFeaturedBeats from '@/components/HomeFeaturedBeats'
+import SpotifyEmbed from '@/components/SpotifyEmbed'
 import FeaturedTrack from '@/components/FeaturedTrack'
 import HeroMouseGlow from '@/components/HeroMouseGlow'
 import HeadlineParallax from '@/components/HeadlineParallax'
@@ -212,16 +213,7 @@ export default async function HomePage() {
                   <p className="text-[17px] font-semibold text-[#f5f5f7] leading-tight">{artist}</p>
                   <p className="text-[13px] mt-1 text-[#6e6e73]">{song} · Producer</p>
                 </div>
-                {spotifyId && (
-                  <iframe
-                    src={`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator`}
-                    width="100%"
-                    height="80"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                    className="rounded"
-                  />
-                )}
+                {spotifyId && <SpotifyEmbed trackId={spotifyId} />}
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.06]">
                   <span className="text-[11px] text-[#424245]">{detail}</span>
                   <div className="flex items-center gap-1">
