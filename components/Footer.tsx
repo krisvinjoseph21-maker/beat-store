@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Instagram } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -27,9 +28,9 @@ export default function Footer() {
               href="/"
               className="text-[13px] font-bold tracking-tight text-[#f5f5f7] hover:opacity-70 transition-opacity block mb-2"
             >
-              PRODKJ<span className="text-[#424245]">BEATS</span>
+              PRODKJ<span className="text-[#767676]">BEATS</span>
             </Link>
-            <p className="text-[12px] text-[#424245] leading-relaxed max-w-[200px]">
+            <p className="text-[12px] text-[#767676] leading-relaxed max-w-[200px]">
               Premium beats for serious artists.
             </p>
           </div>
@@ -52,16 +53,27 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-[#424245]">
-            © {new Date().getFullYear()} PRODKJBEATS. All rights reserved.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-[11px] text-[#767676]">
+              © {new Date().getFullYear()} PRODKJBEATS. All rights reserved.
+            </p>
+            <a
+              href="https://www.instagram.com/prodkjbeats/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-[11px] text-[#767676] hover:text-white transition-colors"
+            >
+              <Instagram size={13} aria-hidden="true" />
+              @prodkjbeats
+            </a>
+          </div>
 
           <div className="flex flex-wrap gap-4 sm:gap-5">
             {LEGAL_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className="text-[11px] text-[#424245] hover:text-[#6e6e73] transition-colors"
+                className="text-[11px] text-[#767676] hover:text-[#f5f5f7] transition-colors"
               >
                 {label}
               </Link>

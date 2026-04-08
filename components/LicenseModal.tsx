@@ -72,17 +72,24 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-[#1f1f1f] bg-[#0d0d0d] p-5 animate-fade-in max-h-[90vh] overflow-y-auto">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="license-modal-title"
+        className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-[#1f1f1f] bg-[#0d0d0d] p-5 animate-fade-in max-h-[90vh] overflow-y-auto"
+      >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">Choose Your License</h2>
+          <h2 id="license-modal-title" className="text-lg font-bold text-white">Choose Your License</h2>
           <button
             onClick={onClose}
+            aria-label="Close license options"
             className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
           >
-            <X size={18} />
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
@@ -104,6 +111,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
             <button
               key={type}
               onClick={() => setLicenseType(type)}
+              aria-pressed={licenseType === type}
               className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                 licenseType === type
                   ? 'bg-white text-black'
@@ -135,6 +143,8 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               <button
                 key={qty}
                 onClick={() => setQuantityTier(qty)}
+                aria-pressed={quantityTier === qty}
+                aria-label={`${qty} beat${qty > 1 ? 's' : ''} — $${PRICES[licenseType][qty]}`}
                 className={`rounded-sm border py-3 text-center transition-all ${
                   quantityTier === qty
                     ? 'border-white bg-white/10 text-white'
@@ -162,20 +172,25 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               </p>
               <button
                 onClick={handleRemoveCode}
-                className="text-xs text-zinc-500 hover:text-white transition-colors"
+                className="text-xs text-[#767676] hover:text-white transition-colors"
               >
                 Remove
               </button>
             </div>
           ) : (
             <div className="flex gap-2">
+              <label htmlFor="discount-code" className="sr-only">Discount code</label>
               <input
+                id="discount-code"
                 type="text"
                 value={codeInput}
                 onChange={(e) => { setCodeInput(e.target.value); setCodeError('') }}
                 onKeyDown={(e) => e.key === 'Enter' && handleApplyCode()}
                 placeholder="Discount code"
-                className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+                autoComplete="off"
+                aria-describedby={codeError ? 'discount-code-error' : undefined}
+                aria-invalid={!!codeError}
+                className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
               />
               <button
                 onClick={handleApplyCode}
@@ -185,7 +200,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               </button>
             </div>
           )}
-          {codeError && <p className="mt-1.5 text-xs text-red-400">{codeError}</p>}
+          {codeError && <p id="discount-code-error" role="alert" className="mt-1.5 text-xs text-red-400">{codeError}</p>}
         </div>
 
         {/* CTA */}
@@ -203,7 +218,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
             <>Checkout — ${finalPrice}</>
           )}
         </button>
-        <p className="mt-2 text-center text-xs text-zinc-600">
+        <p className="mt-2 text-center text-xs text-[#767676]">
           Powered by Stripe · Secure checkout
         </p>
       </div>

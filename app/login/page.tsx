@@ -8,20 +8,20 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-16">
-      <div className="mx-auto max-w-3xl text-center">
-      <div className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-          Your Account
-        </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">Sign In</h1>
-        <p className="mt-3 text-sm text-zinc-500">
-          Access your purchases and download history.
-        </p>
-      </div>
-      <Suspense>
-        <AuthClient />
-      </Suspense>
+    <div className="flex min-h-[calc(100vh-140px)] items-center justify-center px-4 py-16">
+      <div className="w-full max-w-[400px]">
+        <div className="mb-10 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            Your Account
+          </p>
+          <h1 className="text-3xl font-black text-white sm:text-4xl">Sign In</h1>
+          <p className="mt-3 text-sm text-zinc-500">
+            Access your purchases and download history.
+          </p>
+        </div>
+        <Suspense>
+          <AuthClient />
+        </Suspense>
       </div>
     </div>
   )

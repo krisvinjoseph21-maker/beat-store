@@ -78,7 +78,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   value={artistName}
                   onChange={(e) => setArtistName(e.target.value)}
                   maxLength={100}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
                 />
                 <input
                   required
@@ -86,7 +86,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
                 />
               </div>
 
@@ -100,7 +100,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your offer (e.g. 500)"
                   value={offerPrice}
                   onChange={(e) => setOfferPrice(e.target.value)}
-                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1000}
                 rows={2}
-                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
               />
 
               {error && <p className="text-xs text-red-400">{error}</p>}

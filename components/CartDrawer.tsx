@@ -47,17 +47,17 @@ export default function CartDrawer({ open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[200] flex justify-end">
-      <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }} onClick={onClose} />
-      <div className="relative flex w-full max-w-sm flex-col border-l border-[#1a1a1a] animate-fade-in overflow-y-auto" style={{ background: '#111111' }}>
+      <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }} onClick={onClose} aria-hidden="true" />
+      <div className="relative flex w-full max-w-sm flex-col border-l border-[#1a1a1a] animate-fade-in overflow-y-auto" style={{ background: '#111111' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <h2 className="text-[15px] font-semibold text-[#f5f5f7]">Cart</h2>
-          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]">
-            <X size={16} />
+          <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]">
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center text-[#424245] text-[13px] p-8 text-center leading-relaxed">
+          <div className="flex flex-1 items-center justify-center text-[#767676] text-[13px] p-8 text-center leading-relaxed">
             Your cart is empty.<br />Head to the store to add beats.
           </div>
         ) : (
@@ -74,9 +74,10 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
                   <button
                     onClick={() => removeBeat(beat.id)}
-                    className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-[#424245] hover:text-red-400 transition-colors"
+                    aria-label={`Remove ${beat.title} from cart`}
+                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-[#767676] hover:text-red-400 transition-colors"
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={13} aria-hidden="true" />
                   </button>
                 </div>
               ))}

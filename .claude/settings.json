@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components -type f \\\\\\(-name *.tsx -o -name *.ts \\\\\\))",
+      "Bash(del \"c:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\\\\app\\\\favicon.ico\")"
+    ]
+  }
+}

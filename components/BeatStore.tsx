@@ -52,7 +52,7 @@ function Select({
           </option>
         ))}
       </select>
-      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#555]" />
+      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#767676]" aria-hidden="true" />
     </div>
   )
 }
@@ -128,7 +128,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       <div className="mb-10">
         <p
           className="text-[11px] font-bold uppercase mb-3"
-          style={{ letterSpacing: '0.28em', color: '#555', fontFamily: 'var(--font-montserrat)' }}
+          style={{ letterSpacing: '0.28em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
         >
           Full Catalog
         </p>
@@ -139,7 +139,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           >
             Beat Store.
           </h1>
-          <p className="text-[12px] mb-1" style={{ color: '#444', fontFamily: 'var(--font-inter)' }}>
+          <p className="text-[12px] mb-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
             {initialBeats.length} beats
           </p>
         </div>
@@ -147,13 +147,13 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#555' }} />
+        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted-low)' }} />
         <input
           type="text"
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-[#444]"
+          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-[#767676]"
           style={{ color: '#f0ede8', fontFamily: 'var(--font-inter)' }}
         />
       </div>
@@ -199,7 +199,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       {filtered.length === 0 ? (
         <div
           className="flex h-40 items-center justify-center border border-[#1a1a1a] text-[13px]"
-          style={{ color: '#555', fontFamily: 'var(--font-inter)' }}
+          style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
         >
           No beats found. Try a different filter.
         </div>
@@ -211,13 +211,13 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             <span className="w-10 flex-shrink-0" />
             <span
               className="flex-1 text-[10px] font-bold uppercase"
-              style={{ letterSpacing: '0.18em', color: '#444', fontFamily: 'var(--font-montserrat)' }}
+              style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
             >
               Title
             </span>
             <span
               className="hidden md:block text-[10px] font-bold uppercase text-center"
-              style={{ letterSpacing: '0.18em', color: '#444', fontFamily: 'var(--font-montserrat)', width: '200px' }}
+              style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
             >
               Genre
             </span>

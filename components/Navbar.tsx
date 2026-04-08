@@ -42,7 +42,7 @@ export default function Navbar() {
             href="/"
             className="text-[13px] font-bold tracking-tight text-[#f5f5f7] hover:opacity-70 transition-opacity shrink-0"
           >
-            PRODKJ<span style={{ color: '#424245' }}>BEATS</span>
+            PRODKJ<span style={{ color: 'var(--muted-low)' }}>BEATS</span>
           </Link>
 
           {/* Desktop nav — centered */}

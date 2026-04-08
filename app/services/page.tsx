@@ -10,7 +10,7 @@ export default function ServicesPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-16">
       <div className="mb-12">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
           Work With Me
         </p>
         <h1 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none mb-4">Services.</h1>

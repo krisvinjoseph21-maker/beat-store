@@ -102,7 +102,7 @@ export default function LicensingPage() {
       {/* Header */}
       <div className="w-full border-b border-white/[0.06] bg-black">
         <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-4">Beat Licensing</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-4">Beat Licensing</p>
           <h1 className="font-display text-6xl sm:text-8xl text-[#f5f5f7] uppercase leading-none mb-5">
             Choose Your License.
           </h1>
@@ -131,7 +131,7 @@ export default function LicensingPage() {
               <div className="flex flex-col gap-5 p-5 flex-1">
                 {/* Name + Price */}
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#424245] mb-2">{tier.name}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#767676] mb-2">{tier.name}</p>
                   <p className="font-display text-4xl text-[#f5f5f7] leading-none">{tier.price}</p>
                 </div>
 
@@ -151,7 +151,7 @@ export default function LicensingPage() {
                 <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.06]">
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#424245]">{label}</span>
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#767676]">{label}</span>
                       <span className={`text-[12px] font-medium ${value === '✓' ? 'text-emerald-400' : 'text-[#a1a1a6]'}`}>
                         {value === '✓' ? <Check size={13} className="text-emerald-400" /> : value}
                       </span>
@@ -166,16 +166,16 @@ export default function LicensingPage() {
 
       {/* General rules */}
       <div className="mx-auto max-w-6xl px-6 lg:px-8 pb-20">
-        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#424245]">General Rules</h2>
+        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#767676]">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
             <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-[#050505] p-4">
-              <span className="mt-0.5 text-[#424245] text-[12px] flex-shrink-0">—</span>
+              <span className="mt-0.5 text-[#767676] text-[12px] flex-shrink-0">—</span>
               <p className="text-[13px] text-[#6e6e73] leading-[1.6]">{rule}</p>
             </div>
           ))}
         </div>
-        <p className="mt-8 text-[12px] text-[#424245] text-center">
+        <p className="mt-8 text-[12px] text-[#767676] text-center">
           Questions?{' '}
           <Link href="/about" className="underline decoration-white/20 hover:text-[#6e6e73] transition-colors">
             Contact us here.

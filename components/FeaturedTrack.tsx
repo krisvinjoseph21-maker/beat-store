@@ -33,7 +33,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
           <div className={`absolute inset-0 opacity-20 ${dot}`} style={{ filter: 'blur(40px)', transform: 'scale(2)' }} />
           <div className="relative z-10 flex flex-col items-center gap-1">
             <div className={`w-2 h-2 rounded-full ${dot}`} />
-            <span className="text-[9px] font-bold text-[#424245] uppercase tracking-[0.3em] mt-2">Featured</span>
+            <span className="text-[9px] font-bold text-[var(--muted-low)] uppercase tracking-[0.3em] mt-2">Featured</span>
             <span className="text-[11px] font-semibold text-[#f5f5f7] uppercase tracking-wider mt-0.5">
               {beat.genre === 'R&B' ? 'R&B' : beat.genre}
             </span>
@@ -43,7 +43,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
         {/* Info */}
         <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 gap-5">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#424245] mb-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted-low)] mb-2">
               Featured Track
             </p>
             <h2 className="text-xl font-bold text-[#f5f5f7] leading-tight sm:text-2xl">
@@ -78,7 +78,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
               disabled={inCart}
               className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-all ${
                 inCart
-                  ? 'bg-white/[0.06] text-[#424245] cursor-default px-4 py-2'
+                  ? 'bg-white/[0.06] text-[var(--muted-low)] cursor-default px-4 py-2'
                   : 'bg-white text-black hover:bg-[#e8e8ed] hover:scale-105 px-4 py-2'
               }`}
             >

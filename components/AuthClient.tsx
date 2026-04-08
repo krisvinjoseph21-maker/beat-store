@@ -77,23 +77,33 @@ export default function AuthClient() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <input
-          required
-          type="email"
-          placeholder="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
-        />
-        <input
-          required
-          type="password"
-          placeholder="Password"
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500 transition-colors"
-        />
+        <div>
+          <label htmlFor="auth-email" className="sr-only">Email address</label>
+          <input
+            id="auth-email"
+            required
+            type="email"
+            placeholder="Email address"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+          />
+        </div>
+        <div>
+          <label htmlFor="auth-password" className="sr-only">Password</label>
+          <input
+            id="auth-password"
+            required
+            type="password"
+            placeholder="Password"
+            autoComplete={tab === 'login' ? 'current-password' : 'new-password'}
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+          />
+        </div>
 
         {error && <p className="text-sm text-red-400 text-center">{error}</p>}
         {message && <p className="text-sm text-emerald-400 text-center">{message}</p>}
@@ -107,7 +117,7 @@ export default function AuthClient() {
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs text-zinc-600">
+      <p className="mt-5 text-center text-xs text-[#767676]">
         {tab === 'login' ? "Don't have an account? " : 'Already have an account? '}
         <button
           type="button"

@@ -15,10 +15,10 @@ function formatTime(s: number) {
 }
 
 const GENRE_DOT: Record<string, string> = {
-  Trap:      'bg-red-500',
-  Drill:     'bg-blue-500',
-  'R&B':     'bg-purple-500',
-  Afrobeats: 'bg-emerald-500',
+  Trap:      'bg-[#6b2e1e]',  // dark brick — raw, hard
+  Drill:     'bg-[#1a3348]',  // midnight steel — cold, sharp
+  'R&B':     'bg-[#422038]',  // deep plum — smooth, sensual
+  Afrobeats: 'bg-[#6b4e18]',  // dark earth amber — warm, rhythmic
 }
 
 export default function BottomPlayer() {
@@ -92,6 +92,7 @@ export default function BottomPlayer() {
     <>
       <audio
         ref={audioRef}
+        aria-hidden="true"
         onTimeUpdate={(e) => {
           const t = (e.target as HTMLAudioElement).currentTime
           setProgress(t)
@@ -106,7 +107,7 @@ export default function BottomPlayer() {
         onError={() => setPlaying(false)}
       />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-fade-in">
+      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-fade-in" role="region" aria-label="Music player">
         {/* Progress bar */}
         <div className="relative h-px w-full bg-white/[0.06]">
           <div
@@ -131,7 +132,7 @@ export default function BottomPlayer() {
           />
         </div>
 
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" style={{ height: '63px' }}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-8" style={{ height: '63px' }}>
 
           {/* Left — artwork + beat info */}
           <div className="flex min-w-0 items-center gap-3 flex-1">
@@ -164,10 +165,10 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-1">
             <button
               onClick={playPrev}
-              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label="Previous"
             >
-              <SkipBack size={15} />
+              <SkipBack size={15} aria-hidden="true" />
             </button>
 
             {previewEnded ? (
@@ -182,33 +183,33 @@ export default function BottomPlayer() {
               <button
                 onClick={togglePlay}
                 disabled={!currentBeat?.preview_url}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
-                {isPlaying ? <Pause size={16} fill="black" /> : <Play size={16} fill="black" />}
+                {isPlaying ? <Pause size={16} fill="black" aria-hidden="true" /> : <Play size={16} fill="black" aria-hidden="true" />}
               </button>
             )}
 
             <button
               onClick={playNext}
-              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label="Next"
             >
-              <SkipForward size={15} />
+              <SkipForward size={15} aria-hidden="true" />
             </button>
           </div>
 
           {/* Right — time + volume */}
           <div className="flex items-center gap-3 flex-1 justify-end">
-            <span className="hidden sm:block text-[10px] text-[#424245] tabular-nums">
+            <span className="hidden sm:block text-[10px] text-[#767676] tabular-nums">
               {formatTime(cappedProgress)} / {formatTime(Math.min(duration || 0, PREVIEW_LIMIT))}
             </span>
             <button
               onClick={toggleMute}
-              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label={muted ? 'Unmute' : 'Mute'}
             >
-              {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
+              {muted || volume === 0 ? <VolumeX size={13} aria-hidden="true" /> : <Volume2 size={13} aria-hidden="true" />}
             </button>
             <input
               type="range"

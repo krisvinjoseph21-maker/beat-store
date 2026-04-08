@@ -169,7 +169,7 @@ export default function ServicesClient() {
                     type="text"
                     value={form.artistName}
                     onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors"
                     placeholder="Your artist name"
                   />
                 </div>
@@ -182,7 +182,7 @@ export default function ServicesClient() {
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -205,7 +205,7 @@ export default function ServicesClient() {
                     rows={6}
                     value={form.projectDetails}
                     onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors resize-none"
+                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors resize-none"
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>

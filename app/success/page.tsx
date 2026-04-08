@@ -13,7 +13,7 @@ export default function SuccessPage() {
       <p className="mb-2 max-w-md text-zinc-400">
         Your payment was successful. Check your email for a secure download link.
       </p>
-      <p className="mb-8 text-xs text-zinc-600">
+      <p className="mb-8 text-xs text-[#767676]">
         The download link expires in 48 hours and is one-time use only.
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">

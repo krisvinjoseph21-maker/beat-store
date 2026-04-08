@@ -76,7 +76,7 @@ export default function BookingForm() {
   }
 
   const inputClass =
-    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors'
+    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors'
   const selectClass =
     'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white outline-none focus:border-zinc-400 transition-colors appearance-none'
   const labelClass = 'block text-sm font-semibold text-zinc-300 mb-2'
@@ -194,7 +194,7 @@ export default function BookingForm() {
       <div>
         <label className={labelClass}>
           Reference Tracks{' '}
-          <span className="text-zinc-600 font-normal">(optional)</span>
+          <span className="text-[#767676] font-normal">(optional)</span>
         </label>
         <textarea
           rows={4}
@@ -202,7 +202,7 @@ export default function BookingForm() {
           value={form.referenceTracks}
           onChange={set('referenceTracks')}
           maxLength={2000}
-          className="w-full resize-none rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-zinc-600 outline-none focus:border-zinc-400 transition-colors"
+          className="w-full resize-none rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors"
         />
       </div>
 

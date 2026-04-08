@@ -134,7 +134,7 @@ export default async function HomePage() {
             {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
               <span key={i} className="inline-flex items-center">
                 <span
-                  className="text-[8px] font-medium tracking-[0.22em] uppercase pr-5 text-[#424245]"
+                  className="text-[8px] font-medium tracking-[0.22em] uppercase pr-5 text-[#767676]"
                   style={{ fontFamily: 'var(--font-inter)' }}
                 >
                   {item}
@@ -160,7 +160,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
                 Fresh Off the DAW
               </p>
               <h2 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">
@@ -183,7 +183,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
           <div className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
                 Verified Credits
               </p>
               <h2 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">
@@ -194,7 +194,7 @@ export default async function HomePage() {
               {[{ v: '5+', l: 'Placements' }, { v: '4', l: 'Genres' }].map(({ v, l }) => (
                 <div key={l} className="flex flex-col">
                   <span className="font-display text-4xl text-[#6e6e73] leading-none">{v}</span>
-                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] mt-1.5 text-[#424245]">{l}</span>
+                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] mt-1.5 text-[#767676]">{l}</span>
                 </div>
               ))}
             </div>
@@ -206,7 +206,7 @@ export default async function HomePage() {
                 key={artist + song}
                 className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-[#0a0a0a] transition-colors duration-200"
               >
-                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#424245]">
+                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#767676]">
                   {role}
                 </span>
                 <div>
@@ -215,10 +215,10 @@ export default async function HomePage() {
                 </div>
                 {spotifyId && <SpotifyEmbed trackId={spotifyId} />}
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.06]">
-                  <span className="text-[11px] text-[#424245]">{detail}</span>
+                  <span className="text-[11px] text-[#767676]">{detail}</span>
                   <div className="flex items-center gap-1">
-                    {role !== 'Unreleased' && <BadgeCheck size={11} className="text-[#424245]" />}
-                    <span className="text-[9px] text-[#424245]">
+                    {role !== 'Unreleased' && <BadgeCheck size={11} className="text-[#767676]" />}
+                    <span className="text-[9px] text-[#767676]">
                       {role === 'Unreleased' ? 'Unreleased' : 'Verified'}
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export default async function HomePage() {
             background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
           }}
         />
-        <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-[#424245] mb-5">
+        <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-5">
           Don&apos;t Sleep
         </p>
         <h2
@@ -256,7 +256,7 @@ export default async function HomePage() {
         >
           Shop Beats
         </Link>
-        <p className="relative mt-5 text-[11px] text-[#424245]">
+        <p className="relative mt-5 text-[11px] text-[#767676]">
           From $29.99 · Instant Download · All Licenses Available
         </p>
       </section>

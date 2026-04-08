@@ -36,7 +36,7 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
       <div className="mb-6 flex justify-end">
         <button
           onClick={handleSignOut}
-          className="text-xs text-zinc-600 hover:text-white transition-colors"
+          className="text-xs text-[#767676] hover:text-white transition-colors"
         >
           Sign out
         </button>
@@ -44,15 +44,15 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
 
       {purchases.length === 0 ? (
         <div className="rounded-xl border border-[#1a1a1a] py-16 text-center">
-          <ShoppingBag size={32} className="mx-auto mb-3 text-zinc-700" />
+          <ShoppingBag size={32} className="mx-auto mb-3 text-[#767676]" />
           <p className="font-semibold text-zinc-400">No purchases yet</p>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-[#767676]">
             Your orders will appear here after checkout.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="mb-4 text-xs uppercase tracking-widest text-zinc-600">
+          <p className="mb-4 text-xs uppercase tracking-widest text-[#767676]">
             {purchases.length} order{purchases.length !== 1 ? 's' : ''}
           </p>
           {purchases.map((p) => (
