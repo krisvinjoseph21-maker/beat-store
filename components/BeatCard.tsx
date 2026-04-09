@@ -79,7 +79,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
       {/* ── Main row ─────────────────────────────────────────── */}
       <div
-        className="bg-black transition-colors duration-150 border-b border-[#1a1a1a] relative hover:bg-[#0d0d0d] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
+        className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
         onClick={() => setLicenseOpen(o => !o)}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLicenseOpen(o => !o) } }}
         tabIndex={0}
@@ -106,7 +106,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 hover:bg-[#252525] active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
+            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-[#252525] active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{ width: '44px', height: '44px' }}
           >
             {isThisPlaying
@@ -183,7 +183,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 aria-label={`Add ${beat.title} to cart`}
                 className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-90 shrink-0"
-                style={{ background: '#e8e8e8', color: '#111111', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
+                style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
               >
                 <ShoppingCart size={12} aria-hidden="true" />
                 $34.99
@@ -192,7 +192,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
             <button
               onClick={handleFavorite}
-              className="flex h-11 w-11 sm:h-7 sm:w-7 items-center justify-center hover:opacity-70 transition-opacity"
+              className="flex h-11 w-11 items-center justify-center hover:opacity-70 transition-opacity"
               aria-label={favorited ? 'Unfavorite' : 'Favorite'}
             >
               <Heart
@@ -211,7 +211,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         </div>
 
         {/* Progress bar — decorative, BottomPlayer is the authoritative audio interface */}
-        <div className="h-[2px] bg-[#1a1a1a] w-full relative" aria-hidden="true">
+        <div className="h-[2px] bg-line w-full relative" aria-hidden="true">
           <div
             className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
             style={{ width: `${progressPct}%`, background: isThisActive ? 'var(--accent-dim)' : 'rgba(255,255,255,0.3)' }}
@@ -223,14 +223,14 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
       <div className={`license-drawer-grid${licenseOpen ? ' is-open' : ''}`}>
         <div className="license-drawer-inner">
         <div
-          className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#0d0d0d] border-b border-[#1a1a1a] p-4 sm:pl-[100px] sm:pr-10 sm:py-4"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-surface-2 border-b border-line p-4 sm:pl-[72px] sm:pr-10 sm:py-4"
         >
           {LICENSE_OPTIONS.map((opt, i) =>
             opt.id === null ? (
               <Link
                 key={i}
                 href="/about"
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col hover:border-[#2a2a2a] hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
+                className="bg-surface-1 border border-line flex flex-col hover:border-line-input hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
                 style={{ padding: '14px 16px' }}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -254,7 +254,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 key={i}
                 onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
-                className="bg-[#111] border border-[#1a1a1a] flex flex-col text-left hover:border-[#2a2a2a] transition-colors min-h-[145px]"
+                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input transition-colors min-h-[145px]"
                 style={{ padding: '14px 16px' }}
               >
                 <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>

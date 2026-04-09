@@ -22,7 +22,7 @@ export default function EmailSignup() {
   if (submitted) {
     return (
       <div className="flex flex-col items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-line-input bg-surface-1">
           <Check size={20} className="text-white" />
         </div>
         <p className="text-sm font-bold text-white">You&apos;re in — check your inbox.</p>
@@ -40,7 +40,7 @@ export default function EmailSignup() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           required
-          className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+          className="flex-1 rounded-sm border border-line-input bg-surface-1 px-4 py-3.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
         />
         <button
           type="submit"

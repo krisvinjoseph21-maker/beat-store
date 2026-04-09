@@ -128,7 +128,7 @@ export default async function HomePage() {
           <div className="hero-ctas flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/store"
-              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold tracking-tight transition-all hover:bg-[#e8e8ed] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold tracking-tight transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
               style={{ padding: '11px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Shop Beats
@@ -224,7 +224,7 @@ export default async function HomePage() {
             {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
-                className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-[#0a0a0a] transition-colors duration-200 h-full"
+                className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-surface-3 transition-colors duration-200 h-full"
               >
                 <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-low">
                   {role}
@@ -273,7 +273,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/store"
-            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-[#e8e8ed] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
             style={{ padding: '13px 36px', fontFamily: 'var(--font-inter)' }}
           >
             Shop Beats

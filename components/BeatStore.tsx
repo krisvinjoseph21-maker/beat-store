@@ -46,11 +46,11 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
-        className="w-full appearance-none border border-[#2a2a2a] bg-[#111] py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-[#3a3a3a]"
+        className="w-full appearance-none border border-line-input bg-surface-1 py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-[#3a3a3a]"
         style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
-          <option key={o.value} value={o.value} className="bg-[#111]">
+          <option key={o.value} value={o.value} className="bg-surface-1">
             {o.label}
           </option>
         ))}
@@ -157,7 +157,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-muted-low"
+          className="w-full border border-line-input bg-surface-1 py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-muted-low"
           style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
         />
       </div>
@@ -193,7 +193,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           className="flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0"
           style={{
             borderColor: favoritesOnly ? '#e01f1f' : '#2a2a2a',
-            background: favoritesOnly ? 'rgba(224,31,31,0.1)' : '#111',
+            background: favoritesOnly ? 'rgba(224,31,31,0.1)' : 'var(--surface-1)',
             color: favoritesOnly ? '#e01f1f' : '#888',
             fontFamily: 'var(--font-montserrat)',
           }}
@@ -206,15 +206,15 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       {/* Beat list */}
       {filtered.length === 0 ? (
         <div
-          className="flex h-40 items-center justify-center border border-[#1a1a1a] text-[13px]"
+          className="flex h-40 items-center justify-center border border-line text-[13px]"
           style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
         >
           No beats found. Try a different filter.
         </div>
       ) : (
-        <div className="border border-[#1a1a1a]">
+        <div className="border border-line">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-[#1a1a1a] bg-black">
+          <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
             <span className="w-6 flex-shrink-0" />
             <span className="w-11 flex-shrink-0" />
             <span

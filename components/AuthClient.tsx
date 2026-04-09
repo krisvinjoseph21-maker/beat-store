@@ -61,7 +61,7 @@ export default function AuthClient() {
   return (
     <div className="mx-auto w-full max-w-sm">
       {/* Tab switcher */}
-      <div className="mb-6 flex rounded-lg border border-[#1f1f1f] p-0.5">
+      <div className="mb-6 flex rounded-lg border border-line-card p-0.5">
         {(['login', 'signup'] as const).map((t) => (
           <button
             key={t}
@@ -87,7 +87,7 @@ export default function AuthClient() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+            className="w-full rounded-sm border border-line-card bg-surface-1 px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
           />
         </div>
         <div>
@@ -101,7 +101,7 @@ export default function AuthClient() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+            className="w-full rounded-sm border border-line-card bg-surface-1 px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
           />
         </div>
 
@@ -111,7 +111,7 @@ export default function AuthClient() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-sm bg-white py-3 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
+          className="w-full rounded-sm bg-white py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
         >
           {loading ? '…' : tab === 'login' ? 'Sign In' : 'Create Account'}
         </button>

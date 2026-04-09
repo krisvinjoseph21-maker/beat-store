@@ -77,7 +77,7 @@ export default function Navbar() {
 
             <Link
               href="/store"
-              className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-all hover:bg-[#e8e8ed] active:scale-95"
+              className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-all hover:bg-white-hover active:scale-95"
               style={{ padding: '6px 16px', letterSpacing: '0.01em' }}
             >
               Shop Beats

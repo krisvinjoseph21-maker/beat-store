@@ -76,9 +76,9 @@ export default function BookingForm() {
   }
 
   const inputClass =
-    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors'
+    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors'
   const selectClass =
-    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white outline-none focus:border-muted transition-colors appearance-none'
+    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white outline-none focus:border-muted transition-colors appearance-none'
   const labelClass = 'block text-sm font-semibold text-foreground mb-2 cursor-pointer'
 
   if (sent) {
@@ -94,7 +94,7 @@ export default function BookingForm() {
         </p>
         <button
           onClick={() => { setSent(false); setForm(EMPTY) }}
-          className="mt-8 rounded border border-[#2a2a2a] px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
+          className="mt-8 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
         >
           Submit Another Request
         </button>
@@ -209,7 +209,7 @@ export default function BookingForm() {
           value={form.referenceTracks}
           onChange={set('referenceTracks')}
           maxLength={2000}
-          className="w-full resize-none rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+          className="w-full resize-none rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
         />
       </div>
 
@@ -218,7 +218,7 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={sending}
-        className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
+        className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
       >
         {sending ? 'Sending…' : 'Submit Booking Request'}
       </button>

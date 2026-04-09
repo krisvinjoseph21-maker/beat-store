@@ -25,11 +25,11 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
+    <div className="w-full rounded-2xl border border-white/[0.08] bg-surface-3 overflow-hidden">
       <div className="relative flex flex-col sm:flex-row items-stretch">
 
         {/* Artwork slab */}
-        <div className="w-full sm:w-40 h-32 sm:h-auto flex-shrink-0 flex flex-col items-center justify-center select-none bg-[#111] relative overflow-hidden">
+        <div className="w-full sm:w-40 h-32 sm:h-auto flex-shrink-0 flex flex-col items-center justify-center select-none bg-surface-1 relative overflow-hidden">
           <div className={`absolute inset-0 opacity-20 ${dot}`} style={{ filter: 'blur(40px)', transform: 'scale(2)' }} />
           <div className="relative z-10 flex flex-col items-center gap-1">
             <div className={`w-2 h-2 rounded-full ${dot}`} />
@@ -65,7 +65,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
               aria-label={isThisPlaying ? 'Pause' : 'Play'}
             >
               {isThisPlaying
@@ -79,7 +79,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
               className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-all ${
                 inCart
                   ? 'bg-white/[0.06] text-[var(--muted-low)] cursor-default px-4 py-2'
-                  : 'bg-white text-black hover:bg-[#e8e8ed] hover:scale-105 px-4 py-2'
+                  : 'bg-white text-black hover:bg-white-hover hover:scale-105 px-4 py-2'
               }`}
             >
               {inCart

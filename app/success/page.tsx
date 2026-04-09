@@ -19,13 +19,13 @@ export default function SuccessPage() {
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
           href="/store"
-          className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors"
+          className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors"
         >
           Shop More Beats
         </Link>
         <Link
           href="/"
-          className="rounded-xl border border-[#2a2a2a] px-6 py-3.5 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
+          className="rounded-xl border border-line-input px-6 py-3.5 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
         >
           Back to Home
         </Link>

@@ -43,7 +43,7 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
       </div>
 
       {purchases.length === 0 ? (
-        <div className="rounded-xl border border-[#1a1a1a] py-16 text-center">
+        <div className="rounded-xl border border-line py-16 text-center">
           <ShoppingBag size={32} className="mx-auto mb-3 text-muted-low" />
           <p className="font-semibold text-muted-mid">No purchases yet</p>
           <p className="mt-1 text-sm text-muted-low">
@@ -58,7 +58,7 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
           {purchases.map((p) => (
             <div
               key={p.id}
-              className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5 text-left"
+              className="rounded-xl border border-line bg-surface-2 p-5 text-left"
             >
               <div className="flex items-center gap-2 mb-2">
                 <Music size={14} className="flex-shrink-0 text-muted" />

@@ -25,13 +25,13 @@ export default function GlobalError({ error, reset }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={reset}
-          className="inline-flex items-center gap-2 rounded-sm bg-white px-6 py-3 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors"
+          className="inline-flex items-center gap-2 rounded-sm bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors"
         >
           <RefreshCw size={14} /> Try Again
         </button>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-sm border border-[#2a2a2a] px-6 py-3 text-sm font-semibold text-muted-mid hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 rounded-sm border border-line-input px-6 py-3 text-sm font-semibold text-muted-mid hover:text-white transition-colors"
         >
           <ArrowLeft size={14} /> Home
         </Link>

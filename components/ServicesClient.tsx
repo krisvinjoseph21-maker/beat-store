@@ -90,7 +90,7 @@ export default function ServicesClient() {
         {SERVICES.map((svc) => (
           <div
             key={svc.id}
-            className="relative rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 flex flex-col"
+            className="relative rounded-2xl border border-line-card bg-surface-1 p-6 flex flex-col"
           >
             {svc.badge && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-black">
@@ -113,7 +113,7 @@ export default function ServicesClient() {
             </ul>
             <button
               onClick={() => openInquiry(svc.id, svc.title)}
-              className="mt-6 w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors min-h-[48px]"
+              className="mt-6 w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[48px]"
             >
               Book a Session
             </button>
@@ -128,7 +128,7 @@ export default function ServicesClient() {
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setActiveService(null)}
           />
-          <div className="relative w-full sm:max-w-xl rounded-t-xl sm:rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-7 animate-fade-in max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full sm:max-w-xl rounded-t-xl sm:rounded-xl border border-line-card bg-surface-2 p-7 animate-fade-in max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black text-white">Book a Session</h3>
@@ -153,7 +153,7 @@ export default function ServicesClient() {
                 </p>
                 <button
                   onClick={() => setActiveService(null)}
-                  className="mt-6 rounded border border-[#2a2a2a] px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
+                  className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
                 >
                   Close
                 </button>
@@ -169,7 +169,7 @@ export default function ServicesClient() {
                     type="text"
                     value={form.artistName}
                     onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                     placeholder="Your artist name"
                   />
                 </div>
@@ -182,7 +182,7 @@ export default function ServicesClient() {
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -193,7 +193,7 @@ export default function ServicesClient() {
                   <input
                     readOnly
                     value={form.serviceType}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed"
+                    className="w-full rounded border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed"
                   />
                 </div>
                 <div>
@@ -205,7 +205,7 @@ export default function ServicesClient() {
                     rows={6}
                     value={form.projectDetails}
                     onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))}
-                    className="w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function ServicesClient() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
+                  className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
                 >
                   {sending ? 'Sending…' : 'Send Inquiry'}
                 </button>

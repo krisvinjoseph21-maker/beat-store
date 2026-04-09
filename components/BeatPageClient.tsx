@@ -35,7 +35,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
         <ArrowLeft size={13} /> Back to Store
       </Link>
 
-      <div className="rounded-sm border border-[#1a1a1a] bg-[#0d0d0d] overflow-hidden">
+      <div className="rounded-sm border border-line bg-surface-2 overflow-hidden">
         {/* Artwork banner */}
         <div className={`${genreBg} h-40 flex items-center justify-center select-none`}>
           <span className="text-4xl font-black text-white/20 uppercase tracking-widest">
@@ -72,7 +72,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               {isThisPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}
             </button>
@@ -81,7 +81,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
               onClick={() => addBeat(beat)}
               disabled={inCart}
               className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-5 py-3 text-sm font-bold transition-colors ${
-                inCart ? 'bg-white/10 text-muted-mid cursor-default' : 'bg-white text-black hover:bg-[#e8e8ed]'
+                inCart ? 'bg-white/10 text-muted-mid cursor-default' : 'bg-white text-black hover:bg-white-hover'
               }`}
             >
               {inCart ? <><Check size={15} /> Added to Cart</> : <><ShoppingCart size={15} /> Add to Cart — From $75</>}

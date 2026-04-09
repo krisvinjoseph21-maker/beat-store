@@ -12,6 +12,19 @@
   --player-height: 64px;
   --accent: #c8a86a;
   --accent-dim: rgba(200,168,106,0.6);
+
+  /* ── Surface scale ──────────────────────────────── */
+  --surface-1: #111111;   /* Component BG: inputs, cards, option tiles */
+  --surface-2: #0d0d0d;   /* Deeper BG: modals, drawers, license panel */
+  --surface-3: #0a0a0a;   /* Featured sections, elevated cards */
+
+  /* ── Line / border scale ────────────────────────── */
+  --line:       #1a1a1a;  /* Beat-row separators, list containers */
+  --line-card:  #1f1f1f;  /* Card / modal borders */
+  --line-input: #2a2a2a;  /* Form input & interactive borders */
+
+  /* ── Interactive ────────────────────────────────── */
+  --white-hover: #e8e8ed; /* White CTA hover state */
 }
 
 /* ── Tailwind v4 theme tokens ─────────────────────── */
@@ -22,6 +35,19 @@
   --color-muted-low: #767676;
   --color-accent: #c8a86a;
   --color-accent-dim: rgba(200,168,106,0.6);
+
+  /* Surfaces */
+  --color-surface-1: #111111;
+  --color-surface-2: #0d0d0d;
+  --color-surface-3: #0a0a0a;
+
+  /* Lines */
+  --color-line:       #1a1a1a;
+  --color-line-card:  #1f1f1f;
+  --color-line-input: #2a2a2a;
+
+  /* Interactive */
+  --color-white-hover: #e8e8ed;
 }
 
 * {

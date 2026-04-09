@@ -39,7 +39,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
   }
 
   return (
-    <div className="mt-4 rounded-sm border border-[#1f1f1f] overflow-hidden">
+    <div className="mt-4 rounded-sm border border-line-card overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -60,7 +60,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
       </button>
 
       {open && (
-        <div className="border-t border-[#1f1f1f] px-5 py-5 bg-[#080808]">
+        <div className="border-t border-line-card px-5 py-5 bg-[#080808]">
           {sent ? (
             <div className="text-center py-4">
               <p className="text-emerald-400 font-semibold text-sm">Offer sent!</p>
@@ -78,7 +78,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   value={artistName}
                   onChange={(e) => setArtistName(e.target.value)}
                   maxLength={100}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  className="rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
                 <input
                   required
@@ -86,7 +86,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  className="rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 
@@ -100,7 +100,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your offer (e.g. 500)"
                   value={offerPrice}
                   onChange={(e) => setOfferPrice(e.target.value)}
-                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  className="w-full rounded-sm border border-line-input bg-surface-1 pl-7 pr-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1000}
                 rows={2}
-                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                className="w-full resize-none rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
               />
 
               {error && <p className="text-xs text-red-400">{error}</p>}

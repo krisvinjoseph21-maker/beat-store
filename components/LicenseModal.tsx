@@ -115,7 +115,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="license-modal-title"
-        className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-[#1f1f1f] bg-[#0d0d0d] p-5 animate-fade-in max-h-[90vh] overflow-y-auto"
+        className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-line-card bg-surface-2 p-5 animate-fade-in max-h-[90vh] overflow-y-auto"
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 id="license-modal-title" className="text-lg font-bold text-white">Choose Your License</h2>
@@ -141,7 +141,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         )}
 
         {/* License tabs */}
-        <div className="mb-4 flex rounded-sm border border-[#1f1f1f] p-0.5">
+        <div className="mb-4 flex rounded-sm border border-line-card p-0.5">
           {(['standard', 'unlimited'] as LicenseType[]).map((type) => (
             <button
               key={type}
@@ -183,7 +183,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 className={`rounded-sm border py-3 text-center transition-all ${
                   quantityTier === qty
                     ? 'border-accent bg-accent/10 text-white'
-                    : 'border-[#2a2a2a] text-muted-mid hover:border-muted hover:text-white'
+                    : 'border-line-input text-muted-mid hover:border-muted hover:text-white'
                 }`}
               >
                 <p className="text-lg font-bold">{qty}</p>
@@ -225,11 +225,11 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 autoComplete="off"
                 aria-describedby={codeError ? 'discount-code-error' : undefined}
                 aria-invalid={!!codeError}
-                className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                className="flex-1 rounded-sm border border-line-input bg-surface-2 px-3 py-2 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
               />
               <button
                 onClick={handleApplyCode}
-                className="rounded-sm border border-[#2a2a2a] px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
+                className="rounded-sm border border-line-input px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
               >
                 Apply
               </button>
@@ -241,7 +241,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* CTA */}
         <button
           onClick={() => onCheckout(appliedCode)}
-          className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-[#e8e8ed] transition-colors"
+          className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors"
         >
           {discountPct !== null ? (
             <>
