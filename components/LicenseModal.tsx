@@ -1,7 +1,7 @@
 'use client'
 
 import { X, Check } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useCartStore, LicenseType, QuantityTier } from '@/lib/store'
 import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
 
@@ -39,6 +39,40 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const [appliedCode, setAppliedCode] = useState('')
   const [discountPct, setDiscountPct] = useState<number | null>(null)
   const [codeError, setCodeError] = useState('')
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  // Focus trap: run on mount (only renders when open=true)
+  useEffect(() => {
+    if (!open) return
+    const modal = modalRef.current
+    if (!modal) return
+
+    const previousFocus = document.activeElement as HTMLElement | null
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+    // Focus first element on open
+    const first = modal.querySelector<HTMLElement>(FOCUSABLE)
+    first?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = Array.from(modal!.querySelectorAll<HTMLElement>(FOCUSABLE))
+      const firstEl = focusable[0]
+      const lastEl  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) { e.preventDefault(); lastEl?.focus() }
+      } else {
+        if (document.activeElement === lastEl)  { e.preventDefault(); firstEl?.focus() }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      previousFocus?.focus()
+    }
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!open) return null
 
@@ -77,6 +111,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
       {/* Modal */}
       <div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="license-modal-title"

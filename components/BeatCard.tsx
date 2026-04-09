@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, Heart, Play, Pause } from 'lucide-react'
+import { Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import ShareButton from './ShareButton'
 import Link from 'next/link'
@@ -163,35 +163,30 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Price + CTA + icons */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-            <div
-              className="whitespace-nowrap hidden sm:block"
-              style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '14px', fontWeight: 600, color: 'var(--accent)' }}
-            >
-              from $34.99
-            </div>
-
             {inCart ? (
               <button
                 onClick={handleAddToCart}
                 aria-label={`${beat.title} — already in cart`}
-                className="flex items-center gap-1 h-[44px] sm:h-[30px] px-4 sm:px-5 text-[10px] font-bold tracking-[1.1px] uppercase transition-all hover:opacity-80"
-                style={{ color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', background: 'rgba(255,255,255,0.1)' }}
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-80 shrink-0"
+                style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
               >
                 <Check
-                  size={10}
+                  size={11}
                   className={showCheckAnim ? 'animate-check-in' : ''}
                   onAnimationEnd={() => setShowCheckAnim(false)}
                   aria-hidden="true"
-                /> In Cart
+                />
+                In Cart
               </button>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 aria-label={`Add ${beat.title} to cart`}
-                className="text-white text-[10px] font-bold uppercase px-4 sm:px-5 h-[44px] sm:h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
-                style={{ background: '#ffffff', color: '#000000', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '11px', fontWeight: 700 }}
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-90 shrink-0"
+                style={{ background: '#e8e8e8', color: '#111111', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
               >
-                Add to Cart
+                <ShoppingCart size={12} aria-hidden="true" />
+                $34.99
               </button>
             )}
 
@@ -215,8 +210,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="h-[2px] bg-[#1a1a1a] w-full relative">
+        {/* Progress bar — decorative, BottomPlayer is the authoritative audio interface */}
+        <div className="h-[2px] bg-[#1a1a1a] w-full relative" aria-hidden="true">
           <div
             className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
             style={{ width: `${progressPct}%`, background: isThisActive ? 'var(--accent-dim)' : 'rgba(255,255,255,0.3)' }}

@@ -40,7 +40,7 @@ export default function NavAuthButton() {
     <Link
       href="/purchases"
       className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-      title={user.email}
+      aria-label={`My Purchases (${user.email})`}
     >
       <User size={15} className="text-white" />
     </Link>

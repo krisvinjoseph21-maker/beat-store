@@ -112,7 +112,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={sending}
-          className="bg-white text-black text-[12px] font-bold uppercase tracking-[1px] px-8 py-3.5 hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
+          className="bg-white text-black text-[12px] font-bold uppercase px-8 py-3.5 hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
           style={{ fontFamily: 'var(--font-montserrat)' }}
         >
           {sending ? 'Sending…' : 'Send Message'}

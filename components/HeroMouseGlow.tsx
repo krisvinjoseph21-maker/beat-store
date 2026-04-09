@@ -6,6 +6,8 @@ export default function HeroMouseGlow() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const el = ref.current
     if (!el) return
     const section = el.parentElement
