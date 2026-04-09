@@ -1,50 +1,21 @@
 import type { Metadata } from 'next'
-import AboutClient from '@/components/AboutClient'
+import ContactForm from '@/components/AboutClient'
 
 export const metadata: Metadata = {
-  title: 'About — PRODKJBEATS',
-  description: 'Learn about PRODKJBEATS and get in touch.',
+  title: 'Contact — PRODKJBEATS',
+  description: 'Get in touch with PRODKJBEATS.',
 }
 
-export default function AboutPage() {
+export default function ContactPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 py-16">
-      <div className="mb-12">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
-          The Producer
-        </p>
-        <h1 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">About.</h1>
-      </div>
-
-      {/* Bio */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#0a0a0a] p-8 sm:p-10 mb-8">
-        <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-white/[0.06] text-2xl">
-            🎹
-          </div>
-          <div>
-            <h2 className="text-[17px] font-semibold text-foreground mb-0.5">PRODKJBEATS</h2>
-            <p className="text-[12px] text-muted-low mb-5">Producer · Mixer · Sound Designer</p>
-            <div className="space-y-3 text-[14px] text-muted leading-[1.7]">
-              <p>
-                PRODKJBEATS is an independent producer specializing in trap, drill, R&amp;B, and Afrobeats.
-                With years of experience crafting high-quality instrumentals, every beat is designed to
-                give artists the foundation they need to create their best work.
-              </p>
-              <p>
-                From dark, hard-hitting 808 trap to smooth neo-soul R&amp;B and infectious Afrobeats grooves —
-                the catalog has something for every artist and every moment.
-              </p>
-              <p>
-                Available for custom beat production, mixing, and mastering. Reach out below to discuss
-                your project.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <AboutClient />
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-24">
+      <h1
+        className="font-display uppercase text-foreground mb-20 text-center leading-none"
+        style={{ fontSize: 'clamp(56px, 10vw, 128px)' }}
+      >
+        Get in Touch.
+      </h1>
+      <ContactForm />
     </div>
   )
 }

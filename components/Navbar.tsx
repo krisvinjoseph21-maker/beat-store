@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: '/store',    label: 'Beats'     },
   { href: '/services', label: 'Services'  },
   { href: '/licensing',label: 'Licensing' },
-  { href: '/about',    label: 'About'     },
+  { href: '/about',    label: 'Contact'   },
 ]
 
 export default function Navbar() {
