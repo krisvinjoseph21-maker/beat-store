@@ -32,11 +32,11 @@ export default function CookiesPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
           Legal
         </p>
         <h1 className="text-3xl font-black text-white sm:text-4xl">Cookie Preferences</h1>
-        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
+        <p className="mt-3 text-sm text-muted max-w-md mx-auto">
           We use cookies to keep the site running, understand usage, and remember your settings.
         </p>
       </div>
@@ -49,19 +49,19 @@ export default function CookiesPage() {
               <span
                 className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                   required
-                    ? 'bg-zinc-800 text-zinc-400'
-                    : 'bg-zinc-900 text-zinc-500'
+                    ? 'bg-[#1a1a1a] text-muted-mid'
+                    : 'bg-[#0d0d0d] text-muted'
                 }`}
               >
                 {required ? 'Always on' : 'Optional'}
               </span>
             </div>
-            <p className="text-sm text-zinc-500 leading-relaxed mb-3">{description}</p>
+            <p className="text-sm text-muted leading-relaxed mb-3">{description}</p>
             <div className="flex flex-wrap gap-2">
               {examples.map((ex) => (
                 <span
                   key={ex}
-                  className="text-xs bg-[#141414] border border-[#222] text-zinc-600 px-2 py-1 rounded-md"
+                  className="text-xs bg-[#141414] border border-[#222] text-muted-low px-2 py-1 rounded-md"
                 >
                   {ex}
                 </span>
@@ -71,10 +71,10 @@ export default function CookiesPage() {
         ))}
       </div>
 
-      <p className="mt-10 text-xs text-zinc-600 text-center leading-relaxed">
+      <p className="mt-10 text-xs text-muted-low text-center leading-relaxed">
         By continuing to use this site, you consent to our use of essential cookies. For questions,
         contact us through the{' '}
-        <a href="/about" className="underline hover:text-zinc-400 transition-colors">
+        <a href="/about" className="underline hover:text-muted-mid transition-colors">
           Services page
         </a>
         .

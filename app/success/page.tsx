@@ -10,22 +10,22 @@ export default function SuccessPage() {
         <Check size={40} className="text-green-400" />
       </div>
       <h1 className="mb-3 text-3xl font-black text-white">Order Confirmed!</h1>
-      <p className="mb-2 max-w-md text-zinc-400">
+      <p className="mb-2 max-w-md text-muted-mid">
         Your payment was successful. Check your email for a secure download link.
       </p>
-      <p className="mb-8 text-xs text-[#767676]">
+      <p className="mb-8 text-xs text-muted-low">
         The download link expires in 48 hours and is one-time use only.
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
           href="/store"
-          className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors"
+          className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors"
         >
           Shop More Beats
         </Link>
         <Link
           href="/"
-          className="rounded-xl border border-[#2a2a2a] px-6 py-3.5 text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors"
+          className="rounded-xl border border-[#2a2a2a] px-6 py-3.5 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
         >
           Back to Home
         </Link>

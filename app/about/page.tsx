@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-16">
+    <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 py-16">
       <div className="mb-12">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
           The Producer
         </p>
-        <h1 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">About.</h1>
+        <h1 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">About.</h1>
       </div>
 
       {/* Bio */}
@@ -23,9 +23,9 @@ export default function AboutPage() {
             🎹
           </div>
           <div>
-            <h2 className="text-[17px] font-semibold text-[#f5f5f7] mb-0.5">PRODKJBEATS</h2>
-            <p className="text-[12px] text-[#767676] mb-5">Producer · Mixer · Sound Designer</p>
-            <div className="space-y-3 text-[14px] text-[#6e6e73] leading-[1.7]">
+            <h2 className="text-[17px] font-semibold text-foreground mb-0.5">PRODKJBEATS</h2>
+            <p className="text-[12px] text-muted-low mb-5">Producer · Mixer · Sound Designer</p>
+            <div className="space-y-3 text-[14px] text-muted leading-[1.7]">
               <p>
                 PRODKJBEATS is an independent producer specializing in trap, drill, R&amp;B, and Afrobeats.
                 With years of experience crafting high-quality instrumentals, every beat is designed to

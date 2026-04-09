@@ -101,19 +101,19 @@ export default function LicensingPage() {
 
       {/* Header */}
       <div className="w-full border-b border-white/[0.06] bg-black">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-4">Beat Licensing</p>
-          <h1 className="font-display text-6xl sm:text-8xl text-[#f5f5f7] uppercase leading-none mb-5">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 py-20">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-4">Beat Licensing</p>
+          <h1 className="font-display text-6xl sm:text-8xl text-foreground uppercase leading-none mb-5">
             Choose Your License.
           </h1>
-          <p className="text-[14px] text-[#6e6e73] max-w-lg leading-[1.7]">
+          <p className="text-[14px] text-muted max-w-lg leading-[1.7]">
             Every license includes instant delivery to your inbox. All beats are non-exclusive unless purchased as Exclusive.
           </p>
         </div>
       </div>
 
       {/* Tier grid */}
-      <div className="mx-auto max-w-6xl px-6 lg:px-8 py-16">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TIERS.map((tier) => (
             <div
@@ -131,8 +131,8 @@ export default function LicensingPage() {
               <div className="flex flex-col gap-5 p-5 flex-1">
                 {/* Name + Price */}
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#767676] mb-2">{tier.name}</p>
-                  <p className="font-display text-4xl text-[#f5f5f7] leading-none">{tier.price}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-low mb-2">{tier.name}</p>
+                  <p className="font-display text-4xl text-foreground leading-none">{tier.price}</p>
                 </div>
 
                 {/* CTA */}
@@ -141,7 +141,7 @@ export default function LicensingPage() {
                   className={`inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[12px] font-semibold transition-all active:scale-95 ${
                     tier.tag
                       ? 'bg-white text-black hover:bg-[#e8e8ed]'
-                      : 'border border-white/[0.1] text-[#6e6e73] hover:border-white/25 hover:text-[#f5f5f7]'
+                      : 'border border-white/[0.1] text-muted hover:border-white/25 hover:text-foreground'
                   }`}
                 >
                   {tier.cta} <ArrowRight size={12} />
@@ -151,8 +151,8 @@ export default function LicensingPage() {
                 <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.06]">
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#767676]">{label}</span>
-                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-emerald-400' : 'text-[#a1a1a6]'}`}>
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-low">{label}</span>
+                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-emerald-400' : 'text-muted-mid'}`}>
                         {value === '✓' ? <Check size={13} className="text-emerald-400" /> : value}
                       </span>
                     </div>
@@ -165,19 +165,19 @@ export default function LicensingPage() {
       </div>
 
       {/* General rules */}
-      <div className="mx-auto max-w-6xl px-6 lg:px-8 pb-20">
-        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#767676]">General Rules</h2>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 pb-20">
+        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-low">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
             <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-[#050505] p-4">
-              <span className="mt-0.5 text-[#767676] text-[12px] flex-shrink-0">—</span>
-              <p className="text-[13px] text-[#6e6e73] leading-[1.6]">{rule}</p>
+              <span className="mt-0.5 text-muted-low text-[12px] flex-shrink-0">—</span>
+              <p className="text-[13px] text-muted leading-[1.6]">{rule}</p>
             </div>
           ))}
         </div>
-        <p className="mt-8 text-[12px] text-[#767676] text-center">
+        <p className="mt-8 text-[12px] text-muted-low text-center">
           Questions?{' '}
-          <Link href="/about" className="underline decoration-white/20 hover:text-[#6e6e73] transition-colors">
+          <Link href="/about" className="underline decoration-white/20 hover:text-muted transition-colors">
             Contact us here.
           </Link>
         </p>

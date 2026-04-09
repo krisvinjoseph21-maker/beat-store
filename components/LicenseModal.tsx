@@ -96,7 +96,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* Cart summary */}
         {items.length > 0 && (
           <div className="mb-4 rounded-sm bg-white/5 p-3">
-            <p className="text-xs text-zinc-400 mb-2 font-medium">IN CART</p>
+            <p className="text-xs text-muted-mid mb-2 font-medium">IN CART</p>
             {items.map(({ beat }) => (
               <p key={beat.id} className="text-sm text-white">
                 {beat.title}
@@ -115,7 +115,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                 licenseType === type
                   ? 'bg-white text-black'
-                  : 'text-zinc-400 hover:text-white'
+                  : 'text-muted-mid hover:text-white'
               }`}
             >
               {type === 'standard' ? 'Standard Lease' : 'Unlimited Lease'}
@@ -126,7 +126,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* Features */}
         <ul className="mb-4 space-y-1.5">
           {features.map((f) => (
-            <li key={f} className="flex items-center gap-2 text-sm text-zinc-300">
+            <li key={f} className="flex items-center gap-2 text-sm text-foreground">
               <Check size={14} className="text-green-400 flex-shrink-0" />
               {f}
             </li>
@@ -135,7 +135,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
         {/* Quantity tiers */}
         <div className="mb-5">
-          <p className="mb-2 text-xs font-medium text-zinc-400 uppercase tracking-wide">
+          <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
             Beat Quantity
           </p>
           <div className="grid grid-cols-3 gap-2">
@@ -147,12 +147,12 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 aria-label={`${qty} beat${qty > 1 ? 's' : ''} — $${PRICES[licenseType][qty]}`}
                 className={`rounded-sm border py-3 text-center transition-all ${
                   quantityTier === qty
-                    ? 'border-white bg-white/10 text-white'
-                    : 'border-[#2a2a2a] text-zinc-400 hover:border-zinc-500 hover:text-white'
+                    ? 'border-accent bg-accent/10 text-white'
+                    : 'border-[#2a2a2a] text-muted-mid hover:border-muted hover:text-white'
                 }`}
               >
                 <p className="text-lg font-bold">{qty}</p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted">
                   beat{qty > 1 ? 's' : ''}
                 </p>
                 <p className="text-sm font-semibold text-white mt-1">
@@ -172,7 +172,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               </p>
               <button
                 onClick={handleRemoveCode}
-                className="text-xs text-[#767676] hover:text-white transition-colors"
+                className="text-xs text-muted-low hover:text-white transition-colors"
               >
                 Remove
               </button>
@@ -190,11 +190,11 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 autoComplete="off"
                 aria-describedby={codeError ? 'discount-code-error' : undefined}
                 aria-invalid={!!codeError}
-                className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+                className="flex-1 rounded-sm border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
               />
               <button
                 onClick={handleApplyCode}
-                className="rounded-sm border border-[#2a2a2a] px-4 py-2 text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors"
+                className="rounded-sm border border-[#2a2a2a] px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
               >
                 Apply
               </button>
@@ -206,19 +206,19 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* CTA */}
         <button
           onClick={() => onCheckout(appliedCode)}
-          className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-zinc-200 transition-colors"
+          className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-[#e8e8ed] transition-colors"
         >
           {discountPct !== null ? (
             <>
               Checkout —{' '}
-              <span className="line-through text-zinc-400 mr-1">${basePrice}</span>
+              <span className="line-through text-muted-mid mr-1">${basePrice}</span>
               ${finalPrice}
             </>
           ) : (
             <>Checkout — ${finalPrice}</>
           )}
         </button>
-        <p className="mt-2 text-center text-xs text-[#767676]">
+        <p className="mt-2 text-center text-xs text-muted-low">
           Powered by Stripe · Secure checkout
         </p>
       </div>

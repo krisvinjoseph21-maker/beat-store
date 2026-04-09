@@ -9,14 +9,25 @@ export default function HeadlineParallax({ children }: { children: React.ReactNo
     const el = ref.current
     if (!el) return
 
+    let rafId: number | null = null
+    let pendingX = 0
+    let pendingY = 0
+
     function onMove(e: MouseEvent) {
-      const x = (window.innerWidth  / 2 - e.pageX) / 40
-      const y = (window.innerHeight / 2 - e.pageY) / 40
-      el!.style.transform = `translate(${x}px, ${y}px)`
+      pendingX = (window.innerWidth  / 2 - e.pageX) / 40
+      pendingY = (window.innerHeight / 2 - e.pageY) / 40
+      if (rafId !== null) return
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+        el!.style.transform = `translate(${pendingX}px, ${pendingY}px)`
+      })
     }
 
     window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId)
+      window.removeEventListener('mousemove', onMove)
+    }
   }, [])
 
   return (

@@ -51,7 +51,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`h-full ${bebasNeue.variable} ${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-full flex flex-col bg-black text-[#f5f5f7] font-[family-name:var(--font-inter)]" style={{ paddingBottom: '64px' }}>
+      <body className="min-h-full flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]" style={{ paddingBottom: '64px' }}>
         <Navbar />
         <main className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
         <Footer />

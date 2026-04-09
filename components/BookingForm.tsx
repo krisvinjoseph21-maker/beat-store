@@ -76,10 +76,10 @@ export default function BookingForm() {
   }
 
   const inputClass =
-    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors'
+    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors'
   const selectClass =
-    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white outline-none focus:border-zinc-400 transition-colors appearance-none'
-  const labelClass = 'block text-sm font-semibold text-zinc-300 mb-2'
+    'w-full rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white outline-none focus:border-muted transition-colors appearance-none'
+  const labelClass = 'block text-sm font-semibold text-foreground mb-2 cursor-pointer'
 
   if (sent) {
     return (
@@ -88,13 +88,13 @@ export default function BookingForm() {
           <Check size={30} className="text-green-400" />
         </div>
         <p className="text-2xl font-black text-white">Request Received!</p>
-        <p className="mt-3 text-sm text-zinc-400 max-w-sm mx-auto">
+        <p className="mt-3 text-sm text-muted-mid max-w-sm mx-auto">
           A confirmation has been sent to <span className="text-white">{form.email}</span>.
           I&apos;ll be in touch within 24–48 hours.
         </p>
         <button
           onClick={() => { setSent(false); setForm(EMPTY) }}
-          className="mt-8 rounded border border-[#2a2a2a] px-8 py-3 text-sm text-zinc-300 hover:text-white transition-colors"
+          className="mt-8 rounded border border-[#2a2a2a] px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
         >
           Submit Another Request
         </button>
@@ -107,8 +107,9 @@ export default function BookingForm() {
       {/* Row 1 — Artist name + email */}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>Artist Name *</label>
+          <label htmlFor="booking-artist-name" className={labelClass}>Artist Name *</label>
           <input
+            id="booking-artist-name"
             required
             type="text"
             placeholder="Your artist name"
@@ -119,8 +120,9 @@ export default function BookingForm() {
           />
         </div>
         <div>
-          <label className={labelClass}>Email *</label>
+          <label htmlFor="booking-email" className={labelClass}>Email *</label>
           <input
+            id="booking-email"
             required
             type="email"
             placeholder="your@email.com"
@@ -134,8 +136,9 @@ export default function BookingForm() {
       {/* Row 2 — Genre + project type */}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>Genre *</label>
+          <label htmlFor="booking-genre" className={labelClass}>Genre *</label>
           <input
+            id="booking-genre"
             required
             type="text"
             placeholder="e.g. Trap, R&B, Drill…"
@@ -146,8 +149,9 @@ export default function BookingForm() {
           />
         </div>
         <div>
-          <label className={labelClass}>Project Type *</label>
+          <label htmlFor="booking-project-type" className={labelClass}>Project Type *</label>
           <select
+            id="booking-project-type"
             required
             value={form.projectType}
             onChange={set('projectType')}
@@ -164,8 +168,9 @@ export default function BookingForm() {
       {/* Row 3 — Deadline + budget */}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>Deadline *</label>
+          <label htmlFor="booking-deadline" className={labelClass}>Deadline *</label>
           <input
+            id="booking-deadline"
             required
             type="date"
             value={form.deadline}
@@ -175,8 +180,9 @@ export default function BookingForm() {
           />
         </div>
         <div>
-          <label className={labelClass}>Budget *</label>
+          <label htmlFor="booking-budget" className={labelClass}>Budget *</label>
           <select
+            id="booking-budget"
             required
             value={form.budget}
             onChange={set('budget')}
@@ -192,17 +198,18 @@ export default function BookingForm() {
 
       {/* Reference tracks */}
       <div>
-        <label className={labelClass}>
+        <label htmlFor="booking-reference-tracks" className={labelClass}>
           Reference Tracks{' '}
-          <span className="text-[#767676] font-normal">(optional)</span>
+          <span className="text-muted-low font-normal">(optional)</span>
         </label>
         <textarea
+          id="booking-reference-tracks"
           rows={4}
           placeholder="Paste links or describe the vibe — YouTube, SoundCloud, Spotify, etc."
           value={form.referenceTracks}
           onChange={set('referenceTracks')}
           maxLength={2000}
-          className="w-full resize-none rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-[#767676] outline-none focus:border-zinc-400 transition-colors"
+          className="w-full resize-none rounded border border-[#2a2a2a] bg-[#111] px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
         />
       </div>
 
@@ -211,7 +218,7 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={sending}
-        className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+        className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
       >
         {sending ? 'Sending…' : 'Submit Booking Request'}
       </button>

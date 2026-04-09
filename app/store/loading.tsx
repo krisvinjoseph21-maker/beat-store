@@ -1,6 +1,6 @@
 export default function StoreLoading() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10" style={{ paddingLeft: '55px' }}>
+    <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 py-10">
       {/* Search skeleton */}
       <div className="mb-6 h-14 w-full max-w-lg rounded-sm bg-white/5 animate-pulse" />
 

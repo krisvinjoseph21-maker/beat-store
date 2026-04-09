@@ -51,11 +51,11 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
           Legal
         </p>
         <h1 className="text-3xl font-black text-white sm:text-4xl">Privacy Policy</h1>
-        <p className="mt-3 text-sm text-zinc-500 max-w-md mx-auto">
+        <p className="mt-3 text-sm text-muted max-w-md mx-auto">
           Last updated: March 2026
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
         {SECTIONS.map(({ title, body }) => (
           <div key={title} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5">
             <p className="mb-2 font-bold text-white text-sm">{title}</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">{body}</p>
+            <p className="text-sm text-muted leading-relaxed">{body}</p>
           </div>
         ))}
       </div>

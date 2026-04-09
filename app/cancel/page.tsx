@@ -10,12 +10,12 @@ export default function CancelPage() {
         <X size={40} className="text-red-400" />
       </div>
       <h1 className="mb-3 text-3xl font-black text-white">Payment Cancelled</h1>
-      <p className="mb-8 max-w-md text-zinc-400">
+      <p className="mb-8 max-w-md text-muted-mid">
         Your order was not completed. Your cart is still saved — head back to checkout when you&apos;re ready.
       </p>
       <Link
         href="/store"
-        className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors"
+        className="rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors"
       >
         Back to Store
       </Link>

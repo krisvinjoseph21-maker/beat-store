@@ -2,10 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { Play, Pause, SkipBack, SkipForward, Lock, Volume2, VolumeX } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
 
 const PREVIEW_LIMIT = 30
+// Sync progress to Zustand (and BeatCard) every 500ms rather than every audio tick (~10x/sec).
+// The visual progress bar is updated directly via DOM refs so it stays perfectly smooth.
+const STORE_SYNC_INTERVAL = 500
 
 function formatTime(s: number) {
   if (!s || isNaN(s)) return '0:00'
@@ -15,10 +18,10 @@ function formatTime(s: number) {
 }
 
 const GENRE_DOT: Record<string, string> = {
-  Trap:      'bg-[#6b2e1e]',  // dark brick — raw, hard
-  Drill:     'bg-[#1a3348]',  // midnight steel — cold, sharp
-  'R&B':     'bg-[#422038]',  // deep plum — smooth, sensual
-  Afrobeats: 'bg-[#6b4e18]',  // dark earth amber — warm, rhythmic
+  Trap:      'bg-[#6b2e1e]',
+  Drill:     'bg-[#1a3348]',
+  'R&B':     'bg-[#422038]',
+  Afrobeats: 'bg-[#6b4e18]',
 }
 
 export default function BottomPlayer() {
@@ -35,13 +38,22 @@ export default function BottomPlayer() {
     playPrev,
   } = usePlayerStore()
 
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const isPlayingRef = useRef(isPlaying)
+  const audioRef        = useRef<HTMLAudioElement | null>(null)
+  const isPlayingRef    = useRef(isPlaying)
+  const progressBarRef  = useRef<HTMLDivElement>(null)
+  const seekInputRef    = useRef<HTMLInputElement>(null)
+  const timeTextRef     = useRef<HTMLSpanElement>(null)
+  // Local progress ref — source of truth for DOM updates; Zustand is synced periodically
+  const localProgressRef   = useRef(0)
+  const lastStoreSyncRef   = useRef(0)
+  const durationRef        = useRef(duration)
+
   const [previewEnded, setPreviewEnded] = useState(false)
-  const [volume, setVolume] = useState(1)
-  const [muted, setMuted] = useState(false)
+  const [volume, setVolume]             = useState(1)
+  const [muted, setMuted]               = useState(false)
 
   useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
+  useEffect(() => { durationRef.current = duration }, [duration])
 
   function handleVolumeChange(v: number) {
     setVolume(v)
@@ -55,11 +67,25 @@ export default function BottomPlayer() {
     if (audioRef.current) audioRef.current.volume = next ? 0 : volume
   }
 
+  // Update visual progress bar and time text directly via DOM — no React re-render
+  function updateProgressDOM(t: number) {
+    const cappedT  = Math.min(t, PREVIEW_LIMIT)
+    const barMaxLocal = durationRef.current > 0 ? Math.min(durationRef.current, PREVIEW_LIMIT) : PREVIEW_LIMIT
+    const pctLocal    = barMaxLocal > 0 ? (cappedT / barMaxLocal) * 100 : 0
+
+    if (progressBarRef.current) progressBarRef.current.style.width = `${pctLocal}%`
+    if (seekInputRef.current)   seekInputRef.current.value          = String(cappedT)
+    if (timeTextRef.current)    timeTextRef.current.textContent      =
+      `${formatTime(cappedT)} / ${formatTime(Math.min(durationRef.current || 0, PREVIEW_LIMIT))}`
+  }
+
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
     const src = currentBeat.preview_url ?? currentBeat.file_url ?? ''
     setPreviewEnded(false)
+    localProgressRef.current = 0
+    updateProgressDOM(0)
     audio.pause()
     if (!src) { setPlaying(false); return }
     audio.src = src
@@ -79,13 +105,12 @@ export default function BottomPlayer() {
     else audio.pause()
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const cappedProgress = Math.min(progress, PREVIEW_LIMIT)
+  // Derive display values from Zustand state (only recalculated on Zustand changes, not every tick)
   const barMax = duration > 0 ? Math.min(duration, PREVIEW_LIMIT) : PREVIEW_LIMIT
-  const pct = barMax > 0 ? (cappedProgress / barMax) * 100 : 0
 
   if (!currentBeat) return null
 
-  const dot = GENRE_DOT[currentBeat.genre] ?? 'bg-zinc-500'
+  const dot = GENRE_DOT[currentBeat.genre] ?? 'bg-[#3a3a3a]'
   const genreLabel = currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3)
 
   return (
@@ -95,35 +120,55 @@ export default function BottomPlayer() {
         aria-hidden="true"
         onTimeUpdate={(e) => {
           const t = (e.target as HTMLAudioElement).currentTime
-          setProgress(t)
+          localProgressRef.current = t
+
+          // Update DOM directly every tick for smooth visual feedback
+          updateProgressDOM(t)
+
+          // Sync to Zustand only every STORE_SYNC_INTERVAL ms to avoid flooding BeatCard re-renders
+          const now = Date.now()
+          if (now - lastStoreSyncRef.current >= STORE_SYNC_INTERVAL || t >= PREVIEW_LIMIT) {
+            lastStoreSyncRef.current = now
+            setProgress(t)
+          }
+
           if (t >= PREVIEW_LIMIT) {
             ;(e.target as HTMLAudioElement).pause()
             setPlaying(false)
             setPreviewEnded(true)
           }
         }}
-        onDurationChange={(e) => setDuration((e.target as HTMLAudioElement).duration)}
-        onEnded={() => { setPlaying(false); setProgress(0) }}
+        onDurationChange={(e) => {
+          const d = (e.target as HTMLAudioElement).duration
+          durationRef.current = d
+          setDuration(d)
+        }}
+        onEnded={() => { setPlaying(false); setProgress(0); updateProgressDOM(0) }}
         onError={() => setPlaying(false)}
       />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-fade-in" role="region" aria-label="Music player">
-        {/* Progress bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" role="region" aria-label="Music player">
+        {/* Progress bar — updated via DOM ref, not React state */}
         <div className="relative h-px w-full bg-white/[0.06]">
           <div
-            className="h-full bg-white/40 transition-all duration-100"
-            style={{ width: `${pct}%` }}
+            ref={progressBarRef}
+            className="h-full"
+            style={{ width: '0%', transition: 'width 0.1s linear', background: 'var(--accent-dim)' }}
           />
           <input
+            ref={seekInputRef}
             type="range"
             min={0}
             max={barMax}
-            value={cappedProgress}
+            defaultValue={0}
             onChange={(e) => {
               const val = Number(e.target.value)
               if (val >= PREVIEW_LIMIT) return
+              localProgressRef.current = val
+              lastStoreSyncRef.current = Date.now()
               setProgress(val)
               setPreviewEnded(false)
+              updateProgressDOM(val)
               if (audioRef.current) audioRef.current.currentTime = val
             }}
             className="absolute inset-0 w-full opacity-0 cursor-pointer"
@@ -152,10 +197,10 @@ export default function BottomPlayer() {
               </div>
             )}
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-semibold text-[#f5f5f7] leading-tight">
+              <p className="truncate text-[13px] font-semibold text-foreground leading-tight">
                 {currentBeat.title}
               </p>
-              <p className="text-[11px] text-[#6e6e73] leading-tight">
+              <p className="text-[11px] text-muted leading-tight">
                 {currentBeat.bpm} BPM · {currentBeat.key}
               </p>
             </div>
@@ -165,24 +210,41 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-1">
             <button
               onClick={playPrev}
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
               aria-label="Previous"
             >
               <SkipBack size={15} aria-hidden="true" />
             </button>
 
             {previewEnded ? (
-              <a
-                href="/store"
-                className="flex h-9 items-center gap-1.5 rounded-full bg-white px-4 text-black hover:bg-[#e8e8ed] transition-colors"
+              <button
+                onClick={() => {
+                  if (audioRef.current) audioRef.current.currentTime = 0
+                  localProgressRef.current = 0
+                  setProgress(0)
+                  updateProgressDOM(0)
+                  setPreviewEnded(false)
+                  setPlaying(true)
+                }}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors"
+                aria-label="Replay preview"
               >
-                <Lock size={12} />
-                <span className="text-[11px] font-semibold">Buy to unlock</span>
-              </a>
+                <Play size={16} fill="black" aria-hidden="true" />
+              </button>
             ) : (
               <button
-                onClick={togglePlay}
-                disabled={!currentBeat?.preview_url}
+                onClick={() => {
+                  if (localProgressRef.current >= PREVIEW_LIMIT && audioRef.current) {
+                    audioRef.current.currentTime = 0
+                    localProgressRef.current = 0
+                    setProgress(0)
+                    updateProgressDOM(0)
+                    setPlaying(true)
+                  } else {
+                    togglePlay()
+                  }
+                }}
+                disabled={!currentBeat?.preview_url && !currentBeat?.file_url}
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
@@ -192,7 +254,7 @@ export default function BottomPlayer() {
 
             <button
               onClick={playNext}
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
               aria-label="Next"
             >
               <SkipForward size={15} aria-hidden="true" />
@@ -201,12 +263,13 @@ export default function BottomPlayer() {
 
           {/* Right — time + volume */}
           <div className="flex items-center gap-3 flex-1 justify-end">
-            <span className="hidden sm:block text-[10px] text-[#767676] tabular-nums">
-              {formatTime(cappedProgress)} / {formatTime(Math.min(duration || 0, PREVIEW_LIMIT))}
+            {/* Updated via DOM ref — no React re-render on every tick */}
+            <span ref={timeTextRef} className="hidden sm:block text-[10px] text-muted-low tabular-nums">
+              0:00 / 0:30
             </span>
             <button
               onClick={toggleMute}
-              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
               aria-label={muted ? 'Unmute' : 'Mute'}
             >
               {muted || volume === 0 ? <VolumeX size={13} aria-hidden="true" /> : <Volume2 size={13} aria-hidden="true" />}

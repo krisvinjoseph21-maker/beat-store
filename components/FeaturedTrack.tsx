@@ -5,10 +5,10 @@ import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
 import ShareButton from './ShareButton'
 
 const GENRE_DOT: Record<string, string> = {
-  Trap:      'bg-red-500',
-  Drill:     'bg-blue-500',
-  'R&B':     'bg-purple-500',
-  Afrobeats: 'bg-emerald-500',
+  Trap:      'bg-[#6b2e1e]',
+  Drill:     'bg-[#1a3348]',
+  'R&B':     'bg-[#422038]',
+  Afrobeats: 'bg-[#6b4e18]',
 }
 
 export default function FeaturedTrack({ beat }: { beat: Beat }) {
@@ -17,7 +17,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
-  const dot = GENRE_DOT[beat.genre] ?? 'bg-zinc-500'
+  const dot = GENRE_DOT[beat.genre] ?? 'bg-[#3a3a3a]'
 
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()
@@ -33,8 +33,8 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
           <div className={`absolute inset-0 opacity-20 ${dot}`} style={{ filter: 'blur(40px)', transform: 'scale(2)' }} />
           <div className="relative z-10 flex flex-col items-center gap-1">
             <div className={`w-2 h-2 rounded-full ${dot}`} />
-            <span className="text-[9px] font-bold text-[var(--muted-low)] uppercase tracking-[0.3em] mt-2">Featured</span>
-            <span className="text-[11px] font-semibold text-[#f5f5f7] uppercase tracking-wider mt-0.5">
+            <span className="text-[9px] font-bold text-accent uppercase tracking-[0.3em] mt-2">Featured</span>
+            <span className="text-[11px] font-semibold text-foreground uppercase tracking-wider mt-0.5">
               {beat.genre === 'R&B' ? 'R&B' : beat.genre}
             </span>
           </div>
@@ -43,17 +43,17 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
         {/* Info */}
         <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 gap-5">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted-low)] mb-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-accent mb-2">
               Featured Track
             </p>
-            <h2 className="text-xl font-bold text-[#f5f5f7] leading-tight sm:text-2xl">
+            <h2 className="text-xl font-bold text-foreground leading-tight sm:text-2xl">
               {beat.title}
             </h2>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {[`${beat.bpm} BPM`, beat.key, beat.subgenre].filter(Boolean).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-white/[0.1] px-2.5 py-0.5 text-[11px] text-[#6e6e73]"
+                  className="rounded-full border border-white/[0.1] px-2.5 py-0.5 text-[11px] text-muted"
                 >
                   {tag}
                 </span>

@@ -36,7 +36,7 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
       <div className="mb-6 flex justify-end">
         <button
           onClick={handleSignOut}
-          className="text-xs text-[#767676] hover:text-white transition-colors"
+          className="text-xs text-muted-low hover:text-white transition-colors"
         >
           Sign out
         </button>
@@ -44,15 +44,15 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
 
       {purchases.length === 0 ? (
         <div className="rounded-xl border border-[#1a1a1a] py-16 text-center">
-          <ShoppingBag size={32} className="mx-auto mb-3 text-[#767676]" />
-          <p className="font-semibold text-zinc-400">No purchases yet</p>
-          <p className="mt-1 text-sm text-[#767676]">
+          <ShoppingBag size={32} className="mx-auto mb-3 text-muted-low" />
+          <p className="font-semibold text-muted-mid">No purchases yet</p>
+          <p className="mt-1 text-sm text-muted-low">
             Your orders will appear here after checkout.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="mb-4 text-xs uppercase tracking-widest text-[#767676]">
+          <p className="mb-4 text-xs uppercase tracking-widest text-muted-low">
             {purchases.length} order{purchases.length !== 1 ? 's' : ''}
           </p>
           {purchases.map((p) => (
@@ -61,12 +61,12 @@ export default function PurchasesClient({ purchases }: { purchases: Purchase[] }
               className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5 text-left"
             >
               <div className="flex items-center gap-2 mb-2">
-                <Music size={14} className="flex-shrink-0 text-zinc-500" />
+                <Music size={14} className="flex-shrink-0 text-muted" />
                 <p className="text-sm font-bold text-white">
                   {p.beatTitles.join(', ')}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-3 text-xs text-zinc-500">
+              <div className="flex flex-wrap gap-3 text-xs text-muted">
                 <span className="capitalize">{p.licenseType} License</span>
                 <span>·</span>
                 <span>${Number(p.totalPrice).toFixed(2)}</span>

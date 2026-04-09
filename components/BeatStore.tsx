@@ -33,18 +33,21 @@ function Select({
   value,
   onChange,
   options,
+  label,
 }: {
   value: string
   onChange: (v: string) => void
   options: { value: string; label: string }[]
+  label: string
 }) {
   return (
     <div className="relative flex-1 min-w-[120px]">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        aria-label={label}
         className="w-full appearance-none border border-[#2a2a2a] bg-[#111] py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-[#3a3a3a]"
-        style={{ color: '#888', fontFamily: 'var(--font-inter)' }}
+        style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value} className="bg-[#111]">
@@ -52,7 +55,7 @@ function Select({
           </option>
         ))}
       </select>
-      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#767676]" aria-hidden="true" />
+      <ChevronDown size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-low" aria-hidden="true" />
     </div>
   )
 }
@@ -123,7 +126,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto overflow-x-hidden px-8 py-12">
+    <div className="w-full max-w-7xl mx-auto overflow-x-hidden px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-10">
         <p
@@ -135,7 +138,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         <div className="flex items-end justify-between">
           <h1
             className="font-display uppercase leading-none"
-            style={{ fontSize: 'clamp(52px, 8vw, 96px)', color: '#f0ede8' }}
+            style={{ fontSize: 'clamp(52px, 8vw, 96px)', color: 'var(--foreground)' }}
           >
             Beat Store.
           </h1>
@@ -147,35 +150,40 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted-low)' }} />
+        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted-low)' }} aria-hidden="true" />
         <input
           type="text"
+          aria-label="Search beats"
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-[#767676]"
-          style={{ color: '#f0ede8', fontFamily: 'var(--font-inter)' }}
+          className="w-full border border-[#2a2a2a] bg-[#111] py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-muted-low"
+          style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
         />
       </div>
 
       {/* Filter dropdowns */}
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <Select
+          label="Filter by genre"
           value={category}
           onChange={setCategory}
           options={categories.map((c) => ({ value: c, label: c }))}
         />
         <Select
+          label="Filter by BPM range"
           value={bpmRange}
           onChange={setBpmRange}
           options={BPM_RANGES.map((r) => ({ value: r.label, label: r.label }))}
         />
         <Select
+          label="Filter by mood"
           value={mood}
           onChange={setMood}
           options={MOODS.map((m) => ({ value: m, label: m }))}
         />
         <Select
+          label="Sort beats"
           value={sortBy}
           onChange={setSortBy}
           options={SORT_OPTIONS}

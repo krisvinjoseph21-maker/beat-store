@@ -15,10 +15,21 @@ export default function CartDrawer({ open, onClose }: Props) {
   const { items, removeBeat, total, licenseType, quantityTier } = useCartStore()
   const [licenseOpen, setLicenseOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
+  const [removingId, setRemovingId] = useState<string | null>(null)
   const router = useRouter()
+
+  function handleRemove(beatId: string) {
+    setRemovingId(beatId)
+    setTimeout(() => {
+      removeBeat(beatId)
+      setRemovingId(null)
+    }, 210)
+  }
 
   async function handleCheckout(discountCode: string) {
     setLoading(true)
+    setCheckoutError('')
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -34,10 +45,10 @@ export default function CartDrawer({ open, onClose }: Props) {
       if (data.url) {
         router.push(data.url)
       } else {
-        alert('Checkout failed. Please try again.')
+        setCheckoutError('Checkout failed. Please try again.')
       }
     } catch {
-      alert('Checkout failed. Please try again.')
+      setCheckoutError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -48,16 +59,16 @@ export default function CartDrawer({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-[200] flex justify-end">
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }} onClick={onClose} aria-hidden="true" />
-      <div className="relative flex w-full max-w-sm flex-col border-l border-[#1a1a1a] animate-fade-in overflow-y-auto" style={{ background: '#111111' }} role="dialog" aria-modal="true" aria-label="Cart">
+      <div className="relative flex w-full max-w-sm flex-col border-l border-[#1a1a1a] animate-slide-in-right overflow-y-auto" style={{ background: '#111111' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
-          <h2 className="text-[15px] font-semibold text-[#f5f5f7]">Cart</h2>
-          <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-[#6e6e73] hover:text-[#f5f5f7]">
+          <h2 className="text-[15px] font-semibold text-foreground">Cart</h2>
+          <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
             <X size={16} aria-hidden="true" />
           </button>
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center text-[#767676] text-[13px] p-8 text-center leading-relaxed">
+          <div className="flex flex-1 items-center justify-center text-muted-low text-[13px] p-8 text-center leading-relaxed">
             Your cart is empty.<br />Head to the store to add beats.
           </div>
         ) : (
@@ -66,16 +77,18 @@ export default function CartDrawer({ open, onClose }: Props) {
               {items.map(({ beat }) => (
                 <div
                   key={beat.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3"
+                  className={`flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
+                    removingId === beat.id ? 'animate-item-fade-out' : ''
+                  }`}
                 >
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-[#f5f5f7] truncate">{beat.title}</p>
-                    <p className="text-[11px] text-[#6e6e73] mt-0.5">{beat.bpm} BPM · {beat.key}</p>
+                    <p className="text-[13px] font-semibold text-foreground truncate">{beat.title}</p>
+                    <p className="text-[11px] text-muted mt-0.5">{beat.bpm} BPM · {beat.key}</p>
                   </div>
                   <button
-                    onClick={() => removeBeat(beat.id)}
+                    onClick={() => handleRemove(beat.id)}
                     aria-label={`Remove ${beat.title} from cart`}
-                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-[#767676] hover:text-red-400 transition-colors"
+                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-muted-low hover:text-red-400 transition-colors"
                   >
                     <Trash2 size={13} aria-hidden="true" />
                   </button>
@@ -83,7 +96,12 @@ export default function CartDrawer({ open, onClose }: Props) {
               ))}
             </div>
 
-            <div className="border-t border-white/[0.06] px-5 py-4">
+            <div className="border-t border-white/[0.06] px-5 py-4 space-y-2">
+              {checkoutError && (
+                <p role="alert" className="text-[11px] text-red-400 text-center">
+                  {checkoutError}
+                </p>
+              )}
               <button
                 onClick={() => setLicenseOpen(true)}
                 className="w-full rounded-full bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-[#e8e8ed] transition-colors active:scale-[0.98]"

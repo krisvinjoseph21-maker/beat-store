@@ -28,7 +28,7 @@ export default function NavAuthButton() {
     return (
       <Link
         href="/login"
-        className="flex h-9 items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 text-xs font-semibold text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors"
+        className="flex h-9 items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 text-xs font-semibold text-muted-mid hover:border-muted hover:text-white transition-colors"
       >
         <User size={13} />
         <span className="hidden sm:inline">Sign In</span>

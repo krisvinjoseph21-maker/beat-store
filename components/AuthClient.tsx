@@ -68,7 +68,7 @@ export default function AuthClient() {
             type="button"
             onClick={() => switchTab(t)}
             className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
-              tab === t ? 'bg-white text-black' : 'text-zinc-400 hover:text-white'
+              tab === t ? 'bg-white text-black' : 'text-muted-mid hover:text-white'
             }`}
           >
             {t === 'login' ? 'Sign In' : 'Create Account'}
@@ -87,7 +87,7 @@ export default function AuthClient() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
           />
         </div>
         <div>
@@ -101,7 +101,7 @@ export default function AuthClient() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+            className="w-full rounded-sm border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
           />
         </div>
 
@@ -111,18 +111,18 @@ export default function AuthClient() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-sm bg-white py-3 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+          className="w-full rounded-sm bg-white py-3 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
         >
           {loading ? '…' : tab === 'login' ? 'Sign In' : 'Create Account'}
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs text-[#767676]">
+      <p className="mt-5 text-center text-xs text-muted-low">
         {tab === 'login' ? "Don't have an account? " : 'Already have an account? '}
         <button
           type="button"
           onClick={() => switchTab(tab === 'login' ? 'signup' : 'login')}
-          className="text-zinc-400 hover:text-white transition-colors"
+          className="text-muted-mid hover:text-white transition-colors"
         >
           {tab === 'login' ? 'Create one' : 'Sign in'}
         </button>

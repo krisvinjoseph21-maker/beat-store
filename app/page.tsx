@@ -8,6 +8,7 @@ import SpotifyEmbed from '@/components/SpotifyEmbed'
 import FeaturedTrack from '@/components/FeaturedTrack'
 import HeroMouseGlow from '@/components/HeroMouseGlow'
 import HeadlineParallax from '@/components/HeadlineParallax'
+import ScrollReveal from '@/components/ScrollReveal'
 
 async function getPageData(): Promise<{ featured: Beat | null; latest: Beat[] }> {
   try {
@@ -73,7 +74,7 @@ export default async function HomePage() {
           <div className="hero-eyebrow flex items-center gap-3 mb-8">
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-white/20" />
             <span
-              className="text-[10px] font-medium tracking-[0.28em] uppercase text-[#6e6e73]"
+              className="text-[10px] font-medium tracking-[0.28em] uppercase text-muted"
               style={{ fontFamily: 'var(--font-inter)' }}
             >
               GloRilla · DeeBaby · Shenseea · Seyi Vibez
@@ -88,7 +89,7 @@ export default async function HomePage() {
           {/* Headline */}
           <HeadlineParallax>
             <h1
-              className="hero-headline font-display leading-[0.88] text-[#f5f5f7]"
+              className="hero-headline font-display leading-[0.88] text-foreground"
               style={{ fontSize: 'clamp(60px, 11vw, 148px)', letterSpacing: '-0.01em' }}
             >
               BEATS THAT HIT DIFFERENT.
@@ -100,11 +101,11 @@ export default async function HomePage() {
 
           {/* Sub */}
           <p
-            className="hero-sub text-[14px] leading-[1.75] max-w-[480px] mb-8 text-[#6e6e73]"
+            className="hero-sub text-[14px] leading-[1.75] max-w-[480px] mb-8 text-muted"
             style={{ fontFamily: 'var(--font-inter)' }}
           >
             Verified placements with{' '}
-            <span className="text-[#a1a1a6] font-medium">GloRilla, Shenseea & more.</span>
+            <span className="text-muted-mid font-medium">GloRilla, Shenseea & more.</span>
             {' '}Trap · Drill · R&amp;B · Afrobeats.
           </p>
 
@@ -119,7 +120,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/store"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 text-[#f5f5f7] text-[13px] font-medium tracking-tight transition-all hover:border-white/40 hover:bg-white/5 active:scale-95"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 text-foreground text-[13px] font-medium tracking-tight transition-all hover:border-white/40 hover:bg-white/5 active:scale-95"
               style={{ padding: '11px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Preview Beats
@@ -130,16 +131,16 @@ export default async function HomePage() {
 
         {/* Ticker */}
         <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-black/80 backdrop-blur-sm overflow-hidden flex items-center">
-          <div className="ticker-wrap flex whitespace-nowrap">
+          <div className="ticker-wrap flex whitespace-nowrap" aria-hidden="true">
             {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
               <span key={i} className="inline-flex items-center">
                 <span
-                  className="text-[8px] font-medium tracking-[0.22em] uppercase pr-5 text-[#767676]"
+                  className="text-[8px] font-medium tracking-[0.22em] uppercase pr-5 text-muted-low"
                   style={{ fontFamily: 'var(--font-inter)' }}
                 >
                   {item}
                 </span>
-                <span className="text-[8px] pr-5 text-[#2d2d30]">✦</span>
+                <span className="text-[8px] pr-5 text-[#2d2d30]" aria-hidden="true">✦</span>
               </span>
             ))}
           </div>
@@ -150,7 +151,9 @@ export default async function HomePage() {
       {featured && (
         <section className="w-full border-b border-white/[0.06] bg-black">
           <div className="mx-auto max-w-6xl px-6 lg:px-8 py-10">
-            <FeaturedTrack beat={featured} />
+            <ScrollReveal>
+              <FeaturedTrack beat={featured} />
+            </ScrollReveal>
           </div>
         </section>
       )}
@@ -158,72 +161,75 @@ export default async function HomePage() {
       {/* ═══ FEATURED BEATS ══════════════════════════════════════ */}
       <section className="w-full border-b border-white/[0.06]">
         <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
-          <div className="mb-10 flex items-end justify-between">
+          <ScrollReveal className="mb-10 flex items-end justify-between">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
                 Fresh Off the DAW
               </p>
-              <h2 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">
+              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">
                 Featured Beats.
               </h2>
             </div>
             <Link
               href="/store"
-              className="text-[12px] font-medium text-[#6e6e73] hover:text-[#f5f5f7] transition-colors"
+              className="text-[12px] font-medium text-muted hover:text-foreground transition-colors"
             >
               View All →
             </Link>
-          </div>
-          <HomeFeaturedBeats beats={latest} />
+          </ScrollReveal>
+          <ScrollReveal delay={150}>
+            <HomeFeaturedBeats beats={latest} />
+          </ScrollReveal>
         </div>
       </section>
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
       <section className="w-full border-b border-white/[0.06] bg-[#050505]">
         <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
-          <div className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <ScrollReveal className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
                 Verified Credits
               </p>
-              <h2 className="font-display text-5xl sm:text-6xl text-[#f5f5f7] uppercase leading-none">
+              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">
                 The Receipts.
               </h2>
             </div>
             <div className="flex gap-10">
               {[{ v: '5+', l: 'Placements' }, { v: '4', l: 'Genres' }].map(({ v, l }) => (
                 <div key={l} className="flex flex-col">
-                  <span className="font-display text-4xl text-[#6e6e73] leading-none">{v}</span>
-                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] mt-1.5 text-[#767676]">{l}</span>
+                  <span className="font-display text-4xl text-accent leading-none">{v}</span>
+                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] mt-1.5 text-muted-low">{l}</span>
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06] rounded-2xl overflow-hidden">
-            {RECEIPTS.map(({ role, artist, song, detail, spotifyId }) => (
+            {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
+              <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
-                key={artist + song}
-                className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-[#0a0a0a] transition-colors duration-200"
+                className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-[#0a0a0a] transition-colors duration-200 h-full"
               >
-                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#767676]">
+                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-low">
                   {role}
                 </span>
                 <div>
-                  <p className="text-[17px] font-semibold text-[#f5f5f7] leading-tight">{artist}</p>
-                  <p className="text-[13px] mt-1 text-[#6e6e73]">{song} · Producer</p>
+                  <p className="text-[17px] font-semibold text-foreground leading-tight">{artist}</p>
+                  <p className="text-[13px] mt-1 text-muted">{song} · Producer</p>
                 </div>
                 {spotifyId && <SpotifyEmbed trackId={spotifyId} />}
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.06]">
-                  <span className="text-[11px] text-[#767676]">{detail}</span>
+                  <span className="text-[11px] text-muted-low">{detail}</span>
                   <div className="flex items-center gap-1">
-                    {role !== 'Unreleased' && <BadgeCheck size={11} className="text-[#767676]" />}
-                    <span className="text-[9px] text-[#767676]">
+                    {role !== 'Unreleased' && <BadgeCheck size={11} className="text-accent" />}
+                    <span className="text-[9px] text-accent">
                       {role === 'Unreleased' ? 'Unreleased' : 'Verified'}
                     </span>
                   </div>
                 </div>
               </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -237,28 +243,30 @@ export default async function HomePage() {
             background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
           }}
         />
-        <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-[#767676] mb-5">
-          Don&apos;t Sleep
-        </p>
-        <h2
-          className="relative font-display uppercase leading-none mb-6 text-[#f5f5f7]"
-          style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
-        >
-          Your Next Hit<br />Starts Here.
-        </h2>
-        <p className="relative text-[14px] max-w-sm leading-relaxed mb-10 text-[#6e6e73]">
-          Every beat is mixed, mastered, and ready to record. Instant delivery after checkout.
-        </p>
-        <Link
-          href="/store"
-          className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-[#e8e8ed] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
-          style={{ padding: '13px 36px', fontFamily: 'var(--font-inter)' }}
-        >
-          Shop Beats
-        </Link>
-        <p className="relative mt-5 text-[11px] text-[#767676]">
-          From $29.99 · Instant Download · All Licenses Available
-        </p>
+        <ScrollReveal>
+          <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-5">
+            Don&apos;t Sleep
+          </p>
+          <h2
+            className="relative font-display uppercase leading-none mb-6 text-foreground"
+            style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
+          >
+            Your Next Hit<br />Starts Here.
+          </h2>
+          <p className="relative text-[14px] max-w-sm leading-relaxed mb-10 text-muted">
+            Every beat is mixed, mastered, and ready to record. Instant delivery after checkout.
+          </p>
+          <Link
+            href="/store"
+            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-[#e8e8ed] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+            style={{ padding: '13px 36px', fontFamily: 'var(--font-inter)' }}
+          >
+            Shop Beats
+          </Link>
+          <p className="relative mt-5 text-[11px] text-muted-low">
+            From $29.99 · Instant Download · All Licenses Available
+          </p>
+        </ScrollReveal>
       </section>
 
     </div>

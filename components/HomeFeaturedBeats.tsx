@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
   const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
   const { licenseType, quantityTier, items } = useCartStore()
   const { setQueue } = usePlayerStore()
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
 
   async function handleCheckout() {
     setLoading(true)
+    setCheckoutError('')
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -32,9 +34,9 @@ export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
       })
       const data = await res.json()
       if (data.url) router.push(data.url)
-      else alert('Checkout failed. Please try again.')
+      else setCheckoutError('Checkout failed. Please try again.')
     } catch {
-      alert('Checkout failed. Please try again.')
+      setCheckoutError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -52,6 +54,11 @@ export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
           />
         ))}
       </div>
+      {checkoutError && (
+        <p role="alert" className="mt-3 text-[12px] text-red-400 text-center">
+          {checkoutError}
+        </p>
+      )}
       <LicenseModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

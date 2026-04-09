@@ -49,13 +49,13 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
           <Crown size={15} className="text-yellow-500 flex-shrink-0" />
           <div>
             <p className="text-sm font-bold text-white">Make an Exclusive Offer</p>
-            <p className="text-xs text-zinc-500">Own the full rights — beat removed from store</p>
+            <p className="text-xs text-muted">Own the full rights — beat removed from store</p>
           </div>
         </div>
         {open ? (
-          <ChevronUp size={15} className="text-zinc-500 flex-shrink-0" />
+          <ChevronUp size={15} className="text-muted flex-shrink-0" />
         ) : (
-          <ChevronDown size={15} className="text-zinc-500 flex-shrink-0" />
+          <ChevronDown size={15} className="text-muted flex-shrink-0" />
         )}
       </button>
 
@@ -64,7 +64,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
           {sent ? (
             <div className="text-center py-4">
               <p className="text-emerald-400 font-semibold text-sm">Offer sent!</p>
-              <p className="text-zinc-500 text-xs mt-1">
+              <p className="text-muted text-xs mt-1">
                 We&apos;ll review your offer for <span className="text-white">{beatTitle}</span> and get back to you.
               </p>
             </div>
@@ -78,7 +78,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   value={artistName}
                   onChange={(e) => setArtistName(e.target.value)}
                   maxLength={100}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
                 <input
                   required
@@ -86,12 +86,12 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+                  className="rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-bold">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-mid text-sm font-bold">$</span>
                 <input
                   required
                   type="number"
@@ -100,7 +100,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your offer (e.g. 500)"
                   value={offerPrice}
                   onChange={(e) => setOfferPrice(e.target.value)}
-                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+                  className="w-full rounded-sm border border-[#2a2a2a] bg-[#111] pl-7 pr-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1000}
                 rows={2}
-                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-[#767676] outline-none focus:border-zinc-500 transition-colors"
+                className="w-full resize-none rounded-sm border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
               />
 
               {error && <p className="text-xs text-red-400">{error}</p>}

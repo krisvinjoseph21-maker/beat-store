@@ -40,7 +40,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-[13px] font-bold tracking-tight text-[#f5f5f7] hover:opacity-70 transition-opacity shrink-0"
+            className="text-[13px] font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity shrink-0"
           >
             PRODKJ<span style={{ color: 'var(--muted-low)' }}>BEATS</span>
           </Link>
@@ -51,7 +51,7 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className="text-[12px] font-normal text-[#6e6e73] hover:text-[#f5f5f7] transition-colors duration-150"
+                className="text-[12px] font-normal text-muted hover:text-foreground transition-colors duration-150"
                 style={{ letterSpacing: '0.01em' }}
               >
                 {label}
@@ -65,11 +65,11 @@ export default function Navbar() {
 
             <button
               onClick={() => openCart()}
-              className="text-[12px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors"
+              className="text-[12px] text-muted hover:text-foreground transition-colors"
               style={{ letterSpacing: '0.01em' }}
             >
               Cart {items.length > 0 && (
-                <span className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold">
+                <span key={items.length} className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold animate-badge-pop">
                   {items.length}
                 </span>
               )}
@@ -88,10 +88,10 @@ export default function Navbar() {
           <div className="flex lg:hidden items-center gap-4">
             <button
               onClick={() => openCart()}
-              className="text-[11px] text-[#6e6e73]"
+              className="text-[11px] text-muted"
             >
               {items.length > 0 && (
-                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1">
+                <span key={items.length} className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1 animate-badge-pop">
                   {items.length}
                 </span>
               )}
@@ -101,10 +101,11 @@ export default function Navbar() {
               onClick={() => setMobileOpen(o => !o)}
               className="flex flex-col gap-[4.5px] p-1"
               aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
             >
-              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
-              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
-              <span className={`block w-[18px] bg-[#f5f5f7] transition-all duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
             </button>
           </div>
         </div>
@@ -115,14 +116,16 @@ export default function Navbar() {
         className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-all duration-300 ${
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
+        aria-hidden={!mobileOpen}
       >
-        <div className="px-6 py-4 flex flex-col gap-1">
-          {NAV_LINKS.map(({ href, label }) => (
+        <div key={`menu-${mobileOpen}`} className="px-6 py-4 flex flex-col gap-1">
+          {NAV_LINKS.map(({ href, label }, idx) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className="py-3 text-[14px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors border-b border-white/[0.05] last:border-0"
+              className="py-3 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.05] last:border-0 animate-menu-item-in"
+              style={{ animationDelay: `${idx * 55}ms` }}
             >
               {label}
             </Link>
