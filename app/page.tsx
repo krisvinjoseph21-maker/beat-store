@@ -254,7 +254,7 @@ export default async function HomePage() {
           >
             Your Next Hit<br />Starts Here.
           </h2>
-          <p className="relative text-[14px] max-w-sm leading-relaxed mb-10 text-muted">
+          <p className="relative text-[14px] max-w-sm leading-relaxed mb-10 text-muted text-center">
             Every beat is mixed, mastered, and ready to record. Instant delivery after checkout.
           </p>
           <Link

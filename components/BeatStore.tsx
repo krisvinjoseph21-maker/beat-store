@@ -214,9 +214,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       ) : (
         <div className="border border-[#1a1a1a]">
           {/* Table header */}
-          <div className="hidden sm:flex items-center gap-5 px-6 py-3 border-b border-[#1a1a1a] bg-black">
+          <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-[#1a1a1a] bg-black">
             <span className="w-6 flex-shrink-0" />
-            <span className="w-10 flex-shrink-0" />
+            <span className="w-11 flex-shrink-0" />
             <span
               className="flex-1 text-[10px] font-bold uppercase"
               style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
