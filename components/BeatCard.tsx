@@ -188,7 +188,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
                 aria-label={`Add ${beat.title} to cart`}
-                className="text-white text-[10px] font-bold tracking-[1.1px] uppercase px-4 sm:px-5 h-[44px] sm:h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
+                className="text-white text-[10px] font-bold uppercase px-4 sm:px-5 h-[44px] sm:h-[30px] flex items-center justify-center whitespace-nowrap transition-all hover:opacity-90"
                 style={{ background: '#ffffff', color: '#000000', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '11px', fontWeight: 700 }}
               >
                 Add to Cart
