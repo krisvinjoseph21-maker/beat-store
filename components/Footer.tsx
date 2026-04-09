@@ -25,11 +25,11 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              className="text-[13px] font-bold tracking-tight text-[#f5f5f7] hover:opacity-70 transition-opacity block mb-2"
+              className="text-[13px] font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity block mb-2"
             >
-              PRODKJ<span className="text-[#767676]">BEATS</span>
+              PRODKJ<span className="text-muted-low">BEATS</span>
             </Link>
-            <p className="text-[12px] text-[#767676] leading-relaxed max-w-[200px]">
+            <p className="text-[12px] text-muted-low leading-relaxed max-w-[200px]">
               Premium beats for serious artists.
             </p>
           </div>
@@ -39,7 +39,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="text-[12px] text-[#6e6e73] hover:text-[#f5f5f7] transition-colors"
+                className="text-[12px] text-muted hover:text-foreground transition-colors"
               >
                 {label}
               </Link>
@@ -53,14 +53,14 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <p className="text-[11px] text-[#767676]">
+            <p className="text-[11px] text-muted-low">
               © {new Date().getFullYear()} PRODKJBEATS. All rights reserved.
             </p>
             <a
               href="https://www.instagram.com/prodkjbeats/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[11px] text-[#767676] hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-[11px] text-muted-low hover:text-white transition-colors"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="3"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
               @prodkjbeats
@@ -72,7 +72,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="text-[11px] text-[#767676] hover:text-[#f5f5f7] transition-colors"
+                className="text-[11px] text-muted-low hover:text-foreground transition-colors"
               >
                 {label}
               </Link>
