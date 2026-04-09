@@ -51,12 +51,26 @@ export default async function HomePage() {
       {/* ═══ HERO ═══════════════════════════════════════════════ */}
       <section
         id="hero-section"
-        className="relative bg-black overflow-hidden flex flex-col w-full"
-        style={{ minHeight: '620px', height: 'auto' }}
+        className="relative bg-black overflow-hidden flex flex-col w-full min-h-screen"
       >
+        {/* Video background */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover hidden sm:block"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60 z-[1]" aria-hidden="true" />
+
         {/* Subtle radial glow */}
         <div
-          className="pointer-events-none absolute inset-0 z-0"
+          className="pointer-events-none absolute inset-0 z-[2]"
           style={{
             background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)',
           }}
