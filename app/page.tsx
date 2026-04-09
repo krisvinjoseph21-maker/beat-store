@@ -34,6 +34,7 @@ const RECEIPTS = [
   { role: 'Unreleased',      artist: 'GloRilla',     song: 'Placement',      detail: 'CMG / Interscope · Unreleased'   },
   { role: 'Unreleased',      artist: 'Shenseea',     song: 'Placement',      detail: 'Interscope Records · Unreleased' },
   { role: 'Unreleased',      artist: 'Seyi Vibez',   song: 'Placement',      detail: 'Afrobeats · Unreleased'         },
+  { role: 'Unreleased',      artist: 'Est Gee',      song: 'Placement',      detail: 'Trap · Unreleased'              },
 ]
 
 const TICKER_ITEMS = [
