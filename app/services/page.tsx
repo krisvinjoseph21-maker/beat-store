@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 py-16">
+    <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16 py-16">
       <div className="mb-12">
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
           Work With Me

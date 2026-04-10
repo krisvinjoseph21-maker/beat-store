@@ -126,7 +126,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto overflow-x-hidden px-6 lg:px-8 py-12">
+    <div className="w-full max-w-7xl mx-auto overflow-x-hidden px-6 sm:px-10 lg:px-16 py-12">
       {/* Header */}
       <div className="mb-10">
         <p

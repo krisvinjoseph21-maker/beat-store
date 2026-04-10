@@ -18,7 +18,7 @@ const LEGAL_LINKS = [
 export default function Footer() {
   return (
     <footer className="w-full border-t border-white/[0.06] bg-black pb-24">
-      <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-12 pb-8">
+      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16 pt-12 pb-8">
 
         {/* Top row */}
         <div className="mb-10 flex flex-col items-start gap-8 sm:flex-row sm:items-start sm:justify-between">
