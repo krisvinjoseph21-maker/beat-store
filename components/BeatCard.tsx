@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import ShareButton from './ShareButton'
+import WaveformVisualizer from './WaveformVisualizer'
 import Link from 'next/link'
 
 interface Props {
@@ -90,7 +91,13 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         {isThisActive && (
           <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: 'var(--accent)' }} />
         )}
-        <div className="flex flex-row items-center w-full px-4 sm:px-10" style={{ color: 'var(--foreground)', gap: '12px', paddingTop: '18px', paddingBottom: '18px' }}>
+
+        {/* Frequency visualiser — absolutely positioned at row bottom, canvas draws the progress track too */}
+        {isThisActive && (
+          <WaveformVisualizer progressPct={progressPct} isPlaying={isThisPlaying} />
+        )}
+
+        <div className="flex flex-row items-center w-full px-4 sm:px-10 relative" style={{ color: 'var(--foreground)', gap: '12px', paddingTop: '18px', paddingBottom: '18px', zIndex: 10 }}>
 
           {/* Track number */}
           <div
@@ -210,12 +217,14 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
         </div>
 
-        {/* Progress bar — decorative, BottomPlayer is the authoritative audio interface */}
+        {/* Progress bar — WaveformVisualizer draws its own track when active */}
         <div className="h-[2px] bg-line w-full relative" aria-hidden="true">
-          <div
-            className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
-            style={{ width: `${progressPct}%`, background: isThisActive ? 'var(--accent-dim)' : 'rgba(255,255,255,0.3)' }}
-          />
+          {!isThisActive && (
+            <div
+              className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
+              style={{ width: `${progressPct}%`, background: 'rgba(255,255,255,0.3)' }}
+            />
+          )}
         </div>
       </div>
 

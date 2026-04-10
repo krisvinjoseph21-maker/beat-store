@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
+import { connectAudioElement, resumeContext } from '@/lib/audio-analyser'
 
 const PREVIEW_LIMIT = 30
 // Sync progress to Zustand (and BeatCard) every 500ms rather than every audio tick (~10x/sec).
@@ -91,6 +92,7 @@ export default function BottomPlayer() {
     audio.src = src
     audio.load()
     const handleCanPlay = () => {
+      connectAudioElement(audio)
       if (isPlayingRef.current) audio.play().catch(() => setPlaying(false))
     }
     audio.addEventListener('canplay', handleCanPlay, { once: true })
@@ -101,22 +103,30 @@ export default function BottomPlayer() {
     const audio = audioRef.current
     if (!audio) return
     if (isPlaying && audio.readyState < 2) return
-    if (isPlaying) audio.play().catch(() => setPlaying(false))
-    else audio.pause()
+    if (isPlaying) {
+      connectAudioElement(audio)
+      resumeContext()
+      audio.play().catch(() => setPlaying(false))
+    } else {
+      audio.pause()
+    }
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Derive display values from Zustand state (only recalculated on Zustand changes, not every tick)
   const barMax = duration > 0 ? Math.min(duration, PREVIEW_LIMIT) : PREVIEW_LIMIT
 
-  if (!currentBeat) return null
-
-  const dot = GENRE_DOT[currentBeat.genre] ?? 'bg-[#3a3a3a]'
-  const genreLabel = currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3)
+  // Safe to compute with optional chaining — audio element always renders
+  const dot = GENRE_DOT[currentBeat?.genre ?? ''] ?? 'bg-[#3a3a3a]'
+  const genreLabel = !currentBeat ? '' : (currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3))
 
   return (
     <>
+      {/* Audio element is always mounted so the AudioContext/AnalyserNode connection
+          persists across beat changes. crossOrigin="anonymous" is required for
+          createMediaElementSource() to work with cross-origin Supabase URLs. */}
       <audio
         ref={audioRef}
+        crossOrigin="anonymous"
         aria-hidden="true"
         onTimeUpdate={(e) => {
           const t = (e.target as HTMLAudioElement).currentTime
@@ -147,7 +157,7 @@ export default function BottomPlayer() {
         onError={() => setPlaying(false)}
       />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" role="region" aria-label="Music player">
+      {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" role="region" aria-label="Music player">
         {/* Progress bar — updated via DOM ref, not React state */}
         <div className="relative h-px w-full bg-white/[0.06]">
           <div
@@ -287,7 +297,7 @@ export default function BottomPlayer() {
             />
           </div>
         </div>
-      </div>
+      </div>}
     </>
   )
 }

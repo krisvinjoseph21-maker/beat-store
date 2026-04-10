@@ -1,7 +1,7 @@
 'use client'
 
 import { X, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useCartStore } from '@/lib/store'
 import LicenseModal from './LicenseModal'
 import { useRouter } from 'next/navigation'
@@ -18,6 +18,39 @@ export default function CartDrawer({ open, onClose }: Props) {
   const [checkoutError, setCheckoutError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
   const router = useRouter()
+  const drawerRef = useRef<HTMLDivElement>(null)
+
+  // Focus trap: keep keyboard focus inside drawer while open
+  useEffect(() => {
+    if (!open) return
+    const drawer = drawerRef.current
+    if (!drawer) return
+
+    const previousFocus = document.activeElement as HTMLElement | null
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+    const first = drawer.querySelector<HTMLElement>(FOCUSABLE)
+    first?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = Array.from(drawer!.querySelectorAll<HTMLElement>(FOCUSABLE))
+      const firstEl = focusable[0]
+      const lastEl  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) { e.preventDefault(); lastEl?.focus() }
+      } else {
+        if (document.activeElement === lastEl)  { e.preventDefault(); firstEl?.focus() }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      previousFocus?.focus()
+    }
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleRemove(beatId: string) {
     setRemovingId(beatId)
@@ -59,7 +92,7 @@ export default function CartDrawer({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-[200] flex justify-end">
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }} onClick={onClose} aria-hidden="true" />
-      <div className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
+      <div ref={drawerRef} className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <h2 className="text-[15px] font-semibold text-foreground">Cart</h2>
           <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">

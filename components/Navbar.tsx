@@ -17,6 +17,12 @@ export default function Navbar() {
   const { items, cartOpen, openCart, closeCart } = useCartStore()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled]     = useState(false)
+  const [cartAnnouncement, setCartAnnouncement] = useState('')
+
+  useEffect(() => {
+    if (items.length === 0) return
+    setCartAnnouncement(`${items.length} item${items.length === 1 ? '' : 's'} in cart`)
+  }, [items.length])
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 10) }
@@ -137,6 +143,11 @@ export default function Navbar() {
       </div>
 
       <CartDrawer open={cartOpen} onClose={closeCart} />
+
+      {/* Screen reader cart count announcements */}
+      <span role="status" aria-live="polite" className="sr-only">
+        {cartAnnouncement}
+      </span>
     </>
   )
 }

@@ -9,7 +9,9 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); deps={**d.get\\('dependencies',{}\\), **d.get\\('devDependencies',{}\\)}; [print\\(k,':', v\\) for k,v in sorted\\(deps.items\\(\\)\\)]\")",
       "Bash(ls C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\\\\components\\\\Scroll*.tsx)",
       "Bash(python3:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(ls /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app/*.tsx)",
+      "Bash(wc -l /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components/*.tsx)"
     ]
   }
 }
