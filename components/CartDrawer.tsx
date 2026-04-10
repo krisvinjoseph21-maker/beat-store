@@ -137,7 +137,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               )}
               <button
                 onClick={() => setLicenseOpen(true)}
-                className="w-full rounded-full bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-colors active:scale-[0.98]"
+                className="w-full rounded bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-colors active:scale-[0.98]"
               >
                 Choose License & Checkout
               </button>

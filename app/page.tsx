@@ -83,7 +83,7 @@ export default async function HomePage() {
         <HeroMouseGlow />
 
         {/* Hero content */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 sm:px-12">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-8">
 
           {/* Eyebrow */}
           <div className="hero-eyebrow flex items-center gap-3 mb-8">
@@ -165,7 +165,7 @@ export default async function HomePage() {
       {/* ═══ FEATURED TRACK ══════════════════════════════════════ */}
       {featured && (
         <section className="w-full border-b border-white/[0.06] bg-black">
-          <div className="mx-auto max-w-6xl px-6 lg:px-8 py-10">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-10">
             <ScrollReveal>
               <FeaturedTrack beat={featured} />
             </ScrollReveal>
@@ -175,7 +175,7 @@ export default async function HomePage() {
 
       {/* ═══ FEATURED BEATS ══════════════════════════════════════ */}
       <section className="w-full border-b border-white/[0.06]">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 py-20">
           <ScrollReveal className="mb-10 flex items-end justify-between">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
@@ -200,7 +200,7 @@ export default async function HomePage() {
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
       <section className="w-full border-b border-white/[0.06] bg-[#050505]">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8 py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 py-20">
           <ScrollReveal className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
