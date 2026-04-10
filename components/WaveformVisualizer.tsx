@@ -31,7 +31,7 @@ export default function WaveformVisualizer({ progressPct, isPlaying }: Props) {
   const rafRef        = useRef<number>(0)
   const progressRef   = useRef(progressPct)
   const isPlayingRef  = useRef(isPlaying)
-  const dataRef       = useRef<Uint8Array | null>(null)
+  const dataRef       = useRef<Uint8Array<ArrayBuffer> | null>(null)
   const reducedMotion = useRef(
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
