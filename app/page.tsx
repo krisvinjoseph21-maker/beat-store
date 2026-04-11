@@ -46,6 +46,7 @@ export default async function HomePage() {
   const { featured, latest } = await getPageData()
 
   return (
+    <div className="flex flex-col items-center w-full">
     <div className="flex flex-col w-full">
 
       {/* ═══ HERO ═══════════════════════════════════════════════ */}
@@ -283,6 +284,7 @@ export default async function HomePage() {
         </ScrollReveal>
       </section>
 
+    </div>
     </div>
   )
 }
