@@ -164,7 +164,6 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             </div>
             <div className="text-center" style={{ minWidth: '120px' }}>
               <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: 'var(--foreground)', lineHeight: 1.2 }}>{beat.genre}</div>
-              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '2px' }}>Genre</div>
             </div>
           </div>
 
