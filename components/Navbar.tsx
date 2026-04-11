@@ -71,11 +71,11 @@ export default function Navbar() {
 
             <button
               onClick={() => openCart()}
+              aria-label={items.length > 0 ? `Cart — ${items.length} item${items.length === 1 ? '' : 's'}` : 'Cart'}
               className="text-[12px] text-muted hover:text-foreground transition-colors"
-              style={{ letterSpacing: '0.01em' }}
             >
               Cart {items.length > 0 && (
-                <span key={items.length} className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold animate-badge-pop">
+                <span key={items.length} className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold animate-badge-pop" aria-hidden="true">
                   {items.length}
                 </span>
               )}
@@ -84,7 +84,7 @@ export default function Navbar() {
             <Link
               href="/store"
               className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-all hover:bg-white-hover active:scale-95"
-              style={{ padding: '6px 16px', letterSpacing: '0.01em' }}
+              style={{ padding: '6px 16px' }}
             >
               Shop Beats
             </Link>

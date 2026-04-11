@@ -258,7 +258,7 @@ export default function ServicesClient() {
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>
-                {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
+                {error && <p role="alert" className="text-sm text-danger">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}

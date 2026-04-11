@@ -147,7 +147,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               key={type}
               onClick={() => setLicenseType(type)}
               aria-pressed={licenseType === type}
-              className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
+              className={`flex-1 rounded-sm py-2 text-sm font-semibold transition-all ${
                 licenseType === type
                   ? 'bg-white text-black'
                   : 'text-muted-mid hover:text-white'
@@ -162,7 +162,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         <ul className="mb-4 space-y-1.5">
           {features.map((f) => (
             <li key={f} className="flex items-center gap-2 text-sm text-foreground">
-              <Check size={14} className="text-green-400 flex-shrink-0" />
+              <Check size={14} className="text-accent flex-shrink-0" aria-hidden="true" />
               {f}
             </li>
           ))}
@@ -201,8 +201,8 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* Discount code */}
         <div className="mb-4">
           {appliedCode ? (
-            <div className="flex items-center justify-between rounded-sm border border-green-500/30 bg-green-500/10 px-3 py-2">
-              <p className="text-sm text-green-400 font-medium">
+            <div className="flex items-center justify-between rounded-sm border border-accent/30 bg-accent/10 px-3 py-2">
+              <p className="text-sm text-accent font-medium">
                 {appliedCode} — {discountPct}% off applied
               </p>
               <button
@@ -235,7 +235,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               </button>
             </div>
           )}
-          {codeError && <p id="discount-code-error" role="alert" className="mt-1.5 text-xs text-red-400">{codeError}</p>}
+          {codeError && <p id="discount-code-error" role="alert" className="mt-1.5 text-xs text-danger">{codeError}</p>}
         </div>
 
         {/* CTA */}

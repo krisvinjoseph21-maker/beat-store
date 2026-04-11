@@ -131,7 +131,7 @@ export default function CartDrawer({ open, onClose }: Props) {
 
             <div className="border-t border-white/[0.06] px-5 py-4 space-y-2">
               {checkoutError && (
-                <p role="alert" className="text-[11px] text-red-400 text-center">
+                <p role="alert" className="text-[11px] text-danger text-center">
                   {checkoutError}
                 </p>
               )}

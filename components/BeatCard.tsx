@@ -140,16 +140,6 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 </span>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
-              {beat.subgenre && (
-                <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
-                  {beat.subgenre.toLowerCase()}
-                </span>
-              )}
-              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
-                {beat.genre.toLowerCase()} type beat
-              </span>
-            </div>
           </div>
 
           {/* BPM / Key / Genre */}
@@ -205,7 +195,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <Heart
                 size={12}
                 fill={favorited ? 'currentColor' : 'none'}
-                className={`${favorited ? 'text-red-500' : 'text-muted-low'} ${heartPlaying ? 'animate-heart-pop' : ''}`}
+                className={`${favorited ? 'text-danger' : 'text-muted-low'} ${heartPlaying ? 'animate-heart-pop' : ''}`}
                 onAnimationEnd={() => setHeartPlaying(false)}
                 aria-hidden="true"
               />
@@ -263,7 +253,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 key={i}
                 onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
-                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input transition-colors min-h-[145px]"
+                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
                 style={{ padding: '14px 16px' }}
               >
                 <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>

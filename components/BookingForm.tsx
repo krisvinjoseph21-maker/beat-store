@@ -84,8 +84,8 @@ export default function BookingForm() {
   if (sent) {
     return (
       <div className="py-16 text-center">
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
-          <Check size={30} className="text-green-400" />
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+          <Check size={30} className="text-accent" />
         </div>
         <p className="text-2xl font-black text-white">Request Received!</p>
         <p className="mt-3 text-sm text-muted-mid max-w-sm mx-auto">
@@ -213,7 +213,7 @@ export default function BookingForm() {
         />
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
       <button
         type="submit"
