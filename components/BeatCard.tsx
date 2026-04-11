@@ -13,6 +13,13 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
+function cleanTitle(title: string): string {
+  return title
+    .replace(/@\S+/g, '')
+    .replace(/\s+[A-G][#b]?(major|minor|maj|min|m)?\b/gi, '')
+    .trim()
+}
+
 const LICENSE_OPTIONS = [
   { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3' },
   { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV' },
@@ -129,7 +136,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 className="leading-tight break-words"
                 style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '15px', fontWeight: 600, color: 'var(--foreground)', wordBreak: 'break-word' }}
               >
-                {beat.title}
+                {cleanTitle(beat.title)}
               </h3>
               {isNew && (
                 <span
