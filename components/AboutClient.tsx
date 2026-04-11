@@ -105,14 +105,14 @@ export default function ContactForm() {
         />
       </div>
 
-      {error && <p className="text-[12px] text-red-400 mb-4">{error}</p>}
+      {error && <p role="alert" className="text-[12px] text-red-400 mb-4">{error}</p>}
 
       {/* Submit — right-aligned */}
       <div className="flex justify-end">
         <button
           type="submit"
           disabled={sending}
-          className="bg-white text-black text-[12px] font-bold uppercase px-8 py-3.5 hover:bg-[#e8e8ed] transition-colors disabled:opacity-50"
+          className="bg-white text-black text-[12px] font-bold uppercase px-8 py-3.5 hover:bg-white-hover transition-colors disabled:opacity-50"
           style={{ fontFamily: 'var(--font-montserrat)' }}
         >
           {sending ? 'Sending…' : 'Send Message'}

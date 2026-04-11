@@ -46,7 +46,7 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
-        className="w-full appearance-none border border-line-input bg-surface-1 py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-[#3a3a3a]"
+        className="w-full appearance-none border border-line-input bg-surface-1 py-2 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-line-hover"
         style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
@@ -126,7 +126,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto overflow-x-hidden px-6 sm:px-10 lg:px-16 py-12">
+    <div className="max-w-6xl mx-auto overflow-x-hidden px-6 sm:px-10 lg:px-16 py-12">
       {/* Header */}
       <div className="mb-10">
         <p
@@ -157,7 +157,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           placeholder="Search beats, keys, tags…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-line-input bg-surface-1 py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-[#3a3a3a] transition-colors placeholder:text-muted-low"
+          className="w-full border border-line-input bg-surface-1 py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-line-hover transition-colors placeholder:text-muted-low"
           style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
         />
       </div>
@@ -192,9 +192,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           className="flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0"
           style={{
-            borderColor: favoritesOnly ? '#e01f1f' : '#2a2a2a',
+            borderColor: favoritesOnly ? 'var(--danger)' : 'var(--line-input)',
             background: favoritesOnly ? 'rgba(224,31,31,0.1)' : 'var(--surface-1)',
-            color: favoritesOnly ? '#e01f1f' : '#888',
+            color: favoritesOnly ? 'var(--danger)' : 'var(--muted-low)',
             fontFamily: 'var(--font-montserrat)',
           }}
         >

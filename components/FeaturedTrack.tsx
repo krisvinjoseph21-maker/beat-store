@@ -3,13 +3,7 @@
 import { Play, Pause, ShoppingCart, Check } from 'lucide-react'
 import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
 import ShareButton from './ShareButton'
-
-const GENRE_DOT: Record<string, string> = {
-  Trap:      'bg-[#6b2e1e]',
-  Drill:     'bg-[#1a3348]',
-  'R&B':     'bg-[#422038]',
-  Afrobeats: 'bg-[#6b4e18]',
-}
+import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 
 export default function FeaturedTrack({ beat }: { beat: Beat }) {
   const { currentBeat, isPlaying, setCurrentBeat, togglePlay } = usePlayerStore()
@@ -17,7 +11,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
-  const dot = GENRE_DOT[beat.genre] ?? 'bg-[#3a3a3a]'
+  const dot = GENRE_COLORS[beat.genre] ?? GENRE_COLOR_FALLBACK
 
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()

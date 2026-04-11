@@ -5,13 +5,7 @@ import Link from 'next/link'
 import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
 import ShareButton from './ShareButton'
 import ExclusiveOfferForm from './ExclusiveOfferForm'
-
-const GENRE_BG: Record<string, string> = {
-  Trap:      'bg-[#6b2e1e]',
-  Drill:     'bg-[#1a3348]',
-  'R&B':     'bg-[#422038]',
-  Afrobeats: 'bg-[#6b4e18]',
-}
+import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 
 export default function BeatPageClient({ beat }: { beat: Beat }) {
   const { currentBeat, isPlaying, setCurrentBeat, togglePlay } = usePlayerStore()
@@ -19,7 +13,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
-  const genreBg = GENRE_BG[beat.genre] ?? 'bg-[#3a3a3a]'
+  const genreBg = GENRE_COLORS[beat.genre] ?? GENRE_COLOR_FALLBACK
 
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()

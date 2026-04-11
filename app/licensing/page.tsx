@@ -101,7 +101,7 @@ export default function LicensingPage() {
 
       {/* Header */}
       <div className="w-full border-b border-white/[0.06] bg-black">
-        <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-20">
+        <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-4">Beat Licensing</p>
           <h1 className="font-display text-6xl sm:text-8xl text-foreground uppercase leading-none mb-5">
             Choose Your License.
@@ -113,12 +113,12 @@ export default function LicensingPage() {
       </div>
 
       {/* Tier grid */}
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-16">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-2xl border bg-[#0a0a0a] overflow-hidden transition-colors hover:bg-[#111] ${
+              className={`relative flex flex-col rounded-2xl border bg-surface-3 overflow-hidden transition-colors hover:bg-surface-1 ${
                 tier.tag ? 'border-white/20' : 'border-white/[0.08]'
               }`}
             >
@@ -140,7 +140,7 @@ export default function LicensingPage() {
                   href={tier.href}
                   className={`inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[12px] font-semibold transition-all active:scale-95 ${
                     tier.tag
-                      ? 'bg-white text-black hover:bg-[#e8e8ed]'
+                      ? 'bg-white text-black hover:bg-white-hover'
                       : 'border border-white/[0.1] text-muted hover:border-white/25 hover:text-foreground'
                   }`}
                 >
@@ -152,8 +152,8 @@ export default function LicensingPage() {
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
                       <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-low">{label}</span>
-                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-emerald-400' : 'text-muted-mid'}`}>
-                        {value === '✓' ? <Check size={13} className="text-emerald-400" /> : value}
+                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-accent' : 'text-muted-mid'}`}>
+                        {value === '✓' ? <Check size={13} className="text-accent" /> : value}
                       </span>
                     </div>
                   ))}
@@ -165,7 +165,7 @@ export default function LicensingPage() {
       </div>
 
       {/* General rules */}
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 pb-20">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 pb-20">
         <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-low">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (

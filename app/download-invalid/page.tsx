@@ -9,7 +9,7 @@ export default function DownloadInvalidPage() {
       </p>
       <Link
         href="/"
-        className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-[#e8e8ed] transition-colors"
+        className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors"
       >
         Back to Store
       </Link>

@@ -113,7 +113,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-[#252525] active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
+            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{ width: '44px', height: '44px' }}
           >
             {isThisPlaying

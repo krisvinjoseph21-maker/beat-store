@@ -19,7 +19,7 @@ export default function BookingPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-[#1f1f1f] bg-[#111] p-6 sm:p-8">
+      <div className="rounded-2xl border border-line-card bg-surface-1 p-6 sm:p-8">
         <BookingForm />
       </div>
     </div>

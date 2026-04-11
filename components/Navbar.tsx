@@ -41,7 +41,7 @@ export default function Navbar() {
           fontFamily: 'var(--font-inter)',
         }}
       >
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
+        <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-6 sm:px-10 lg:px-16">
 
           {/* Logo */}
           <Link
@@ -94,10 +94,11 @@ export default function Navbar() {
           <div className="flex lg:hidden items-center gap-4">
             <button
               onClick={() => openCart()}
+              aria-label={items.length > 0 ? `Cart — ${items.length} item${items.length === 1 ? '' : 's'}` : 'Cart'}
               className="text-[11px] text-muted"
             >
               {items.length > 0 && (
-                <span key={items.length} className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1 animate-badge-pop">
+                <span key={items.length} className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1 animate-badge-pop" aria-hidden="true">
                   {items.length}
                 </span>
               )}

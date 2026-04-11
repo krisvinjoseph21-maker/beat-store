@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Check, X } from 'lucide-react'
 
 const SERVICES = [
@@ -9,7 +9,6 @@ const SERVICES = [
     title: 'Mix + Master Bundle',
     price: '$250',
     unit: '/ song',
-    emoji: '🎚️',
     features: [
       'Full professional mix',
       'Full master (streaming-ready)',
@@ -23,7 +22,6 @@ const SERVICES = [
     title: 'Custom Exclusive Beat',
     price: '$499',
     unit: '',
-    emoji: '🎹',
     badge: 'Most Popular',
     features: [
       'Built to your exact spec',
@@ -53,6 +51,7 @@ export default function ServicesClient() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const modalRef = useRef<HTMLDivElement>(null)
 
   function openInquiry(serviceId: string, serviceTitle: string) {
     setActiveService(serviceId)
@@ -60,6 +59,42 @@ export default function ServicesClient() {
     setSent(false)
     setError('')
   }
+
+  function closeModal() {
+    setActiveService(null)
+  }
+
+  // Focus trap
+  useEffect(() => {
+    if (!activeService) return
+    const modal = modalRef.current
+    if (!modal) return
+
+    const previousFocus = document.activeElement as HTMLElement | null
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+    const first = modal.querySelector<HTMLElement>(FOCUSABLE)
+    first?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') { closeModal(); return }
+      if (e.key !== 'Tab') return
+      const focusable = Array.from(modal!.querySelectorAll<HTMLElement>(FOCUSABLE))
+      const firstEl = focusable[0]
+      const lastEl  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) { e.preventDefault(); lastEl?.focus() }
+      } else {
+        if (document.activeElement === lastEl)  { e.preventDefault(); firstEl?.focus() }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      previousFocus?.focus()
+    }
+  }, [activeService]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -90,30 +125,32 @@ export default function ServicesClient() {
         {SERVICES.map((svc) => (
           <div
             key={svc.id}
-            className="relative rounded-2xl border border-line-card bg-surface-1 p-6 flex flex-col"
+            className="relative border border-line-card bg-surface-1 p-6 flex flex-col"
           >
             {svc.badge && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-black">
+              <span className="absolute -top-3 left-6 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-black">
                 {svc.badge}
               </span>
             )}
-            <div className="mb-4 text-3xl text-center">{svc.emoji}</div>
-            <h2 className="text-xl font-black text-white text-center">{svc.title}</h2>
-            <p className="mt-1 text-3xl font-black text-white text-center">
-              {svc.price}
-              {svc.unit && <span className="text-base font-normal text-muted-mid">{svc.unit}</span>}
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-low mb-3">
+              {svc.unit ? svc.unit.trim().replace('/', '').trim() || 'Per Song' : 'Per Beat'}
             </p>
-            <ul className="mt-5 space-y-2 flex-1">
+            <h2 className="text-xl font-black text-white mb-1">{svc.title}</h2>
+            <p className="text-3xl font-black text-foreground mb-5">
+              {svc.price}
+              {svc.unit && <span className="text-base font-normal text-muted-mid ml-1">{svc.unit}</span>}
+            </p>
+            <ul className="space-y-2 flex-1 mb-6">
               {svc.features.map((f) => (
-                <li key={f} className="flex items-center justify-center gap-2 text-sm text-foreground">
-                  <Check size={14} className="text-green-400 flex-shrink-0" />
+                <li key={f} className="flex items-start gap-2 text-sm text-foreground">
+                  <Check size={14} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
                   {f}
                 </li>
               ))}
             </ul>
             <button
               onClick={() => openInquiry(svc.id, svc.title)}
-              className="mt-6 w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[48px]"
+              className="w-full rounded bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[48px]"
             >
               Book a Session
             </button>
@@ -126,33 +163,41 @@ export default function ServicesClient() {
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setActiveService(null)}
+            onClick={closeModal}
+            aria-hidden="true"
           />
-          <div className="relative w-full sm:max-w-xl rounded-t-xl sm:rounded-xl border border-line-card bg-surface-2 p-7 animate-fade-in max-h-[90vh] overflow-y-auto">
+          <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="services-modal-title"
+            className="relative w-full sm:max-w-xl border border-line-card bg-surface-2 p-7 animate-fade-in max-h-[90vh] overflow-y-auto"
+          >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-black text-white">Book a Session</h3>
+                <h3 id="services-modal-title" className="text-xl font-black text-white">Book a Session</h3>
                 <p className="text-xs text-muted mt-0.5">{form.serviceType}</p>
               </div>
               <button
-                onClick={() => setActiveService(null)}
+                onClick={closeModal}
+                aria-label="Close inquiry form"
                 className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid"
               >
-                <X size={18} />
+                <X size={18} aria-hidden="true" />
               </button>
             </div>
 
             {sent ? (
               <div className="py-10 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
-                  <Check size={30} className="text-green-400" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+                  <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
                 <p className="text-xl font-black text-white">Inquiry Sent!</p>
                 <p className="mt-2 text-sm text-muted-mid">
                   I&apos;ll get back to you within 24 hours.
                 </p>
                 <button
-                  onClick={() => setActiveService(null)}
+                  onClick={closeModal}
                   className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
                 >
                   Close
@@ -161,10 +206,11 @@ export default function ServicesClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="services-artist-name" className="block text-sm font-semibold text-foreground mb-2">
                     Artist Name *
                   </label>
                   <input
+                    id="services-artist-name"
                     required
                     type="text"
                     value={form.artistName}
@@ -174,10 +220,11 @@ export default function ServicesClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="services-email" className="block text-sm font-semibold text-foreground mb-2">
                     Email *
                   </label>
                   <input
+                    id="services-email"
                     required
                     type="email"
                     value={form.email}
@@ -187,20 +234,22 @@ export default function ServicesClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="services-service-type" className="block text-sm font-semibold text-foreground mb-2">
                     Service
                   </label>
                   <input
+                    id="services-service-type"
                     readOnly
                     value={form.serviceType}
                     className="w-full rounded border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="services-project-details" className="block text-sm font-semibold text-foreground mb-2">
                     Project Details *
                   </label>
                   <textarea
+                    id="services-project-details"
                     required
                     rows={6}
                     value={form.projectDetails}
@@ -209,7 +258,7 @@ export default function ServicesClient() {
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>
-                {error && <p className="text-sm text-red-400">{error}</p>}
+                {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}

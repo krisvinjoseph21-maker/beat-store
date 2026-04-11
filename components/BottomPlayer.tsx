@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
 import { connectAudioElement, resumeContext } from '@/lib/audio-analyser'
+import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 
 const PREVIEW_LIMIT = 30
 // Sync progress to Zustand (and BeatCard) every 500ms rather than every audio tick (~10x/sec).
@@ -18,12 +19,6 @@ function formatTime(s: number) {
   return `${m}:${sec.toString().padStart(2, '0')}`
 }
 
-const GENRE_DOT: Record<string, string> = {
-  Trap:      'bg-[#6b2e1e]',
-  Drill:     'bg-[#1a3348]',
-  'R&B':     'bg-[#422038]',
-  Afrobeats: 'bg-[#6b4e18]',
-}
 
 export default function BottomPlayer() {
   const {
@@ -116,7 +111,7 @@ export default function BottomPlayer() {
   const barMax = duration > 0 ? Math.min(duration, PREVIEW_LIMIT) : PREVIEW_LIMIT
 
   // Safe to compute with optional chaining — audio element always renders
-  const dot = GENRE_DOT[currentBeat?.genre ?? ''] ?? 'bg-[#3a3a3a]'
+  const dot = GENRE_COLORS[currentBeat?.genre ?? ''] ?? GENRE_COLOR_FALLBACK
   const genreLabel = !currentBeat ? '' : (currentBeat.genre === 'R&B' ? 'R&B' : currentBeat.genre.slice(0, 3))
 
   return (
@@ -181,8 +176,8 @@ export default function BottomPlayer() {
               updateProgressDOM(val)
               if (audioRef.current) audioRef.current.currentTime = val
             }}
-            className="absolute inset-0 w-full opacity-0 cursor-pointer"
-            style={{ height: '4px', top: '-1.5px' }}
+            className="absolute inset-x-0 w-full opacity-0 cursor-pointer"
+            style={{ height: '20px', top: '-10px' }}
             aria-label="Seek"
           />
         </div>
@@ -291,8 +286,8 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="hidden sm:block cursor-pointer flex-shrink-0"
-              style={{ width: '80px' }}
+              className="cursor-pointer flex-shrink-0"
+              style={{ width: '60px' }}
               aria-label="Volume"
             />
           </div>

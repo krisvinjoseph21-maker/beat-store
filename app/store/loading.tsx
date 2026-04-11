@@ -12,9 +12,9 @@ export default function StoreLoading() {
       </div>
 
       {/* Beat row skeletons */}
-      <div className="rounded-sm border border-[#1a1a1a] overflow-hidden">
+      <div className="rounded-sm border border-line overflow-hidden">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-4 border-b border-[#191919] px-5 py-4">
+          <div key={i} className="flex items-center gap-4 border-b border-line px-5 py-4">
             <div className="h-11 w-11 rounded-full bg-white/5 animate-pulse flex-shrink-0" />
             <div className="h-12 w-12 rounded-sm bg-white/5 animate-pulse flex-shrink-0" />
             <div className="flex-1 space-y-2">
