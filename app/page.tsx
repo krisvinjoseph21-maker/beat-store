@@ -121,7 +121,6 @@ export default async function HomePage() {
           >
             Verified placements with{' '}
             <span className="text-muted-mid font-medium">GloRilla, Shenseea & more.</span>
-            {' '}Trap · Drill · R&amp;B · Afrobeats.
           </p>
 
           {/* CTAs */}
@@ -199,7 +198,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
-      <section className="w-full border-b border-white/[0.06] bg-[#050505]">
+      <section className="w-full border-b border-white/[0.06] bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
@@ -224,7 +223,7 @@ export default async function HomePage() {
             {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
-                className="group flex flex-col gap-4 bg-[#050505] p-6 hover:bg-surface-3 transition-colors duration-200 h-full"
+                className="group flex flex-col gap-4 bg-surface-4 p-6 hover:bg-surface-3 transition-colors duration-200 h-full"
               >
                 <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-low">
                   {role}

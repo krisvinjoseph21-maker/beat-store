@@ -20,6 +20,7 @@
   --surface-1: #111111;   /* Component BG: inputs, cards, option tiles */
   --surface-2: #0d0d0d;   /* Deeper BG: modals, drawers, license panel */
   --surface-3: #0a0a0a;   /* Featured sections, elevated cards */
+  --surface-4: #050505;   /* Deepest BG: receipts, rules cards */
 
   /* ── Line / border scale ────────────────────────── */
   --line:       #1a1a1a;  /* Beat-row separators, list containers */
@@ -46,6 +47,7 @@
   --color-surface-1: #111111;
   --color-surface-2: #0d0d0d;
   --color-surface-3: #0a0a0a;
+  --color-surface-4: #050505;
 
   /* Lines */
   --color-line:       #1a1a1a;

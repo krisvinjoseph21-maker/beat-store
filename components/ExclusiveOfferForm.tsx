@@ -43,10 +43,12 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls="exclusive-offer-panel"
         className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-2.5">
-          <Crown size={15} className="text-yellow-500 flex-shrink-0" />
+          <Crown size={15} className="text-accent flex-shrink-0" />
           <div>
             <p className="text-sm font-bold text-white">Make an Exclusive Offer</p>
             <p className="text-xs text-muted">Own the full rights — beat removed from store</p>
@@ -60,10 +62,10 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
       </button>
 
       {open && (
-        <div className="border-t border-line-card px-5 py-5 bg-[#080808]">
+        <div id="exclusive-offer-panel" className="border-t border-line-card px-5 py-5 bg-surface-3">
           {sent ? (
             <div className="text-center py-4">
-              <p className="text-emerald-400 font-semibold text-sm">Offer sent!</p>
+              <p className="text-accent font-semibold text-sm">Offer sent!</p>
               <p className="text-muted text-xs mt-1">
                 We&apos;ll review your offer for <span className="text-white">{beatTitle}</span> and get back to you.
               </p>
@@ -71,28 +73,38 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <input
-                  required
-                  type="text"
-                  placeholder="Your name"
-                  value={artistName}
-                  onChange={(e) => setArtistName(e.target.value)}
-                  maxLength={100}
-                  className="rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
-                />
-                <input
-                  required
-                  type="email"
-                  placeholder="Your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
-                />
+                <div>
+                  <label htmlFor="offer-name" className="sr-only">Your name</label>
+                  <input
+                    id="offer-name"
+                    required
+                    type="text"
+                    placeholder="Your name"
+                    value={artistName}
+                    onChange={(e) => setArtistName(e.target.value)}
+                    maxLength={100}
+                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="offer-email" className="sr-only">Your email</label>
+                  <input
+                    id="offer-email"
+                    required
+                    type="email"
+                    placeholder="Your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  />
+                </div>
               </div>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-mid text-sm font-bold">$</span>
+                <label htmlFor="offer-price" className="sr-only">Your offer amount in dollars</label>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-mid text-sm font-bold" aria-hidden="true">$</span>
                 <input
+                  id="offer-price"
                   required
                   type="number"
                   min={1}
@@ -104,21 +116,25 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 />
               </div>
 
-              <textarea
-                placeholder="Additional message (optional)"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                maxLength={1000}
-                rows={2}
-                className="w-full resize-none rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
-              />
+              <div>
+                <label htmlFor="offer-message" className="sr-only">Additional message (optional)</label>
+                <textarea
+                  id="offer-message"
+                  placeholder="Additional message (optional)"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                  className="w-full resize-none rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                />
+              </div>
 
-              {error && <p className="text-xs text-red-400">{error}</p>}
+              {error && <p role="alert" className="text-xs text-danger">{error}</p>}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-sm bg-yellow-500 py-2.5 text-sm font-bold text-black hover:bg-yellow-400 transition-colors disabled:opacity-50"
+                className="w-full rounded-sm bg-accent py-2.5 text-sm font-bold text-black hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {loading ? 'Sending…' : 'Send Exclusive Offer'}
               </button>

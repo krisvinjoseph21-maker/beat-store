@@ -43,14 +43,14 @@ export default function CookiesPage() {
 
       <div className="space-y-4">
         {COOKIE_TYPES.map(({ name, required, description, examples }) => (
-          <div key={name} className="rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-5">
+          <div key={name} className="rounded-xl border border-line bg-surface-2 p-5">
             <div className="flex items-center justify-between mb-2">
               <p className="font-bold text-white text-sm">{name}</p>
               <span
                 className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                   required
-                    ? 'bg-[#1a1a1a] text-muted-mid'
-                    : 'bg-[#0d0d0d] text-muted'
+                    ? 'bg-line text-muted-mid'
+                    : 'bg-surface-2 text-muted'
                 }`}
               >
                 {required ? 'Always on' : 'Optional'}
@@ -61,7 +61,7 @@ export default function CookiesPage() {
               {examples.map((ex) => (
                 <span
                   key={ex}
-                  className="text-xs bg-[#141414] border border-[#222] text-muted-low px-2 py-1 rounded-md"
+                  className="text-xs bg-line-mid border border-line text-muted-low px-2 py-1 rounded-md"
                 >
                   {ex}
                 </span>

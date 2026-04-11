@@ -169,7 +169,7 @@ export default function LicensingPage() {
         <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-low">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
-            <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-[#050505] p-4">
+            <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-surface-4 p-4">
               <span className="mt-0.5 text-muted-low text-[12px] flex-shrink-0">—</span>
               <p className="text-[13px] text-muted leading-[1.6]">{rule}</p>
             </div>

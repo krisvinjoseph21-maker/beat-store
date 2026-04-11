@@ -24,7 +24,7 @@ export default function ShareButton({ beatId }: { beatId: string }) {
       className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-3 sm:py-1.5 text-xs font-semibold transition-all ${
         copied
           ? 'border-green-500/40 bg-green-500/10 text-green-400'
-          : 'border-[#2a2a2a] text-muted hover:border-muted hover:text-white'
+          : 'border-line-input text-muted hover:border-muted hover:text-white'
       }`}
       aria-label={copied ? 'Link copied' : 'Copy link'}
     >

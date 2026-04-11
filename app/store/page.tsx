@@ -26,7 +26,7 @@ export const metadata = {
 export default async function StorePage() {
   const beats = await getBeats()
   return (
-    <div className="w-full">
+    <div className="flex justify-center w-full">
       <BeatStore initialBeats={beats} />
     </div>
   )
