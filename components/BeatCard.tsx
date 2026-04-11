@@ -13,15 +13,6 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
-function cleanTitle(title: string): string {
-  return title
-    .replace(/@\S+/g, '')                                          // @producer tags
-    .replace(/^\d+\s+/, '')                                        // leading BPM number
-    .replace(/^(?:\w+(?:\s*,\s*\w+)+)\s+/, '')                    // comma-separated producer list at start
-    .replace(/\s+\w+(?:\s+[Xx]\s+\w+)+$/, '')                     // trailing "Kj X Cc" collab suffixes
-    .replace(/\s+[A-G][#b]?(major|minor|maj|min|m)?\b/gi, '')     // key signatures
-    .trim()
-}
 
 const LICENSE_OPTIONS = [
   { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3' },
@@ -139,7 +130,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 className="leading-tight break-words"
                 style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '15px', fontWeight: 600, color: 'var(--foreground)', wordBreak: 'break-word' }}
               >
-                {cleanTitle(beat.title)}
+                {beat.title}
               </h3>
               {isNew && (
                 <span
@@ -149,6 +140,16 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   new
                 </span>
               )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {beat.subgenre && (
+                <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
+                  {beat.subgenre.toLowerCase()}
+                </span>
+              )}
+              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
+                {beat.genre.toLowerCase()} type beat
+              </span>
             </div>
           </div>
 
