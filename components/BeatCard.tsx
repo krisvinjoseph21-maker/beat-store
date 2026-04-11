@@ -15,8 +15,11 @@ interface Props {
 
 function cleanTitle(title: string): string {
   return title
-    .replace(/@\S+/g, '')
-    .replace(/\s+[A-G][#b]?(major|minor|maj|min|m)?\b/gi, '')
+    .replace(/@\S+/g, '')                                          // @producer tags
+    .replace(/^\d+\s+/, '')                                        // leading BPM number
+    .replace(/^(?:\w+(?:\s*,\s*\w+)+)\s+/, '')                    // comma-separated producer list at start
+    .replace(/\s+\w+(?:\s+[Xx]\s+\w+)+$/, '')                     // trailing "Kj X Cc" collab suffixes
+    .replace(/\s+[A-G][#b]?(major|minor|maj|min|m)?\b/gi, '')     // key signatures
     .trim()
 }
 
