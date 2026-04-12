@@ -100,7 +100,7 @@ export default function LicensingPage() {
     <div className="w-full">
 
       {/* Header */}
-      <div className="w-full border-b border-white/[0.06] bg-black">
+      <div className="w-full flex justify-center border-b border-white/[0.06] bg-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-4">Beat Licensing</p>
           <h1 className="font-display text-6xl sm:text-8xl text-foreground uppercase leading-none mb-5">
@@ -113,7 +113,8 @@ export default function LicensingPage() {
       </div>
 
       {/* Tier grid */}
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
+      <div className="flex justify-center w-full">
+      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TIERS.map((tier) => (
             <div
@@ -163,9 +164,11 @@ export default function LicensingPage() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* General rules */}
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 pb-20">
+      <div className="flex justify-center w-full">
+      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-20">
         <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-low">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
@@ -181,6 +184,7 @@ export default function LicensingPage() {
             Contact us here.
           </Link>
         </p>
+      </div>
       </div>
 
     </div>

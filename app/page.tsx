@@ -260,9 +260,7 @@ export default async function HomePage() {
           >
             Your Next Hit<br />Starts Here.
           </h2>
-          <p className="relative text-[14px] max-w-sm leading-relaxed mb-10 text-muted text-center">
-            Every beat is mixed, mastered, and ready to record. Instant delivery after checkout.
-          </p>
+
           <Link
             href="/store"
             className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
