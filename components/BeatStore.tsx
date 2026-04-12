@@ -218,44 +218,46 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           No beats found. Try a different filter.
         </div>
       ) : (
-        <div className="border border-line">
-          {/* Table header */}
-          <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
-            <span className="w-6 flex-shrink-0" />
-            <span className="w-11 flex-shrink-0" />
-            <span
-              className="flex-1 text-[10px] font-bold uppercase"
-              style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
-            >
-              Title
-            </span>
-            <span
-              className="hidden md:block text-[10px] font-bold uppercase text-center"
-              style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
-            >
-              Genre
-            </span>
-            <span style={{ width: '160px' }} />
+        <>
+          <div className="border border-line">
+            {/* Table header */}
+            <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
+              <span className="w-6 flex-shrink-0" />
+              <span className="w-11 flex-shrink-0" />
+              <span
+                className="flex-1 text-[10px] font-bold uppercase"
+                style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
+              >
+                Title
+              </span>
+              <span
+                className="hidden md:block text-[10px] font-bold uppercase text-center"
+                style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
+              >
+                Genre
+              </span>
+              <span style={{ width: '160px' }} />
+            </div>
+            {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
+              <BeatCard
+                key={beat.id}
+                beat={beat}
+                index={i + 1}
+                onBuyClick={(_beat) => setModalOpen(true)}
+              />
+            ))}
           </div>
-          {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
-            <BeatCard
-              key={beat.id}
-              beat={beat}
-              index={i + 1}
-              onBuyClick={(_beat) => setModalOpen(true)}
-            />
-          ))}
-        </div>
-        {!showAll && filtered.length > 10 && (
-          <div className="flex justify-center mt-6">
-            <button
-              onClick={() => setShowAll(true)}
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-all active:scale-95"
-            >
-              Browse All Tracks ({filtered.length - 10} more)
-            </button>
-          </div>
-        )}
+          {!showAll && filtered.length > 10 && (
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => setShowAll(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-all active:scale-95"
+              >
+                Browse All Tracks ({filtered.length - 10} more)
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       <LicenseModal
