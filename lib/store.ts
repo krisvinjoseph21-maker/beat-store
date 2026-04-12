@@ -14,6 +14,7 @@ export interface Beat {
   file_url: string | null
   preview_url: string | null
   cover_url: string | null
+  stems_path: string | null
   is_active: boolean
   created_at: string
 }

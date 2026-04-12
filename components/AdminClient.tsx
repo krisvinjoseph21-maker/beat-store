@@ -14,6 +14,7 @@ interface Beat {
   file_url: string | null
   preview_url: string | null
   cover_url: string | null
+  stems_path: string | null
   is_active: boolean
   is_featured: boolean
   created_at: string
@@ -62,6 +63,7 @@ export default function AdminClient() {
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
+  const stemsRef = useRef<HTMLInputElement>(null)
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault()
@@ -235,6 +237,7 @@ export default function AdminClient() {
       const mainFile = fileRef.current?.files?.[0]
       const prevFile = previewRef.current?.files?.[0]
       const coverFile = coverRef.current?.files?.[0]
+      const stemsFile = stemsRef.current?.files?.[0]
 
       if (mainFile) {
         setUploadMsg('Uploading beat file…')
@@ -251,6 +254,12 @@ export default function AdminClient() {
         setUploadMsg('Uploading cover image…')
         const result = await uploadFile(coverFile, 'cover')
         coverUrl = result.url ?? null
+      }
+      let stemsPath: string | null = null
+      if (stemsFile) {
+        setUploadMsg('Uploading stems…')
+        const result = await uploadFile(stemsFile, 'stems')
+        stemsPath = result.path
       }
 
       setUploadMsg('Saving…')
@@ -272,6 +281,7 @@ export default function AdminClient() {
           preview_url: previewUrl,
           preview_path: previewPath,
           cover_url: coverUrl,
+          stems_path: stemsPath,
           bpm: Number(newBeat.bpm),
         }),
       })
@@ -281,6 +291,7 @@ export default function AdminClient() {
         if (fileRef.current) fileRef.current.value = ''
         if (previewRef.current) previewRef.current.value = ''
         if (coverRef.current) coverRef.current.value = ''
+        if (stemsRef.current) stemsRef.current.value = ''
         fetchBeats()
       } else {
         const err = await res.json()
@@ -430,6 +441,7 @@ export default function AdminClient() {
                     </div>
                     <p className="text-xs text-zinc-500 mt-0.5 ml-4">
                       {beat.genre} · {beat.subgenre} · {beat.bpm} BPM · {beat.key}
+                      {beat.stems_path && <span className="ml-2 text-emerald-500">· stems ✓</span>}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
@@ -613,6 +625,13 @@ export default function AdminClient() {
             <input ref={coverRef} type="file" accept="image/*"
               className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
             <p className="mt-1 text-[10px] text-zinc-600">JPG, PNG, WEBP — will show in the beat list and player bar</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Stems (optional — ZIP file of all track stems)</label>
+            <input ref={stemsRef} type="file" accept=".zip,application/zip"
+              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
+            <p className="mt-1 text-[10px] text-zinc-600">ZIP only — delivered automatically to customers who buy the Stems License</p>
           </div>
 
           {uploadMsg && (

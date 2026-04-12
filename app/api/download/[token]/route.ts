@@ -29,7 +29,7 @@ export async function GET(
   // Look up the download record
   const { data: download, error } = await supabase
     .from('downloads')
-    .select('*, orders(beat_ids)')
+    .select('*, orders(beat_ids, license_type)')
     .eq('token', token)
     .single()
 
@@ -67,9 +67,11 @@ export async function GET(
 
   // Fetch beat file URLs
   const beatIds: string[] = download.orders?.beat_ids ?? []
+  const licenseType: string = download.orders?.license_type ?? 'standard'
+  const includeStems = licenseType === 'unlimited'
   const { data: beats } = await supabase
     .from('beats')
-    .select('id, title, bpm, file_url, file_path')
+    .select('id, title, bpm, file_url, file_path, stems_path')
     .in('id', beatIds)
 
   if (!beats?.length) {
@@ -80,7 +82,7 @@ export async function GET(
   }
 
   // Generate signed URLs for each beat file (requires bucket to be private in Supabase)
-  type SignedBeat = { title: string; bpm: number; signedUrl: string }
+  type SignedBeat = { title: string; bpm: number; signedUrl: string; isStems?: boolean }
   const signed: SignedBeat[] = []
 
   for (const beat of beats) {
@@ -96,6 +98,18 @@ export async function GET(
 
     if (!signedError && signedData?.signedUrl) {
       signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
+    }
+
+    // Include stems if this is an unlimited (stems) license and stems exist
+    if (includeStems && beat.stems_path) {
+      const { data: stemsData, error: stemsError } = await supabase.storage
+        .from('beats')
+        .createSignedUrl(beat.stems_path, SIGNED_URL_TTL, {
+          download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_stems.zip`,
+        })
+      if (!stemsError && stemsData?.signedUrl) {
+        signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: stemsData.signedUrl, isStems: true })
+      }
     }
   }
 
@@ -118,7 +132,7 @@ export async function GET(
   const links = signed
     .map(
       (b) =>
-        `<li><a href="${escapeHtml(b.signedUrl)}" download style="color:#fff;padding:12px 0;display:block;font-weight:600">${escapeHtml(b.title)}</a></li>`
+        `<li><a href="${escapeHtml(b.signedUrl)}" download style="color:#fff;padding:12px 0;display:block;font-weight:600">${escapeHtml(b.title)}${b.isStems ? ' <span style="font-size:11px;color:#aaa;font-weight:400">(Stems ZIP)</span>' : ''}</a></li>`
     )
     .join('')
 

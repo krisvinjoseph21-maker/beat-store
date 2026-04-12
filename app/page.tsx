@@ -216,7 +216,7 @@ export default async function HomePage() {
             {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
-                className="group flex flex-col gap-4 bg-surface-4 p-6 hover:bg-surface-3 transition-colors duration-200 h-full"
+                className="group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full"
               >
                 <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-low">
                   {role}

@@ -91,10 +91,14 @@ alter table public.downloads enable row level security;
 --   2. Existing file_url columns will stop working for direct access
 --   3. Downloads still work because they go through createSignedUrl
 --
--- Run this to add file_path and preview_path to existing beats table:
+-- Run these migrations in Supabase SQL Editor if columns are missing:
 -- alter table public.beats add column if not exists file_path text;
 -- alter table public.beats add column if not exists preview_path text;
+-- alter table public.beats add column if not exists cover_url text;
 -- alter table public.beats add column if not exists pin_order integer;
+-- alter table public.beats add column if not exists is_featured boolean not null default false;
+-- alter table public.beats add column if not exists stems_path text;
+-- alter table public.beats add column if not exists stems_url text;
 
 -- -------------------------------------------------------
 -- Indexes

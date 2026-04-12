@@ -106,9 +106,6 @@ export default function LicensingPage() {
           <h1 className="font-display text-6xl sm:text-8xl text-foreground uppercase leading-none mb-5">
             Choose Your License.
           </h1>
-          <p className="text-[14px] text-muted max-w-lg leading-[1.7]">
-            Every license includes instant delivery to your inbox. All beats are non-exclusive unless purchased as Exclusive.
-          </p>
         </div>
       </div>
 
@@ -119,7 +116,7 @@ export default function LicensingPage() {
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-2xl border bg-surface-3 overflow-hidden transition-colors hover:bg-surface-1 ${
+              className={`relative flex flex-col rounded-2xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
                 tier.tag ? 'border-white/20' : 'border-white/[0.08]'
               }`}
             >

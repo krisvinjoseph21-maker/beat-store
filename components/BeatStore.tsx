@@ -66,6 +66,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const [mood, setMood] = useState('All Moods')
 
   const [sortBy, setSortBy] = useState('default')
+  const [showAll, setShowAll] = useState(false)
   const [favoritesOnly, setFavoritesOnly] = useState(false)
   const searchParams = useSearchParams()
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
@@ -77,6 +78,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   useEffect(() => {
     setQueue(initialBeats)
   }, [initialBeats, setQueue])
+
+  useEffect(() => {
+    setShowAll(false)
+  }, [category, bpmRange, mood, sortBy, search, favoritesOnly])
 
   // Derive available genres from actual beat data.
   // Deduplicate case-insensitively so "trap" and "Trap" merge into one entry.
@@ -190,10 +195,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         />
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
-          className="flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0"
+          className={`flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-surface-1'}`}
           style={{
             borderColor: favoritesOnly ? 'var(--danger)' : 'var(--line-input)',
-            background: favoritesOnly ? 'rgba(224,31,31,0.1)' : 'var(--surface-1)',
             color: favoritesOnly ? 'var(--danger)' : 'var(--muted-low)',
             fontFamily: 'var(--font-montserrat)',
           }}
@@ -233,7 +237,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             </span>
             <span style={{ width: '160px' }} />
           </div>
-          {filtered.map((beat, i) => (
+          {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
             <BeatCard
               key={beat.id}
               beat={beat}
@@ -242,6 +246,16 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             />
           ))}
         </div>
+        {!showAll && filtered.length > 10 && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-all active:scale-95"
+            >
+              Browse All Tracks ({filtered.length - 10} more)
+            </button>
+          </div>
+        )}
       )}
 
       <LicenseModal

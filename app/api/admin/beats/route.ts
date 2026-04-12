@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       preview_url: body.preview_url ?? null,
       preview_path: body.preview_path ?? null,
       cover_url: body.cover_url ?? null,
+      stems_path: body.stems_path ?? null,
       is_active: body.is_active !== false,
     }
     const supabase = createAdminClient()
@@ -125,7 +126,7 @@ export async function PATCH(req: NextRequest) {
     const { id } = body
     if (!id) return Response.json({ error: 'Missing id' }, { status: 400 })
     const ALLOWED = ['title','bpm','key','genre','subgenre','tags','file_url','file_path',
-      'preview_url','preview_path','cover_url','is_active','pin_order','is_featured']
+      'preview_url','preview_path','cover_url','stems_path','is_active','pin_order','is_featured']
     const updates: Record<string, unknown> = {}
     for (const key of ALLOWED) {
       if (key in body) updates[key] = body[key]

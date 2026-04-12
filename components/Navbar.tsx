@@ -95,7 +95,7 @@ export default function Navbar() {
             <button
               onClick={() => openCart()}
               aria-label={items.length > 0 ? `Cart — ${items.length} item${items.length === 1 ? '' : 's'}` : 'Cart'}
-              className="text-[11px] text-muted"
+              className="flex h-11 items-center text-[11px] text-muted"
             >
               {items.length > 0 && (
                 <span key={items.length} className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white text-black text-[9px] font-bold mr-1 animate-badge-pop" aria-hidden="true">
@@ -106,7 +106,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setMobileOpen(o => !o)}
-              className="flex flex-col gap-[4.5px] p-1"
+              className="flex h-11 w-11 flex-col items-center justify-center gap-[4.5px]"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav-menu"

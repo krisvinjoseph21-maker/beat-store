@@ -19,7 +19,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.08] bg-surface-3 overflow-hidden">
+    <div className="w-full rounded-2xl border border-white/[0.08] bg-surface-3">
       <div className="relative flex flex-col sm:flex-row items-stretch">
 
         {/* Artwork slab */}

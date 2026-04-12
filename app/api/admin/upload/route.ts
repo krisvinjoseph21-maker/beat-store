@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File | null
-    const type = (formData.get('type') as string) ?? 'full' // 'full' | 'preview' | 'cover'
+    const type = (formData.get('type') as string) ?? 'full' // 'full' | 'preview' | 'cover' | 'stems'
 
     if (!file) {
       return Response.json({ error: 'No file provided' }, { status: 400 })
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabase.storage
       .from(bucket)
       .upload(path, arrayBuffer, {
-        contentType: file.type || (type === 'cover' ? 'image/jpeg' : 'audio/mpeg'),
+        contentType: file.type || (type === 'cover' ? 'image/jpeg' : type === 'stems' ? 'application/zip' : 'audio/mpeg'),
         upsert: false,
       })
 
