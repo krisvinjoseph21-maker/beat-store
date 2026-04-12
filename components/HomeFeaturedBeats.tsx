@@ -55,7 +55,7 @@ export default function HomeFeaturedBeats({ beats }: { beats: Beat[] }) {
         ))}
       </div>
       {checkoutError && (
-        <p role="alert" className="mt-3 text-[12px] text-red-400 text-center">
+        <p role="alert" className="mt-3 text-[12px] text-danger text-center">
           {checkoutError}
         </p>
       )}

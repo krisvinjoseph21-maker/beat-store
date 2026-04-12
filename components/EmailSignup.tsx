@@ -34,7 +34,9 @@ export default function EmailSignup() {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col gap-3">
       <div className="flex gap-2">
+        <label htmlFor="email-signup" className="sr-only">Email address</label>
         <input
+          id="email-signup"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -44,12 +46,12 @@ export default function EmailSignup() {
         />
         <button
           type="submit"
-          className="flex-shrink-0 inline-flex items-center gap-2 rounded-sm bg-white px-6 py-3.5 text-sm font-black text-black hover:bg-[#f0f0f0] transition-colors"
+          className="flex-shrink-0 inline-flex items-center gap-2 rounded-sm bg-white px-6 py-3.5 text-sm font-black text-black hover:bg-white-hover transition-colors"
         >
           Get Beat <ArrowRight size={14} />
         </button>
       </div>
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
       <p className="text-[11px] text-muted-low text-center">No spam. Unsubscribe any time.</p>
     </form>
   )

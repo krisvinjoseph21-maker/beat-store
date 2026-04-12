@@ -143,7 +143,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             Beat Store.
           </h1>
           <p className="text-[12px] mb-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
-            {initialBeats.length} beats
+            {filtered.length} beat{filtered.length !== 1 ? 's' : ''}
           </p>
         </div>
       </div>
@@ -206,6 +206,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       {/* Beat list */}
       {filtered.length === 0 ? (
         <div
+          role="status"
+          aria-live="polite"
           className="flex h-40 items-center justify-center border border-line text-[13px]"
           style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
         >

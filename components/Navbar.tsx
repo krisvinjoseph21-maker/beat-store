@@ -109,6 +109,7 @@ export default function Navbar() {
               className="flex flex-col gap-[4.5px] p-1"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-menu"
             >
               <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
               <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
@@ -120,6 +121,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       <div
+        id="mobile-nav-menu"
         className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-all duration-300 ${
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}

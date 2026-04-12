@@ -54,10 +54,13 @@ export default function CartDrawer({ open, onClose }: Props) {
 
   function handleRemove(beatId: string) {
     setRemovingId(beatId)
-    setTimeout(() => {
+  }
+
+  function handleRemoveAnimationEnd(beatId: string) {
+    if (removingId === beatId) {
       removeBeat(beatId)
       setRemovingId(null)
-    }, 210)
+    }
   }
 
   async function handleCheckout(discountCode: string) {
@@ -113,6 +116,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   className={`flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
                     removingId === beat.id ? 'animate-item-fade-out' : ''
                   }`}
+                  onAnimationEnd={() => handleRemoveAnimationEnd(beat.id)}
                 >
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-foreground truncate">{beat.title}</p>
@@ -121,7 +125,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   <button
                     onClick={() => handleRemove(beat.id)}
                     aria-label={`Remove ${beat.title} from cart`}
-                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-red-500/15 text-muted-low hover:text-red-400 transition-colors"
+                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-danger/10 text-muted-low hover:text-danger transition-colors"
                   >
                     <Trash2 size={13} aria-hidden="true" />
                   </button>
