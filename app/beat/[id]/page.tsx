@@ -45,6 +45,7 @@ export default async function BeatPage(
     ...data,
     tags: data.tags ?? [],
     cover_url: null,
+    stems_path: null,
   }
   return <BeatPageClient beat={beat} />
 }
