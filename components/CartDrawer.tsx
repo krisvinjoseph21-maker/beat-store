@@ -63,7 +63,7 @@ export default function CartDrawer({ open, onClose }: Props) {
     }
   }
 
-  async function handleCheckout(discountCode: string) {
+  async function handleCheckout(discountCode: string, useBogo?: boolean) {
     setLoading(true)
     setCheckoutError('')
     try {
@@ -75,6 +75,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           licenseType,
           quantityTier,
           discountCode: discountCode || undefined,
+          useBogo: useBogo || undefined,
         }),
       })
       const data = await res.json()
@@ -153,9 +154,9 @@ export default function CartDrawer({ open, onClose }: Props) {
       <LicenseModal
         open={licenseOpen}
         onClose={() => setLicenseOpen(false)}
-        onCheckout={(discountCode) => {
+        onCheckout={(discountCode, useBogo) => {
           setLicenseOpen(false)
-          handleCheckout(discountCode)
+          handleCheckout(discountCode, useBogo)
         }}
       />
     </div>

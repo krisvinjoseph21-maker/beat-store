@@ -1,14 +1,16 @@
 'use client'
 
-import { X, Check } from 'lucide-react'
+import { X, Check, Zap, Tag } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useCartStore, LicenseType, QuantityTier } from '@/lib/store'
 import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
+import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'
+import type { PromoConfig } from '@/lib/promos'
 
 interface Props {
   open: boolean
   onClose: () => void
-  onCheckout: (discountCode: string) => void
+  onCheckout: (discountCode: string, useBogo?: boolean) => void
 }
 
 const PRICES: Record<LicenseType, Record<QuantityTier, number>> = {
@@ -39,9 +41,20 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const [appliedCode, setAppliedCode] = useState('')
   const [discountPct, setDiscountPct] = useState<number | null>(null)
   const [codeError, setCodeError] = useState('')
+  const [promo, setPromo] = useState<PromoConfig>({ sitewide_discount_pct: null, bogo_free_count: null })
+  const [bogoSelected, setBogoSelected] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
 
-  // Focus trap: run on mount (only renders when open=true)
+  // Fetch active promos when modal opens
+  useEffect(() => {
+    if (!open) return
+    fetch('/api/promos')
+      .then((r) => r.json())
+      .then((data: PromoConfig) => setPromo(data))
+      .catch(() => {})
+  }, [open])
+
+  // Focus trap
   useEffect(() => {
     if (!open) return
     const modal = modalRef.current
@@ -50,7 +63,6 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
     const previousFocus = document.activeElement as HTMLElement | null
     const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-    // Focus first element on open
     const first = modal.querySelector<HTMLElement>(FOCUSABLE)
     first?.focus()
 
@@ -76,8 +88,27 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
   if (!open) return null
 
-  const basePrice = PRICES[licenseType][quantityTier]
-  const finalPrice = discountPct !== null ? applyDiscount(basePrice, discountPct) : basePrice
+  const hasBogo = bogoIsActive(promo)
+  const hasSitewide = sitewideIsActive(promo)
+
+  // Coupon discount (from code input)
+  const couponPct = appliedCode ? discountPct : null
+  // Best discount: sitewide vs coupon, whichever is larger
+  const sitewisePct = hasSitewide ? promo.sitewide_discount_pct : null
+  const bestPct = effectiveDiscountPct(sitewisePct, couponPct)
+
+  // Price helpers
+  function displayPrice(base: number): number {
+    if (bogoSelected) {
+      // BOGO: price as 1-beat tier with any active discount
+      const bogoBase = PRICES[licenseType][1]
+      return bestPct !== null ? applyDiscount(bogoBase, bestPct) : bogoBase
+    }
+    return bestPct !== null ? applyDiscount(base, bestPct) : base
+  }
+
+  const basePrice = bogoSelected ? PRICES[licenseType][1] : PRICES[licenseType][quantityTier]
+  const finalPrice = displayPrice(basePrice)
   const features = licenseType === 'standard' ? STANDARD_FEATURES : UNLIMITED_FEATURES
 
   function handleApplyCode() {
@@ -99,6 +130,19 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
     setCodeInput('')
     setCodeError('')
   }
+
+  function handleTierClick(tier: QuantityTier) {
+    setQuantityTier(tier)
+    setBogoSelected(false)
+  }
+
+  function handleCheckoutClick() {
+    onCheckout(appliedCode, bogoSelected ? true : undefined)
+  }
+
+  // Which discount label to show on the CTA
+  const activeCouponPct = couponPct !== null && couponPct > (sitewisePct ?? 0) ? couponPct : null
+  const activeSitewisePct = sitewisePct !== null && sitewisePct >= (couponPct ?? 0) ? sitewisePct : null
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -127,6 +171,27 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
             <X size={18} aria-hidden="true" />
           </button>
         </div>
+
+        {/* Sitewide discount banner */}
+        {hasSitewide && (
+          <div className="mb-4 flex items-center gap-2 rounded-sm border border-accent/30 bg-accent/10 px-3 py-2.5">
+            <Tag size={13} className="text-accent flex-shrink-0" aria-hidden="true" />
+            <p className="text-sm font-semibold text-accent">
+              {promo.sitewide_discount_pct}% off everything — applied automatically
+              {activeCouponPct !== null && ` (your code gives ${activeCouponPct}% — whichever is better is applied)`}
+            </p>
+          </div>
+        )}
+
+        {/* BOGO banner */}
+        {hasBogo && (
+          <div className="mb-4 flex items-center gap-2 rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-3 py-2.5">
+            <Zap size={13} className="text-emerald-400 flex-shrink-0" aria-hidden="true" />
+            <p className="text-sm font-semibold text-emerald-400">
+              Limited offer: Buy 1 get {promo.bogo_free_count} free — see deal below
+            </p>
+          </div>
+        )}
 
         {/* Cart summary */}
         {items.length > 0 && (
@@ -169,41 +234,98 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         </ul>
 
         {/* Quantity tiers */}
-        <div className="mb-5">
+        <div className="mb-4">
           <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
             Beat Quantity
           </p>
           <div className="grid grid-cols-3 gap-2">
-            {([1, 3, 5] as QuantityTier[]).map((qty) => (
-              <button
-                key={qty}
-                onClick={() => setQuantityTier(qty)}
-                aria-pressed={quantityTier === qty}
-                aria-label={`${qty} beat${qty > 1 ? 's' : ''} — $${PRICES[licenseType][qty]}`}
-                className={`rounded-sm border py-3 text-center transition-all ${
-                  quantityTier === qty
-                    ? 'border-accent bg-accent/10 text-white'
-                    : 'border-line-input text-muted-mid hover:border-muted hover:text-white'
-                }`}
-              >
-                <p className="text-lg font-bold">{qty}</p>
-                <p className="text-xs text-muted">
-                  beat{qty > 1 ? 's' : ''}
-                </p>
-                <p className="text-sm font-semibold text-white mt-1">
-                  ${PRICES[licenseType][qty]}
-                </p>
-              </button>
-            ))}
+            {([1, 3, 5] as QuantityTier[]).map((qty) => {
+              const raw = PRICES[licenseType][qty]
+              const shown = bestPct !== null ? applyDiscount(raw, bestPct) : raw
+              const isSelected = !bogoSelected && quantityTier === qty
+              return (
+                <button
+                  key={qty}
+                  onClick={() => handleTierClick(qty)}
+                  aria-pressed={isSelected}
+                  aria-label={`${qty} beat${qty > 1 ? 's' : ''} — $${shown}`}
+                  className={`rounded-sm border py-3 text-center transition-all ${
+                    isSelected
+                      ? 'border-accent bg-accent/10 text-white'
+                      : 'border-line-input text-muted-mid hover:border-muted hover:text-white'
+                  }`}
+                >
+                  <p className="text-lg font-bold">{qty}</p>
+                  <p className="text-xs text-muted">beat{qty > 1 ? 's' : ''}</p>
+                  {bestPct !== null ? (
+                    <p className="text-sm font-semibold text-white mt-1">
+                      <span className="line-through text-muted-low text-xs mr-1">${raw}</span>
+                      ${shown}
+                    </p>
+                  ) : (
+                    <p className="text-sm font-semibold text-white mt-1">${raw}</p>
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
+
+        {/* BOGO deal option */}
+        {hasBogo && (
+          <div className="mb-4">
+            <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
+              Limited Offer
+            </p>
+            <button
+              onClick={() => setBogoSelected((s) => !s)}
+              aria-pressed={bogoSelected}
+              className={`w-full rounded-sm border p-3.5 text-left transition-all ${
+                bogoSelected
+                  ? 'border-emerald-500/50 bg-emerald-500/10'
+                  : 'border-line-input hover:border-emerald-500/40 hover:bg-emerald-500/5'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <Zap size={13} className="text-emerald-400" aria-hidden="true" />
+                    <p className="text-sm font-bold text-emerald-400">
+                      Buy 1 Get {promo.bogo_free_count} Free
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-mid ml-5">
+                    {1 + (promo.bogo_free_count ?? 0)} beats total — pay for 1 only
+                    {items.length > 0 && items.length !== 1 + (promo.bogo_free_count ?? 0) && (
+                      <span className="text-muted-low"> · add {1 + (promo.bogo_free_count ?? 0) - items.length} more beat{1 + (promo.bogo_free_count ?? 0) - items.length !== 1 ? 's' : ''} to your cart to use this deal</span>
+                    )}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  {bestPct !== null ? (
+                    <>
+                      <p className="text-xs line-through text-muted-low">${PRICES[licenseType][1]}</p>
+                      <p className="text-base font-bold text-white">${applyDiscount(PRICES[licenseType][1], bestPct)}</p>
+                    </>
+                  ) : (
+                    <p className="text-base font-bold text-white">${PRICES[licenseType][1]}</p>
+                  )}
+                  <p className="text-[10px] text-emerald-400">1-beat price</p>
+                </div>
+              </div>
+            </button>
+          </div>
+        )}
 
         {/* Discount code */}
         <div className="mb-4">
           {appliedCode ? (
             <div className="flex items-center justify-between rounded-sm border border-accent/30 bg-accent/10 px-3 py-2">
               <p className="text-sm text-accent font-medium">
-                {appliedCode} — {discountPct}% off applied
+                {appliedCode} — {discountPct}% off
+                {sitewisePct !== null && sitewisePct >= (discountPct ?? 0) && (
+                  <span className="text-muted-low text-xs ml-1">(sitewide {sitewisePct}% is better)</span>
+                )}
               </p>
               <button
                 onClick={handleRemoveCode}
@@ -240,19 +362,30 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
         {/* CTA */}
         <button
-          onClick={() => onCheckout(appliedCode)}
+          onClick={handleCheckoutClick}
           className="w-full rounded-sm bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors"
         >
-          {discountPct !== null ? (
+          {bestPct !== null || bogoSelected ? (
             <>
               Checkout —{' '}
-              <span className="line-through text-muted-mid mr-1">${basePrice}</span>
+              <span className="line-through text-black/40 mr-1 font-normal text-sm">${basePrice}</span>
               ${finalPrice}
             </>
           ) : (
             <>Checkout — ${finalPrice}</>
           )}
         </button>
+
+        {/* Discount label under CTA */}
+        {(activeSitewisePct !== null || activeCouponPct !== null || bogoSelected) && (
+          <p className="mt-1.5 text-center text-xs text-muted-low">
+            {bogoSelected && `BOGO deal applied`}
+            {bogoSelected && (activeSitewisePct !== null || activeCouponPct !== null) && ' · '}
+            {activeSitewisePct !== null && `${activeSitewisePct}% sitewide discount`}
+            {activeCouponPct !== null && `${activeCouponPct}% off with ${appliedCode}`}
+          </p>
+        )}
+
         <p className="mt-2 text-center text-xs text-muted-low">
           Powered by Stripe · Secure checkout
         </p>

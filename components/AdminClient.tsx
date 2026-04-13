@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Eye, EyeOff, Upload, ToggleLeft, ToggleRight, Edit3, Check, X, RefreshCw, Pin, PinOff, Trash2, Star } from 'lucide-react'
+import { Eye, EyeOff, Upload, ToggleLeft, ToggleRight, Edit3, Check, X, RefreshCw, Pin, PinOff, Trash2, Star, Tag, Zap } from 'lucide-react'
+import type { PromoConfig } from '@/lib/promos'
 
 interface Beat {
   id: string
@@ -51,7 +52,7 @@ export default function AdminClient() {
   const [authError, setAuthError] = useState('')
   const [beats, setBeats] = useState<Beat[]>([])
   const [orders, setOrders] = useState<Order[]>([])
-  const [tab, setTab] = useState<'beats' | 'orders' | 'upload'>('beats')
+  const [tab, setTab] = useState<'beats' | 'orders' | 'upload' | 'promos'>('beats')
   const [loading, setLoading] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Beat>>({})
@@ -60,6 +61,10 @@ export default function AdminClient() {
   const [actionError, setActionError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadMsg, setUploadMsg] = useState('')
+  const [promo, setPromo] = useState<PromoConfig>({ sitewide_discount_pct: null, bogo_free_count: null })
+  const [promoForm, setPromoForm] = useState({ sitewide_discount_pct: '', bogo_free_count: '' })
+  const [promoSaving, setPromoSaving] = useState(false)
+  const [promoMsg, setPromoMsg] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -77,6 +82,7 @@ export default function AdminClient() {
         const data = await res.json()
         setBeats(data)
         fetchOrders()
+        fetchPromos()
       } else {
         setAuthError('Wrong password')
       }
@@ -99,6 +105,46 @@ export default function AdminClient() {
       headers: { 'x-admin-password': password },
     })
     if (res.ok) setOrders(await res.json())
+  }
+
+  async function fetchPromos() {
+    const res = await fetch('/api/admin/promos', {
+      headers: { 'x-admin-password': password },
+    })
+    if (res.ok) {
+      const data: PromoConfig = await res.json()
+      setPromo(data)
+      setPromoForm({
+        sitewide_discount_pct: data.sitewide_discount_pct !== null ? String(data.sitewide_discount_pct) : '',
+        bogo_free_count: data.bogo_free_count !== null ? String(data.bogo_free_count) : '',
+      })
+    }
+  }
+
+  async function savePromos() {
+    setPromoSaving(true)
+    setPromoMsg('')
+    try {
+      const body: Partial<PromoConfig> = {
+        sitewide_discount_pct: promoForm.sitewide_discount_pct !== '' ? Number(promoForm.sitewide_discount_pct) : null,
+        bogo_free_count: promoForm.bogo_free_count !== '' ? Number(promoForm.bogo_free_count) : null,
+      }
+      const res = await fetch('/api/admin/promos', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify(body),
+      })
+      if (res.ok) {
+        const data: PromoConfig = await res.json()
+        setPromo(data)
+        setPromoMsg('Saved!')
+      } else {
+        const err = await res.json().catch(() => ({}))
+        setPromoMsg(`Error: ${err.error ?? 'Failed to save'}`)
+      }
+    } finally {
+      setPromoSaving(false)
+    }
   }
 
   async function toggleActive(beat: Beat) {
@@ -337,7 +383,7 @@ export default function AdminClient() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-black text-white">Admin Panel</h1>
         <button
-          onClick={() => { fetchBeats(); fetchOrders() }}
+          onClick={() => { fetchBeats(); fetchOrders(); fetchPromos() }}
           className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors"
         >
           <RefreshCw size={14} /> Refresh
@@ -346,17 +392,17 @@ export default function AdminClient() {
 
       {/* Tabs */}
       <div className="mb-6 flex gap-2 border-b border-[#1f1f1f] pb-0">
-        {(['beats', 'orders', 'upload'] as const).map((t) => (
+        {(['beats', 'orders', 'upload', 'promos'] as const).map((t) => (
           <button
             key={t}
-            onClick={() => setTab(t)}
+            onClick={() => { setTab(t); if (t === 'promos') fetchPromos() }}
             className={`px-4 py-3 text-sm font-semibold capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? 'border-white text-white'
                 : 'border-transparent text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : 'Add Beat'}
+            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : 'Promos'}
           </button>
         ))}
       </div>
@@ -557,6 +603,104 @@ export default function AdminClient() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Promos tab */}
+      {tab === 'promos' && (
+        <div className="max-w-xl space-y-6">
+          <div>
+            <h2 className="text-lg font-bold text-white mb-1">Promotions</h2>
+            <p className="text-xs text-zinc-500">Changes apply immediately to all visitors. Set a value to 0 or leave blank to disable.</p>
+          </div>
+
+          {/* Status cards */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className={`rounded-xl border px-4 py-3 ${promo.sitewide_discount_pct ? 'border-amber-500/30 bg-amber-500/10' : 'border-[#1f1f1f] bg-[#111]'}`}>
+              <div className="flex items-center gap-2 mb-1">
+                <Tag size={13} className={promo.sitewide_discount_pct ? 'text-amber-400' : 'text-zinc-600'} />
+                <p className="text-xs font-semibold text-zinc-400">Sitewide Discount</p>
+              </div>
+              <p className={`text-2xl font-black ${promo.sitewide_discount_pct ? 'text-amber-400' : 'text-zinc-700'}`}>
+                {promo.sitewide_discount_pct ? `${promo.sitewide_discount_pct}% OFF` : 'Off'}
+              </p>
+            </div>
+            <div className={`rounded-xl border px-4 py-3 ${promo.bogo_free_count ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-[#1f1f1f] bg-[#111]'}`}>
+              <div className="flex items-center gap-2 mb-1">
+                <Zap size={13} className={promo.bogo_free_count ? 'text-emerald-400' : 'text-zinc-600'} />
+                <p className="text-xs font-semibold text-zinc-400">BOGO</p>
+              </div>
+              <p className={`text-2xl font-black ${promo.bogo_free_count ? 'text-emerald-400' : 'text-zinc-700'}`}>
+                {promo.bogo_free_count ? `Buy 1 Get ${promo.bogo_free_count}` : 'Off'}
+              </p>
+            </div>
+          </div>
+
+          {/* Edit form */}
+          <div className="rounded-xl border border-[#1f1f1f] bg-[#111] p-5 space-y-5">
+            {/* Sitewide discount */}
+            <div>
+              <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+                Sitewide Discount (%)
+              </label>
+              <p className="text-[11px] text-zinc-600 mb-2">Applies a % off all beats at checkout. Takes effect over any coupon code that gives less.</p>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={promoForm.sitewide_discount_pct}
+                  onChange={(e) => setPromoForm((f) => ({ ...f, sitewide_discount_pct: e.target.value }))}
+                  placeholder="0 = off"
+                  className="w-32 rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-2.5 text-sm text-white outline-none focus:border-zinc-500"
+                />
+                <span className="text-sm text-zinc-500">% off all beats</span>
+              </div>
+            </div>
+
+            <div className="h-px bg-[#1f1f1f]" />
+
+            {/* BOGO */}
+            <div>
+              <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+                BOGO — Free Beats Count
+              </label>
+              <p className="text-[11px] text-zinc-600 mb-2">
+                When set, customers see a &ldquo;Buy 1 Get N Free&rdquo; deal in the checkout modal — they pay the single-beat price regardless of how many beats they add up to that limit.
+              </p>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min={0}
+                  max={50}
+                  value={promoForm.bogo_free_count}
+                  onChange={(e) => setPromoForm((f) => ({ ...f, bogo_free_count: e.target.value }))}
+                  placeholder="0 = off"
+                  className="w-32 rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-2.5 text-sm text-white outline-none focus:border-zinc-500"
+                />
+                <span className="text-sm text-zinc-500">
+                  {promoForm.bogo_free_count && Number(promoForm.bogo_free_count) > 0
+                    ? `→ "Buy 1 Get ${promoForm.bogo_free_count} Free" (${1 + Number(promoForm.bogo_free_count)} beats total)`
+                    : 'free beats (e.g. 1 = classic BOGO, 2 = buy 1 get 2 free)'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {promoMsg && (
+            <p className={`text-sm ${promoMsg.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
+              {promoMsg}
+            </p>
+          )}
+
+          <button
+            onClick={savePromos}
+            disabled={promoSaving}
+            className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+          >
+            <Check size={14} />
+            {promoSaving ? 'Saving…' : 'Save Promotions'}
+          </button>
         </div>
       )}
 
