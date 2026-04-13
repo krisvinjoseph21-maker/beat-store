@@ -42,7 +42,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     if (inCart && !prevInCartRef.current) setShowCheckAnim(true)
     prevInCartRef.current = inCart
   }, [inCart])
-  const hasAudio      = !!(beat.preview_url ?? beat.file_url)
+  const hasAudio      = !!beat.preview_url
   const isNew         = beat.created_at &&
     Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
 
@@ -80,25 +80,27 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     <div className="w-full">
 
       {/* ── Main row ─────────────────────────────────────────── */}
-      <div
-        className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
-        onClick={() => setLicenseOpen(o => !o)}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLicenseOpen(o => !o) } }}
-        tabIndex={0}
-        role="button"
-        aria-expanded={licenseOpen}
-        aria-label={`${beat.title} — click to ${licenseOpen ? 'close' : 'open'} license options`}
-      >
+      <div className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer">
+
+        {/* Expand/collapse button — fills the row behind all content. Real <button>, no nested-button violation. */}
+        <button
+          className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
+          onClick={() => setLicenseOpen(o => !o)}
+          aria-expanded={licenseOpen}
+          aria-label={`${beat.title} — ${licenseOpen ? 'close' : 'open'} license options`}
+        />
+
         {isThisActive && (
-          <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: 'var(--accent)' }} />
+          <div className="absolute left-0 top-0 bottom-0 w-[3px] z-10 pointer-events-none" style={{ background: 'var(--accent)' }} />
         )}
 
-        {/* Frequency visualiser — absolutely positioned at row bottom, canvas draws the progress track too */}
+        {/* Frequency visualiser — absolutely positioned at row bottom */}
         {isThisActive && (
           <WaveformVisualizer progressPct={progressPct} isPlaying={isThisPlaying} />
         )}
 
-        <div className="flex flex-row items-center w-full px-4 sm:px-10 relative" style={{ color: 'var(--foreground)', gap: '12px', paddingTop: '18px', paddingBottom: '18px', zIndex: 10 }}>
+        {/* Content row — z-10 sits above the expand button; inner buttons capture their own clicks without stopPropagation */}
+        <div className="relative z-10 flex flex-row items-center w-full px-4 sm:px-10" style={{ color: 'var(--foreground)', gap: '12px', paddingTop: '18px', paddingBottom: '18px' }}>
 
           {/* Track number */}
           <div
@@ -111,7 +113,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Play button */}
           <button
-            onClick={(e) => { e.stopPropagation(); handlePlay() }}
+            onClick={handlePlay}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
             className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
@@ -169,7 +171,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
 
           {/* Price + CTA + icons */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {inCart ? (
               <button
                 onClick={handleAddToCart}
@@ -187,7 +189,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               </button>
             ) : (
               <button
-                onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
+                onClick={() => setLicenseOpen(o => !o)}
                 aria-label={`Add ${beat.title} to cart`}
                 className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-90 shrink-0"
                 style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
@@ -217,8 +219,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
         </div>
 
-        {/* Progress bar — WaveformVisualizer draws its own track when active */}
-        <div className="h-[2px] bg-line w-full relative" aria-hidden="true">
+        {/* Progress bar — pointer-events-none so clicks pass through to the expand button */}
+        <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true">
           {!isThisActive && (
             <div
               className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"

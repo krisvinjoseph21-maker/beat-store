@@ -2,11 +2,16 @@ import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase'
 import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 import type { LicenseType, QuantityTier } from '@/lib/stripe'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
 export async function POST(req: NextRequest) {
+  if (!rateLimit(getIp(req), 10, 60_000)) {
+    return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
+  }
+
   try {
     const { beatIds, licenseType, quantityTier, discountCode } = (await req.json()) as {
       beatIds: string[]

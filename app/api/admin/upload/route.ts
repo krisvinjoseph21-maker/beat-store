@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { headers } from 'next/headers'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 import crypto from 'crypto'
 
 function verifyAdminPassword(input: string): boolean {
@@ -19,6 +20,9 @@ async function checkAuth() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -30,6 +34,20 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return Response.json({ error: 'No file provided' }, { status: 400 })
+    }
+
+    const VALID_MIMES: Record<string, string[]> = {
+      full:    ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/x-wav', 'audio/wave'],
+      preview: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/x-wav', 'audio/wave'],
+      cover:   ['image/jpeg', 'image/png', 'image/webp'],
+      stems:   ['application/zip', 'application/x-zip-compressed', 'application/x-zip'],
+    }
+    const allowedMimes = VALID_MIMES[type]
+    if (!allowedMimes) {
+      return Response.json({ error: 'Invalid upload type' }, { status: 400 })
+    }
+    if (file.type && !allowedMimes.includes(file.type)) {
+      return Response.json({ error: 'Invalid file type' }, { status: 400 })
     }
 
     const supabase = createAdminClient()

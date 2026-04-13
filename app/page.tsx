@@ -117,20 +117,13 @@ export default async function HomePage() {
           </p>
 
           {/* CTAs */}
-          <div className="hero-ctas flex flex-wrap items-center justify-center gap-4">
+          <div className="hero-ctas flex items-center justify-center">
             <Link
               href="/store"
               className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold tracking-tight transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
               style={{ padding: '11px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Shop Beats
-            </Link>
-            <Link
-              href="/store"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 text-foreground text-[13px] font-medium tracking-tight transition-all hover:border-white/40 hover:bg-white/5 active:scale-95"
-              style={{ padding: '11px 28px', fontFamily: 'var(--font-inter)' }}
-            >
-              Preview Beats
             </Link>
           </div>
 

@@ -3,7 +3,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { Check, X } from 'lucide-react'
 
-const SERVICES = [
+interface ServiceItem {
+  id: string
+  badge?: string
+  title: string
+  price: string
+  unit: string
+  features: string[]
+}
+
+const SERVICES: ServiceItem[] = [
   {
     id: 'mix-master',
     title: 'Mix + Master Bundle',
@@ -22,7 +31,6 @@ const SERVICES = [
     title: 'Custom Exclusive Beat',
     price: '$499',
     unit: '',
-    badge: 'Most Popular',
     features: [
       'Built to your exact spec',
       'Full stems included',

@@ -8,11 +8,18 @@ async function getBeats(): Promise<Beat[]> {
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('beats')
-      .select('*')
+      .select('id, title, bpm, key, genre, subgenre, tags, preview_url, file_url, cover_url, is_active, created_at, pin_order')
       .eq('is_active', true)
+      .order('pin_order', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
     if (error || !data?.length) return PLACEHOLDER_BEATS
-    return data as Beat[]
+    // Strip file_url — merge into preview_url if no dedicated preview exists,
+    // then never send the full beat URL to the client.
+    return data.map(({ file_url, ...b }) => ({
+      ...b,
+      preview_url: b.preview_url ?? (typeof file_url === 'string' && file_url.startsWith('http') ? file_url : null),
+      cover_url: b.cover_url ?? null,
+    })) as Beat[]
   } catch {
     return PLACEHOLDER_BEATS
   }

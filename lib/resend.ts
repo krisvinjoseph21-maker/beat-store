@@ -40,7 +40,7 @@ export async function sendDownloadEmail({
   licenseType: string
 }) {
   const downloadUrl = `${getSiteUrl()}/api/download/${downloadToken}`
-  const beatsHtml = beatTitles.map((t) => `<li>${t}</li>`).join('')
+  const beatsHtml = beatTitles.map((t) => `<li>${esc(t)}</li>`).join('')
 
   const result = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
@@ -82,10 +82,10 @@ export async function sendServiceInquiryEmail({
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2>New Service Inquiry</h2>
         <table style="width:100%;border-collapse:collapse">
-          <tr><td style="padding:8px;font-weight:bold">Artist Name</td><td style="padding:8px">${artistName}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px">${email}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Service</td><td style="padding:8px">${serviceType}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Project Details</td><td style="padding:8px;white-space:pre-wrap">${projectDetails}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Artist Name</td><td style="padding:8px">${esc(artistName)}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px">${esc(email)}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Service</td><td style="padding:8px">${esc(serviceType)}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Project Details</td><td style="padding:8px;white-space:pre-wrap">${esc(projectDetails)}</td></tr>
         </table>
       </div>
     `,
@@ -120,7 +120,7 @@ export async function sendExclusiveOfferEmail({
         <table style="width:100%;border-collapse:collapse;margin-top:24px">
           <tr style="border-bottom:1px solid #222">
             <td style="padding:10px 8px;color:#888;font-size:13px">Beat</td>
-            <td style="padding:10px 8px;color:#fff;font-weight:700">${beatTitle}</td>
+            <td style="padding:10px 8px;color:#fff;font-weight:700">${esc(beatTitle)}</td>
           </tr>
           <tr style="border-bottom:1px solid #222">
             <td style="padding:10px 8px;color:#888;font-size:13px">Offer Price</td>
@@ -128,13 +128,13 @@ export async function sendExclusiveOfferEmail({
           </tr>
           <tr style="border-bottom:1px solid #222">
             <td style="padding:10px 8px;color:#888;font-size:13px">Artist Name</td>
-            <td style="padding:10px 8px;color:#fff">${artistName}</td>
+            <td style="padding:10px 8px;color:#fff">${esc(artistName)}</td>
           </tr>
           <tr style="border-bottom:1px solid #222">
             <td style="padding:10px 8px;color:#888;font-size:13px">Email</td>
-            <td style="padding:10px 8px;color:#fff"><a href="mailto:${email}" style="color:#60a5fa">${email}</a></td>
+            <td style="padding:10px 8px;color:#fff"><a href="mailto:${esc(email)}" style="color:#60a5fa">${esc(email)}</a></td>
           </tr>
-          ${message ? `<tr><td style="padding:10px 8px;color:#888;font-size:13px;vertical-align:top">Message</td><td style="padding:10px 8px;color:#fff;white-space:pre-wrap">${message}</td></tr>` : ''}
+          ${message ? `<tr><td style="padding:10px 8px;color:#888;font-size:13px;vertical-align:top">Message</td><td style="padding:10px 8px;color:#fff;white-space:pre-wrap">${esc(message)}</td></tr>` : ''}
         </table>
         <a href="${siteUrl}/beat/${beatId}" style="display:inline-block;margin-top:28px;background:#fff;color:#0a0a0a;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px">
           View Beat
@@ -259,10 +259,10 @@ export async function sendContactEmail({
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2>New Contact Message</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Name:</strong> ${esc(name)}</p>
+        <p><strong>Email:</strong> ${esc(email)}</p>
         <p><strong>Message:</strong></p>
-        <p style="white-space:pre-wrap">${message}</p>
+        <p style="white-space:pre-wrap">${esc(message)}</p>
       </div>
     `,
   })

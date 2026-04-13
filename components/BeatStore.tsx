@@ -251,6 +251,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setShowAll(true)}
+                aria-expanded={false}
+                aria-label={`Browse all tracks — ${filtered.length - 10} more`}
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-all active:scale-95"
               >
                 Browse All Tracks ({filtered.length - 10} more)

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { headers } from 'next/headers'
-
+import { rateLimit, getIp } from '@/lib/rate-limit'
 import crypto from 'crypto'
 
 /**
@@ -25,7 +25,10 @@ async function checkAuth() {
 }
 
 // GET — list all beats (including inactive)
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -40,6 +43,9 @@ export async function GET(_req: NextRequest) {
 
 // POST — create a new beat
 export async function POST(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -76,6 +82,9 @@ function storagePathFromUrl(url: string): string | null {
 
 // DELETE — permanently remove a beat and its storage files
 export async function DELETE(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -118,6 +127,9 @@ export async function DELETE(req: NextRequest) {
 
 // PATCH — update beat (toggle active, edit metadata)
 export async function PATCH(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
