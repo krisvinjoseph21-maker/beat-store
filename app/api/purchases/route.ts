@@ -1,15 +1,35 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { randomUUID } from 'crypto'
+import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { rateLimit, getIp } from '@/lib/rate-limit'
+import { randomBytes } from 'crypto'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
 export async function POST(req: NextRequest) {
+  // Rate-limit before any DB work
+  if (!rateLimit(getIp(req), 5, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
+
+  // Require an authenticated Supabase session — no session, no data
+  const serverClient = await createSupabaseServerClient()
+  const { data: { user } } = await serverClient.auth.getUser()
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { email } = (await req.json()) as { email: string }
 
     if (!email?.trim()) {
       return Response.json({ error: 'Email is required' }, { status: 400 })
+    }
+
+    // Enforce that the authenticated user can only look up THEIR OWN purchases.
+    // Case-insensitive comparison prevents trivial bypass attempts.
+    if (email.toLowerCase().trim() !== user.email?.toLowerCase()) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const supabase = createAdminClient()
@@ -48,7 +68,7 @@ export async function POST(req: NextRequest) {
         // Get the latest download record for this order
         const { data: downloads } = await supabase
           .from('downloads')
-          .select('token, expires_at')
+          .select('token, expires_at, used')
           .eq('order_id', order.id)
           .order('created_at', { ascending: false })
           .limit(1)
@@ -59,17 +79,20 @@ export async function POST(req: NextRequest) {
         const isExpired = existing
           ? new Date(existing.expires_at) < new Date()
           : true
+        // Only reuse the token if it exists, hasn't expired, and hasn't been used
+        const isReusable = existing && !isExpired && existing.used === false
 
-        if (existing && !isExpired) {
+        if (isReusable) {
           token = existing.token
         } else {
-          // Create a fresh 48-hour token
-          token = randomUUID()
+          // 256-bit token — same entropy as the webhook
+          token = randomBytes(32).toString('hex')
           const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
           await supabase.from('downloads').insert({
             order_id: order.id,
             token,
             expires_at: expiresAt,
+            used: false,  // explicit — never rely on DB default
           })
         }
 

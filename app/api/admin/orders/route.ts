@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { headers } from 'next/headers'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 import crypto from 'crypto'
 
 function verifyAdminPassword(input: string): boolean {
@@ -18,7 +19,10 @@ async function checkAuth() {
   return verifyAdminPassword(auth)
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
+  if (!rateLimit(getIp(req), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   if (!(await checkAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

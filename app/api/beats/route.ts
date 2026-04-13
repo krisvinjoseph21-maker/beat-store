@@ -14,11 +14,12 @@ export async function GET(_req: NextRequest) {
 
   if (error) return Response.json({ error: error.message }, { status: 500 })
 
-  // Use file_url as fallback preview if no dedicated preview_url exists,
-  // then strip file_url so the clean file is never exposed in the response.
-  const beats = (data ?? []).map(({ file_url, ...b }) => ({
+  // Strip file_url entirely — it must never reach the client.
+  // If a beat has no dedicated preview_url, the player will simply be disabled
+  // for that beat until the admin uploads a preview file.
+  const beats = (data ?? []).map(({ file_url: _fileUrl, ...b }) => ({
     ...b,
-    preview_url: b.preview_url ?? (file_url?.startsWith('http') ? file_url : null),
+    preview_url: b.preview_url ?? null,
     cover_url: b.cover_url ?? null,
   }))
 
