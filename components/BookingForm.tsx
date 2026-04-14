@@ -213,7 +213,7 @@ export default function BookingForm() {
         />
       </div>
 
-      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+      {error && <p role="alert" className="animate-shake text-sm text-danger">{error}</p>}
 
       <button
         type="submit"

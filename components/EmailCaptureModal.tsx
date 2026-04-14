@@ -134,7 +134,7 @@ export default function EmailCaptureModal() {
 
         {submitted ? (
           <div className="flex flex-col items-center gap-4 py-4 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black">
+            <div className="animate-success-pop flex h-12 w-12 items-center justify-center rounded-full bg-black">
               <Check size={20} className="text-white" aria-hidden="true" />
             </div>
             <p className="text-lg font-bold text-black">You&apos;re on the list.</p>

@@ -408,12 +408,20 @@ export default function AdminClient() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-black text-white">Admin Panel</h1>
-        <button
-          onClick={() => { fetchBeats(); fetchOrders(); fetchPromos() }}
-          className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors"
-        >
-          <RefreshCw size={14} /> Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { fetchBeats(); fetchOrders(); fetchPromos() }}
+            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors"
+          >
+            <RefreshCw size={14} /> Refresh
+          </button>
+          <button
+            onClick={() => { setAuthed(false); setPassword('') }}
+            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-red-400 transition-colors"
+          >
+            <X size={14} /> Lock
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

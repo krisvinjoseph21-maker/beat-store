@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Trash2 } from 'lucide-react'
+import { X, Trash2, ShoppingBag } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useCartStore } from '@/lib/store'
 import LicenseModal from './LicenseModal'
@@ -105,8 +105,14 @@ export default function CartDrawer({ open, onClose }: Props) {
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center text-muted-low text-[13px] p-8 text-center leading-relaxed">
-            Your cart is empty.<br />Head to the store to add beats.
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/[0.04] border border-white/[0.06]">
+              <ShoppingBag size={22} className="text-muted-low" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium text-foreground mb-1">Your cart is empty</p>
+              <p className="text-[12px] text-muted-low leading-relaxed">Add beats from the store<br />to get started.</p>
+            </div>
           </div>
         ) : (
           <>
@@ -136,15 +142,24 @@ export default function CartDrawer({ open, onClose }: Props) {
 
             <div className="border-t border-white/[0.06] px-5 py-4 space-y-2">
               {checkoutError && (
-                <p role="alert" className="text-[11px] text-danger text-center">
+                <p role="alert" className="animate-shake text-[11px] text-danger text-center">
                   {checkoutError}
                 </p>
               )}
               <button
                 onClick={() => setLicenseOpen(true)}
-                className="w-full rounded bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-colors active:scale-[0.98]"
+                disabled={loading}
+                className="w-full rounded bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Choose License & Checkout
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-3.5 w-3.5 text-black" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    Redirecting…
+                  </>
+                ) : 'Choose License & Checkout'}
               </button>
             </div>
           </>

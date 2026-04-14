@@ -129,7 +129,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                 />
               </div>
 
-              {error && <p role="alert" className="text-xs text-danger">{error}</p>}
+              {error && <p role="alert" className="animate-shake text-xs text-danger">{error}</p>}
 
               <button
                 type="submit"

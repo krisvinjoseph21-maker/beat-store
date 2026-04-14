@@ -116,7 +116,7 @@ export default function LicensingPage() {
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-2xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
+              className={`card-hover relative flex flex-col rounded-2xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
                 tier.tag ? 'border-white/20' : 'border-white/[0.08]'
               }`}
             >

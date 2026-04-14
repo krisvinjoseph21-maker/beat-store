@@ -290,3 +290,33 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
+
+/* ── Error shake ──────────────────────────────── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+.animate-shake { animation: shake 0.4s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+
+/* ── Card hover lift ──────────────────────────── */
+.card-hover {
+  transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), border-color 0.2s ease;
+}
+.card-hover:hover { transform: translateY(-2px); }
+
+/* ── Spinner ──────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin { animation: spin 0.7s linear infinite; }
+
+/* ── Success pop ──────────────────────────────── */
+@keyframes successPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-success-pop { animation: successPop 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }

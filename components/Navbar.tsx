@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/lib/store'
 import CartDrawer from './CartDrawer'
 import NavAuthButton from './NavAuthButton'
@@ -18,6 +19,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled]     = useState(false)
   const [cartAnnouncement, setCartAnnouncement] = useState('')
+  const pathname = usePathname()
 
   useEffect(() => {
     if (items.length === 0) return
@@ -53,16 +55,22 @@ export default function Navbar() {
 
           {/* Desktop nav — centered */}
           <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
-            {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-[12px] font-normal text-muted hover:text-foreground transition-colors duration-150"
-                style={{ letterSpacing: '0.01em' }}
-              >
-                {label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = pathname === href || (href !== '/' && pathname.startsWith(href))
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`relative text-[12px] transition-colors duration-150 ${active ? 'text-foreground font-medium' : 'font-normal text-muted hover:text-foreground'}`}
+                  style={{ letterSpacing: '0.01em' }}
+                >
+                  {label}
+                  {active && (
+                    <span className="absolute -bottom-[14px] left-0 right-0 h-px bg-foreground/40" />
+                  )}
+                </Link>
+              )
+            })}
           </div>
 
           {/* Desktop actions */}

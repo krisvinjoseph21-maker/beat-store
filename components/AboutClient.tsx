@@ -105,7 +105,7 @@ export default function ContactForm() {
         />
       </div>
 
-      {error && <p role="alert" className="text-[12px] text-danger mb-4">{error}</p>}
+      {error && <p role="alert" className="animate-shake text-[12px] text-danger mb-4">{error}</p>}
 
       {/* Submit — right-aligned */}
       <div className="flex justify-end">

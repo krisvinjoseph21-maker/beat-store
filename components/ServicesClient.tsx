@@ -133,7 +133,7 @@ export default function ServicesClient() {
         {SERVICES.map((svc) => (
           <div
             key={svc.id}
-            className="relative border border-line-card bg-surface-1 p-6 flex flex-col"
+            className="card-hover relative border border-line-card bg-surface-1 p-6 flex flex-col"
           >
             {svc.badge && (
               <span className="absolute -top-3 left-6 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-black">
@@ -266,7 +266,7 @@ export default function ServicesClient() {
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>
-                {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+                {error && <p role="alert" className="animate-shake text-sm text-danger">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}
