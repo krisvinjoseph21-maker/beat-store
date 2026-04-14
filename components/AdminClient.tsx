@@ -481,13 +481,19 @@ export default function AdminClient() {
           )}
           {beats.length > 0 && (
             <div className="flex items-center gap-3 px-1 pb-1">
-              <input
-                type="checkbox"
-                checked={selectedIds.size === beats.length}
-                ref={(el) => { if (el) el.indeterminate = selectedIds.size > 0 && selectedIds.size < beats.length }}
-                onChange={(e) => setSelectedIds(e.target.checked ? new Set(beats.map((b) => b.id)) : new Set())}
-                className="h-4 w-4 accent-white cursor-pointer"
-              />
+              <button
+                type="button"
+                onClick={() => setSelectedIds(selectedIds.size === beats.length ? new Set() : new Set(beats.map((b) => b.id)))}
+                className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.size > 0 ? 'border-white bg-white' : 'border-zinc-500 bg-transparent hover:border-zinc-300'}`}
+              >
+                {selectedIds.size > 0 && (
+                  <svg viewBox="0 0 10 10" className="w-full h-full p-0.5" fill="none">
+                    {selectedIds.size < beats.length
+                      ? <line x1="1" y1="5" x2="9" y2="5" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                      : <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>}
+                  </svg>
+                )}
+              </button>
               <span className="text-xs text-zinc-500">{selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}</span>
               {selectedIds.size > 0 && (
                 <button
@@ -561,12 +567,17 @@ export default function AdminClient() {
                 </div>
               ) : (
                 <>
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(beat.id)}
-                    onChange={(e) => setSelectedIds((prev) => { const next = new Set(prev); e.target.checked ? next.add(beat.id) : next.delete(beat.id); return next })}
-                    className="h-4 w-4 flex-shrink-0 accent-white cursor-pointer"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIds((prev) => { const next = new Set(prev); prev.has(beat.id) ? next.delete(beat.id) : next.add(beat.id); return next })}
+                    className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.has(beat.id) ? 'border-white bg-white' : 'border-zinc-600 bg-transparent hover:border-zinc-400'}`}
+                  >
+                    {selectedIds.has(beat.id) && (
+                      <svg viewBox="0 0 10 10" className="w-full h-full p-0.5" fill="none">
+                        <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className={`h-2 w-2 rounded-full flex-shrink-0 ${beat.is_active ? 'bg-green-400' : 'bg-zinc-600'}`} />
