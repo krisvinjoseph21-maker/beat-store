@@ -49,6 +49,48 @@ const BLANK_BEAT = {
 // Idle timeout: lock the admin session after 30 minutes of inactivity.
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000
 
+const PREVIEW_SECS = 30
+
+function writeStr(view: DataView, offset: number, str: string) {
+  for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i))
+}
+
+function audioBufferToWav(buf: AudioBuffer): ArrayBuffer {
+  const ch = buf.numberOfChannels
+  const len = buf.length
+  const ab = new ArrayBuffer(44 + len * ch * 2)
+  const v = new DataView(ab)
+  writeStr(v, 0, 'RIFF'); v.setUint32(4, ab.byteLength - 8, true)
+  writeStr(v, 8, 'WAVE'); writeStr(v, 12, 'fmt ')
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true)
+  v.setUint16(22, ch, true); v.setUint32(24, buf.sampleRate, true)
+  v.setUint32(28, buf.sampleRate * ch * 2, true); v.setUint16(32, ch * 2, true)
+  v.setUint16(34, 16, true); writeStr(v, 36, 'data'); v.setUint32(40, len * ch * 2, true)
+  let off = 44
+  for (let i = 0; i < len; i++) {
+    for (let c = 0; c < ch; c++) {
+      const s = Math.max(-1, Math.min(1, buf.getChannelData(c)[i]))
+      v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7fff, true); off += 2
+    }
+  }
+  return ab
+}
+
+async function trimToPreview(file: File): Promise<File> {
+  const ab = await file.arrayBuffer()
+  const ctx = new AudioContext()
+  const decoded = await ctx.decodeAudioData(ab)
+  await ctx.close()
+  const trimSamples = Math.min(decoded.length, Math.floor(PREVIEW_SECS * decoded.sampleRate))
+  const offline = new OfflineAudioContext(decoded.numberOfChannels, trimSamples, decoded.sampleRate)
+  const src = offline.createBufferSource()
+  src.buffer = decoded; src.connect(offline.destination); src.start(0)
+  const trimmed = await offline.startRendering()
+  const wav = audioBufferToWav(trimmed)
+  const baseName = file.name.replace(/\.[^.]+$/, '')
+  return new File([wav], `${baseName}_preview.wav`, { type: 'audio/wav' })
+}
+
 export default function AdminClient() {
   const [password, setPassword] = useState('')
   const [authed, setAuthed] = useState(false)
@@ -76,6 +118,8 @@ export default function AdminClient() {
   const [dragOver, setDragOver] = useState<'beat' | 'preview' | 'cover' | 'stems' | null>(null)
   const [droppedBeat, setDroppedBeat] = useState<File | null>(null)
   const [droppedPreview, setDroppedPreview] = useState<File | null>(null)
+  const [autoPreview, setAutoPreview] = useState(false)
+  const [generatingPreview, setGeneratingPreview] = useState(false)
   const [droppedCover, setDroppedCover] = useState<File | null>(null)
   const [droppedStems, setDroppedStems] = useState<File | null>(null)
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -319,6 +363,23 @@ export default function AdminClient() {
     return res.json()
   }
 
+  async function handleBeatFile(file: File) {
+    setDroppedBeat(file)
+    // Auto-generate a 30s preview only if the user hasn't manually set one
+    if (!droppedPreview) {
+      setGeneratingPreview(true)
+      try {
+        const preview = await trimToPreview(file)
+        setDroppedPreview(preview)
+        setAutoPreview(true)
+      } catch {
+        // silently skip — user can upload a preview manually
+      } finally {
+        setGeneratingPreview(false)
+      }
+    }
+  }
+
   async function handleAddBeat(e: React.FormEvent) {
     e.preventDefault()
     setUploading(true)
@@ -391,6 +452,7 @@ export default function AdminClient() {
         setDroppedPreview(null)
         setDroppedCover(null)
         setDroppedStems(null)
+        setAutoPreview(false)
         fetchBeats()
       } else {
         const err = await res.json()
@@ -855,28 +917,33 @@ export default function AdminClient() {
             <div
               onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
               onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedBeat(f) }}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) handleBeatFile(f) }}
               onClick={() => fileRef.current?.click()}
               className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
             >
-              <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedBeat(e.target.files[0]) }} />
+              <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleBeatFile(e.target.files[0]) }} />
               <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
               <p className="text-xs text-zinc-400">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Preview File (optional, 30s clip)</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+              Preview File (30s clip)
+              {autoPreview && <span className="ml-2 text-emerald-400">· auto-generated ✓</span>}
+            </label>
             <div
               onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
               onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedPreview(f) }}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) { setDroppedPreview(f); setAutoPreview(false) } }}
               onClick={() => previewRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
             >
-              <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedPreview(e.target.files[0]) }} />
-              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-              <p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p>
+              <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { setDroppedPreview(e.target.files[0]); setAutoPreview(false) } }} />
+              {generatingPreview
+                ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-zinc-500 animate-spin" /><p className="text-xs text-zinc-500">Generating 30s preview…</p></>
+                : <><Upload size={16} className="mx-auto mb-1.5 text-zinc-500" /><p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
+              }
             </div>
           </div>
 
