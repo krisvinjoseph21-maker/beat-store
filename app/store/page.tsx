@@ -25,7 +25,7 @@ async function getBeats(): Promise<Beat[]> {
       file_url: null,
       preview_url: b.preview_url ?? null,
       cover_url: b.cover_url ?? null,
-      stems_path: b.stems_path ?? null,
+      stems_path: null,
     })) as Beat[]
   } catch {
     return PLACEHOLDER_BEATS
