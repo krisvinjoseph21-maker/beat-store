@@ -72,6 +72,7 @@ export default function AdminClient() {
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const stemsRef = useRef<HTMLInputElement>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [dragOver, setDragOver] = useState<'beat' | 'preview' | 'cover' | 'stems' | null>(null)
   const [droppedBeat, setDroppedBeat] = useState<File | null>(null)
   const [droppedPreview, setDroppedPreview] = useState<File | null>(null)
@@ -233,6 +234,23 @@ export default function AdminClient() {
       const err = await res.json().catch(() => ({}))
       setActionError(err.error ?? 'Failed to delete beat')
     }
+    fetchBeats()
+  }
+
+  async function deleteSelected() {
+    if (selectedIds.size === 0) return
+    if (!confirm(`Delete ${selectedIds.size} beat${selectedIds.size > 1 ? 's' : ''}? This cannot be undone.`)) return
+    setActionError(null)
+    await Promise.all(
+      [...selectedIds].map((id) =>
+        fetch('/api/admin/beats', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+          body: JSON.stringify({ id }),
+        })
+      )
+    )
+    setSelectedIds(new Set())
     fetchBeats()
   }
 
@@ -461,6 +479,26 @@ export default function AdminClient() {
               </button>
             </div>
           )}
+          {beats.length > 0 && (
+            <div className="flex items-center gap-3 px-1 pb-1">
+              <input
+                type="checkbox"
+                checked={selectedIds.size === beats.length}
+                ref={(el) => { if (el) el.indeterminate = selectedIds.size > 0 && selectedIds.size < beats.length }}
+                onChange={(e) => setSelectedIds(e.target.checked ? new Set(beats.map((b) => b.id)) : new Set())}
+                className="h-4 w-4 accent-white cursor-pointer"
+              />
+              <span className="text-xs text-zinc-500">{selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}</span>
+              {selectedIds.size > 0 && (
+                <button
+                  onClick={deleteSelected}
+                  className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors"
+                >
+                  <Trash2 size={12} /> Delete {selectedIds.size}
+                </button>
+              )}
+            </div>
+          )}
           {beats.length === 0 && (
             <p className="text-center text-zinc-500 py-12">No beats yet. Add some in the Upload tab.</p>
           )}
@@ -523,6 +561,12 @@ export default function AdminClient() {
                 </div>
               ) : (
                 <>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(beat.id)}
+                    onChange={(e) => setSelectedIds((prev) => { const next = new Set(prev); e.target.checked ? next.add(beat.id) : next.delete(beat.id); return next })}
+                    className="h-4 w-4 flex-shrink-0 accent-white cursor-pointer"
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className={`h-2 w-2 rounded-full flex-shrink-0 ${beat.is_active ? 'bg-green-400' : 'bg-zinc-600'}`} />

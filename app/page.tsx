@@ -76,7 +76,7 @@ export default async function HomePage() {
         <HeroMouseGlow />
 
         {/* Hero content */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-8">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">
 
           {/* Eyebrow */}
           <div className="hero-eyebrow flex items-center gap-3 mb-8">
@@ -120,7 +120,7 @@ export default async function HomePage() {
           <div className="hero-ctas flex items-center justify-center">
             <Link
               href="/store"
-              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold tracking-tight transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
               style={{ padding: '14px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Shop Beats

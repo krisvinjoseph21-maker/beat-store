@@ -42,7 +42,7 @@ export default function FAQPage() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
           Help
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">FAQ</h1>
+        <h1 className="font-display uppercase text-foreground leading-none" style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}>FAQ</h1>
         <p className="mt-3 text-sm text-muted max-w-md mx-auto">
           Frequently asked questions about beats, licensing, and orders.
         </p>

@@ -143,7 +143,7 @@ export default function ServicesClient() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-low mb-3">
               {svc.unit ? svc.unit.trim().replace('/', '').trim() || 'Per Song' : 'Per Beat'}
             </p>
-            <h2 className="text-xl font-black text-white mb-1">{svc.title}</h2>
+            <h2 className="text-xl font-black text-foreground mb-1">{svc.title}</h2>
             <p className="text-3xl font-black text-foreground mb-5">
               {svc.price}
               {svc.unit && <span className="text-base font-normal text-muted-mid ml-1">{svc.unit}</span>}
@@ -183,7 +183,7 @@ export default function ServicesClient() {
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 id="services-modal-title" className="text-xl font-black text-white">Book a Session</h3>
+                <h3 id="services-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h3>
                 <p className="text-xs text-muted mt-0.5">{form.serviceType}</p>
               </div>
               <button
@@ -200,7 +200,7 @@ export default function ServicesClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="text-xl font-black text-white">Inquiry Sent!</p>
+                <p className="font-display text-3xl uppercase text-foreground leading-none">Inquiry Sent.</p>
                 <p className="mt-2 text-sm text-muted-mid">
                   I&apos;ll get back to you within 24 hours.
                 </p>

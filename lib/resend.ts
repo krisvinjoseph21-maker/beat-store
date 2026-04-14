@@ -251,21 +251,25 @@ export async function sendBookingConfirmationEmail({
 export async function sendContactEmail({
   name,
   email,
+  subject,
   message,
 }: {
   name: string
   email: string
+  subject: string
   message: string
 }) {
   await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
-    subject: subj(`Contact Form: ${name}`),
+    replyTo: email,
+    subject: subj(`Contact: ${subject} — ${name}`),
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2>New Contact Message</h2>
         <p><strong>Name:</strong> ${esc(name)}</p>
         <p><strong>Email:</strong> ${esc(email)}</p>
+        <p><strong>Subject:</strong> ${esc(subject)}</p>
         <p><strong>Message:</strong></p>
         <p style="white-space:pre-wrap">${esc(message)}</p>
       </div>

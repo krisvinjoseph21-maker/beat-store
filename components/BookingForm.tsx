@@ -87,7 +87,7 @@ export default function BookingForm() {
         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
           <Check size={30} className="text-accent" />
         </div>
-        <p className="text-2xl font-black text-white">Request Received!</p>
+        <p className="font-display text-4xl uppercase text-foreground leading-none">Request Received.</p>
         <p className="mt-3 text-sm text-muted-mid max-w-sm mx-auto">
           A confirmation has been sent to <span className="text-white">{form.email}</span>.
           I&apos;ll be in touch within 24–48 hours.

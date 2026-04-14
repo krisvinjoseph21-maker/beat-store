@@ -183,7 +183,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-line-card bg-surface-2 p-5 animate-fade-in max-h-[90vh] overflow-y-auto"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="license-modal-title" className="text-lg font-bold text-white">Choose Your License</h2>
+          <h2 id="license-modal-title" className="text-lg font-bold text-foreground">Choose Your License</h2>
           <button
             onClick={onClose}
             aria-label="Close license options"

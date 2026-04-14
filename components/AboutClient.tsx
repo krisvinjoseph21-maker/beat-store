@@ -64,7 +64,7 @@ export default function ContactForm() {
           />
         </div>
         <div className="flex-1">
-          <label htmlFor="c-email" className={labelClass}>E-Mail Address</label>
+          <label htmlFor="c-email" className={labelClass}>Email Address</label>
           <input
             id="c-email"
             required

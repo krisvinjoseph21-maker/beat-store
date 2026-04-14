@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
 
     const emailRegex = /^[^\s@\r\n]+@[^\s@\r\n]+\.[^\s@\r\n]+$/
     if (
+      typeof beatId !== 'string' || beatId.length > 128 ||
       typeof artistName !== 'string' || artistName.length > 100 ||
       typeof email !== 'string' || email.length > 254 || !emailRegex.test(email) ||
       typeof offerPrice !== 'number' || offerPrice < 1 || offerPrice > 100000 ||

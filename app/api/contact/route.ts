@@ -8,9 +8,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, email, message } = await req.json()
+    const { name, email, subject, message } = await req.json()
 
-    if (!name || !email || !message) {
+    if (!name || !email || !subject || !message) {
       return Response.json({ error: 'All fields are required' }, { status: 400 })
     }
 
@@ -18,12 +18,13 @@ export async function POST(req: NextRequest) {
     if (
       typeof name !== 'string' || name.length > 100 ||
       typeof email !== 'string' || email.length > 254 || !emailRegex.test(email) ||
+      typeof subject !== 'string' || subject.length > 200 ||
       typeof message !== 'string' || message.length > 2000
     ) {
       return Response.json({ error: 'Invalid input' }, { status: 400 })
     }
 
-    await sendContactEmail({ name: name.trim(), email: email.trim(), message: message.trim() })
+    await sendContactEmail({ name: name.trim(), email: email.trim(), subject: subject.trim(), message: message.trim() })
     return Response.json({ success: true })
   } catch {
     return Response.json({ error: 'Failed to send message' }, { status: 500 })
