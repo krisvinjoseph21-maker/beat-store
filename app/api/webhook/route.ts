@@ -23,9 +23,8 @@ export async function POST(req: NextRequest) {
   let event
   try {
     event = stripe.webhooks.constructEvent(body, sig, secret)
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Unknown error'
-    return new Response(`Webhook Error: ${msg}`, { status: 400 })
+  } catch {
+    return new Response('Invalid signature', { status: 400 })
   }
 
   if (event.type !== 'checkout.session.completed') {
@@ -49,6 +48,18 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createAdminClient()
+
+  // Idempotency — if Stripe retries the webhook, don't create a duplicate order
+  const { data: existing } = await supabase
+    .from('orders')
+    .select('id')
+    .eq('stripe_session_id', session.id)
+    .single()
+
+  if (existing) {
+    // Already processed — return 200 so Stripe stops retrying
+    return new Response('OK', { status: 200 })
+  }
 
   const { data: order, error: orderError } = await supabase
     .from('orders')

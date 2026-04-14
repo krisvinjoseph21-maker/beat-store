@@ -91,7 +91,9 @@ export async function POST(req: NextRequest) {
     if (sitewisePct !== null) promoNotes.push(`${sitewisePct}% sitewide discount`)
     if (couponPct !== null && couponPct > (sitewisePct ?? 0)) promoNotes.push(`${couponPct}% coupon (${discountCode})`)
 
-    const price = bestDiscountPct !== null ? applyDiscount(basePrice, bestDiscountPct) : basePrice
+    const rawPrice = bestDiscountPct !== null ? applyDiscount(basePrice, bestDiscountPct) : basePrice
+    // Never allow a $0 or negative checkout — enforce $1 minimum
+    const price = Math.max(rawPrice, 1)
     const licenseLabel = licenseType === 'standard' ? 'Standard Lease' : 'Unlimited Lease'
     const promoNote = promoNotes.length > 0 ? ` · ${promoNotes.join(' · ')}` : ''
     const description = `${licenseLabel}${promoNote} · ${beatIds.length} beat${beatIds.length > 1 ? 's' : ''}: ${beatTitles.join(', ')}`
@@ -115,7 +117,8 @@ export async function POST(req: NextRequest) {
         beatIds: JSON.stringify(beatIds),
         licenseType,
         quantityTier: String(pricingTier),
-        beatTitles: JSON.stringify(beatTitles),
+        // Stripe metadata values max 500 chars — truncate if needed
+        beatTitles: JSON.stringify(beatTitles).slice(0, 490),
       },
       customer_email: undefined,
       billing_address_collection: 'auto',
