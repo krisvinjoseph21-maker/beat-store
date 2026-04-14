@@ -3,9 +3,7 @@ export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { BadgeCheck } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase'
-import { PLACEHOLDER_BEATS } from '@/lib/placeholder-data'
 import type { Beat } from '@/lib/store'
-import HomeFeaturedBeats from '@/components/HomeFeaturedBeats'
 import SpotifyEmbed from '@/components/SpotifyEmbed'
 import FeaturedTrack from '@/components/FeaturedTrack'
 import HeroMouseGlow from '@/components/HeroMouseGlow'
@@ -13,7 +11,7 @@ import HeadlineParallax from '@/components/HeadlineParallax'
 import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
 
-async function getPageData(): Promise<{ featured: Beat | null; latest: Beat[] }> {
+async function getPageData(): Promise<{ featured: Beat | null }> {
   try {
     const supabase = createAdminClient()
     // Never select file_url, file_path, stems_path, preview_path — they must never reach the client.
@@ -21,18 +19,13 @@ async function getPageData(): Promise<{ featured: Beat | null; latest: Beat[] }>
       .from('beats')
       .select('id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, is_featured, created_at, pin_order')
       .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(7)
-    const beats = (data ?? []).map((b) => ({
-      ...b,
-      file_url: null,
-      stems_path: null,
-    })) as Beat[]
-    const featured = beats.find((b: Beat & { is_featured?: boolean }) => b.is_featured) ?? null
-    const latest = beats.filter((b) => b.id !== featured?.id).slice(0, 6)
-    return { featured, latest }
+      .eq('is_featured', true)
+      .limit(1)
+      .single()
+    const featured = data ? { ...data, file_url: null, stems_path: null } as Beat : null
+    return { featured }
   } catch {
-    return { featured: null, latest: PLACEHOLDER_BEATS.slice(0, 6) }
+    return { featured: null }
   }
 }
 
@@ -51,7 +44,7 @@ const TICKER_ITEMS = [
 ]
 
 export default async function HomePage() {
-  const { featured, latest } = await getPageData()
+  const { featured } = await getPageData()
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -164,31 +157,6 @@ export default async function HomePage() {
           </div>
         </section>
       )}
-
-      {/* ═══ FEATURED BEATS ══════════════════════════════════════ */}
-      <section className="w-full flex justify-center border-b border-white/[0.06]">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
-          <ScrollReveal className="mb-10 flex items-end justify-between">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
-                Fresh Off the DAW
-              </p>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">
-                Featured Beats.
-              </h2>
-            </div>
-            <Link
-              href="/store"
-              className="text-[12px] font-medium text-muted hover:text-foreground transition-colors"
-            >
-              View All →
-            </Link>
-          </ScrollReveal>
-          <ScrollReveal delay={150}>
-            <HomeFeaturedBeats beats={latest} />
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
       <section className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
