@@ -72,6 +72,11 @@ export default function AdminClient() {
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const stemsRef = useRef<HTMLInputElement>(null)
+  const [dragOver, setDragOver] = useState<'beat' | 'preview' | 'cover' | 'stems' | null>(null)
+  const [droppedBeat, setDroppedBeat] = useState<File | null>(null)
+  const [droppedPreview, setDroppedPreview] = useState<File | null>(null)
+  const [droppedCover, setDroppedCover] = useState<File | null>(null)
+  const [droppedStems, setDroppedStems] = useState<File | null>(null)
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Clear the password from memory and force re-login after SESSION_TIMEOUT_MS of inactivity.
@@ -306,10 +311,10 @@ export default function AdminClient() {
       let previewPath: string | null = null
       let coverUrl: string | null = null
 
-      const mainFile = fileRef.current?.files?.[0]
-      const prevFile = previewRef.current?.files?.[0]
-      const coverFile = coverRef.current?.files?.[0]
-      const stemsFile = stemsRef.current?.files?.[0]
+      const mainFile = droppedBeat ?? fileRef.current?.files?.[0]
+      const prevFile = droppedPreview ?? previewRef.current?.files?.[0]
+      const coverFile = droppedCover ?? coverRef.current?.files?.[0]
+      const stemsFile = droppedStems ?? stemsRef.current?.files?.[0]
 
       if (mainFile) {
         setUploadMsg('Uploading beat file…')
@@ -364,6 +369,10 @@ export default function AdminClient() {
         if (previewRef.current) previewRef.current.value = ''
         if (coverRef.current) coverRef.current.value = ''
         if (stemsRef.current) stemsRef.current.value = ''
+        setDroppedBeat(null)
+        setDroppedPreview(null)
+        setDroppedCover(null)
+        setDroppedStems(null)
         fetchBeats()
       } else {
         const err = await res.json()
@@ -788,27 +797,63 @@ export default function AdminClient() {
 
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-1.5">Beat File (MP3/WAV)</label>
-            <input ref={fileRef} type="file" accept="audio/*"
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedBeat(f) }}
+              onClick={() => fileRef.current?.click()}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+            >
+              <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedBeat(e.target.files[0]) }} />
+              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+              <p className="text-xs text-zinc-400">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
+            </div>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-1.5">Preview File (optional, 30s clip)</label>
-            <input ref={previewRef} type="file" accept="audio/*"
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedPreview(f) }}
+              onClick={() => previewRef.current?.click()}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+            >
+              <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedPreview(e.target.files[0]) }} />
+              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+              <p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p>
+            </div>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (optional — replaces the genre square)</label>
-            <input ref={coverRef} type="file" accept="image/*"
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragOver('cover') }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedCover(f) }}
+              onClick={() => coverRef.current?.click()}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+            >
+              <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedCover(e.target.files[0]) }} />
+              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+              <p className="text-xs text-zinc-400">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
+            </div>
             <p className="mt-1 text-[10px] text-zinc-600">JPG, PNG, WEBP — will show in the beat list and player bar</p>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-1.5">Stems (optional — ZIP file of all track stems)</label>
-            <input ref={stemsRef} type="file" accept=".zip,application/zip"
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-zinc-400 outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:text-white" />
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragOver('stems') }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedStems(f) }}
+              onClick={() => stemsRef.current?.click()}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+            >
+              <input ref={stemsRef} type="file" accept=".zip,application/zip" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedStems(e.target.files[0]) }} />
+              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+              <p className="text-xs text-zinc-400">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
+            </div>
             <p className="mt-1 text-[10px] text-zinc-600">ZIP only — delivered automatically to customers who buy the Stems License</p>
           </div>
 
