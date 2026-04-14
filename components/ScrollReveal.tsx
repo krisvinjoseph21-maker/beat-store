@@ -6,9 +6,10 @@ interface Props {
   children: React.ReactNode
   className?: string
   delay?: number
+  direction?: 'up' | 'left' | 'right'
 }
 
-export default function ScrollReveal({ children, className = '', delay = 0 }: Props) {
+export default function ScrollReveal({ children, className = '', delay = 0, direction = 'up' }: Props) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -32,8 +33,16 @@ export default function ScrollReveal({ children, className = '', delay = 0 }: Pr
     return () => observer.disconnect()
   }, [delay])
 
+  const dirClass =
+    direction === 'left'  ? 'reveal-left'  :
+    direction === 'right' ? 'reveal-right' : ''
+
   return (
-    <div ref={ref} className={`scroll-reveal ${className}`}>
+    <div
+      ref={ref}
+      data-dir={direction !== 'up' ? direction : undefined}
+      className={`scroll-reveal ${dirClass} ${className}`.trim()}
+    >
       {children}
     </div>
   )

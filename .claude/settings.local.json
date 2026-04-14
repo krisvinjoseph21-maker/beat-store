@@ -11,7 +11,8 @@
       "Bash(python3:*)",
       "Bash(node:*)",
       "Bash(ls /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app/*.tsx)",
-      "Bash(wc -l /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components/*.tsx)"
+      "Bash(wc -l /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components/*.tsx)",
+      "Bash(npx next:*)"
     ]
   }
 }
