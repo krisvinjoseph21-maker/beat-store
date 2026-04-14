@@ -11,7 +11,13 @@ import { headers } from 'next/headers'
 export function verifyAdminPassword(input: string): boolean {
   const expected = process.env.ADMIN_PASSWORD ?? ''
   if (!expected) return false
-  const secret = process.env.ADMIN_HMAC_SECRET ?? 'prodkjbeats-admin'
+  const secret = process.env.ADMIN_HMAC_SECRET
+  // Require an explicit HMAC secret — no fallback, so misconfigured deployments
+  // fail closed rather than using a known/guessable string.
+  if (!secret) {
+    console.error('[admin-auth] ADMIN_HMAC_SECRET is not set — refusing auth')
+    return false
+  }
   const inputHash = crypto.createHmac('sha256', secret).update(input).digest()
   const expectedHash = crypto.createHmac('sha256', secret).update(expected).digest()
   return crypto.timingSafeEqual(inputHash, expectedHash)

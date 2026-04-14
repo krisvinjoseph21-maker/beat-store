@@ -28,9 +28,6 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
           <div className="relative z-10 flex flex-col items-center gap-1">
             <div className={`w-2 h-2 rounded-full ${dot}`} />
             <span className="text-[9px] font-bold text-accent uppercase tracking-[0.3em] mt-2">Featured</span>
-            <span className="text-[11px] font-semibold text-foreground uppercase tracking-wider mt-0.5">
-              {beat.genre === 'R&B' ? 'R&B' : beat.genre}
-            </span>
           </div>
         </div>
 

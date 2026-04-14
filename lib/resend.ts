@@ -9,6 +9,11 @@ function esc(str: string): string {
     .replace(/'/g, '&#x27;')
 }
 
+/** Strip CR/LF from any string used in an email subject line to prevent header injection. */
+function subj(str: string): string {
+  return str.replace(/[\r\n]+/g, ' ').trim()
+}
+
 // Lazy singleton — only constructed at runtime, not at build time
 let _resend: Resend | null = null
 function getResend() {
@@ -77,7 +82,7 @@ export async function sendServiceInquiryEmail({
   await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
-    subject: `New Service Inquiry: ${serviceType} — ${artistName}`,
+    subject: subj(`New Service Inquiry: ${serviceType} — ${artistName}`),
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2>New Service Inquiry</h2>
@@ -112,7 +117,7 @@ export async function sendExclusiveOfferEmail({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
-    subject: `Exclusive Offer: $${offerPrice} for "${beatTitle}" — ${artistName}`,
+    subject: subj(`Exclusive Offer: $${offerPrice} for "${beatTitle}" — ${artistName}`),
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
         <h2 style="color:#fff;margin-bottom:4px">💰 New Exclusive Beat Offer</h2>
@@ -169,7 +174,7 @@ export async function sendBookingEmail({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
-    subject: `New Booking: ${esc(projectType)} — ${esc(artistName)}`,
+    subject: subj(`New Booking: ${projectType} — ${artistName}`),
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
         <h2 style="color:#fff;margin-bottom:4px">New Booking Request</h2>
@@ -255,7 +260,7 @@ export async function sendContactEmail({
   await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
-    subject: `Contact Form: ${name}`,
+    subject: subj(`Contact Form: ${name}`),
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2>New Contact Message</h2>

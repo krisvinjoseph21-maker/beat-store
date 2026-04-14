@@ -129,8 +129,9 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           <div className="flex-1 flex flex-col justify-center mr-2 sm:mr-8 min-w-0">
             <div className="flex items-baseline gap-2" style={{ marginBottom: '4px' }}>
               <h3
-                className="leading-tight break-words"
-                style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '15px', fontWeight: 600, color: 'var(--foreground)', wordBreak: 'break-word' }}
+                className="leading-tight truncate"
+                style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '15px', fontWeight: 600, color: 'var(--foreground)' }}
+                title={beat.title}
               >
                 {beat.title}
               </h3>

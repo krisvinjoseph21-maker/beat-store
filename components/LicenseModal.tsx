@@ -3,9 +3,14 @@
 import { X, Check, Zap, Tag } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useCartStore, LicenseType, QuantityTier } from '@/lib/store'
-import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
 import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'
 import type { PromoConfig } from '@/lib/promos'
+
+// Inlined — discount-codes.ts must NOT be imported in client components
+// (it contains the full code list which would be exposed in the JS bundle)
+function applyDiscount(price: number, pct: number): number {
+  return Math.round(price * (1 - pct / 100))
+}
 
 interface Props {
   open: boolean
@@ -41,6 +46,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const [appliedCode, setAppliedCode] = useState('')
   const [discountPct, setDiscountPct] = useState<number | null>(null)
   const [codeError, setCodeError] = useState('')
+  const [codeLoading, setCodeLoading] = useState(false)
   const [promo, setPromo] = useState<PromoConfig>({ sitewide_discount_pct: null, bogo_free_count: null })
   const [bogoSelected, setBogoSelected] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -111,16 +117,31 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const finalPrice = displayPrice(basePrice)
   const features = licenseType === 'standard' ? STANDARD_FEATURES : UNLIMITED_FEATURES
 
-  function handleApplyCode() {
-    const pct = getDiscountPct(codeInput)
-    if (pct === null) {
-      setCodeError('Invalid code.')
-      setAppliedCode('')
-      setDiscountPct(null)
-    } else {
-      setDiscountPct(pct)
-      setAppliedCode(codeInput.trim().toUpperCase())
-      setCodeError('')
+  async function handleApplyCode() {
+    const trimmed = codeInput.trim()
+    if (!trimmed) return
+    setCodeLoading(true)
+    setCodeError('')
+    try {
+      const res = await fetch('/api/validate-discount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: trimmed }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setDiscountPct(data.pct)
+        setAppliedCode(trimmed.toUpperCase())
+        setCodeError('')
+      } else {
+        setCodeError('Invalid code.')
+        setAppliedCode('')
+        setDiscountPct(null)
+      }
+    } catch {
+      setCodeError('Could not validate code. Try again.')
+    } finally {
+      setCodeLoading(false)
     }
   }
 
@@ -351,9 +372,10 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
               />
               <button
                 onClick={handleApplyCode}
-                className="rounded-sm border border-line-input px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors"
+                disabled={codeLoading}
+                className="rounded-sm border border-line-input px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Apply
+                {codeLoading ? '…' : 'Apply'}
               </button>
             </div>
           )}
