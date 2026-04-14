@@ -176,8 +176,8 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: 'var(--foreground)', lineHeight: 1.2 }}>{beat.key}</div>
               <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '2px' }}>Key</div>
             </div>
-            <div className="text-center" style={{ minWidth: '120px' }}>
-              <div style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: 'var(--foreground)', lineHeight: 1.2 }}>{beat.genre}</div>
+            <div className="text-center w-[120px]">
+              <div className="truncate" style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '13px', fontWeight: 500, color: 'var(--foreground)', lineHeight: 1.2 }} title={beat.genre}>{beat.genre}</div>
             </div>
           </div>
 

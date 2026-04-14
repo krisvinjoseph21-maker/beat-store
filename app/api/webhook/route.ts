@@ -3,10 +3,33 @@ import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase'
 import { sendDownloadEmail } from '@/lib/resend'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 import crypto from 'crypto'
 
+// Maximum webhook body size: 1 MB. Stripe payloads are tiny (<10 KB);
+// anything larger is either malicious or corrupt.
+const MAX_BODY_BYTES = 1_048_576
+
 export async function POST(req: NextRequest) {
+  // Rate-limit: Stripe retries are legitimate, but unlimited flooding is not.
+  // 120/min is generous for real Stripe traffic on a single IP.
+  if (!rateLimit(getIp(req), 120, 60_000)) {
+    return new Response('Too many requests', { status: 429 })
+  }
+
+  // Reject oversized bodies before reading them into memory
+  const contentLength = Number(req.headers.get('content-length') ?? 0)
+  if (contentLength > MAX_BODY_BYTES) {
+    return new Response('Payload too large', { status: 413 })
+  }
+
   const body = await req.text()
+
+  // Secondary size check for chunked transfers that omit Content-Length
+  if (Buffer.byteLength(body, 'utf8') > MAX_BODY_BYTES) {
+    return new Response('Payload too large', { status: 413 })
+  }
+
   const headersList = await headers()
   const sig = headersList.get('stripe-signature')
 

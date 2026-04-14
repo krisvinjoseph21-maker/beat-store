@@ -46,6 +46,9 @@ const BLANK_BEAT = {
   is_active: true,
 }
 
+// Idle timeout: lock the admin session after 30 minutes of inactivity.
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000
+
 export default function AdminClient() {
   const [password, setPassword] = useState('')
   const [authed, setAuthed] = useState(false)
@@ -69,6 +72,29 @@ export default function AdminClient() {
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const stemsRef = useRef<HTMLInputElement>(null)
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Clear the password from memory and force re-login after SESSION_TIMEOUT_MS of inactivity.
+  function resetIdleTimer() {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+    idleTimerRef.current = setTimeout(() => {
+      setAuthed(false)
+      setPassword('')
+      setAuthError('Session expired — please log in again.')
+    }, SESSION_TIMEOUT_MS)
+  }
+
+  useEffect(() => {
+    if (!authed) return
+    const events = ['mousedown', 'keydown', 'pointerdown', 'scroll']
+    events.forEach((e) => window.addEventListener(e, resetIdleTimer, { passive: true }))
+    resetIdleTimer()
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, resetIdleTimer))
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authed])
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault()
