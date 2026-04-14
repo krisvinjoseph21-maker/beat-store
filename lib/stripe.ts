@@ -1,3 +1,4 @@
+import 'server-only'
 import Stripe from 'stripe'
 
 // Lazy singleton — avoids build-time instantiation without env vars

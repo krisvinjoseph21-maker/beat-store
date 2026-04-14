@@ -1,5 +1,7 @@
+export const runtime = 'edge'
+
 import { type NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { PROMO_DEFAULTS } from '@/lib/promos'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 

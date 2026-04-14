@@ -1,6 +1,8 @@
+export const runtime = 'nodejs'
+
 import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'

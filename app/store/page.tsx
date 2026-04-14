@@ -1,4 +1,4 @@
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { PLACEHOLDER_BEATS } from '@/lib/placeholder-data'
 import type { Beat } from '@/lib/store'
 import BeatStore from '@/components/BeatStore'

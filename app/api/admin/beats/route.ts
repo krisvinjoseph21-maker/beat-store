@@ -1,5 +1,7 @@
+export const runtime = 'nodejs'
+
 import { NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
@@ -23,6 +25,58 @@ export async function GET(req: NextRequest) {
   return Response.json(data)
 }
 
+const VALID_GENRES = ['Trap', 'Drill', 'R&B', 'Afrobeats']
+// Storage paths must look like "type/timestamp-filename.ext" — no path traversal
+const STORAGE_PATH_RE = /^[a-z]+\/[0-9]+-[a-zA-Z0-9_.-]{1,120}$/
+
+function sanitizePath(val: unknown): string | null {
+  if (!val || typeof val !== 'string') return null
+  return STORAGE_PATH_RE.test(val) ? val : null
+}
+
+function sanitizeUrl(val: unknown): string | null {
+  if (!val || typeof val !== 'string') return null
+  try {
+    const u = new URL(val)
+    return u.protocol === 'https:' ? val.slice(0, 2048) : null
+  } catch { return null }
+}
+
+function sanitizeBeatBody(body: Record<string, unknown>) {
+  const title = typeof body.title === 'string' ? body.title.trim().slice(0, 200) : null
+  if (!title) return { error: 'Title is required' }
+
+  const bpm = Number(body.bpm)
+  if (!Number.isInteger(bpm) || bpm < 40 || bpm > 300) return { error: 'BPM must be 40–300' }
+
+  const key = typeof body.key === 'string' ? body.key.trim().slice(0, 20) : ''
+  const genre = typeof body.genre === 'string' ? body.genre.trim() : ''
+  if (!VALID_GENRES.includes(genre)) return { error: 'Invalid genre' }
+
+  const subgenre = typeof body.subgenre === 'string' ? body.subgenre.trim().slice(0, 100) : ''
+  const tags = Array.isArray(body.tags)
+    ? body.tags.slice(0, 20).map((t) => String(t).trim().slice(0, 50)).filter(Boolean)
+    : []
+
+  return {
+    data: {
+      title,
+      bpm,
+      key,
+      genre,
+      subgenre,
+      tags,
+      file_url: sanitizeUrl(body.file_url),
+      file_path: sanitizePath(body.file_path),
+      preview_url: sanitizeUrl(body.preview_url),
+      preview_path: sanitizePath(body.preview_path),
+      cover_url: sanitizeUrl(body.cover_url),
+      stems_path: sanitizePath(body.stems_path),
+      is_active: body.is_active !== false,
+    },
+  }
+}
+
 // POST — create a new beat
 export async function POST(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
@@ -33,23 +87,11 @@ export async function POST(req: NextRequest) {
   }
   try {
     const body = await req.json()
-    const allowed = {
-      title: body.title,
-      bpm: Number(body.bpm) || 140,
-      key: body.key ?? '',
-      genre: body.genre ?? '',
-      subgenre: body.subgenre ?? '',
-      tags: Array.isArray(body.tags) ? body.tags.map(String) : [],
-      file_url: body.file_url ?? null,
-      file_path: body.file_path ?? null,
-      preview_url: body.preview_url ?? null,
-      preview_path: body.preview_path ?? null,
-      cover_url: body.cover_url ?? null,
-      stems_path: body.stems_path ?? null,
-      is_active: body.is_active !== false,
-    }
+    const result = sanitizeBeatBody(body)
+    if ('error' in result) return Response.json({ error: result.error }, { status: 400 })
+
     const supabase = createAdminClient()
-    const { data, error } = await supabase.from('beats').insert(allowed).select().single()
+    const { data, error } = await supabase.from('beats').insert(result.data).select().single()
     if (error) {
       console.error('[admin/beats POST]', error)
       return Response.json({ error: 'Failed to create beat' }, { status: 500 })
@@ -124,13 +166,36 @@ export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json()
     const { id } = body
-    if (!id) return Response.json({ error: 'Missing id' }, { status: 400 })
-    const ALLOWED = ['title','bpm','key','genre','subgenre','tags','file_url','file_path',
-      'preview_url','preview_path','cover_url','stems_path','is_active','pin_order','is_featured']
+    if (typeof id !== 'string' || !id) return Response.json({ error: 'Missing id' }, { status: 400 })
+
     const updates: Record<string, unknown> = {}
-    for (const key of ALLOWED) {
-      if (key in body) updates[key] = body[key]
+    if ('title' in body) {
+      if (typeof body.title !== 'string' || !body.title.trim()) return Response.json({ error: 'Invalid title' }, { status: 400 })
+      updates.title = body.title.trim().slice(0, 200)
     }
+    if ('bpm' in body) {
+      const bpm = Number(body.bpm)
+      if (!Number.isInteger(bpm) || bpm < 40 || bpm > 300) return Response.json({ error: 'BPM must be 40–300' }, { status: 400 })
+      updates.bpm = bpm
+    }
+    if ('key' in body) updates.key = typeof body.key === 'string' ? body.key.trim().slice(0, 20) : ''
+    if ('genre' in body) {
+      if (!VALID_GENRES.includes(body.genre as string)) return Response.json({ error: 'Invalid genre' }, { status: 400 })
+      updates.genre = body.genre
+    }
+    if ('subgenre' in body) updates.subgenre = typeof body.subgenre === 'string' ? body.subgenre.trim().slice(0, 100) : ''
+    if ('tags' in body) updates.tags = Array.isArray(body.tags) ? body.tags.slice(0, 20).map((t: unknown) => String(t).trim().slice(0, 50)).filter(Boolean) : []
+    if ('is_active' in body) updates.is_active = body.is_active === true
+    if ('is_featured' in body) updates.is_featured = body.is_featured === true
+    if ('pin_order' in body) {
+      updates.pin_order = body.pin_order === null ? null : (Number.isInteger(Number(body.pin_order)) ? Number(body.pin_order) : null)
+    }
+    if ('file_url' in body) updates.file_url = sanitizeUrl(body.file_url)
+    if ('file_path' in body) updates.file_path = sanitizePath(body.file_path)
+    if ('preview_url' in body) updates.preview_url = sanitizeUrl(body.preview_url)
+    if ('preview_path' in body) updates.preview_path = sanitizePath(body.preview_path)
+    if ('cover_url' in body) updates.cover_url = sanitizeUrl(body.cover_url)
+    if ('stems_path' in body) updates.stems_path = sanitizePath(body.stems_path)
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('beats')

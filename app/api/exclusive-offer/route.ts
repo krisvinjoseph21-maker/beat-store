@@ -1,6 +1,8 @@
+export const runtime = 'edge'
+
 import { NextRequest } from 'next/server'
 import { sendExclusiveOfferEmail } from '@/lib/resend'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {

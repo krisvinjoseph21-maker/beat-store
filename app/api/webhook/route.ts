@@ -1,7 +1,9 @@
+export const runtime = 'nodejs'
+
 import { NextRequest } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { sendDownloadEmail } from '@/lib/resend'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 import crypto from 'crypto'

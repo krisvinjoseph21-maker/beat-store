@@ -1,3 +1,5 @@
+export const runtime = 'edge'
+
 import { NextRequest } from 'next/server'
 import { sendBookingEmail, sendBookingConfirmationEmail } from '@/lib/resend'
 import { rateLimit, getIp } from '@/lib/rate-limit'

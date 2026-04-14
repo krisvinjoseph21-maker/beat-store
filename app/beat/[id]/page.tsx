@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import type { Beat } from '@/lib/store'
 import BeatPageClient from '@/components/BeatPageClient'
 

@@ -1,3 +1,5 @@
+export const runtime = 'edge'
+
 import { NextRequest } from 'next/server'
 import { getDiscountPct } from '@/lib/discount-codes'
 import { rateLimit, getIp } from '@/lib/rate-limit'

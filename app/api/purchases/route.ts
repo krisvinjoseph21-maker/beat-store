@@ -1,5 +1,7 @@
+export const runtime = 'nodejs'
+
 import { NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { rateLimit, getIp } from '@/lib/rate-limit'
 import { randomBytes } from 'crypto'
