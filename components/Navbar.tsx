@@ -54,7 +54,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav — centered */}
-          <div className="hidden lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
+          <div className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
             {NAV_LINKS.map(({ href, label }) => {
               const active = pathname === href || (href !== '/' && pathname.startsWith(href))
               return (
@@ -74,7 +74,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop actions */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <NavAuthButton />
 
             <button
@@ -99,7 +99,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile controls */}
-          <div className="flex lg:hidden items-center gap-4">
+          <div className="flex md:hidden items-center gap-4">
             <button
               onClick={() => openCart()}
               aria-label={items.length > 0 ? `Cart — ${items.length} item${items.length === 1 ? '' : 's'}` : 'Cart'}

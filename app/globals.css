@@ -173,7 +173,7 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.ticker-wrap { animation: ticker 35s linear infinite; }
+.ticker-wrap { animation: ticker 35s linear infinite; will-change: transform; }
 
 /* ── Marquee ──────────────────────────────────── */
 @keyframes marquee {

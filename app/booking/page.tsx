@@ -13,7 +13,7 @@ export default function BookingPage() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
           Let&apos;s Work
         </p>
-        <h1 className="text-3xl font-black text-white sm:text-4xl">Book a Session</h1>
+        <h1 className="font-display uppercase leading-none text-foreground" style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}>Book a Session</h1>
         <p className="mt-3 text-muted-mid max-w-md mx-auto">
           Fill out the form below and I&apos;ll get back to you within 24–48 hours.
         </p>

@@ -19,7 +19,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.08] bg-surface-3">
+    <div className="w-full rounded-2xl border border-white/10 bg-surface-3">
       <div className="relative flex flex-col sm:flex-row items-stretch">
 
         {/* Artwork slab */}
@@ -60,8 +60,8 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
               aria-label={isThisPlaying ? 'Pause' : 'Play'}
             >
               {isThisPlaying
-                ? <Pause size={16} fill="black" />
-                : <Play size={16} fill="black" />}
+                ? <Pause size={16} fill="black" aria-hidden="true" />
+                : <Play size={16} fill="black" aria-hidden="true" />}
             </button>
 
             <button
@@ -76,7 +76,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             >
               {inCart
                 ? <><Check size={13} /> Added</>
-                : <><ShoppingCart size={13} /> Add to Cart — $75</>}
+                : <><ShoppingCart size={13} /> Add to Cart — $34.99</>}
             </button>
 
             <div className="ml-auto">

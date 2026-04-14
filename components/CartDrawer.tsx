@@ -2,6 +2,7 @@
 
 import { X, Trash2, ShoppingBag } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { useCartStore } from '@/lib/store'
 import LicenseModal from './LicenseModal'
 import { useRouter } from 'next/navigation'
@@ -111,8 +112,15 @@ export default function CartDrawer({ open, onClose }: Props) {
             </div>
             <div>
               <p className="text-[13px] font-medium text-foreground mb-1">Your cart is empty</p>
-              <p className="text-[12px] text-muted-low leading-relaxed">Add beats from the store<br />to get started.</p>
+              <p className="text-[12px] text-muted-low leading-relaxed">Find your sound in the catalog.</p>
             </div>
+            <Link
+              href="/store"
+              onClick={onClose}
+              className="text-[12px] font-semibold text-foreground underline underline-offset-4 hover:text-muted transition-colors"
+            >
+              Browse Beats →
+            </Link>
           </div>
         ) : (
           <>
