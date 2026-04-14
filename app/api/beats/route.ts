@@ -1,8 +1,12 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { validateEnv } from '@/lib/env'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
+  if (!rateLimit(getIp(req), 30, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
   validateEnv()
   const supabase = createAdminClient()
   const { data, error } = await supabase
@@ -12,7 +16,10 @@ export async function GET(_req: NextRequest) {
     .order('pin_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
 
-  if (error) return Response.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[beats]', error)
+    return Response.json({ error: 'Failed to load beats' }, { status: 500 })
+  }
 
   // Strip file_url entirely — it must never reach the client.
   // If a beat has no dedicated preview_url, the player will simply be disabled

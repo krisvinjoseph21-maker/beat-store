@@ -185,9 +185,9 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
         {/* BOGO banner */}
         {hasBogo && (
-          <div className="mb-4 flex items-center gap-2 rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-3 py-2.5">
-            <Zap size={13} className="text-emerald-400 flex-shrink-0" aria-hidden="true" />
-            <p className="text-sm font-semibold text-emerald-400">
+          <div className="mb-4 flex items-center gap-2 rounded-sm px-3 py-2.5" style={{ border: '1px solid var(--promo-border)', background: 'var(--promo-dim)' }}>
+            <Zap size={13} style={{ color: 'var(--promo)' }} className="flex-shrink-0" aria-hidden="true" />
+            <p className="text-sm font-semibold" style={{ color: 'var(--promo)' }}>
               Limited offer: Buy 1 get {promo.bogo_free_count} free — see deal below
             </p>
           </div>
@@ -280,17 +280,17 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
             <button
               onClick={() => setBogoSelected((s) => !s)}
               aria-pressed={bogoSelected}
-              className={`w-full rounded-sm border p-3.5 text-left transition-all ${
-                bogoSelected
-                  ? 'border-emerald-500/50 bg-emerald-500/10'
-                  : 'border-line-input hover:border-emerald-500/40 hover:bg-emerald-500/5'
-              }`}
+              className="w-full rounded-sm border p-3.5 text-left transition-all"
+              style={{
+                borderColor: bogoSelected ? 'var(--promo-border)' : 'var(--line-input)',
+                background: bogoSelected ? 'var(--promo-dim)' : 'transparent',
+              }}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <Zap size={13} className="text-emerald-400" aria-hidden="true" />
-                    <p className="text-sm font-bold text-emerald-400">
+                    <Zap size={13} style={{ color: 'var(--promo)' }} aria-hidden="true" />
+                    <p className="text-sm font-bold" style={{ color: 'var(--promo)' }}>
                       Buy 1 Get {promo.bogo_free_count} Free
                     </p>
                   </div>
@@ -310,7 +310,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                   ) : (
                     <p className="text-base font-bold text-white">${PRICES[licenseType][1]}</p>
                   )}
-                  <p className="text-[10px] text-emerald-400">1-beat price</p>
+                  <p className="text-[10px]" style={{ color: 'var(--promo)' }}>1-beat price</p>
                 </div>
               </div>
             </button>

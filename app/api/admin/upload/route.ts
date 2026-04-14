@@ -1,29 +1,13 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { headers } from 'next/headers'
 import { rateLimit, getIp } from '@/lib/rate-limit'
-import crypto from 'crypto'
-
-function verifyAdminPassword(input: string): boolean {
-  const expected = process.env.ADMIN_PASSWORD ?? ''
-  if (!expected) return false
-  const secret = 'prodkjbeats-admin'
-  const inputHash = crypto.createHmac('sha256', secret).update(input).digest()
-  const expectedHash = crypto.createHmac('sha256', secret).update(expected).digest()
-  return crypto.timingSafeEqual(inputHash, expectedHash)
-}
-
-async function checkAuth() {
-  const headersList = await headers()
-  const auth = headersList.get('x-admin-password') ?? ''
-  return verifyAdminPassword(auth)
-}
+import { checkAdminAuth } from '@/lib/admin-auth'
 
 export async function POST(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
-  if (!(await checkAuth())) {
+  if (!(await checkAdminAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -52,7 +36,15 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient()
     const bucket = 'beats'
-    const path = `${type}/${Date.now()}-${file.name.replace(/\s+/g, '_')}`
+    // Strip everything except safe characters to prevent path traversal.
+    // Keep only the original extension (single dot allowed).
+    const rawName = file.name
+    const ext = rawName.includes('.') ? rawName.slice(rawName.lastIndexOf('.')).replace(/[^a-z0-9.]/gi, '') : ''
+    const safeName = rawName
+      .slice(0, rawName.lastIndexOf('.') >= 0 ? rawName.lastIndexOf('.') : rawName.length)
+      .replace(/[^a-z0-9_-]/gi, '_')
+      .slice(0, 80)
+    const path = `${type}/${Date.now()}-${safeName}${ext}`
 
     const arrayBuffer = await file.arrayBuffer()
     const { data, error } = await supabase.storage
@@ -62,7 +54,10 @@ export async function POST(req: NextRequest) {
         upsert: false,
       })
 
-    if (error) return Response.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[upload] storage error:', error)
+      return Response.json({ error: 'Upload failed' }, { status: 500 })
+    }
 
     // Preview and cover files are safe to expose as public URLs.
     // Full beat files must NEVER be exposed publicly.

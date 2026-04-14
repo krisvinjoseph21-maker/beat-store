@@ -193,11 +193,11 @@ export default function EmailCaptureModal() {
                   aria-describedby={errors.email ? 'popup-email-error' : undefined}
                   aria-invalid={!!errors.email}
                   className={`rounded-sm border px-4 py-3 text-sm text-black placeholder-black/30 outline-none transition-colors ${
-                    errors.email ? 'border-red-500 bg-red-50' : 'border-black/15 bg-black/4 focus:border-black/40'
+                    errors.email ? 'border-danger bg-danger/5' : 'border-black/15 bg-black/4 focus:border-black/40'
                   }`}
                 />
                 {errors.email && (
-                  <p id="popup-email-error" role="alert" className="text-xs text-red-600">
+                  <p id="popup-email-error" role="alert" className="text-xs text-danger">
                     {errors.email}
                   </p>
                 )}
@@ -219,7 +219,7 @@ export default function EmailCaptureModal() {
                   </span>
                 </label>
                 {errors.consent && (
-                  <p id="popup-consent-error" role="alert" className="text-xs text-red-600">
+                  <p id="popup-consent-error" role="alert" className="text-xs text-danger">
                     {errors.consent}
                   </p>
                 )}

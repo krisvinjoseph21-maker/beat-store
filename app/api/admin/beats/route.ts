@@ -1,35 +1,14 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { headers } from 'next/headers'
 import { rateLimit, getIp } from '@/lib/rate-limit'
-import crypto from 'crypto'
-
-/**
- * Constant-time password check using HMAC digests to prevent:
- * 1. Timing attacks (timingSafeEqual)
- * 2. Length oracle attacks (comparing fixed-length hashes, not raw strings)
- */
-function verifyAdminPassword(input: string): boolean {
-  const expected = process.env.ADMIN_PASSWORD ?? ''
-  if (!expected) return false
-  const secret = 'prodkjbeats-admin'
-  const inputHash = crypto.createHmac('sha256', secret).update(input).digest()
-  const expectedHash = crypto.createHmac('sha256', secret).update(expected).digest()
-  return crypto.timingSafeEqual(inputHash, expectedHash)
-}
-
-async function checkAuth() {
-  const headersList = await headers()
-  const auth = headersList.get('x-admin-password') ?? ''
-  return verifyAdminPassword(auth)
-}
+import { checkAdminAuth } from '@/lib/admin-auth'
 
 // GET — list all beats (including inactive)
 export async function GET(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
-  if (!(await checkAuth())) {
+  if (!(await checkAdminAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const supabase = createAdminClient()
@@ -37,7 +16,10 @@ export async function GET(req: NextRequest) {
     .from('beats')
     .select('*')
     .order('created_at', { ascending: false })
-  if (error) return Response.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[admin/beats GET]', error)
+    return Response.json({ error: 'Failed to fetch beats' }, { status: 500 })
+  }
   return Response.json(data)
 }
 
@@ -46,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
-  if (!(await checkAuth())) {
+  if (!(await checkAdminAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
@@ -68,7 +50,10 @@ export async function POST(req: NextRequest) {
     }
     const supabase = createAdminClient()
     const { data, error } = await supabase.from('beats').insert(allowed).select().single()
-    if (error) return Response.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[admin/beats POST]', error)
+      return Response.json({ error: 'Failed to create beat' }, { status: 500 })
+    }
     return Response.json(data)
   } catch {
     return Response.json({ error: 'Invalid request' }, { status: 400 })
@@ -85,7 +70,7 @@ export async function DELETE(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
-  if (!(await checkAuth())) {
+  if (!(await checkAdminAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
@@ -117,7 +102,10 @@ export async function DELETE(req: NextRequest) {
 
     // Delete DB record
     const { error } = await supabase.from('beats').delete().eq('id', id)
-    if (error) return Response.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[admin/beats DELETE]', error)
+      return Response.json({ error: 'Failed to delete beat' }, { status: 500 })
+    }
 
     return Response.json({ success: true })
   } catch {
@@ -130,7 +118,7 @@ export async function PATCH(req: NextRequest) {
   if (!rateLimit(getIp(req), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
-  if (!(await checkAuth())) {
+  if (!(await checkAdminAuth())) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
@@ -150,7 +138,10 @@ export async function PATCH(req: NextRequest) {
       .eq('id', id)
       .select()
       .single()
-    if (error) return Response.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[admin/beats PATCH]', error)
+      return Response.json({ error: 'Failed to update beat' }, { status: 500 })
+    }
     return Response.json(data)
   } catch {
     return Response.json({ error: 'Invalid request' }, { status: 400 })

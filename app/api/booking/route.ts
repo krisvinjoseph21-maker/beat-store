@@ -15,9 +15,10 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'All required fields must be filled in.' }, { status: 400 })
     }
 
+    const emailRegex = /^[^\s@\r\n]+@[^\s@\r\n]+\.[^\s@\r\n]+$/
     if (
       typeof artistName !== 'string' || artistName.length > 100 ||
-      typeof email !== 'string' || email.length > 254 || !email.includes('@') ||
+      typeof email !== 'string' || email.length > 254 || !emailRegex.test(email) ||
       typeof genre !== 'string' || genre.length > 100 ||
       typeof projectType !== 'string' || projectType.length > 100 ||
       typeof deadline !== 'string' || deadline.length > 50 ||

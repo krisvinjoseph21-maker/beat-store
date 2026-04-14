@@ -78,7 +78,7 @@ export default function BottomPlayer() {
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
-    const src = currentBeat.preview_url ?? currentBeat.file_url ?? ''
+    const src = currentBeat.preview_url ?? ''
     setPreviewEnded(false)
     localProgressRef.current = 0
     updateProgressDOM(0)
@@ -249,7 +249,7 @@ export default function BottomPlayer() {
                     togglePlay()
                   }
                 }}
-                disabled={!currentBeat?.preview_url && !currentBeat?.file_url}
+                disabled={!currentBeat?.preview_url}
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >

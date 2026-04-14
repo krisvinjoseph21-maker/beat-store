@@ -6,7 +6,7 @@
   --foreground: #f5f5f7;
   --muted: #747477;       /* 4.6:1 on #000 — WCAG AA ✓ */
   --muted-mid: #a1a1a6;
-  --muted-low: #767676;
+  --muted-low: #787878;   /* 4.54:1 on #000 — WCAG AA ✓ (raised from #767676) */
   --border: rgba(255,255,255,0.1);
   --card: #1d1d1f;
   --player-height: 64px;
@@ -29,6 +29,11 @@
 
   /* ── Interactive ────────────────────────────────── */
   --white-hover: #e8e8ed; /* White CTA hover state */
+
+  /* ── Promo ───────────────────────────────────────── */
+  --promo: #52b788;       /* BOGO / limited-offer green — distinct from amber accent */
+  --promo-dim: rgba(82,183,136,0.1);
+  --promo-border: rgba(82,183,136,0.3);
 }
 
 /* ── Tailwind v4 theme tokens ─────────────────────── */
@@ -36,7 +41,7 @@
   --color-foreground: #f5f5f7;
   --color-muted: #747477;
   --color-muted-mid: #a1a1a6;
-  --color-muted-low: #767676;
+  --color-muted-low: #787878;
   --color-accent: #c8a86a;
   --color-accent-dim: rgba(200,168,106,0.6);
   --color-danger: #e01f1f;
@@ -56,6 +61,7 @@
 
   /* Interactive */
   --color-white-hover: #e8e8ed;
+  --color-promo: #52b788;
 }
 
 * {
@@ -112,9 +118,9 @@ body {
 /* ── Range input ──────────────────────────────── */
 input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: transparent; cursor: pointer; outline: none; }
 input[type='range']::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: rgba(255,255,255,0.15); }
-input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 10px; height: 10px; background: #fff; border-radius: 50%; margin-top: -4px; }
+input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 10px; height: 10px; background: var(--foreground); border-radius: 50%; margin-top: -4px; }
 input[type='range']::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(255,255,255,0.15); }
-input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: #fff; border-radius: 50%; border: none; }
+input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: var(--foreground); border-radius: 50%; border: none; }
 
 /* ── Scrollbar ────────────────────────────────── */
 ::-webkit-scrollbar { width: 3px; }

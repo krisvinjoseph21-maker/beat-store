@@ -14,13 +14,18 @@ import HeroVideo from '@/components/HeroVideo'
 async function getPageData(): Promise<{ featured: Beat | null; latest: Beat[] }> {
   try {
     const supabase = createAdminClient()
+    // Never select file_url, file_path, stems_path, preview_path — they must never reach the client.
     const { data } = await supabase
       .from('beats')
-      .select('*')
+      .select('id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, is_featured, created_at, pin_order')
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(7)
-    const beats = (data ?? []) as Beat[]
+    const beats = (data ?? []).map((b) => ({
+      ...b,
+      file_url: null,
+      stems_path: null,
+    })) as Beat[]
     const featured = beats.find((b: Beat & { is_featured?: boolean }) => b.is_featured) ?? null
     const latest = beats.filter((b) => b.id !== featured?.id).slice(0, 6)
     return { featured, latest }
@@ -121,7 +126,7 @@ export default async function HomePage() {
             <Link
               href="/store"
               className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold tracking-tight transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
-              style={{ padding: '11px 28px', fontFamily: 'var(--font-inter)' }}
+              style={{ padding: '14px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Shop Beats
             </Link>
@@ -257,7 +262,7 @@ export default async function HomePage() {
           <Link
             href="/store"
             className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
-            style={{ padding: '13px 36px', fontFamily: 'var(--font-inter)' }}
+            style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
           >
             Shop Beats
           </Link>

@@ -153,6 +153,16 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 {beat.genre.toLowerCase()} type beat
               </span>
             </div>
+            {/* BPM + key — visible on mobile where the metadata columns are hidden */}
+            <div className="flex md:hidden gap-2 mt-0.5">
+              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
+                {beat.bpm} BPM
+              </span>
+              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--line-hover)' }}>·</span>
+              <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
+                {beat.key}
+              </span>
+            </div>
           </div>
 
           {/* BPM / Key / Genre */}
@@ -241,6 +251,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <Link
                 key={i}
                 href="/about"
+                aria-label="Inquire about exclusive license — opens contact page"
                 className="bg-surface-1 border border-line flex flex-col hover:border-line-input hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
                 style={{ padding: '14px 16px' }}
                 onClick={(e) => e.stopPropagation()}
@@ -258,7 +269,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   className="w-full border text-[10px] font-bold uppercase flex items-center justify-center px-4 transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
                   style={{ height: '32px', borderColor: 'var(--foreground)', color: 'var(--foreground)', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
                 >
-                  Contact
+                  Inquire
                 </div>
               </Link>
             ) : (

@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
+import { rateLimit, getIp } from '@/lib/rate-limit'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 const SIGNED_URL_TTL = 300 // 5 minutes — enough time to trigger a browser download
@@ -20,10 +21,25 @@ function storagePathFromUrl(url: string): string | null {
 }
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   ctx: { params: Promise<{ token: string }> }
 ) {
+  // 10 attempts per IP per minute — tokens are 256-bit so guessing is impossible,
+  // but rate-limiting prevents DoS and log flooding.
+  if (!rateLimit(getIp(req), 10, 60_000)) {
+    return new Response('Too many requests', { status: 429 })
+  }
+
   const { token } = await ctx.params
+
+  // Tokens are 64-char hex strings — reject anything else before touching the DB
+  if (!/^[0-9a-f]{64}$/.test(token)) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: `${SITE_URL}/download-invalid` },
+    })
+  }
+
   const supabase = createAdminClient()
 
   // Look up the download record

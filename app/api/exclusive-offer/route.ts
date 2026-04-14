@@ -16,9 +16,10 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    const emailRegex = /^[^\s@\r\n]+@[^\s@\r\n]+\.[^\s@\r\n]+$/
     if (
       typeof artistName !== 'string' || artistName.length > 100 ||
-      typeof email !== 'string' || email.length > 254 || !email.includes('@') ||
+      typeof email !== 'string' || email.length > 254 || !emailRegex.test(email) ||
       typeof offerPrice !== 'number' || offerPrice < 1 || offerPrice > 100000 ||
       (message && (typeof message !== 'string' || message.length > 1000))
     ) {

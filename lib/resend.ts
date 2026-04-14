@@ -110,7 +110,7 @@ export async function sendExclusiveOfferEmail({
   const siteUrl = getSiteUrl()
   await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
-    to: 'kjbeats6@gmail.com',
+    to: getToAdmin(),
     replyTo: email,
     subject: `Exclusive Offer: $${offerPrice} for "${beatTitle}" — ${artistName}`,
     html: `

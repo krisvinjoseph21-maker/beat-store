@@ -70,6 +70,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             <button
               onClick={() => addBeat(beat)}
               disabled={inCart}
+              aria-label={inCart ? `${beat.title} — added to cart` : `Add ${beat.title} to cart`}
               className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-all ${
                 inCart
                   ? 'bg-white/[0.06] text-[var(--muted-low)] cursor-default px-4 py-2'
