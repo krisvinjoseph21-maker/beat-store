@@ -352,15 +352,28 @@ export default function AdminClient() {
     file: File,
     type: 'full' | 'preview' | 'cover' | 'stems'
   ): Promise<{ path: string; url?: string }> {
-    const fd = new FormData()
-    fd.append('file', file)
-    fd.append('type', type)
-    const res = await fetch('/api/admin/upload', {
-      method: 'POST',
+    // Step 1 — get a pre-signed Supabase upload URL (tiny request, no file body).
+    const params = new URLSearchParams({ type, filename: file.name })
+    const signRes = await fetch(`/api/admin/upload?${params}`, {
       headers: { 'x-admin-password': password },
-      body: fd,
     })
-    return res.json()
+    if (!signRes.ok) {
+      const err = await signRes.json().catch(() => ({}))
+      throw new Error(err.error ?? `Server error ${signRes.status}`)
+    }
+    const { signedUrl, path, publicUrl } = await signRes.json()
+
+    // Step 2 — upload directly to Supabase (browser → Supabase, bypasses Vercel size limits).
+    const uploadRes = await fetch(signedUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    })
+    if (!uploadRes.ok) {
+      throw new Error(`Storage upload failed (${uploadRes.status})`)
+    }
+
+    return { path, url: publicUrl }
   }
 
   async function handleBeatFile(file: File) {

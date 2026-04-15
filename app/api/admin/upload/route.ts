@@ -5,6 +5,70 @@ import { createAdminClient } from '@/lib/supabase-admin'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
+const VALID_TYPES = ['full', 'preview', 'cover', 'stems'] as const
+type UploadType = typeof VALID_TYPES[number]
+
+// Strip everything except safe characters to prevent path traversal.
+// Returns { safeName, ext } ready to compose into a storage path.
+function sanitiseFilename(rawName: string): { safeName: string; ext: string } {
+  const dotIdx = rawName.lastIndexOf('.')
+  const ext = dotIdx >= 0
+    ? rawName.slice(dotIdx).replace(/[^a-z0-9.]/gi, '').toLowerCase()
+    : ''
+  const base = rawName
+    .slice(0, dotIdx >= 0 ? dotIdx : rawName.length)
+    .replace(/[^a-z0-9_-]/gi, '_')
+    .slice(0, 80)
+  return { safeName: base || 'file', ext }
+}
+
+// ── GET — return a pre-signed upload URL ────────────────────────────────────
+// Files are uploaded directly from the browser to Supabase storage,
+// bypassing Next.js/Vercel entirely (no 4.5 MB body limit).
+export async function GET(req: NextRequest) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/upload'), 20, 60_000)) {
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  }
+  if (!(await checkAdminAuth())) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const type = req.nextUrl.searchParams.get('type') as UploadType | null
+  const filename = req.nextUrl.searchParams.get('filename') ?? ''
+
+  if (!type || !VALID_TYPES.includes(type)) {
+    return Response.json({ error: 'Invalid upload type' }, { status: 400 })
+  }
+  if (!filename) {
+    return Response.json({ error: 'filename is required' }, { status: 400 })
+  }
+
+  const { safeName, ext } = sanitiseFilename(filename)
+  const path = `${type}/${Date.now()}-${safeName}${ext}`
+
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.storage
+    .from('beats')
+    .createSignedUploadUrl(path)
+
+  if (error) {
+    console.error('[upload/signed-url]', error)
+    return Response.json({ error: 'Failed to create upload URL' }, { status: 500 })
+  }
+
+  // Pre-calculate public URL for preview and cover assets.
+  // Full beat files and stems are private — never expose their public URLs.
+  let publicUrl: string | undefined
+  if (type === 'preview' || type === 'cover') {
+    const { data: urlData } = supabase.storage.from('beats').getPublicUrl(path)
+    publicUrl = urlData.publicUrl
+  }
+
+  return Response.json({ signedUrl: data.signedUrl, path, publicUrl })
+}
+
+// ── POST — kept for backward compat; validates MIME and proxies to storage ──
+// Only used as a fallback. Prefer the GET → direct-upload flow.
 export async function POST(req: NextRequest) {
   if (!rateLimit(getRateLimitKey(req, '/api/admin/upload'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
@@ -16,17 +80,20 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File | null
-    const type = (formData.get('type') as string) ?? 'full' // 'full' | 'preview' | 'cover' | 'stems'
+    const type = (formData.get('type') as string) ?? 'full'
 
     if (!file) {
       return Response.json({ error: 'No file provided' }, { status: 400 })
     }
 
     const VALID_MIMES: Record<string, string[]> = {
-      full:    ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/x-wav', 'audio/wave'],
-      preview: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/x-wav', 'audio/wave'],
+      full:    ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
+                'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
+      preview: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
+                'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
       cover:   ['image/jpeg', 'image/png', 'image/webp'],
-      stems:   ['application/zip', 'application/x-zip-compressed', 'application/x-zip'],
+      stems:   ['application/zip', 'application/x-zip-compressed',
+                'application/x-zip', 'application/octet-stream'],
     }
     const allowedMimes = VALID_MIMES[type]
     if (!allowedMimes) {
@@ -37,20 +104,12 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createAdminClient()
-    const bucket = 'beats'
-    // Strip everything except safe characters to prevent path traversal.
-    // Keep only the original extension (single dot allowed).
-    const rawName = file.name
-    const ext = rawName.includes('.') ? rawName.slice(rawName.lastIndexOf('.')).replace(/[^a-z0-9.]/gi, '') : ''
-    const safeName = rawName
-      .slice(0, rawName.lastIndexOf('.') >= 0 ? rawName.lastIndexOf('.') : rawName.length)
-      .replace(/[^a-z0-9_-]/gi, '_')
-      .slice(0, 80)
+    const { safeName, ext } = sanitiseFilename(file.name)
     const path = `${type}/${Date.now()}-${safeName}${ext}`
 
     const arrayBuffer = await file.arrayBuffer()
     const { data, error } = await supabase.storage
-      .from(bucket)
+      .from('beats')
       .upload(path, arrayBuffer, {
         contentType: file.type || (type === 'cover' ? 'image/jpeg' : type === 'stems' ? 'application/zip' : 'audio/mpeg'),
         upsert: false,
@@ -61,10 +120,8 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'Upload failed' }, { status: 500 })
     }
 
-    // Preview and cover files are safe to expose as public URLs.
-    // Full beat files must NEVER be exposed publicly.
     if (type === 'preview' || type === 'cover') {
-      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(data.path)
+      const { data: urlData } = supabase.storage.from('beats').getPublicUrl(data.path)
       return Response.json({ url: urlData.publicUrl, path: data.path })
     }
 
