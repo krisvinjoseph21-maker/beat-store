@@ -195,7 +195,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         />
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
-          className={`flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-all flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-surface-1'}`}
+          aria-pressed={favoritesOnly}
+          className={`flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-surface-1'}`}
           style={{
             borderColor: favoritesOnly ? 'var(--danger)' : 'var(--line-input)',
             color: favoritesOnly ? 'var(--danger)' : 'var(--muted-low)',
@@ -251,9 +252,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setShowAll(true)}
-                aria-expanded={false}
+                aria-expanded={showAll}
                 aria-label={`Browse all tracks — ${filtered.length - 10} more`}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-[border-color,background-color,transform] active:scale-95"
               >
                 Browse All Tracks ({filtered.length - 10} more)
               </button>

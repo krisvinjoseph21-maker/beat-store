@@ -56,37 +56,54 @@ export default function BottomPlayer() {
 
   // ── Canvas spectrum visualizer ──────────────────────────────────────────
   useEffect(() => {
-    const canvas = playerCanvasRef.current
-    if (!canvas) return
-
     const dpr = window.devicePixelRatio || 1
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     // Reusable FFT data buffer — never allocate inside the hot path
     let fftData: Uint8Array<ArrayBuffer> | null = null
-
-    function resize() {
-      if (!canvas) return
-      const w = canvas.offsetWidth
-      const h = canvas.offsetHeight
-      if (w === 0 || h === 0) return
-      canvas.width  = Math.round(w * dpr)
-      canvas.height = Math.round(h * dpr)
-    }
-
-    const ro = new ResizeObserver(resize)
-    ro.observe(canvas)
-    resize()
+    // ResizeObserver attached lazily once the canvas mounts
+    let ro: ResizeObserver | null = null
+    let observedCanvas: HTMLCanvasElement | null = null
 
     function draw() {
-      const ctx = canvas!.getContext('2d')
-      if (!ctx || canvas!.width === 0) {
+      // Poll the ref on every frame — canvas is conditionally rendered so it
+      // may be null on mount and only appear after a beat is loaded.
+      const canvas = playerCanvasRef.current
+
+      if (!canvas) {
         playerRafRef.current = requestAnimationFrame(draw)
         return
       }
 
-      const W = canvas!.width
-      const H = canvas!.height
+      // Attach ResizeObserver the first time the canvas appears in the DOM
+      if (observedCanvas !== canvas) {
+        ro?.disconnect()
+        observedCanvas = canvas
+        ro = new ResizeObserver(() => {
+          const w = canvas.offsetWidth
+          const h = canvas.offsetHeight
+          if (w > 0 && h > 0) {
+            canvas.width  = Math.round(w * dpr)
+            canvas.height = Math.round(h * dpr)
+          }
+        })
+        ro.observe(canvas)
+        const w = canvas.offsetWidth
+        const h = canvas.offsetHeight
+        if (w > 0 && h > 0) {
+          canvas.width  = Math.round(w * dpr)
+          canvas.height = Math.round(h * dpr)
+        }
+      }
+
+      const ctx = canvas.getContext('2d')
+      if (!ctx || canvas.width === 0) {
+        playerRafRef.current = requestAnimationFrame(draw)
+        return
+      }
+
+      const W = canvas.width
+      const H = canvas.height
 
       ctx.clearRect(0, 0, W, H)
 
@@ -181,7 +198,7 @@ export default function BottomPlayer() {
 
     return () => {
       cancelAnimationFrame(playerRafRef.current)
-      ro.disconnect()
+      ro?.disconnect()
     }
   }, []) // intentionally empty — all state accessed via refs
 

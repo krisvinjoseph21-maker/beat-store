@@ -121,7 +121,7 @@ export default async function HomePage() {
           <div className="hero-ctas flex items-center justify-center">
             <Link
               href="/store"
-              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
               style={{ padding: '14px 28px', fontFamily: 'var(--font-inter)' }}
             >
               Shop Beats
@@ -232,7 +232,7 @@ export default async function HomePage() {
 
           <Link
             href="/store"
-            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-all hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
             style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
           >
             Shop Beats

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
+import { PRICES } from '@/lib/prices'
 
 export const metadata: Metadata = {
   title: 'Beat Licensing — PRODKJBEATS',
@@ -9,14 +10,14 @@ export const metadata: Metadata = {
 const TIERS = [
   {
     tag: null,
-    name: 'MP3 Lease',
-    price: '$29.99',
+    name: 'Standard Lease',
+    price: `From $${PRICES.standard[1]}`,
     cta: 'Shop Beats',
     href: '/store',
     features: [
-      { label: 'File Format',         value: 'MP3 (320kbps)' },
-      { label: 'Distribution Limit',  value: '10,000 copies' },
-      { label: 'Streaming Limit',     value: '100,000 streams' },
+      { label: 'File Format',         value: 'MP3 + WAV' },
+      { label: 'Streaming Limit',     value: '500,000 streams' },
+      { label: 'Distribution Limit',  value: '25,000 copies' },
       { label: 'Music Videos',        value: '1 music video' },
       { label: 'Radio Broadcasting',  value: 'Up to 2 stations' },
       { label: 'Monetization',        value: 'YouTube monetization' },
@@ -27,34 +28,15 @@ const TIERS = [
     ],
   },
   {
-    tag: null,
-    name: 'WAV Lease',
-    price: '$74.99',
-    cta: 'Shop Beats',
-    href: '/store',
-    features: [
-      { label: 'File Format',         value: 'WAV (24-bit)' },
-      { label: 'Distribution Limit',  value: '25,000 copies' },
-      { label: 'Streaming Limit',     value: '500,000 streams' },
-      { label: 'Music Videos',        value: '1 music video' },
-      { label: 'Radio Broadcasting',  value: 'Up to 5 stations' },
-      { label: 'Monetization',        value: 'YouTube monetization' },
-      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
-      { label: 'Ownership',           value: 'Non-exclusive' },
-      { label: 'For Sale',            value: '✓' },
-      { label: 'Live Performances',   value: 'Unlimited' },
-    ],
-  },
-  {
     tag: 'Most Popular',
-    name: 'Stems License',
-    price: '$149.99',
+    name: 'Unlimited Lease',
+    price: `From $${PRICES.unlimited[1]}`,
     cta: 'Shop Beats',
     href: '/store',
     features: [
-      { label: 'File Format',         value: 'WAV Trackout Stems' },
-      { label: 'Distribution Limit',  value: '75,000 copies' },
-      { label: 'Streaming Limit',     value: '1,500,000 streams' },
+      { label: 'File Format',         value: 'MP3 + WAV + Stems' },
+      { label: 'Streaming Limit',     value: 'Unlimited' },
+      { label: 'Distribution Limit',  value: 'Unlimited' },
       { label: 'Music Videos',        value: 'Unlimited' },
       { label: 'Radio Broadcasting',  value: 'Unlimited' },
       { label: 'Monetization',        value: 'Full monetization' },
@@ -72,8 +54,8 @@ const TIERS = [
     href: '/about',
     features: [
       { label: 'File Format',         value: 'WAV + Stems + MP3' },
-      { label: 'Distribution Limit',  value: 'Unlimited' },
       { label: 'Streaming Limit',     value: 'Unlimited' },
+      { label: 'Distribution Limit',  value: 'Unlimited' },
       { label: 'Music Videos',        value: 'Unlimited' },
       { label: 'Radio Broadcasting',  value: 'Unlimited' },
       { label: 'Monetization',        value: 'Full monetization' },
@@ -112,7 +94,7 @@ export default function LicensingPage() {
       {/* Tier grid */}
       <div className="flex justify-center w-full">
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
@@ -136,7 +118,7 @@ export default function LicensingPage() {
                 {/* CTA */}
                 <Link
                   href={tier.href}
-                  className={`inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[12px] font-semibold transition-all active:scale-95 ${
+                  className={`inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[12px] font-semibold transition-[background-color,border-color,color,transform] active:scale-95 ${
                     tier.tag
                       ? 'bg-white text-black hover:bg-white-hover'
                       : 'border border-white/[0.1] text-muted hover:border-white/25 hover:text-foreground'
@@ -150,8 +132,9 @@ export default function LicensingPage() {
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
                       <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-low">{label}</span>
-                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-accent' : 'text-muted-mid'}`}>
-                        {value === '✓' ? <Check size={13} className="text-accent" /> : value}
+                      <span className={`text-[12px] font-medium ${value === '✓' ? 'text-accent' : 'text-muted-mid'}`}
+                        aria-label={value === '✓' ? 'Yes' : undefined}>
+                        {value === '✓' ? <Check size={13} className="text-accent" aria-hidden="true" /> : value}
                       </span>
                     </div>
                   ))}

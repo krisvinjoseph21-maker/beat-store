@@ -206,7 +206,7 @@ export default function ServicesClient() {
                 </p>
                 <button
                   onClick={closeModal}
-                  className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:text-white transition-colors"
+                  className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
                 >
                   Close
                 </button>
@@ -221,9 +221,10 @@ export default function ServicesClient() {
                     id="services-artist-name"
                     required
                     type="text"
+                    autoComplete="name"
                     value={form.artistName}
                     onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))}
-                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                     placeholder="Your artist name"
                   />
                 </div>
@@ -235,9 +236,10 @@ export default function ServicesClient() {
                     id="services-email"
                     required
                     type="email"
+                    autoComplete="email"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -262,7 +264,7 @@ export default function ServicesClient() {
                     rows={6}
                     value={form.projectDetails}
                     onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))}
-                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
+                    className="w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
                     placeholder="Tell me about your project, references, timeline…"
                   />
                 </div>

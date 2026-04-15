@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/lib/store'
 import CartDrawer from './CartDrawer'
@@ -18,6 +18,7 @@ export default function Navbar() {
   const { items, cartOpen, openCart, closeCart } = useCartStore()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled]     = useState(false)
+  const menuTriggerRef = useRef<HTMLButtonElement>(null)
   const [cartAnnouncement, setCartAnnouncement] = useState('')
   const pathname = usePathname()
 
@@ -35,7 +36,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-[100] transition-[background,border-color,backdrop-filter] duration-300 ${
           scrolled ? 'glass border-b border-white/[0.06]' : 'bg-transparent'
         }`}
         style={{
@@ -91,7 +92,7 @@ export default function Navbar() {
 
             <Link
               href="/store"
-              className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-all hover:bg-white-hover active:scale-95"
+              className="inline-flex items-center justify-center rounded-full bg-white text-black text-[12px] font-semibold transition-[background-color,transform] hover:bg-white-hover active:scale-95"
               style={{ padding: '8px 16px' }}
             >
               Shop Beats
@@ -113,15 +114,16 @@ export default function Navbar() {
               Cart
             </button>
             <button
+              ref={menuTriggerRef}
               onClick={() => setMobileOpen(o => !o)}
               className="flex h-11 w-11 flex-col items-center justify-center gap-[4.5px]"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav-menu"
             >
-              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
-              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
-              <span className={`block w-[18px] bg-foreground transition-all duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-[transform,opacity] duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-[transform,opacity] duration-200 ${mobileOpen ? 'opacity-0' : ''}`} style={{ height: '1px' }} />
+              <span className={`block w-[18px] bg-foreground transition-[transform,opacity] duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} style={{ height: '1px' }} />
             </button>
           </div>
         </div>
@@ -130,7 +132,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         id="mobile-nav-menu"
-        className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-all duration-300 ${
+        className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-[opacity] duration-300 ${
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!mobileOpen}
@@ -140,7 +142,10 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              onClick={() => setMobileOpen(false)}
+              onClick={() => {
+                setMobileOpen(false)
+                menuTriggerRef.current?.focus()
+              }}
               className="py-3 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.05] last:border-0 animate-menu-item-in"
               style={{ animationDelay: `${idx * 55}ms` }}
             >

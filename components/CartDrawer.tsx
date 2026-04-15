@@ -157,7 +157,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               <button
                 onClick={() => setLicenseOpen(true)}
                 disabled={loading}
-                className="w-full rounded bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded bg-white py-3.5 text-[13px] font-semibold text-black hover:bg-white-hover transition-[background-color,transform,opacity] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>

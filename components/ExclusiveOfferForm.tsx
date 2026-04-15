@@ -50,7 +50,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
         <div className="flex items-center gap-2.5">
           <Crown size={15} className="text-accent flex-shrink-0" />
           <div>
-            <p className="text-sm font-bold text-white">Make an Exclusive Offer</p>
+            <p className="text-sm font-bold text-foreground">Make an Exclusive Offer</p>
             <p className="text-xs text-muted">Own the full rights — beat removed from store</p>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
             <div className="text-center py-4">
               <p className="text-accent font-semibold text-sm">Offer sent!</p>
               <p className="text-muted text-xs mt-1">
-                We&apos;ll review your offer for <span className="text-white">{beatTitle}</span> and get back to you.
+                We&apos;ll review your offer for <span className="text-foreground">{beatTitle}</span> and get back to you.
               </p>
             </div>
           ) : (
@@ -79,11 +79,12 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                     id="offer-name"
                     required
                     type="text"
+                    autoComplete="name"
                     placeholder="Your name"
                     value={artistName}
                     onChange={(e) => setArtistName(e.target.value)}
                     maxLength={100}
-                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                   />
                 </div>
                 <div>
@@ -92,10 +93,11 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                     id="offer-email"
                     required
                     type="email"
+                    autoComplete="email"
                     placeholder="Your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    className="w-full rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                   />
                 </div>
               </div>
@@ -112,7 +114,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   placeholder="Your offer (e.g. 500)"
                   value={offerPrice}
                   onChange={(e) => setOfferPrice(e.target.value)}
-                  className="w-full rounded-sm border border-line-input bg-surface-1 pl-7 pr-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  className="w-full rounded-sm border border-line-input bg-surface-1 pl-7 pr-3 py-2.5 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 
@@ -125,7 +127,7 @@ export default function ExclusiveOfferForm({ beatId, beatTitle }: { beatId: stri
                   onChange={(e) => setMessage(e.target.value)}
                   maxLength={1000}
                   rows={2}
-                  className="w-full resize-none rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+                  className="w-full resize-none rounded-sm border border-line-input bg-surface-1 px-3 py-2.5 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
                 />
               </div>
 

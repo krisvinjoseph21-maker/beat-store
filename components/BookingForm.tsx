@@ -76,9 +76,9 @@ export default function BookingForm() {
   }
 
   const inputClass =
-    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors'
+    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors'
   const selectClass =
-    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white outline-none focus:border-muted transition-colors appearance-none'
+    'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground outline-none focus:border-muted transition-colors appearance-none'
   const labelClass = 'block text-sm font-semibold text-foreground mb-2 cursor-pointer'
 
   if (sent) {
@@ -89,7 +89,7 @@ export default function BookingForm() {
         </div>
         <p className="font-display text-4xl uppercase text-foreground leading-none">Request Received.</p>
         <p className="mt-3 text-sm text-muted-mid max-w-sm mx-auto">
-          A confirmation has been sent to <span className="text-white">{form.email}</span>.
+          A confirmation has been sent to <span className="text-foreground">{form.email}</span>.
           I&apos;ll be in touch within 24–48 hours.
         </p>
         <button
@@ -112,6 +112,7 @@ export default function BookingForm() {
             id="booking-artist-name"
             required
             type="text"
+            autoComplete="name"
             placeholder="Your artist name"
             value={form.artistName}
             onChange={set('artistName')}
@@ -125,6 +126,7 @@ export default function BookingForm() {
             id="booking-email"
             required
             type="email"
+            autoComplete="email"
             placeholder="your@email.com"
             value={form.email}
             onChange={set('email')}
@@ -209,7 +211,7 @@ export default function BookingForm() {
           value={form.referenceTracks}
           onChange={set('referenceTracks')}
           maxLength={2000}
-          className="w-full resize-none rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-white placeholder-muted-low outline-none focus:border-muted transition-colors"
+          className="w-full resize-none rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
         />
       </div>
 

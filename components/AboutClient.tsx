@@ -57,6 +57,7 @@ export default function ContactForm() {
             id="c-name"
             required
             type="text"
+            autoComplete="name"
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             className={inputClass}
@@ -69,6 +70,7 @@ export default function ContactForm() {
             id="c-email"
             required
             type="email"
+            autoComplete="email"
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             className={inputClass}

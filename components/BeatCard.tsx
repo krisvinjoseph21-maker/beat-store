@@ -6,6 +6,7 @@ import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/sto
 import ShareButton from './ShareButton'
 import WaveformVisualizer from './WaveformVisualizer'
 import Link from 'next/link'
+import { PRICES } from '@/lib/prices'
 
 interface Props {
   beat: Beat
@@ -116,7 +117,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
             onClick={handlePlay}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
-            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-all duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
+            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-[background-color,transform,opacity] duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{ width: '44px', height: '44px' }}
           >
             {isThisPlaying
@@ -187,7 +188,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); openCart() }}
                 aria-label={`${beat.title} — already in cart, click to view cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-80 shrink-0"
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
                 style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
               >
                 <Check
@@ -202,11 +203,11 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={() => setLicenseOpen(o => !o)}
                 aria-label={`Add ${beat.title} to cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-all hover:opacity-90 shrink-0"
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
                 style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
               >
                 <ShoppingCart size={12} aria-hidden="true" />
-                $34.99
+                From ${PRICES.standard[1]}
               </button>
             )}
 
@@ -234,7 +235,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true">
           {!isThisActive && (
             <div
-              className="absolute left-0 top-0 h-full transition-all duration-100 ease-linear"
+              className="absolute left-0 top-0 h-full transition-[width] duration-100 ease-linear"
               style={{ width: `${progressPct}%`, background: 'rgba(255,255,255,0.3)' }}
             />
           )}
@@ -253,7 +254,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 key={i}
                 href="/about"
                 aria-label="Inquire about exclusive license — opens contact page"
-                className="bg-surface-1 border border-line flex flex-col hover:border-line-input hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
+                className="bg-surface-1 border border-line flex flex-col hover:border-line-input hover:-translate-y-0.5 transition-[border-color,transform] duration-200 min-h-[145px]"
                 style={{ padding: '14px 16px' }}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -277,7 +278,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 key={i}
                 onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
-                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input hover:-translate-y-0.5 transition-all duration-200 min-h-[145px]"
+                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input hover:-translate-y-0.5 transition-[border-color,transform] duration-200 min-h-[145px]"
                 style={{ padding: '14px 16px' }}
               >
                 <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>

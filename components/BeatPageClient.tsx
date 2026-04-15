@@ -24,7 +24,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
     <div className="mx-auto w-full max-w-2xl px-4 py-12">
       <Link
         href="/store"
-        className="mb-8 inline-flex items-center gap-1.5 text-xs text-muted hover:text-white transition-colors"
+        className="mb-8 inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors"
       >
         <ArrowLeft size={13} /> Back to Store
       </Link>
@@ -32,7 +32,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
       <div className="rounded-sm border border-line bg-surface-2 overflow-hidden">
         {/* Artwork banner */}
         <div className={`${genreBg} h-40 flex items-center justify-center select-none`}>
-          <span className="text-4xl font-black text-white/20 uppercase tracking-widest">
+          <span className="text-4xl font-black text-foreground/20 uppercase tracking-widest">
             {beat.genre}
           </span>
         </div>
@@ -40,7 +40,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
         <div className="p-6">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-black text-white leading-tight">{beat.title}</h1>
+              <h1 className="text-2xl font-black text-foreground leading-tight">{beat.title}</h1>
               <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted">
                 <span>{beat.bpm} BPM</span>
                 <span>·</span>
@@ -66,6 +66,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
+              aria-label={isThisPlaying ? 'Pause preview' : 'Play preview'}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               {isThisPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}

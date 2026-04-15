@@ -4,6 +4,7 @@ import { Play, Pause, ShoppingCart, Check } from 'lucide-react'
 import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
 import ShareButton from './ShareButton'
 import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
+import { PRICES } from '@/lib/prices'
 
 export default function FeaturedTrack({ beat }: { beat: Beat }) {
   const { currentBeat, isPlaying, setCurrentBeat, togglePlay } = usePlayerStore()
@@ -56,7 +57,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             <button
               onClick={handlePlay}
               disabled={!beat.preview_url}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-[background-color,transform] disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
               aria-label={isThisPlaying ? 'Pause' : 'Play'}
             >
               {isThisPlaying
@@ -68,15 +69,15 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
               onClick={() => addBeat(beat)}
               disabled={inCart}
               aria-label={inCart ? `${beat.title} — added to cart` : `Add ${beat.title} to cart`}
-              className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-full text-[12px] font-semibold transition-[background-color,color] ${
                 inCart
                   ? 'bg-white/[0.06] text-[var(--muted-low)] cursor-default px-4 py-2'
-                  : 'bg-white text-black hover:bg-white-hover hover:scale-105 px-4 py-2'
+                  : 'bg-white text-black hover:bg-white-hover px-4 py-2'
               }`}
             >
               {inCart
-                ? <><Check size={13} /> Added</>
-                : <><ShoppingCart size={13} /> Add to Cart — $34.99</>}
+                ? <><Check size={13} aria-hidden="true" /> Added</>
+                : <><ShoppingCart size={13} aria-hidden="true" /> Add to Cart — From ${PRICES.standard[1]}</>}
             </button>
 
             <div className="ml-auto">

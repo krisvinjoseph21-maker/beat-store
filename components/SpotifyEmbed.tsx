@@ -31,6 +31,7 @@ export default function SpotifyEmbed({ trackId }: { trackId: string }) {
           height="80"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
+          title="Spotify track preview"
           className="rounded"
         />
       )}

@@ -67,7 +67,7 @@ export default function AuthClient() {
             key={t}
             type="button"
             onClick={() => switchTab(t)}
-            className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
+            className={`flex-1 rounded-md py-2 text-sm font-semibold transition-[background-color,color] ${
               tab === t ? 'bg-white text-black' : 'text-muted-mid hover:text-white'
             }`}
           >
