@@ -2,7 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 const SIGNED_URL_TTL = 300 // 5 minutes — enough time to trigger a browser download
@@ -28,7 +28,7 @@ export async function GET(
 ) {
   // 10 attempts per IP per minute — tokens are 256-bit so guessing is impossible,
   // but rate-limiting prevents DoS and log flooding.
-  if (!rateLimit(getIp(req), 10, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/download'), 10, 60_000)) {
     return new Response('Too many requests', { status: 429 })
   }
 

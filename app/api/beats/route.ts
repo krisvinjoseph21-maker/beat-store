@@ -3,10 +3,10 @@ export const runtime = 'edge'
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { validateEnv } from '@/lib/env'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getIp(req), 30, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/beats'), 30, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   validateEnv()

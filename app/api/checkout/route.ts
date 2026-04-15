@@ -4,14 +4,14 @@ import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'
 import type { LicenseType, QuantityTier } from '@/lib/stripe'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
 export async function POST(req: NextRequest) {
-  if (!rateLimit(getIp(req), 10, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/checkout'), 10, 60_000)) {
     return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
   }
 

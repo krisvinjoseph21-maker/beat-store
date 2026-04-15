@@ -2,12 +2,12 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
 // GET — list all beats (including inactive)
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {
@@ -79,7 +79,7 @@ function sanitizeBeatBody(body: Record<string, unknown>) {
 
 // POST — create a new beat
 export async function POST(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {
@@ -109,7 +109,7 @@ function storagePathFromUrl(url: string): string | null {
 
 // DELETE — permanently remove a beat and its storage files
 export async function DELETE(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {
@@ -157,7 +157,7 @@ export async function DELETE(req: NextRequest) {
 
 // PATCH — update beat (toggle active, edit metadata)
 export async function PATCH(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {

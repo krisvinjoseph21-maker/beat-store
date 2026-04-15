@@ -3,14 +3,14 @@ export const runtime = 'nodejs'
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { randomBytes } from 'crypto'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
 export async function POST(req: NextRequest) {
   // Rate-limit before any DB work
-  if (!rateLimit(getIp(req), 5, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/purchases'), 5, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
 

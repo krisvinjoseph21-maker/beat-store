@@ -5,7 +5,7 @@ import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { sendDownloadEmail } from '@/lib/resend'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import crypto from 'crypto'
 
 // Maximum webhook body size: 1 MB. Stripe payloads are tiny (<10 KB);
@@ -15,7 +15,7 @@ const MAX_BODY_BYTES = 1_048_576
 export async function POST(req: NextRequest) {
   // Rate-limit: Stripe retries are legitimate, but unlimited flooding is not.
   // 120/min is generous for real Stripe traffic on a single IP.
-  if (!rateLimit(getIp(req), 120, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/webhook'), 120, 60_000)) {
     return new Response('Too many requests', { status: 429 })
   }
 

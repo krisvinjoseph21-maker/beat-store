@@ -2,13 +2,13 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 import type { PromoConfig } from '@/lib/promos'
 
 // GET — return current promo config
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/promos'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
 // PATCH — update promo config
 export async function PATCH(req: NextRequest) {
-  if (!rateLimit(getIp(req), 20, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/admin/promos'), 20, 60_000)) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   if (!(await checkAdminAuth())) {

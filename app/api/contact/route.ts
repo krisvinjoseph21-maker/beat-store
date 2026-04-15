@@ -1,11 +1,11 @@
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { sendContactEmail } from '@/lib/resend'
-import { rateLimit, getIp } from '@/lib/rate-limit'
+import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
-  if (!rateLimit(getIp(req), 5, 60_000)) {
+  if (!rateLimit(getRateLimitKey(req, '/api/contact'), 5, 60_000)) {
     return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
   }
 
