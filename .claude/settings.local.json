@@ -12,7 +12,8 @@
       "Bash(node:*)",
       "Bash(ls /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app/*.tsx)",
       "Bash(wc -l /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components/*.tsx)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
     ]
   }
 }

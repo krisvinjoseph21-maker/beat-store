@@ -6,7 +6,7 @@ import { createAdminClient } from '@/lib/supabase-admin'
 import type { Beat } from '@/lib/store'
 import SpotifyEmbed from '@/components/SpotifyEmbed'
 import FeaturedTrack from '@/components/FeaturedTrack'
-import HeroMouseGlow from '@/components/HeroMouseGlow'
+import HeroShader from '@/components/HeroShader'
 import HeadlineParallax from '@/components/HeadlineParallax'
 import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
@@ -73,8 +73,8 @@ export default async function HomePage() {
         {/* Top edge line */}
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent z-10" />
 
-        {/* Mouse glow */}
-        <HeroMouseGlow />
+        {/* WebGL shader — volumetric smoke + mouse-driven amber light */}
+        <HeroShader />
 
         {/* Hero content */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">

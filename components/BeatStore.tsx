@@ -6,6 +6,7 @@ import BeatCard from './BeatCard'
 import LicenseModal from './LicenseModal'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
 import { Search, ChevronDown, Heart } from 'lucide-react'
+import StoreAmbient from './StoreAmbient'
 
 const BPM_RANGES = [
   { label: 'All BPM', min: 0, max: Infinity },
@@ -220,7 +221,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         </div>
       ) : (
         <>
-          <div className="border border-line">
+          <div className="relative border border-line overflow-hidden">
+            {/* Audio-reactive ambient light layer */}
+            <StoreAmbient />
             {/* Table header */}
             <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
               <span className="w-6 flex-shrink-0" />

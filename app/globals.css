@@ -365,6 +365,16 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 }
 .animate-spin { animation: spin 0.7s linear infinite; }
 
+/* ── Playing accent bar pulse ─────────────────── */
+@keyframes accentPulse {
+  0%, 100% { opacity: 1;   transform: scaleY(1);    }
+  50%       { opacity: 0.5; transform: scaleY(0.88); }
+}
+.accent-bar-playing {
+  animation: accentPulse 0.72s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-origin: center;
+}
+
 /* ── Success pop ──────────────────────────────── */
 @keyframes successPop {
   0%   { transform: scale(0.5); opacity: 0; }

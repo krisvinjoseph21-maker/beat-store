@@ -92,7 +92,10 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         />
 
         {isThisActive && (
-          <div className="absolute left-0 top-0 bottom-0 w-[3px] z-10 pointer-events-none" style={{ background: 'var(--accent)' }} />
+          <div
+            className={`absolute left-0 top-0 bottom-0 w-[3px] z-10 pointer-events-none${isThisPlaying ? ' accent-bar-playing' : ''}`}
+            style={{ background: 'var(--accent)' }}
+          />
         )}
 
         {/* Frequency visualiser — absolutely positioned at row bottom */}
