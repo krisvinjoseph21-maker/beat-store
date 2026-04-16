@@ -2,18 +2,14 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 import type { PromoConfig } from '@/lib/promos'
 
 // GET — return current promo config
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/promos'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('promos')
@@ -30,12 +26,9 @@ export async function GET(req: NextRequest) {
 
 // PATCH — update promo config
 export async function PATCH(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/promos'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const body = (await req.json()) as Partial<PromoConfig>

@@ -2,7 +2,6 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
 const VALID_TYPES = ['full', 'preview', 'cover', 'stems'] as const
@@ -26,12 +25,9 @@ function sanitiseFilename(rawName: string): { safeName: string; ext: string } {
 // Files are uploaded directly from the browser to Supabase storage,
 // bypassing Next.js/Vercel entirely (no 4.5 MB body limit).
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/upload'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   const type = req.nextUrl.searchParams.get('type') as UploadType | null
   const filename = req.nextUrl.searchParams.get('filename') ?? ''
@@ -70,12 +66,9 @@ export async function GET(req: NextRequest) {
 // ── POST — kept for backward compat; validates MIME and proxies to storage ──
 // Only used as a fallback. Prefer the GET → direct-upload flow.
 export async function POST(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/upload'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const formData = await req.formData()

@@ -4,6 +4,7 @@
  * Example: DISCOUNT_CODES=SAVE10:10,VIP25:25,NEWARTIST:20
  *
  * This keeps codes out of source code so they can't be seen on GitHub.
+ * Parsed once at module load time — not on every request.
  */
 function loadCodes(): Record<string, number> {
   const raw = process.env.DISCOUNT_CODES ?? ''
@@ -21,9 +22,11 @@ function loadCodes(): Record<string, number> {
   return result
 }
 
+/* Parsed once per server process — avoids re-parsing on every request */
+const CODES = loadCodes()
+
 export function getDiscountPct(code: string): number | null {
-  const codes = loadCodes()
-  return codes[code.trim().toUpperCase()] ?? null
+  return CODES[code.trim().toUpperCase()] ?? null
 }
 
 export function applyDiscount(price: number, pct: number): number {

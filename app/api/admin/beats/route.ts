@@ -2,17 +2,13 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
 // GET — list all beats (including inactive)
 export async function GET(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('beats')
@@ -79,12 +75,9 @@ function sanitizeBeatBody(body: Record<string, unknown>) {
 
 // POST — create a new beat
 export async function POST(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const body = await req.json()
     const result = sanitizeBeatBody(body)
@@ -109,12 +102,9 @@ function storagePathFromUrl(url: string): string | null {
 
 // DELETE — permanently remove a beat and its storage files
 export async function DELETE(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { id } = await req.json()
     if (!id) return Response.json({ error: 'Missing id' }, { status: 400 })
@@ -157,12 +147,9 @@ export async function DELETE(req: NextRequest) {
 
 // PATCH — update beat (toggle active, edit metadata)
 export async function PATCH(req: NextRequest) {
-  if (!rateLimit(getRateLimitKey(req, '/api/admin/beats'), 20, 60_000)) {
-    return Response.json({ error: 'Too many requests.' }, { status: 429 })
-  }
-  if (!(await checkAdminAuth())) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await checkAdminAuth(req)
+  if (auth.rateLimited) return Response.json({ error: 'Too many requests.' }, { status: 429 })
+  if (!auth.ok) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const body = await req.json()
     const { id } = body
