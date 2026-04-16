@@ -141,7 +141,7 @@ export default async function HomePage() {
                 >
                   {item}
                 </span>
-                <span className="text-[8px] pr-5 text-[#2d2d30]" aria-hidden="true">✦</span>
+                <span className="text-[8px] pr-5 text-line-hover" aria-hidden="true">✦</span>
               </span>
             ))}
           </div>
@@ -238,7 +238,7 @@ export default async function HomePage() {
             Shop Beats
           </Link>
           <p className="relative mt-5 text-[11px] text-muted-low">
-            From $29.99 · Instant Download · All Licenses Available
+            From $50 · Instant Download · All Licenses Available
           </p>
         </ScrollReveal>
       </section>

@@ -58,6 +58,8 @@ export default function BottomPlayer() {
   useEffect(() => {
     const dpr = window.devicePixelRatio || 1
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Accent color — mirrors --accent (#c8a86a). Single source so a token change only requires updating here.
+    const ACCENT = '200,168,106'
 
     // Reusable FFT data buffer — never allocate inside the hot path
     let fftData: Uint8Array<ArrayBuffer> | null = null
@@ -122,13 +124,13 @@ export default function BottomPlayer() {
       ctx.fillRect(0, 0, W, trackH)
       // Amber fill
       if (cursorX > 0) {
-        ctx.fillStyle = 'rgba(200,168,106,0.9)'
+        ctx.fillStyle = `rgba(${ACCENT},0.9)`
         ctx.fillRect(0, 0, cursorX, trackH)
       }
       // Cursor tick — extends below the track into the bar zone
       if (progressFrac > 0.005 && progressFrac < 0.995) {
         const tickH = Math.round(10 * dpr)
-        ctx.fillStyle = 'rgba(200,168,106,0.85)'
+        ctx.fillStyle = `rgba(${ACCENT},0.85)`
         ctx.fillRect(cursorX - Math.round(0.5 * dpr), trackH, Math.round(1.5 * dpr), tickH)
       }
 
@@ -155,8 +157,8 @@ export default function BottomPlayer() {
         // Subtle glow behind the played region
         if (cursorX > 4) {
           const grad = ctx.createLinearGradient(0, 0, cursorX, 0)
-          grad.addColorStop(0, 'rgba(200,168,106,0)')
-          grad.addColorStop(1, 'rgba(200,168,106,0.04)')
+          grad.addColorStop(0, `rgba(${ACCENT},0)`)
+          grad.addColorStop(1, `rgba(${ACCENT},0.04)`)
           ctx.fillStyle = grad
           ctx.fillRect(0, trackH, cursorX, H - trackH)
         }
@@ -185,7 +187,7 @@ export default function BottomPlayer() {
           const x        = i * STEP
           const isPlayed = x < cursorX
           const alpha    = isPlayed ? 0.2 + v * 0.65 : 0.06 + v * 0.32
-          ctx.fillStyle  = `rgba(200,168,106,${alpha.toFixed(2)})`
+          ctx.fillStyle  = `rgba(${ACCENT},${alpha.toFixed(2)})`
           // Bars cascade downward from the progress track
           ctx.fillRect(x, trackH, BAR_W, barH)
         }
@@ -310,7 +312,9 @@ export default function BottomPlayer() {
         />
 
         {/* Seek scrubber — in its original position, overlaid on the top progress track */}
-        <div className="relative h-px w-full">
+        {/* [&:has(input:focus-visible)] shows an outline on the progress track when keyboard-focused,
+             since the input itself is opacity-0 and its own focus ring is invisible. */}
+        <div className="relative h-px w-full [&:has(input:focus-visible)]:outline [&:has(input:focus-visible)]:outline-2 [&:has(input:focus-visible)]:outline-offset-[6px] [&:has(input:focus-visible)]:outline-white/40 [&:has(input:focus-visible)]:rounded-sm">
           <input
             ref={seekInputRef}
             type="range"
@@ -347,7 +351,7 @@ export default function BottomPlayer() {
               />
             ) : (
               <div className={`h-9 w-9 flex-shrink-0 rounded-lg ${dot} flex items-center justify-center select-none`}>
-                <span className="text-[8px] font-bold text-white/80 uppercase tracking-wider">
+                <span className="text-[8px] font-bold text-foreground/80 uppercase tracking-wider">
                   {genreLabel}
                 </span>
               </div>
@@ -437,8 +441,8 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="hidden sm:block cursor-pointer flex-shrink-0"
-              style={{ width: '60px' }}
+              className="cursor-pointer flex-shrink-0"
+              style={{ width: 'clamp(40px, 8vw, 60px)' }}
               aria-label="Volume"
             />
           </div>

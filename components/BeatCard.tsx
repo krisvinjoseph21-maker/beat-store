@@ -16,10 +16,10 @@ interface Props {
 
 
 const LICENSE_OPTIONS = [
-  { id: 'standard' as const, name: 'MP3 License',  price: '$34.99',  desc: 'Non-exclusive · MP3' },
-  { id: 'standard' as const, name: 'WAV License',  price: '$59.99',  desc: 'Non-exclusive · WAV' },
-  { id: 'unlimited' as const,name: 'Stem License', price: '$99.99',  desc: 'Trackout stems'       },
-  { id: null,                 name: 'Exclusive',    price: '$299.99', desc: 'Full ownership'       },
+  { id: 'standard' as const, name: 'MP3 License',  desc: 'Non-exclusive · MP3' },
+  { id: 'standard' as const, name: 'WAV License',  desc: 'Non-exclusive · WAV' },
+  { id: 'unlimited' as const,name: 'Stem License', desc: 'Trackout stems'       },
+  { id: null,                 name: 'Exclusive',    desc: 'Full ownership'       },
 ]
 
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
@@ -261,10 +261,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: 'var(--foreground)' }}>
-                  {opt.price}
-                </div>
-                <div className="text-[10px] mb-[12px]" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
+                <div className="text-[10px] mb-[12px] flex-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
                   {opt.desc}
                 </div>
                 <div
@@ -284,10 +281,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>
                   {opt.name}
                 </div>
-                <div className="font-display text-[20px] mb-[4px]" style={{ lineHeight: '30px', color: 'var(--foreground)' }}>
-                  {opt.price}
-                </div>
-                <div className="text-[10px] mb-[12px]" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
+                <div className="text-[10px] mb-[12px] flex-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
                   {opt.desc}
                 </div>
                 <div

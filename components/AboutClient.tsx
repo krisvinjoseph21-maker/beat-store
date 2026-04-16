@@ -86,6 +86,7 @@ export default function ContactForm() {
           id="c-subject"
           required
           type="text"
+          autoComplete="off"
           value={form.subject}
           onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
           className={inputClass}
