@@ -46,6 +46,30 @@ const BLANK_BEAT = {
   is_active: true,
 }
 
+interface BatchBeat {
+  id: string
+  file: File
+  preview: File | null
+  generatingPreview: boolean
+  autoPreview: boolean
+  title: string
+  bpm: number
+  key: string
+  uploadStatus: 'pending' | 'uploading' | 'done' | 'error'
+  errorMsg: string
+}
+
+// Parse beat title and key from filename.
+// "Dark Intentions Bm @KJBEATS.wav" → { title: "Dark Intentions", key: "Bm" }
+function parseTitleAndKey(filename: string): { title: string; key: string } {
+  const base = filename.replace(/\.[^.]+$/, '').replace(/@\w+/g, '').trim()
+  const keyMatch = base.match(/\s([A-G][#b]?(?:maj|min|m)?)\s*$/)
+  if (keyMatch) {
+    return { title: base.slice(0, keyMatch.index).trim() || base, key: keyMatch[1] }
+  }
+  return { title: base, key: 'Am' }
+}
+
 // Idle timeout: lock the admin session after 30 minutes of inactivity.
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000
 
@@ -123,6 +147,11 @@ export default function AdminClient() {
   const [droppedCover, setDroppedCover] = useState<File | null>(null)
   const [droppedStems, setDroppedStems] = useState<File | null>(null)
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [batchBeats, setBatchBeats] = useState<BatchBeat[]>([])
+  const [sharedMeta, setSharedMeta] = useState({ genre: 'Trap', subgenre: '', tags: '', bpm: 140, key: 'Am' })
+  const [batchDragOver, setBatchDragOver] = useState(false)
+  const [batchUploading, setBatchUploading] = useState(false)
+  const batchFileRef = useRef<HTMLInputElement>(null)
 
   // Clear the password from memory and force re-login after SESSION_TIMEOUT_MS of inactivity.
   function resetIdleTimer() {
@@ -391,6 +420,72 @@ export default function AdminClient() {
         setGeneratingPreview(false)
       }
     }
+  }
+
+  async function handleBatchFiles(files: File[]) {
+    const newBeats: BatchBeat[] = files.map((f) => {
+      const { title, key } = parseTitleAndKey(f.name)
+      return {
+        id: Math.random().toString(36).slice(2),
+        file: f, preview: null,
+        generatingPreview: false, autoPreview: false,
+        title, bpm: sharedMeta.bpm, key,
+        uploadStatus: 'pending', errorMsg: '',
+      }
+    })
+    setBatchBeats((prev) => [...prev, ...newBeats])
+    for (const b of newBeats) {
+      setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, generatingPreview: true } : x))
+      try {
+        const preview = await trimToPreview(b.file)
+        setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, preview, generatingPreview: false, autoPreview: true } : x))
+      } catch {
+        setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, generatingPreview: false } : x))
+      }
+    }
+  }
+
+  function applySharedToAll(field: 'bpm' | 'key') {
+    setBatchBeats((prev) => prev.map((b) => ({ ...b, [field]: sharedMeta[field] })))
+  }
+
+  async function handleBatchUpload(e: React.FormEvent) {
+    e.preventDefault()
+    const pending = batchBeats.filter((b) => b.uploadStatus === 'pending' || b.uploadStatus === 'error')
+    if (pending.length === 0) return
+    setBatchUploading(true)
+    const tagsArr = sharedMeta.tags.split(',').map((t) => t.trim()).filter(Boolean)
+    for (const beat of pending) {
+      setBatchBeats((prev) => prev.map((x) => x.id === beat.id ? { ...x, uploadStatus: 'uploading', errorMsg: '' } : x))
+      try {
+        const fileResult = await uploadFile(beat.file, 'full')
+        let previewUrl: string | null = null
+        let previewPath: string | null = null
+        if (beat.preview) {
+          const prevResult = await uploadFile(beat.preview, 'preview')
+          previewPath = prevResult.path
+          previewUrl = prevResult.url ?? null
+        }
+        const res = await fetch('/api/admin/beats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+          body: JSON.stringify({
+            title: beat.title, bpm: Number(beat.bpm), key: beat.key,
+            genre: sharedMeta.genre, subgenre: sharedMeta.subgenre, tags: tagsArr,
+            file_url: null, file_path: fileResult.path,
+            preview_url: previewUrl, preview_path: previewPath,
+            cover_url: null, stems_path: null, is_active: true,
+          }),
+        })
+        setBatchBeats((prev) => prev.map((x) => x.id === beat.id
+          ? { ...x, uploadStatus: res.ok ? 'done' : 'error', errorMsg: res.ok ? '' : 'Failed' }
+          : x))
+      } catch {
+        setBatchBeats((prev) => prev.map((x) => x.id === beat.id ? { ...x, uploadStatus: 'error', errorMsg: 'Upload failed' } : x))
+      }
+    }
+    setBatchUploading(false)
+    fetchBeats()
   }
 
   async function handleAddBeat(e: React.FormEvent) {
@@ -877,133 +972,293 @@ export default function AdminClient() {
         </div>
       )}
 
-      {/* Upload/Add Beat tab */}
+      {/* Upload tab */}
       {tab === 'upload' && (
-        <form onSubmit={handleAddBeat} className="max-w-xl space-y-4">
-          <h2 className="text-lg font-bold text-white">Add New Beat</h2>
+        <div className="max-w-2xl space-y-8">
 
+          {/* ── BATCH UPLOAD ─────────────────────────────────── */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Title *</label>
-            <input required value={newBeat.title} onChange={(e) => setNewBeat((f) => ({ ...f, title: e.target.value }))}
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Intentions" />
-          </div>
+            <h2 className="text-lg font-bold text-white mb-1">Batch Upload</h2>
+            <p className="text-xs text-zinc-500 mb-5">Drop multiple beats at once. Set shared metadata below, then tweak individual fields per beat.</p>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">BPM *</label>
-              <input required type="number" value={newBeat.bpm} onChange={(e) => setNewBeat((f) => ({ ...f, bpm: Number(e.target.value) }))}
-                className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="140" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Key *</label>
-              <input required value={newBeat.key} onChange={(e) => setNewBeat((f) => ({ ...f, key: e.target.value }))}
-                className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Am" />
-            </div>
-          </div>
+            {/* Shared metadata */}
+            <div className="rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-4 space-y-4 mb-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Shared Metadata — applies to all beats</p>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Genre *</label>
-              <select required value={newBeat.genre} onChange={(e) => setNewBeat((f) => ({ ...f, genre: e.target.value }))}
-                className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500">
-                <option>Trap</option>
-                <option>Drill</option>
-                <option>R&B</option>
-                <option>Afrobeats</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Subgenre</label>
-              <input value={newBeat.subgenre} onChange={(e) => setNewBeat((f) => ({ ...f, subgenre: e.target.value }))}
-                className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Trap" />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Genre</label>
+                  <select value={sharedMeta.genre} onChange={(e) => setSharedMeta((m) => ({ ...m, genre: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500">
+                    <option>Trap</option>
+                    <option>Drill</option>
+                    <option>R&B</option>
+                    <option>Afrobeats</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Subgenre</label>
+                  <input value={sharedMeta.subgenre} onChange={(e) => setSharedMeta((m) => ({ ...m, subgenre: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Trap" />
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tags (comma separated)</label>
-            <input value={newBeat.tags} onChange={(e) => setNewBeat((f) => ({ ...f, tags: e.target.value }))}
-              className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="dark, 808, hard" />
-          </div>
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tags (comma separated)</label>
+                <input value={sharedMeta.tags} onChange={(e) => setSharedMeta((m) => ({ ...m, tags: e.target.value }))}
+                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="dark, 808, hard" />
+              </div>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Beat File (MP3/WAV)</label>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Default BPM</label>
+                  <div className="flex gap-2">
+                    <input type="number" value={sharedMeta.bpm} onChange={(e) => setSharedMeta((m) => ({ ...m, bpm: Number(e.target.value) }))}
+                      className="flex-1 rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="140" />
+                    <button type="button" onClick={() => applySharedToAll('bpm')}
+                      className="rounded-xl border border-[#1f1f1f] bg-[#111] px-3 py-2 text-xs text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors whitespace-nowrap">
+                      Apply all
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Default Key</label>
+                  <div className="flex gap-2">
+                    <input value={sharedMeta.key} onChange={(e) => setSharedMeta((m) => ({ ...m, key: e.target.value }))}
+                      className="flex-1 rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Am" />
+                    <button type="button" onClick={() => applySharedToAll('key')}
+                      className="rounded-xl border border-[#1f1f1f] bg-[#111] px-3 py-2 text-xs text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors whitespace-nowrap">
+                      Apply all
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Multi-file drop zone */}
             <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
-              onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) handleBeatFile(f) }}
-              onClick={() => fileRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+              onDragOver={(e) => { e.preventDefault(); setBatchDragOver(true) }}
+              onDragLeave={() => setBatchDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault(); setBatchDragOver(false)
+                const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('audio/') || f.name.match(/\.(mp3|wav|flac|aif|aiff)$/i))
+                if (files.length) handleBatchFiles(files)
+              }}
+              onClick={() => batchFileRef.current?.click()}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors mb-4 ${batchDragOver ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
             >
-              <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleBeatFile(e.target.files[0]) }} />
-              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-              <p className="text-xs text-zinc-400">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
+              <input ref={batchFileRef} type="file" accept="audio/*" multiple className="hidden"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? [])
+                  if (files.length) handleBatchFiles(files)
+                  e.target.value = ''
+                }}
+              />
+              <Upload size={20} className="mx-auto mb-2 text-zinc-500" />
+              <p className="text-sm text-zinc-400">Drop multiple audio files here or click to browse</p>
+              <p className="text-xs text-zinc-600 mt-1">MP3, WAV, FLAC — previews auto-generated from first 30s</p>
             </div>
+
+            {/* Beat queue */}
+            {batchBeats.length > 0 && (
+              <form onSubmit={handleBatchUpload} className="space-y-3">
+                {batchBeats.map((b) => (
+                  <div key={b.id} className={`rounded-xl border px-4 py-3 ${b.uploadStatus === 'done' ? 'border-emerald-500/30 bg-emerald-500/5' : b.uploadStatus === 'error' ? 'border-red-500/30 bg-red-500/5' : b.uploadStatus === 'uploading' ? 'border-zinc-600 bg-[#111]' : 'border-[#1f1f1f] bg-[#111]'}`}>
+                    <div className="flex items-center gap-3 mb-2.5">
+                      {/* Status indicator */}
+                      <div className="shrink-0 w-5 h-5 flex items-center justify-center">
+                        {b.uploadStatus === 'done' && <Check size={14} className="text-emerald-400" />}
+                        {b.uploadStatus === 'error' && <span className="text-red-400 text-xs font-bold">!</span>}
+                        {b.uploadStatus === 'uploading' && <RefreshCw size={12} className="text-zinc-400 animate-spin" />}
+                        {b.uploadStatus === 'pending' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 block" />}
+                      </div>
+                      {/* Filename */}
+                      <span className="text-[11px] text-zinc-500 truncate flex-1 min-w-0">{b.file.name}</span>
+                      {/* Preview badge */}
+                      {b.generatingPreview && <span className="text-[10px] text-zinc-500 shrink-0 flex items-center gap-1"><RefreshCw size={9} className="animate-spin" />Preview…</span>}
+                      {!b.generatingPreview && b.autoPreview && <span className="text-[10px] text-emerald-400 shrink-0">Preview ✓</span>}
+                      {/* Remove button */}
+                      {b.uploadStatus !== 'uploading' && (
+                        <button type="button" onClick={() => setBatchBeats((prev) => prev.filter((x) => x.id !== b.id))}
+                          className="text-zinc-600 hover:text-zinc-300 transition-colors shrink-0 text-xs">✕</button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-1 sm:col-span-1">
+                        <input value={b.title} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, title: e.target.value } : x))}
+                          disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
+                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40 col-span-full sm:col-span-1"
+                          placeholder="Title" />
+                      </div>
+                      <div>
+                        <input type="number" value={b.bpm} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, bpm: Number(e.target.value) } : x))}
+                          disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
+                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40"
+                          placeholder="BPM" />
+                      </div>
+                      <div>
+                        <input value={b.key} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, key: e.target.value } : x))}
+                          disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
+                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40"
+                          placeholder="Key" />
+                      </div>
+                    </div>
+
+                    {b.errorMsg && <p className="mt-1.5 text-[11px] text-red-400">{b.errorMsg}</p>}
+                  </div>
+                ))}
+
+                <div className="flex items-center gap-3 pt-1">
+                  <button type="submit" disabled={batchUploading || batchBeats.every((b) => b.uploadStatus === 'done')}
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50">
+                    <Upload size={15} />
+                    {batchUploading
+                      ? `Uploading ${batchBeats.filter((b) => b.uploadStatus === 'uploading').length > 0 ? `(${batchBeats.findIndex((b) => b.uploadStatus === 'uploading') + 1}/${batchBeats.filter((b) => b.uploadStatus !== 'done').length})` : '…'}`
+                      : `Upload ${batchBeats.filter((b) => b.uploadStatus === 'pending' || b.uploadStatus === 'error').length} Beat${batchBeats.filter((b) => b.uploadStatus === 'pending' || b.uploadStatus === 'error').length !== 1 ? 's' : ''}`}
+                  </button>
+                  <button type="button" onClick={() => setBatchBeats([])} disabled={batchUploading}
+                    className="rounded-xl border border-[#1f1f1f] px-4 py-3.5 text-xs text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-40">
+                    Clear all
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
-              Preview File (30s clip)
-              {autoPreview && <span className="ml-2 text-emerald-400">· auto-generated ✓</span>}
-            </label>
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
-              onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) { setDroppedPreview(f); setAutoPreview(false) } }}
-              onClick={() => previewRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
-            >
-              <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { setDroppedPreview(e.target.files[0]); setAutoPreview(false) } }} />
-              {generatingPreview
-                ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-zinc-500 animate-spin" /><p className="text-xs text-zinc-500">Generating 30s preview…</p></>
-                : <><Upload size={16} className="mx-auto mb-1.5 text-zinc-500" /><p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
-              }
-            </div>
-          </div>
+          {/* ── SINGLE UPLOAD (cover + stems) ────────────────── */}
+          <details className="group">
+            <summary className="cursor-pointer list-none flex items-center gap-2 text-xs font-semibold text-zinc-500 hover:text-zinc-300 transition-colors">
+              <span className="group-open:hidden">▸</span>
+              <span className="hidden group-open:inline">▾</span>
+              Single upload — use when adding cover art or stems
+            </summary>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (optional — replaces the genre square)</label>
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver('cover') }}
-              onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedCover(f) }}
-              onClick={() => coverRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
-            >
-              <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedCover(e.target.files[0]) }} />
-              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-              <p className="text-xs text-zinc-400">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
-            </div>
-            <p className="mt-1 text-[10px] text-zinc-600">JPG, PNG, WEBP — will show in the beat list and player bar</p>
-          </div>
+            <form onSubmit={handleAddBeat} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Title *</label>
+                <input required value={newBeat.title} onChange={(e) => setNewBeat((f) => ({ ...f, title: e.target.value }))}
+                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Intentions" />
+              </div>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Stems (optional — ZIP file of all track stems)</label>
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver('stems') }}
-              onDragLeave={() => setDragOver(null)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedStems(f) }}
-              onClick={() => stemsRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
-            >
-              <input ref={stemsRef} type="file" accept=".zip,application/zip" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedStems(e.target.files[0]) }} />
-              <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-              <p className="text-xs text-zinc-400">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
-            </div>
-            <p className="mt-1 text-[10px] text-zinc-600">ZIP only — delivered automatically to customers who buy the Stems License</p>
-          </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">BPM *</label>
+                  <input required type="number" value={newBeat.bpm} onChange={(e) => setNewBeat((f) => ({ ...f, bpm: Number(e.target.value) }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="140" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Key *</label>
+                  <input required value={newBeat.key} onChange={(e) => setNewBeat((f) => ({ ...f, key: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Am" />
+                </div>
+              </div>
 
-          {uploadMsg && (
-            <p className={`text-sm ${uploadMsg.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
-              {uploadMsg}
-            </p>
-          )}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Genre *</label>
+                  <select required value={newBeat.genre} onChange={(e) => setNewBeat((f) => ({ ...f, genre: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500">
+                    <option>Trap</option>
+                    <option>Drill</option>
+                    <option>R&B</option>
+                    <option>Afrobeats</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Subgenre</label>
+                  <input value={newBeat.subgenre} onChange={(e) => setNewBeat((f) => ({ ...f, subgenre: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Trap" />
+                </div>
+              </div>
 
-          <button type="submit" disabled={uploading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50 min-h-[52px]">
-            <Upload size={16} />
-            {uploading ? 'Uploading…' : 'Add Beat'}
-          </button>
-        </form>
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tags (comma separated)</label>
+                <input value={newBeat.tags} onChange={(e) => setNewBeat((f) => ({ ...f, tags: e.target.value }))}
+                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="dark, 808, hard" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Beat File (MP3/WAV)</label>
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) handleBeatFile(f) }}
+                  onClick={() => fileRef.current?.click()}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                >
+                  <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleBeatFile(e.target.files[0]) }} />
+                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+                  <p className="text-xs text-zinc-400">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+                  Preview File (30s clip)
+                  {autoPreview && <span className="ml-2 text-emerald-400">· auto-generated ✓</span>}
+                </label>
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) { setDroppedPreview(f); setAutoPreview(false) } }}
+                  onClick={() => previewRef.current?.click()}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                >
+                  <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { setDroppedPreview(e.target.files[0]); setAutoPreview(false) } }} />
+                  {generatingPreview
+                    ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-zinc-500 animate-spin" /><p className="text-xs text-zinc-500">Generating 30s preview…</p></>
+                    : <><Upload size={16} className="mx-auto mb-1.5 text-zinc-500" /><p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (optional — replaces the genre square)</label>
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver('cover') }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedCover(f) }}
+                  onClick={() => coverRef.current?.click()}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                >
+                  <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedCover(e.target.files[0]) }} />
+                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+                  <p className="text-xs text-zinc-400">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
+                </div>
+                <p className="mt-1 text-[10px] text-zinc-600">JPG, PNG, WEBP — will show in the beat list and player bar</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Stems (optional — ZIP file of all track stems)</label>
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver('stems') }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedStems(f) }}
+                  onClick={() => stemsRef.current?.click()}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                >
+                  <input ref={stemsRef} type="file" accept=".zip,application/zip" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedStems(e.target.files[0]) }} />
+                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
+                  <p className="text-xs text-zinc-400">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
+                </div>
+                <p className="mt-1 text-[10px] text-zinc-600">ZIP only — delivered automatically to customers who buy the Stems License</p>
+              </div>
+
+              {uploadMsg && (
+                <p className={`text-sm ${uploadMsg.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                  {uploadMsg}
+                </p>
+              )}
+
+              <button type="submit" disabled={uploading}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50 min-h-[52px]">
+                <Upload size={16} />
+                {uploading ? 'Uploading…' : 'Add Beat'}
+              </button>
+            </form>
+          </details>
+        </div>
       )}
     </div>
   )
