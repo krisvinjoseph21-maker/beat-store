@@ -56,7 +56,7 @@ export default function Footer() {
                 <Link
                   key={href}
                   href={href}
-                  className="text-[12px] text-muted hover:text-foreground transition-colors"
+                  className="text-[12px] text-muted hover:text-foreground transition-colors py-2 inline-block"
                 >
                   {label}
                 </Link>
@@ -67,7 +67,7 @@ export default function Footer() {
                 <Link
                   key={href}
                   href={href}
-                  className="text-[11px] text-muted-low hover:text-foreground transition-colors"
+                  className="text-[11px] text-muted-low hover:text-foreground transition-colors py-2 inline-block"
                 >
                   {label}
                 </Link>

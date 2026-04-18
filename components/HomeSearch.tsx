@@ -26,7 +26,8 @@ export default function HomeSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LEN))}
           maxLength={MAX_QUERY_LEN}
-          placeholder=""
+          placeholder="Search beats, keys, tags…"
+          aria-label="Search beats"
           className="w-full rounded-sm border border-line-input bg-surface-1 py-5 pl-10 pr-36 text-base text-white outline-none focus:border-muted transition-colors"
         />
         <button

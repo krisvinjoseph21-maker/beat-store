@@ -128,7 +128,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               {items.map(({ beat }) => (
                 <div
                   key={beat.id}
-                  className={`flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
+                  className={`flex items-center justify-between gap-3 rounded-sm border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
                     removingId === beat.id ? 'animate-item-fade-out' : ''
                   }`}
                   onAnimationEnd={() => handleRemoveAnimationEnd(beat.id)}

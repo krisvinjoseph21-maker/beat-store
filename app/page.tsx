@@ -10,7 +10,6 @@ import HeroShader from '@/components/HeroShader'
 import HeadlineParallax from '@/components/HeadlineParallax'
 import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
-import AnimatedStat from '@/components/AnimatedStat'
 
 async function getPageData(): Promise<{ featured: Beat | null }> {
   try {
@@ -162,26 +161,21 @@ export default async function HomePage() {
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
       <section className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
-          <ScrollReveal className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <ScrollReveal className="mb-12">
             <div className="receipts-heading">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
                 Verified Credits
               </p>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none">
+              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none mb-4">
                 The Receipts.
               </h2>
-            </div>
-            <div className="flex gap-10">
-              {[{ v: '5+', l: 'Placements' }, { v: '4', l: 'Genres' }].map(({ v, l }) => (
-                <div key={l} className="flex flex-col">
-                  <AnimatedStat value={v} className="font-display text-4xl text-accent leading-none" />
-                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] mt-1.5 text-muted-low">{l}</span>
-                </div>
-              ))}
+              <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
+                5 placements&ensp;<span className="text-accent/50">·</span>&ensp;4 genres&ensp;<span className="text-accent/50">·</span>&ensp;GloRilla, DeeBaby, Shenseea &amp; more
+              </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06] rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06]">
             {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
               <ScrollReveal key={artist + song} delay={idx * 80} direction={idx % 2 === 0 ? 'left' : 'right'}>
               <div

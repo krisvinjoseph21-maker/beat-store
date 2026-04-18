@@ -16,18 +16,31 @@ export default function EmailCaptureModal() {
     if (typeof window === 'undefined') return
     if (sessionStorage.getItem('email_popup_seen')) return
 
-    // Exit-intent: show on mouse leaving viewport top
-    function onMouseOut(e: MouseEvent) {
-      if (e.clientY <= 0) show()
-    }
+    const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches
 
-    // Fallback timer: show after 4 seconds if no exit intent
-    const timer = setTimeout(show, 4000)
-    document.addEventListener('mouseleave', onMouseOut)
-
-    return () => {
-      clearTimeout(timer)
-      document.removeEventListener('mouseleave', onMouseOut)
+    if (isMobile) {
+      // Mobile: trigger at 60% scroll depth — user has shown real intent
+      function onScroll() {
+        const scrolled = window.scrollY + window.innerHeight
+        const total = document.documentElement.scrollHeight
+        if (total > 0 && scrolled / total >= 0.6) {
+          show()
+          window.removeEventListener('scroll', onScroll)
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true })
+      return () => window.removeEventListener('scroll', onScroll)
+    } else {
+      // Desktop: exit-intent (mouse leaving viewport top) + 8s fallback
+      function onMouseOut(e: MouseEvent) {
+        if (e.clientY <= 0) show()
+      }
+      const timer = setTimeout(show, 8000)
+      document.addEventListener('mouseleave', onMouseOut)
+      return () => {
+        clearTimeout(timer)
+        document.removeEventListener('mouseleave', onMouseOut)
+      }
     }
   }, [])
 
