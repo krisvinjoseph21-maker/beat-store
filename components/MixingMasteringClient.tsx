@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Check, Star, X } from 'lucide-react'
+import { Check, Minus, Plus, Star, X } from 'lucide-react'
 
 interface Package {
   id: string
@@ -74,6 +74,7 @@ interface ReviewFormState {
 
 export default function MixingMasteringClient() {
   const [selected, setSelected] = useState<Package>(PACKAGES[0])
+  const [qty, setQty] = useState(1)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
   const [sending, setSending] = useState(false)
@@ -111,14 +112,16 @@ export default function MixingMasteringClient() {
       })
       if (res.ok) {
         setReviewSent(true)
-        const newReview: Review = {
-          id: crypto.randomUUID(),
-          author: reviewForm.author,
-          rating: reviewForm.rating,
-          body: reviewForm.review,
-          created_at: new Date().toISOString(),
-        }
-        setReviews((prev) => [newReview, ...prev])
+        setReviews((prev) => [
+          {
+            id: crypto.randomUUID(),
+            author: reviewForm.author,
+            rating: reviewForm.rating,
+            body: reviewForm.review,
+            created_at: new Date().toISOString(),
+          },
+          ...prev,
+        ])
         setReviewForm({ author: '', rating: 5, review: '' })
       } else {
         const json = await res.json().catch(() => ({}))
@@ -195,82 +198,30 @@ export default function MixingMasteringClient() {
 
   return (
     <>
-      <div className="flex min-h-[calc(100vh-48px)]">
+      {/* ── Centered product section ── */}
+      <div className="w-full flex flex-col items-center px-6 pt-16 pb-12">
+        <div className="w-full max-w-[460px] flex flex-col items-center text-center">
 
-        {/* LEFT — sticky panel (desktop) */}
-        <div className="hidden lg:flex w-1/2 sticky top-[48px] h-[calc(100vh-48px)] flex-col items-center justify-center overflow-hidden bg-surface-3 select-none">
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 60%, rgba(200,168,106,0.08) 0%, transparent 70%)' }}
-          />
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.03]"
-            style={{ backgroundImage: 'linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
-          />
-          <div className="relative z-10 flex flex-col items-center gap-5 px-12 text-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-accent mb-2" />
-            <p
-              className="font-display uppercase leading-none text-foreground"
-              style={{ fontSize: 'clamp(42px, 4.5vw, 72px)', letterSpacing: '-0.01em' }}
-            >
-              Mixing &amp;<br />Mastering
-            </p>
-            <div className="w-10 h-px bg-white/10" />
-            <p
-              className="text-[11px] font-semibold uppercase text-muted-low"
-              style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}
-            >
-              Your Mix, Dialled In
-            </p>
-            <p className="mt-6 text-[11px] text-muted-low" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.12em' }}>
-              @PRODKJBEATS
-            </p>
-          </div>
-        </div>
+          {/* Brand label */}
+          <p className="text-[11px] font-semibold uppercase text-muted-low mb-3" style={{ letterSpacing: '0.22em', fontFamily: 'var(--font-montserrat)' }}>
+            PRODKJBEATS
+          </p>
 
-        {/* Mobile banner */}
-        <div
-          className="lg:hidden w-full flex flex-col items-center justify-center bg-surface-3 select-none"
-          style={{ height: '200px' }}
-        >
-          <div
-            className="pointer-events-none absolute inset-x-0"
-            style={{ height: '200px', background: 'radial-gradient(ellipse 80% 100% at 50% 50%, rgba(200,168,106,0.07) 0%, transparent 70%)' }}
-          />
-          <div className="relative z-10 text-center">
-            <p
-              className="font-display uppercase text-foreground leading-none"
-              style={{ fontSize: 'clamp(32px, 8vw, 52px)' }}
-            >
-              Mix &amp; Master
-            </p>
-            <p className="mt-2 text-[10px] font-semibold uppercase text-muted-low" style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}>
-              Your Mix, Dialled In
-            </p>
-          </div>
-        </div>
+          {/* Title */}
+          <h1 className="font-display text-5xl sm:text-6xl text-foreground leading-tight mb-5">
+            Mixing &amp; Mastering
+          </h1>
 
-        {/* RIGHT — scrollable content */}
-        <div className="w-full lg:w-1/2 px-8 lg:px-14 py-14 lg:py-16">
+          {/* Price */}
+          <p className="text-2xl font-semibold text-foreground mb-1">{selected.price}</p>
+          <p className="text-[13px] text-muted-low mb-8">Taxes included.</p>
 
-          {/* ── Product header ── */}
-          <div className="mb-8">
-            <p className="text-[10px] font-semibold uppercase text-muted-low mb-2" style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}>
-              PRODKJBEATS
-            </p>
-            <h1 className="font-display text-4xl sm:text-5xl uppercase text-foreground leading-none mb-4">
-              Mixing &amp;<br />Mastering
-            </h1>
-            <p className="text-3xl font-black text-foreground mb-0.5">{selected.price}</p>
-            <p className="text-[12px] text-muted-low">Taxes included.</p>
-          </div>
-
-          {/* ── Package selector ── */}
-          <div className="mb-8">
-            <p className="text-[11px] font-semibold text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+          {/* Package selector */}
+          <div className="w-full mb-8">
+            <p className="text-[13px] text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
               Mixing &amp; Mastering
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap justify-center gap-2">
               {PACKAGES.map((pkg) => (
                 <button
                   key={pkg.id}
@@ -287,68 +238,92 @@ export default function MixingMasteringClient() {
             </div>
           </div>
 
-          {/* ── Selected package features ── */}
-          <div className="mb-8 border border-line-card bg-surface-1 p-5">
-            <ul className="space-y-2">
-              {selected.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                  <Check size={13} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+          {/* Quantity stepper */}
+          <div className="w-full mb-8">
+            <p className="text-[13px] text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+              Quantity
+            </p>
+            <div className="flex items-center justify-center">
+              <div className="flex items-center border border-line-card">
+                <button
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  aria-label="Decrease quantity"
+                  className="flex items-center justify-center w-12 h-12 text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <Minus size={14} aria-hidden="true" />
+                </button>
+                <span className="w-12 text-center text-sm font-semibold text-foreground">{qty}</span>
+                <button
+                  onClick={() => setQty((q) => q + 1)}
+                  aria-label="Increase quantity"
+                  className="flex items-center justify-center w-12 h-12 text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <Plus size={14} aria-hidden="true" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* ── CTA ── */}
+          {/* CTAs */}
+          <div className="w-full flex flex-col gap-3 mb-4">
+            <button
+              onClick={openModal}
+              className="w-full border border-line-card bg-transparent py-4 text-sm font-semibold text-foreground hover:bg-white/5 transition-colors min-h-[52px]"
+            >
+              Add to cart
+            </button>
+            <button
+              onClick={openModal}
+              className="w-full bg-[#5a31f4] py-4 text-sm font-bold text-white hover:bg-[#4b28d4] transition-colors min-h-[52px]"
+            >
+              Book with PRODKJBEATS
+            </button>
+          </div>
+
           <button
             onClick={openModal}
-            className="w-full border border-line-card bg-transparent py-4 text-sm font-bold text-foreground hover:bg-white/5 transition-colors min-h-[52px] mb-3"
+            className="text-sm text-foreground underline underline-offset-2 hover:text-muted transition-colors"
           >
-            Book a Session
-          </button>
-          <button
-            onClick={openModal}
-            className="w-full bg-[#5a31f4] py-4 text-sm font-bold text-white hover:bg-[#4b28d4] transition-colors min-h-[52px]"
-          >
-            Enquire Now
+            More payment options
           </button>
 
-          {/* ── Divider ── */}
-          <div className="my-12 border-t border-line-card" />
+        </div>
+      </div>
 
-          {/* ── Long description ── */}
-          <div className="mb-12">
-            <h2 className="font-display text-2xl sm:text-3xl uppercase text-foreground leading-none mb-4">
+      {/* ── Divider ── */}
+      <div className="w-full border-t border-line-card" />
+
+      {/* ── Scroll content — centered, wider ── */}
+      <div className="w-full flex flex-col items-center px-6 py-16">
+        <div className="w-full max-w-[680px]">
+
+          {/* Long description */}
+          <div className="mb-14">
+            <h2 className="font-display text-3xl sm:text-4xl text-foreground leading-tight mb-5">
               🎚 Your Mix, Dialled In.
             </h2>
-            <p className="text-[14px] text-muted leading-relaxed mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[15px] text-muted leading-relaxed mb-4" style={{ fontFamily: 'var(--font-inter)' }}>
               Whether you need a quick polish or a full stem-level mixdown, this service gives your track the clarity, punch, and space it needs to compete.
             </p>
-            <p className="text-[14px] text-muted leading-relaxed mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[15px] text-muted leading-relaxed mb-4" style={{ fontFamily: 'var(--font-inter)' }}>
               Pick the package that fits your needs — and add any extras if you want to take it even further.
             </p>
-            <p className="text-[13px] font-semibold text-foreground mb-1" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[14px] font-semibold text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
               Delivery: 48 hours turnaround
             </p>
           </div>
 
-          {/* ── Full packages breakdown ── */}
-          <div className="mb-12">
-            <p className="text-[13px] font-semibold text-foreground mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
+          {/* Packages breakdown */}
+          <div className="mb-14">
+            <p className="text-[14px] font-semibold text-foreground mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
               🧾 What&apos;s Included by Package:
             </p>
-
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5">
               {PACKAGES.map((pkg) => (
                 <div key={pkg.id} className="border border-line-card bg-surface-1 p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: pkg.dotColor }}
-                    />
-                    <p className="text-base font-black text-foreground">
-                      {pkg.name} — {pkg.price}
-                    </p>
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
+                    <p className="text-base font-black text-foreground">{pkg.name} — {pkg.price}</p>
                   </div>
                   <ul className="space-y-1.5">
                     {pkg.features.map((f) => (
@@ -361,18 +336,17 @@ export default function MixingMasteringClient() {
                 </div>
               ))}
             </div>
-
             <p className="mt-6 text-[13px] text-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
               Let me know if you want it all done for you in a custom bundle, or if you&apos;re working on a project that needs full sound direction — I also offer Executive Production.
             </p>
           </div>
 
-          {/* ── Reviews ── */}
+          {/* Reviews */}
           <div className="border-t border-line-card pt-10">
 
-            {/* Header row */}
+            {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <p className="font-display text-3xl uppercase text-foreground leading-none">Customer Reviews</p>
+              <p className="font-display text-3xl text-foreground leading-none">Customer Reviews</p>
               {!showReviewForm && !reviewSent && (
                 <button
                   onClick={() => setShowReviewForm(true)}
@@ -383,7 +357,7 @@ export default function MixingMasteringClient() {
               )}
             </div>
 
-            {/* Rating summary */}
+            {/* Rating summary — only if there are reviews */}
             {reviews.length > 0 && (() => {
               const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
               return (
@@ -400,7 +374,7 @@ export default function MixingMasteringClient() {
                   <div className="space-y-1.5 mb-8">
                     {[5, 4, 3, 2, 1].map((star) => {
                       const count = reviews.filter((r) => r.rating === star).length
-                      const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0
+                      const pct = (count / reviews.length) * 100
                       return (
                         <div key={star} className="flex items-center gap-3">
                           <span className="text-xs text-muted-low w-2">{star}</span>
@@ -421,7 +395,6 @@ export default function MixingMasteringClient() {
               <form onSubmit={submitReview} className="border border-line-card bg-surface-1 p-5 mb-8 space-y-4">
                 <p className="text-sm font-semibold text-foreground">Leave a review</p>
 
-                {/* Star picker */}
                 <div>
                   <p className="text-xs text-muted-low mb-1.5">Rating *</p>
                   <div className="flex gap-1">
@@ -434,10 +407,7 @@ export default function MixingMasteringClient() {
                         onMouseLeave={() => setReviewHover(0)}
                         aria-label={`${s} star`}
                       >
-                        <Star
-                          size={22}
-                          className={s <= (reviewHover || reviewForm.rating) ? 'text-accent fill-accent' : 'text-muted-low'}
-                        />
+                        <Star size={22} className={s <= (reviewHover || reviewForm.rating) ? 'text-accent fill-accent' : 'text-muted-low'} />
                       </button>
                     ))}
                   </div>
@@ -505,9 +475,9 @@ export default function MixingMasteringClient() {
             ) : reviews.length === 0 ? (
               <p className="text-sm text-muted-low">No reviews yet — be the first!</p>
             ) : (
-              <div className="flex flex-col gap-0">
+              <div>
                 {reviews.map((rev) => (
-                  <div key={rev.id} className="border-t border-line-card pt-5 pb-5">
+                  <div key={rev.id} className="border-t border-line-card py-5">
                     <div className="flex items-center gap-1 mb-1">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star key={s} size={12} className={s <= rev.rating ? 'text-accent fill-accent' : 'text-muted-low'} aria-hidden="true" />
@@ -524,18 +494,13 @@ export default function MixingMasteringClient() {
             )}
 
           </div>
-
         </div>
       </div>
 
       {/* ── Inquiry modal ── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={closeModal}
-            aria-hidden="true"
-          />
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeModal} aria-hidden="true" />
           <div
             ref={modalRef}
             role="dialog"
@@ -548,11 +513,7 @@ export default function MixingMasteringClient() {
                 <h2 id="mm-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h2>
                 <p className="text-xs text-muted mt-0.5">{selected.name}</p>
               </div>
-              <button
-                onClick={closeModal}
-                aria-label="Close inquiry form"
-                className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid"
-              >
+              <button onClick={closeModal} aria-label="Close" className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid">
                 <X size={18} aria-hidden="true" />
               </button>
             </div>
@@ -564,10 +525,7 @@ export default function MixingMasteringClient() {
                 </div>
                 <p className="font-display text-3xl uppercase text-foreground leading-none">Inquiry Sent.</p>
                 <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
-                <button
-                  onClick={closeModal}
-                  className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
-                >
+                <button onClick={closeModal} className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors">
                   Close
                 </button>
               </div>
@@ -575,57 +533,22 @@ export default function MixingMasteringClient() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="mm-artist" className="block text-sm font-semibold text-foreground mb-2">Artist Name *</label>
-                  <input
-                    id="mm-artist"
-                    required
-                    type="text"
-                    autoComplete="name"
-                    value={form.artistName}
-                    onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))}
-                    className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
-                    placeholder="Your artist name"
-                  />
+                  <input id="mm-artist" required type="text" autoComplete="name" value={form.artistName} onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors" placeholder="Your artist name" />
                 </div>
                 <div>
                   <label htmlFor="mm-email" className="block text-sm font-semibold text-foreground mb-2">Email *</label>
-                  <input
-                    id="mm-email"
-                    required
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
-                    placeholder="your@email.com"
-                  />
+                  <input id="mm-email" required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors" placeholder="your@email.com" />
                 </div>
                 <div>
                   <label htmlFor="mm-service" className="block text-sm font-semibold text-foreground mb-2">Package</label>
-                  <input
-                    id="mm-service"
-                    readOnly
-                    value={form.serviceType}
-                    className="w-full border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed"
-                  />
+                  <input id="mm-service" readOnly value={form.serviceType} className="w-full border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed" />
                 </div>
                 <div>
                   <label htmlFor="mm-details" className="block text-sm font-semibold text-foreground mb-2">Project Details *</label>
-                  <textarea
-                    id="mm-details"
-                    required
-                    rows={6}
-                    value={form.projectDetails}
-                    onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))}
-                    className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
-                    placeholder="Tell me about your project, references, timeline…"
-                  />
+                  <textarea id="mm-details" required rows={6} value={form.projectDetails} onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none" placeholder="Tell me about your project, references, timeline…" />
                 </div>
                 {error && <p role="alert" className="animate-shake text-sm text-danger">{error}</p>}
-                <button
-                  type="submit"
-                  disabled={sending}
-                  className="w-full bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
-                >
+                <button type="submit" disabled={sending} className="w-full bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50">
                   {sending ? 'Sending…' : 'Send Inquiry'}
                 </button>
               </form>
