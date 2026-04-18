@@ -152,7 +152,7 @@ export default function CustomBeatsClient() {
   return (
     <>
       {/* ── Two-column layout ───────────────────────────────────────── */}
-      <div className="flex min-h-[calc(100vh-48px)]">
+      <div className="flex items-start min-h-[calc(100vh-48px)]">
 
         {/* LEFT — sticky artwork panel (desktop only) */}
         <div className="hidden lg:flex w-1/2 sticky top-[48px] h-[calc(100vh-48px)] flex-col items-center justify-center overflow-hidden bg-surface-3 select-none">

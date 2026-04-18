@@ -9,7 +9,6 @@ interface Package {
   price: string
   dotColor: string
   features: string[]
-  revisions?: string
 }
 
 const PACKAGES: Package[] = [
@@ -52,32 +51,25 @@ const PACKAGES: Package[] = [
   },
 ]
 
-const REVIEWS = [
-  {
-    author: 'Dean Antony',
-    date: '08/25/2025',
-    rating: 5,
-    body: 'Track was mastered perfectly! Crisp, clean, would highly recommend 10/10',
-  },
-  {
-    author: '2trillc',
-    date: '08/07/2025',
-    rating: 5,
-    body: 'My guy killed it!',
-  },
-  {
-    author: 'Jay',
-    date: '08/07/2025',
-    rating: 5,
-    body: "Honestly brought the track to life. I've worked with engineers before but nothing hit like this.",
-  },
-]
+interface Review {
+  id: string
+  author: string
+  rating: number
+  body: string
+  created_at: string
+}
 
 interface FormState {
   artistName: string
   email: string
   serviceType: string
   projectDetails: string
+}
+
+interface ReviewFormState {
+  author: string
+  rating: number
+  review: string
 }
 
 export default function MixingMasteringClient() {
@@ -88,6 +80,56 @@ export default function MixingMasteringClient() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const modalRef = useRef<HTMLDivElement>(null)
+
+  // Reviews
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviewsLoading, setReviewsLoading] = useState(true)
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [reviewForm, setReviewForm] = useState<ReviewFormState>({ author: '', rating: 5, review: '' })
+  const [reviewHover, setReviewHover] = useState(0)
+  const [reviewSending, setReviewSending] = useState(false)
+  const [reviewSent, setReviewSent] = useState(false)
+  const [reviewError, setReviewError] = useState('')
+
+  useEffect(() => {
+    fetch('/api/reviews')
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setReviews(data) })
+      .catch(() => {})
+      .finally(() => setReviewsLoading(false))
+  }, [])
+
+  async function submitReview(e: React.FormEvent) {
+    e.preventDefault()
+    setReviewSending(true)
+    setReviewError('')
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewForm),
+      })
+      if (res.ok) {
+        setReviewSent(true)
+        const newReview: Review = {
+          id: crypto.randomUUID(),
+          author: reviewForm.author,
+          rating: reviewForm.rating,
+          body: reviewForm.review,
+          created_at: new Date().toISOString(),
+        }
+        setReviews((prev) => [newReview, ...prev])
+        setReviewForm({ author: '', rating: 5, review: '' })
+      } else {
+        const json = await res.json().catch(() => ({}))
+        setReviewError((json as { error?: string }).error ?? 'Failed to submit. Please try again.')
+      }
+    } catch {
+      setReviewError('Failed to submit. Please try again.')
+    } finally {
+      setReviewSending(false)
+    }
+  }
 
   function selectPackage(pkg: Package) {
     setSelected(pkg)
@@ -328,69 +370,161 @@ export default function MixingMasteringClient() {
           </div>
 
           {/* ── Reviews ── */}
-          <div>
-            <div className="border-t border-line-card pt-10">
-              <div className="flex items-end gap-4 mb-2">
-                <p className="font-display text-3xl uppercase text-foreground leading-none">Customer Reviews</p>
-              </div>
+          <div className="border-t border-line-card pt-10">
 
-              {/* Rating summary */}
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      size={16}
-                      className={s <= Math.round(avgRating) ? 'text-accent fill-accent' : 'text-muted-low'}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-                <span className="text-sm font-semibold text-foreground">{avgRating.toFixed(2)} out of 5</span>
-                <span className="text-xs text-muted-low">Based on {REVIEWS.length} reviews</span>
-              </div>
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-6">
+              <p className="font-display text-3xl uppercase text-foreground leading-none">Customer Reviews</p>
+              {!showReviewForm && !reviewSent && (
+                <button
+                  onClick={() => setShowReviewForm(true)}
+                  className="text-sm font-semibold text-foreground border border-line-card px-4 py-2 hover:border-muted transition-colors"
+                >
+                  Write a review
+                </button>
+              )}
+            </div>
 
-              {/* Rating bars */}
-              <div className="space-y-1.5 mb-8">
-                {[5, 4, 3, 2, 1].map((star) => {
-                  const count = REVIEWS.filter((r) => r.rating === star).length
-                  const pct = (count / REVIEWS.length) * 100
-                  return (
-                    <div key={star} className="flex items-center gap-3">
-                      <span className="text-xs text-muted-low w-2">{star}</span>
-                      <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-accent rounded-full transition-all"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-muted-low w-3">{count}</span>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* Individual reviews */}
-              <div className="flex flex-col gap-6">
-                {REVIEWS.map((rev) => (
-                  <div key={rev.author + rev.date} className="border-t border-line-card pt-5">
-                    <div className="flex items-center gap-2 mb-1">
+            {/* Rating summary */}
+            {reviews.length > 0 && (() => {
+              const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+              return (
+                <>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="flex">
                       {[1, 2, 3, 4, 5].map((s) => (
-                        <Star
-                          key={s}
-                          size={12}
-                          className={s <= rev.rating ? 'text-accent fill-accent' : 'text-muted-low'}
-                          aria-hidden="true"
-                        />
+                        <Star key={s} size={16} className={s <= Math.round(avg) ? 'text-accent fill-accent' : 'text-muted-low'} aria-hidden="true" />
                       ))}
                     </div>
-                    <p className="text-xs text-muted-low mb-2">{rev.date}</p>
+                    <span className="text-sm font-semibold text-foreground">{avg.toFixed(2)} out of 5</span>
+                    <span className="text-xs text-muted-low">Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}</span>
+                  </div>
+                  <div className="space-y-1.5 mb-8">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count = reviews.filter((r) => r.rating === star).length
+                      const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0
+                      return (
+                        <div key={star} className="flex items-center gap-3">
+                          <span className="text-xs text-muted-low w-2">{star}</span>
+                          <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                            <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="text-xs text-muted-low w-3">{count}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )
+            })()}
+
+            {/* Write-a-review form */}
+            {showReviewForm && !reviewSent && (
+              <form onSubmit={submitReview} className="border border-line-card bg-surface-1 p-5 mb-8 space-y-4">
+                <p className="text-sm font-semibold text-foreground">Leave a review</p>
+
+                {/* Star picker */}
+                <div>
+                  <p className="text-xs text-muted-low mb-1.5">Rating *</p>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setReviewForm((f) => ({ ...f, rating: s }))}
+                        onMouseEnter={() => setReviewHover(s)}
+                        onMouseLeave={() => setReviewHover(0)}
+                        aria-label={`${s} star`}
+                      >
+                        <Star
+                          size={22}
+                          className={s <= (reviewHover || reviewForm.rating) ? 'text-accent fill-accent' : 'text-muted-low'}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="rev-author" className="block text-xs text-muted-low mb-1.5">Name *</label>
+                  <input
+                    id="rev-author"
+                    required
+                    type="text"
+                    maxLength={80}
+                    value={reviewForm.author}
+                    onChange={(e) => setReviewForm((f) => ({ ...f, author: e.target.value }))}
+                    className="w-full border border-line-input bg-surface-1 px-4 py-3 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors"
+                    placeholder="Your name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="rev-body" className="block text-xs text-muted-low mb-1.5">Review *</label>
+                  <textarea
+                    id="rev-body"
+                    required
+                    rows={4}
+                    maxLength={1000}
+                    value={reviewForm.review}
+                    onChange={(e) => setReviewForm((f) => ({ ...f, review: e.target.value }))}
+                    className="w-full border border-line-input bg-surface-1 px-4 py-3 text-sm text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none"
+                    placeholder="Share your experience…"
+                  />
+                </div>
+
+                {reviewError && <p role="alert" className="text-sm text-danger">{reviewError}</p>}
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={reviewSending}
+                    className="flex-1 bg-white py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
+                  >
+                    {reviewSending ? 'Submitting…' : 'Submit Review'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowReviewForm(false); setReviewError('') }}
+                    className="px-4 py-3 text-sm text-muted-mid border border-line-card hover:border-muted transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {reviewSent && (
+              <div className="border border-line-card bg-surface-1 p-5 mb-8 text-center">
+                <Check size={24} className="text-accent mx-auto mb-2" aria-hidden="true" />
+                <p className="text-sm font-semibold text-foreground">Thanks for your review!</p>
+              </div>
+            )}
+
+            {/* Individual reviews */}
+            {reviewsLoading ? (
+              <p className="text-sm text-muted-low">Loading reviews…</p>
+            ) : reviews.length === 0 ? (
+              <p className="text-sm text-muted-low">No reviews yet — be the first!</p>
+            ) : (
+              <div className="flex flex-col gap-0">
+                {reviews.map((rev) => (
+                  <div key={rev.id} className="border-t border-line-card pt-5 pb-5">
+                    <div className="flex items-center gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={12} className={s <= rev.rating ? 'text-accent fill-accent' : 'text-muted-low'} aria-hidden="true" />
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-low mb-2">
+                      {new Date(rev.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    </p>
                     <p className="text-sm font-semibold text-foreground mb-1">{rev.author}</p>
                     <p className="text-sm text-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>{rev.body}</p>
                   </div>
                 ))}
               </div>
-            </div>
+            )}
+
           </div>
 
         </div>
