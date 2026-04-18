@@ -193,8 +193,6 @@ export default function MixingMasteringClient() {
     }
   }
 
-  const avgRating = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length
-
   return (
     <>
       <div className="flex min-h-[calc(100vh-48px)]">

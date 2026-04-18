@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Check, X } from 'lucide-react'
+import { Check, X, Star } from 'lucide-react'
 
 interface Package {
   emoji: string
   name: string
   price: string
+  priceNum: string
   features: string[]
 }
 
@@ -14,7 +15,8 @@ const PACKAGES: Package[] = [
   {
     emoji: '💡',
     name: 'Basic Custom Beat',
-    price: '$200',
+    price: '$200.00 USD',
+    priceNum: '$200',
     features: [
       '1 beat built from your reference',
       'Mixed stereo beat (no stems)',
@@ -25,7 +27,8 @@ const PACKAGES: Package[] = [
   {
     emoji: '🚀',
     name: 'Full Custom Beat',
-    price: '$500',
+    price: '$500.00 USD',
+    priceNum: '$500',
     features: [
       'Fully arranged beat + transitions',
       'Mixed stereo beat (including stems)',
@@ -37,7 +40,8 @@ const PACKAGES: Package[] = [
   {
     emoji: '🔥',
     name: 'Custom Beat + Mix Bundle',
-    price: '$750',
+    price: '$750.00 USD',
+    priceNum: '$750',
     features: [
       'Custom beat tailored to your sound',
       'Full vocal mix + master',
@@ -49,7 +53,8 @@ const PACKAGES: Package[] = [
   {
     emoji: '🧠',
     name: 'Executive Producer Package',
-    price: '$1,000',
+    price: '$1,000.00 USD',
+    priceNum: '$1,000',
     features: [
       'Beat built from scratch around your vision',
       'Arrangement, sound design, intro/outro support',
@@ -62,7 +67,8 @@ const PACKAGES: Package[] = [
   {
     emoji: '🎙️',
     name: 'Project Launch Package',
-    price: '$1,500',
+    price: '$1,500.00 USD',
+    priceNum: '$1,500',
     features: [
       '3 custom beats built to your sound',
       'Full mix & master on all 3 tracks',
@@ -82,30 +88,33 @@ interface FormState {
 }
 
 export default function CustomBeatsClient() {
-  const [activePackage, setActivePackage] = useState<string | null>(null)
-  const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: '', projectDetails: '' })
+  const [selected, setSelected] = useState<Package>(PACKAGES[0])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const modalRef = useRef<HTMLDivElement>(null)
 
-  function openModal(pkg: Package) {
-    setActivePackage(pkg.name)
+  function selectPackage(pkg: Package) {
+    setSelected(pkg)
     setForm((f) => ({ ...f, serviceType: pkg.name }))
+  }
+
+  function openModal() {
     setSent(false)
     setError('')
+    setModalOpen(true)
   }
 
   function closeModal() {
-    setActivePackage(null)
+    setModalOpen(false)
   }
 
-  // Focus trap
   useEffect(() => {
-    if (!activePackage) return
+    if (!modalOpen) return
     const modal = modalRef.current
     if (!modal) return
-
     const previousFocus = document.activeElement as HTMLElement | null
     const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
     modal.querySelector<HTMLElement>(FOCUSABLE)?.focus()
@@ -115,11 +124,11 @@ export default function CustomBeatsClient() {
       if (e.key !== 'Tab') return
       const focusable = Array.from(modal!.querySelectorAll<HTMLElement>(FOCUSABLE))
       const firstEl = focusable[0]
-      const lastEl  = focusable[focusable.length - 1]
+      const lastEl = focusable[focusable.length - 1]
       if (e.shiftKey) {
         if (document.activeElement === firstEl) { e.preventDefault(); lastEl?.focus() }
       } else {
-        if (document.activeElement === lastEl)  { e.preventDefault(); firstEl?.focus() }
+        if (document.activeElement === lastEl) { e.preventDefault(); firstEl?.focus() }
       }
     }
 
@@ -128,7 +137,7 @@ export default function CustomBeatsClient() {
       document.removeEventListener('keydown', onKeyDown)
       previousFocus?.focus()
     }
-  }, [activePackage]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [modalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -151,22 +160,18 @@ export default function CustomBeatsClient() {
 
   return (
     <>
-      {/* ── Two-column layout ───────────────────────────────────────── */}
       <div className="flex items-start min-h-[calc(100vh-48px)]">
 
-        {/* LEFT — sticky artwork panel (desktop only) */}
+        {/* LEFT — sticky panel (desktop) */}
         <div className="hidden lg:flex w-1/2 sticky top-[48px] h-[calc(100vh-48px)] flex-col items-center justify-center overflow-hidden bg-surface-3 select-none">
-          {/* Ambient glow */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 60%, rgba(200,168,106,0.08) 0%, transparent 70%)' }}
           />
-          {/* Subtle grid texture */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.03]"
             style={{ backgroundImage: 'linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
           />
-
           <div className="relative z-10 flex flex-col items-center gap-5 px-12 text-center">
             <div className="w-1.5 h-1.5 rounded-full bg-accent mb-2" />
             <p
@@ -188,7 +193,7 @@ export default function CustomBeatsClient() {
           </div>
         </div>
 
-        {/* Mobile banner (replaces sticky panel) */}
+        {/* Mobile banner */}
         <div
           className="lg:hidden w-full flex flex-col items-center justify-center bg-surface-3 select-none"
           style={{ height: '200px' }}
@@ -210,77 +215,105 @@ export default function CustomBeatsClient() {
           </div>
         </div>
 
-        {/* RIGHT — scrollable content */}
+        {/* RIGHT — scrollable product page */}
         <div className="w-full lg:w-1/2 px-8 lg:px-14 py-14 lg:py-16">
 
-          {/* Hero copy */}
-          <div className="mb-12">
-            <p className="text-[10px] font-semibold uppercase text-muted-low mb-3" style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}>
-              Work With Me
-            </p>
-            <h1 className="font-display text-4xl sm:text-5xl uppercase text-foreground leading-none mb-5">
-              Your Sound,<br />Custom Built.
-            </h1>
-            <p className="text-[14px] text-muted leading-relaxed max-w-md" style={{ fontFamily: 'var(--font-inter)' }}>
-              Industry-level production for artists who want intention behind their music. Whether you need one record, a full mix, or someone to help shape your entire sound, I&apos;ve got you covered.
-            </p>
-            <p className="mt-6 text-[13px] font-semibold text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
-              🎧 What&apos;s Included by Package:
-            </p>
-          </div>
-
-          {/* Package cards */}
-          <div className="flex flex-col gap-5">
-            {PACKAGES.map((pkg) => (
-              <div
-                key={pkg.name}
-                className="border border-line-card bg-surface-1 p-6 flex flex-col hover:border-line-hover transition-[border-color] duration-200"
-              >
-                {/* Name + price row */}
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div>
-                    <p className="text-[22px] font-black text-foreground leading-tight">
-                      {pkg.emoji} {pkg.name}
-                    </p>
-                  </div>
-                  <p
-                    className="text-2xl font-black shrink-0"
-                    style={{ color: 'var(--accent)' }}
-                  >
-                    {pkg.price}
-                  </p>
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-2 mb-6 flex-1">
-                  {pkg.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                      <Check size={13} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                <button
-                  onClick={() => openModal(pkg)}
-                  className="w-full bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[48px]"
-                >
-                  Book This Package →
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom note */}
-          <p className="mt-8 text-[12px] text-muted-low text-center" style={{ fontFamily: 'var(--font-inter)' }}>
-            Not sure which package fits? Reach out — I&apos;ll help you figure it out.
+          {/* Brand */}
+          <p className="text-[11px] font-semibold uppercase text-muted-low mb-3" style={{ letterSpacing: '0.22em', fontFamily: 'var(--font-montserrat)' }}>
+            PRODKJBEATS
           </p>
+
+          {/* Title */}
+          <h1 className="text-[28px] sm:text-[34px] font-black text-foreground leading-tight mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+            Custom Production Services
+          </h1>
+
+          {/* Stars + review count */}
+          <div className="flex items-center gap-2 mb-5">
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star key={s} size={14} className="text-accent fill-accent" aria-hidden="true" />
+              ))}
+            </div>
+            <span className="text-sm text-muted" style={{ fontFamily: 'var(--font-inter)' }}>5 reviews</span>
+          </div>
+
+          {/* Price */}
+          <p className="text-[26px] font-black text-foreground mb-0.5" style={{ fontFamily: 'var(--font-inter)' }}>
+            {selected.price}
+          </p>
+          <p className="text-[12px] text-muted-low mb-8" style={{ fontFamily: 'var(--font-inter)' }}>
+            Taxes included.
+          </p>
+
+          {/* Package selector */}
+          <div className="mb-6">
+            <p className="text-[12px] font-semibold text-foreground mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+              Custom Beat
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {PACKAGES.map((pkg) => (
+                <button
+                  key={pkg.name}
+                  onClick={() => selectPackage(pkg)}
+                  className={`rounded-full px-4 py-2 text-[13px] font-semibold border transition-colors min-h-[40px] ${
+                    selected.name === pkg.name
+                      ? 'bg-foreground text-background border-foreground'
+                      : 'bg-transparent text-foreground border-line-card hover:border-muted'
+                  }`}
+                  style={{ fontFamily: 'var(--font-inter)' }}
+                >
+                  {pkg.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Selected package features */}
+          <div className="mb-8 border-t border-line-card pt-6">
+            <ul className="space-y-2.5">
+              {selected.features.map((f) => (
+                <li key={f} className="flex items-start gap-2.5 text-[14px] text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
+                  <Check size={14} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-col gap-3 mb-10">
+            <button
+              onClick={openModal}
+              className="w-full border border-foreground bg-transparent py-3.5 text-[14px] font-bold text-foreground hover:bg-white/5 transition-colors min-h-[52px]"
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              Book This Package
+            </button>
+            <button
+              onClick={openModal}
+              className="w-full bg-[#5a31f4] py-3.5 text-[14px] font-bold text-white hover:bg-[#4b28d4] transition-colors min-h-[52px]"
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              Enquire Now
+            </button>
+          </div>
+
+          {/* Divider + description */}
+          <div className="border-t border-line-card pt-8">
+            <p className="text-[14px] text-muted leading-relaxed mb-4" style={{ fontFamily: 'var(--font-inter)' }}>
+              Industry-level production for artists who want intention behind their music. Whether you need one record, a full mix, or someone to help shape your entire sound — I&apos;ve got you covered.
+            </p>
+            <p className="text-[13px] font-semibold text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
+              Turnaround: 48–72 hours depending on package.
+            </p>
+          </div>
+
         </div>
       </div>
 
-      {/* ── Inquiry modal ───────────────────────────────────────────── */}
-      {activePackage && (
+      {/* ── Inquiry modal ── */}
+      {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -297,7 +330,7 @@ export default function CustomBeatsClient() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 id="cb-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h2>
-                <p className="text-xs text-muted mt-0.5">{activePackage}</p>
+                <p className="text-xs text-muted mt-0.5">{selected.name}</p>
               </div>
               <button
                 onClick={closeModal}
@@ -317,7 +350,7 @@ export default function CustomBeatsClient() {
                 <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
                 <button
                   onClick={closeModal}
-                  className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
+                  className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
                 >
                   Close
                 </button>

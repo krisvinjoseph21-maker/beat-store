@@ -248,55 +248,59 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
       {/* ── License drawer ───────────────────────────────────── */}
       <div className={`license-drawer-grid${licenseOpen ? ' is-open' : ''}`}>
         <div className="license-drawer-inner">
-        <div
-          className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-surface-2 border-b border-line p-4 sm:pl-[72px] sm:pr-10 sm:py-4"
-        >
-          {LICENSE_OPTIONS.map((opt, i) =>
-            opt.id === null ? (
-              <Link
-                key={i}
-                href="/about"
-                aria-label="Inquire about exclusive license — opens contact page"
-                className="bg-surface-1 border border-line flex flex-col hover:border-line-input hover:-translate-y-0.5 transition-[border-color,transform] duration-200 min-h-[145px]"
-                style={{ padding: '14px 16px' }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>
-                  {opt.name}
+          <div className="bg-surface-2 border-b border-line px-4 sm:pl-[72px] sm:pr-10 py-3">
+            {/* Column headers — desktop only */}
+            <div className="hidden sm:grid grid-cols-4 gap-px mb-px">
+              {(['MP3 License', 'WAV License', 'Stem License', 'Exclusive'] as const).map((label) => (
+                <div key={label} className="px-4 py-2 text-[9px] font-semibold uppercase text-muted-low"
+                  style={{ letterSpacing: '0.18em', fontFamily: 'var(--font-montserrat)' }}>
+                  {label}
                 </div>
-                <div className="text-[10px] mb-[12px] flex-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
-                  {opt.desc}
-                </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center px-4 transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
-                  style={{ height: '32px', borderColor: 'var(--foreground)', color: 'var(--foreground)', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
-                  Inquire
-                </div>
-              </Link>
-            ) : (
-              <button
-                key={i}
-                onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
-                className="bg-surface-1 border border-line flex flex-col text-left hover:border-line-input hover:-translate-y-0.5 transition-[border-color,transform] duration-200 min-h-[145px]"
-                style={{ padding: '14px 16px' }}
-              >
-                <div className="text-[11px] font-semibold uppercase mb-[6px]" style={{ letterSpacing: '1.1px', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '16.5px' }}>
-                  {opt.name}
-                </div>
-                <div className="text-[10px] mb-[12px] flex-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', lineHeight: '15px' }}>
-                  {opt.desc}
-                </div>
-                <div
-                  className="w-full border text-[10px] font-bold uppercase flex items-center justify-center px-4 transition-colors duration-200 hover:bg-white hover:text-black hover:border-white mt-auto"
-                  style={{ height: '32px', borderColor: 'var(--foreground)', color: 'var(--foreground)', letterSpacing: '1px', fontFamily: 'var(--font-montserrat)' }}
-                >
-                  Select
-                </div>
-              </button>
-            )
-          )}
-        </div>
+              ))}
+            </div>
+            {/* Option rows */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-line">
+              {LICENSE_OPTIONS.map((opt, i) =>
+                opt.id === null ? (
+                  <Link
+                    key={i}
+                    href="/about"
+                    aria-label="Inquire about exclusive license"
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-surface-2 flex flex-col justify-between p-4 hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
+                  >
+                    <div>
+                      <div className="text-[10px] text-muted-low sm:hidden mb-1"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}>{opt.name}</div>
+                      <div className="text-[11px] text-muted-low"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}>{opt.desc}</div>
+                    </div>
+                    <span className="mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors"
+                      style={{ fontFamily: 'var(--font-montserrat)' }}>
+                      Inquire →
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    key={i}
+                    onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
+                    className="bg-surface-2 flex flex-col justify-between p-4 text-left hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
+                  >
+                    <div>
+                      <div className="text-[10px] text-muted-low sm:hidden mb-1"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}>{opt.name}</div>
+                      <div className="text-[11px] text-muted-low"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}>{opt.desc}</div>
+                    </div>
+                    <span className="mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors"
+                      style={{ fontFamily: 'var(--font-montserrat)' }}>
+                      Select →
+                    </span>
+                  </button>
+                )
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

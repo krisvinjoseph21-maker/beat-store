@@ -47,7 +47,7 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
-        className="w-full appearance-none border border-line-input bg-surface-1 py-3 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-line-hover"
+        className="w-full h-[42px] appearance-none border border-line-input bg-transparent py-0 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-line-hover"
         style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
@@ -135,28 +135,20 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   return (
     <div className="w-full max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
       {/* Header */}
-      <div className="mb-10">
-        <p
-          className="text-[11px] font-bold uppercase mb-3"
-          style={{ letterSpacing: '0.28em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
+      <div className="mb-8 flex items-baseline justify-between gap-4">
+        <h1
+          className="font-display uppercase leading-none"
+          style={{ fontSize: 'clamp(40px, 6vw, 72px)', color: 'var(--foreground)' }}
         >
-          Full Catalog
+          All Beats
+        </h1>
+        <p className="text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+          {filtered.length} {filtered.length !== 1 ? 'beats' : 'beat'}
         </p>
-        <div className="flex items-end justify-between">
-          <h1
-            className="font-display uppercase leading-none"
-            style={{ fontSize: 'clamp(52px, 8vw, 96px)', color: 'var(--foreground)' }}
-          >
-            Beat Store.
-          </h1>
-          <p className="text-[12px] mb-1" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
-            {filtered.length} beat{filtered.length !== 1 ? 's' : ''}
-          </p>
-        </div>
       </div>
 
       {/* Search */}
-      <div className="relative mb-4">
+      <div className="relative mb-5">
         <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted-low)' }} aria-hidden="true" />
         <input
           type="text"
@@ -165,19 +157,37 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           value={search}
           onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
           maxLength={MAX_QUERY_LEN}
-          className="w-full border border-line-input bg-surface-1 py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-line-hover transition-colors placeholder:text-muted-low"
+          className="w-full border border-line-input bg-surface-1 py-3 pl-10 pr-4 text-[13px] outline-none focus:border-line-hover transition-colors placeholder:text-muted-low"
           style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
         />
       </div>
 
-      {/* Filter dropdowns */}
+      {/* Genre pills — primary filter */}
+      <div className="mb-4 -mx-1 overflow-x-auto">
+        <div className="flex items-center gap-2 px-1 pb-1 min-w-max sm:min-w-0 sm:flex-wrap">
+          {categories.map((c) => {
+            const active = category === c
+            return (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                aria-pressed={active}
+                className={`h-9 px-4 text-[12px] font-medium border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 ${
+                  active
+                    ? 'bg-foreground border-foreground text-black'
+                    : 'bg-transparent border-line-input text-muted-low hover:border-muted hover:text-foreground'
+                }`}
+                style={{ fontFamily: 'var(--font-montserrat)' }}
+              >
+                {c === 'All Genres' ? 'All' : c}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Secondary filters — compact row */}
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        <Select
-          label="Filter by genre"
-          value={category}
-          onChange={setCategory}
-          options={categories.map((c) => ({ value: c, label: c }))}
-        />
         <Select
           label="Filter by BPM range"
           value={bpmRange}
@@ -199,7 +209,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           aria-pressed={favoritesOnly}
-          className={`flex items-center gap-1.5 border px-3.5 py-2 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-surface-1'}`}
+          className={`flex items-center gap-1.5 border h-[42px] px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-transparent'}`}
           style={{
             borderColor: favoritesOnly ? 'var(--danger)' : 'var(--line-input)',
             color: favoritesOnly ? 'var(--danger)' : 'var(--muted-low)',
@@ -207,7 +217,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           }}
         >
           <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} />
-          Favorites
+          Saved
         </button>
       </div>
 
