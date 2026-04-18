@@ -28,10 +28,13 @@ export default function Navbar() {
   }, [items.length])
 
   useEffect(() => {
-    function onScroll() { setScrolled(window.scrollY > 10) }
+    function onScroll() {
+      setScrolled(window.scrollY > 10)
+      if (mobileOpen) setMobileOpen(false)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [mobileOpen])
 
   return (
     <>
@@ -128,6 +131,15 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile menu backdrop — tap outside to dismiss */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 top-[48px] z-[98] md:hidden"
+          aria-hidden="true"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
       {/* Mobile menu */}
       <div

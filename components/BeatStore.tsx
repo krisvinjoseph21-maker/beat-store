@@ -70,7 +70,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const [showAll, setShowAll] = useState(false)
   const [favoritesOnly, setFavoritesOnly] = useState(false)
   const searchParams = useSearchParams()
-  const [search, setSearch] = useState(searchParams.get('q') ?? '')
+  const MAX_QUERY_LEN = 100
+  const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
   const [modalOpen, setModalOpen] = useState(false)
   const { licenseType, quantityTier, items, openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
@@ -162,7 +163,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           aria-label="Search beats"
           placeholder="Search beats, keys, tags…"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
+          maxLength={MAX_QUERY_LEN}
           className="w-full border border-line-input bg-surface-1 py-2.5 pl-10 pr-4 text-[13px] outline-none focus:border-line-hover transition-colors placeholder:text-muted-low"
           style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
         />

@@ -8,10 +8,13 @@ export default function HomeSearch() {
   const [query, setQuery] = useState('')
   const router = useRouter()
 
+  const MAX_QUERY_LEN = 100
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!query.trim()) return
-    router.push(`/store?q=${encodeURIComponent(query.trim())}`)
+    const safe = query.trim().slice(0, MAX_QUERY_LEN)
+    if (!safe) return
+    router.push(`/store?q=${encodeURIComponent(safe)}`)
   }
 
   return (
@@ -21,7 +24,8 @@ export default function HomeSearch() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LEN))}
+          maxLength={MAX_QUERY_LEN}
           placeholder=""
           className="w-full rounded-sm border border-line-input bg-surface-1 py-5 pl-10 pr-36 text-base text-white outline-none focus:border-muted transition-colors"
         />

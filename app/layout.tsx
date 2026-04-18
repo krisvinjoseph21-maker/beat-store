@@ -28,6 +28,7 @@ const montserrat = Montserrat({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {
@@ -52,7 +53,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${bebasNeue.variable} ${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]" style={{ paddingBottom: '64px' }}>
+      <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]" style={{ paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))' }}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[999] focus:rounded-full focus:bg-white focus:px-5 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-black focus:shadow-lg"

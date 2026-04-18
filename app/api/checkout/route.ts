@@ -46,6 +46,25 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient()
 
+    // Verify all requested beats exist and are active — reject before touching Stripe
+    const { data: validBeats, error: beatsError } = await supabase
+      .from('beats')
+      .select('id, title')
+      .in('id', beatIds)
+      .eq('is_active', true)
+
+    if (beatsError) {
+      return Response.json({ error: 'Failed to verify beats' }, { status: 500 })
+    }
+
+    const validIds = new Set((validBeats ?? []).map((b: { id: string }) => b.id))
+    const invalidIds = beatIds.filter((id) => !validIds.has(id))
+    if (invalidIds.length > 0) {
+      return Response.json({ error: 'One or more beats are no longer available' }, { status: 400 })
+    }
+
+    const beatTitles = (validBeats ?? []).map((b: { title: string }) => b.title)
+
     // Fetch active promo config from DB (server-side enforcement)
     let promo = { sitewide_discount_pct: null as number | null, bogo_free_count: null as number | null }
     try {
@@ -57,20 +76,6 @@ export async function POST(req: NextRequest) {
       if (data) promo = data
     } catch {
       // Continue without promo if DB read fails
-    }
-
-    // Fetch beat titles for line item description
-    let beatTitles: string[] = beatIds.map((id) => `Beat ${id}`)
-    try {
-      const { data } = await supabase
-        .from('beats')
-        .select('id, title')
-        .in('id', beatIds)
-      if (data?.length) {
-        beatTitles = data.map((b: { title: string }) => b.title)
-      }
-    } catch {
-      // Use fallback titles
     }
 
     // Determine pricing tier — BOGO overrides quantityTier to 1-beat price

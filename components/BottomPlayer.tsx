@@ -302,7 +302,7 @@ export default function BottomPlayer() {
         onError={() => setPlaying(false)}
       />
 
-      {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" role="region" aria-label="Music player">
+      {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="region" aria-label="Music player">
         {/* Canvas fills the entire player — progress track at top, bars cascade down */}
         <canvas
           ref={playerCanvasRef}
@@ -422,7 +422,7 @@ export default function BottomPlayer() {
           </div>
 
           {/* Right — time + volume */}
-          <div className="flex items-center gap-3 flex-1 justify-end">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
             {/* Updated via DOM ref — no React re-render on every tick */}
             <span ref={timeTextRef} className="hidden sm:block text-[10px] text-muted-low tabular-nums">
               0:00 / 0:30
@@ -441,8 +441,8 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="cursor-pointer flex-shrink-0"
-              style={{ width: 'clamp(40px, 8vw, 60px)' }}
+              className="hidden sm:block cursor-pointer flex-shrink-0"
+              style={{ width: '60px' }}
               aria-label="Volume"
             />
           </div>
