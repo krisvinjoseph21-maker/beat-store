@@ -203,22 +203,22 @@ export default function MixingMasteringClient() {
         <div className="w-full max-w-[460px] flex flex-col items-center text-center">
 
           {/* Brand label */}
-          <p className="text-[11px] font-semibold uppercase text-muted-low mb-3" style={{ letterSpacing: '0.22em', fontFamily: 'var(--font-montserrat)' }}>
+          <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
             PRODKJBEATS
           </p>
 
           {/* Title */}
-          <h1 className="font-display text-5xl sm:text-6xl text-foreground leading-tight mb-5">
+          <h1 className="text-foreground leading-tight mb-5" style={{ fontSize: 'clamp(36px, 6vw, 56px)', fontWeight: 300 }}>
             Mixing &amp; Mastering
           </h1>
 
           {/* Price */}
-          <p className="text-2xl font-semibold text-foreground mb-1">{selected.price}</p>
-          <p className="text-[13px] text-muted-low mb-8">Taxes included.</p>
+          <p className="text-[22px] text-foreground mb-1" style={{ fontWeight: 500 }}>{selected.price}</p>
+          <p className="text-[12px] text-muted-low mb-8">Taxes included.</p>
 
           {/* Package selector */}
           <div className="w-full mb-8">
-            <p className="text-[13px] text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.08em', fontFamily: 'var(--font-inter)' }}>
               Mixing &amp; Mastering
             </p>
             <div className="flex flex-wrap justify-center gap-2">
@@ -322,17 +322,12 @@ export default function MixingMasteringClient() {
               {PACKAGES.map((pkg) => (
                 <div key={pkg.id} className="border border-line-card bg-surface-1 p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
-                    <p className="text-base font-black text-foreground">{pkg.name} — {pkg.price}</p>
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
+                    <p className="text-[15px] font-medium text-foreground">{pkg.name} — {pkg.price}</p>
                   </div>
-                  <ul className="space-y-1.5">
-                    {pkg.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-muted" style={{ fontFamily: 'var(--font-inter)' }}>
-                        <Check size={12} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-[12px] text-muted-low leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
+                    {pkg.features.join(' · ')}
+                  </p>
                 </div>
               ))}
             </div>
@@ -346,7 +341,7 @@ export default function MixingMasteringClient() {
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <p className="font-display text-3xl text-foreground leading-none">Customer Reviews</p>
+              <p className="text-2xl font-medium text-foreground leading-none">Customer Reviews</p>
               {!showReviewForm && !reviewSent && (
                 <button
                   onClick={() => setShowReviewForm(true)}
@@ -510,7 +505,7 @@ export default function MixingMasteringClient() {
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 id="mm-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h2>
+                <h2 id="mm-modal-title" className="text-xl font-medium text-foreground leading-none">Book a Session</h2>
                 <p className="text-xs text-muted mt-0.5">{selected.name}</p>
               </div>
               <button onClick={closeModal} aria-label="Close" className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid">
@@ -523,7 +518,7 @@ export default function MixingMasteringClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="font-display text-3xl uppercase text-foreground leading-none">Inquiry Sent.</p>
+                <p className="text-2xl font-medium text-foreground">Inquiry Sent.</p>
                 <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
                 <button onClick={closeModal} className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors">
                   Close

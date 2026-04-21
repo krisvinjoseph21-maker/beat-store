@@ -32,7 +32,7 @@ async function getBeats(): Promise<Beat[]> {
   }
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 30
 
 export const metadata = {
   title: 'Beat Store — PRODKJBEATS',

@@ -39,10 +39,10 @@ export default function FAQPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+        <p className="mb-2 text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low">
           Help
         </p>
-        <h1 className="font-display uppercase text-foreground leading-none" style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}>FAQ</h1>
+        <h1 className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(48px, 8vw, 88px)', fontWeight: 300 }}>FAQ</h1>
         <p className="mt-3 text-sm text-muted max-w-md mx-auto">
           Frequently asked questions about beats, licensing, and orders.
         </p>
@@ -51,7 +51,7 @@ export default function FAQPage() {
       <div className="space-y-3">
         {FAQS.map(({ q, a }) => (
           <div key={q} className="rounded-xl border border-line bg-surface-2 p-5">
-            <h3 className="mb-2 font-bold text-foreground text-sm">{q}</h3>
+            <h3 className="mb-2 font-medium text-foreground text-[15px]">{q}</h3>
             <p className="text-sm text-muted leading-relaxed">{a}</p>
           </div>
         ))}

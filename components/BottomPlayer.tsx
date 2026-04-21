@@ -46,6 +46,8 @@ export default function BottomPlayer() {
   const playerCanvasRef = useRef<HTMLCanvasElement>(null)
   const playerRafRef    = useRef<number>(0)
   const barDecayRef     = useRef<Float32Array>(new Float32Array(0))
+  // Stable ref to the draw function so it can be restarted from outside the visualizer effect
+  const drawRef         = useRef<(() => void) | null>(null)
 
   const [previewEnded, setPreviewEnded] = useState(false)
   const [volume, setVolume]             = useState(1)
@@ -53,6 +55,12 @@ export default function BottomPlayer() {
 
   useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
   useEffect(() => { durationRef.current = duration }, [duration])
+  // Restart the RAF draw loop whenever a beat loads and the loop has gone idle
+  useEffect(() => {
+    if (currentBeat && playerRafRef.current === 0 && drawRef.current) {
+      playerRafRef.current = requestAnimationFrame(drawRef.current)
+    }
+  }, [currentBeat])
 
   // ── Canvas spectrum visualizer ──────────────────────────────────────────
   useEffect(() => {
@@ -68,12 +76,12 @@ export default function BottomPlayer() {
     let observedCanvas: HTMLCanvasElement | null = null
 
     function draw() {
-      // Poll the ref on every frame — canvas is conditionally rendered so it
-      // may be null on mount and only appear after a beat is loaded.
       const canvas = playerCanvasRef.current
 
       if (!canvas) {
-        playerRafRef.current = requestAnimationFrame(draw)
+        // No canvas means no beat is loaded — stop the loop entirely.
+        // Restarted by the currentBeat effect once a beat mounts the canvas.
+        playerRafRef.current = 0
         return
       }
 
@@ -196,10 +204,18 @@ export default function BottomPlayer() {
       playerRafRef.current = requestAnimationFrame(draw)
     }
 
-    playerRafRef.current = requestAnimationFrame(draw)
+    // Expose draw so the currentBeat effect can restart the loop after it idles
+    drawRef.current = draw
+
+    // Only start immediately if a beat is already loaded (e.g. on hot-reload)
+    if (playerCanvasRef.current) {
+      playerRafRef.current = requestAnimationFrame(draw)
+    }
 
     return () => {
+      drawRef.current = null
       cancelAnimationFrame(playerRafRef.current)
+      playerRafRef.current = 0
       ro?.disconnect()
     }
   }, []) // intentionally empty — all state accessed via refs

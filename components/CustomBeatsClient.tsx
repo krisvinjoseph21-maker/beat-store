@@ -80,7 +80,8 @@ interface Package {
   name: string
   price: string
   priceNum: string
-  features: string[]
+  description: string
+  deliverables: string[]
 }
 
 const PACKAGES: Package[] = [
@@ -89,66 +90,40 @@ const PACKAGES: Package[] = [
     name: 'Basic Custom Beat',
     price: '$200.00 USD',
     priceNum: '$200',
-    features: [
-      '1 beat built from your reference',
-      'Mixed stereo beat (no stems)',
-      'WAV + MP3',
-      '1 revision',
-    ],
+    description: 'A single beat built around your reference track. Delivered mixed and ready to record over.',
+    deliverables: ['1 beat from your reference', 'Mixed stereo WAV + MP3', '1 revision'],
   },
   {
     emoji: '🚀',
     name: 'Full Custom Beat',
     price: '$500.00 USD',
     priceNum: '$500',
-    features: [
-      'Fully arranged beat + transitions',
-      'Mixed stereo beat (including stems)',
-      'WAV + MP3',
-      'Up to 3 revisions',
-      'Priority turnaround',
-    ],
+    description: 'Fully arranged production with all elements separated for your session.',
+    deliverables: ['Arranged beat + full transitions', 'Mixed stereo + stem pack', 'WAV + MP3', 'Up to 3 revisions', 'Priority turnaround'],
   },
   {
     emoji: '🔥',
     name: 'Custom Beat + Mix Bundle',
     price: '$750.00 USD',
     priceNum: '$750',
-    features: [
-      'Custom beat tailored to your sound',
-      'Full vocal mix + master',
-      'All stems provided',
-      'Master WAV + MP3',
-      'Up to 5 revisions',
-    ],
+    description: 'Custom beat plus a full vocal mix and master — everything delivered in one package.',
+    deliverables: ['Custom beat to your sound', 'Full vocal mix + master', 'All stems provided', 'Master WAV + MP3', 'Up to 5 revisions'],
   },
   {
     emoji: '🧠',
     name: 'Executive Producer Package',
     price: '$1,000.00 USD',
     priceNum: '$1,000',
-    features: [
-      'Beat built from scratch around your vision',
-      'Arrangement, sound design, intro/outro support',
-      'Mix & Master polish',
-      'Private Zoom/DM session for feedback',
-      'Optional promo placement',
-      'Priority treatment',
-    ],
+    description: 'A full creative session. I build around your vision from scratch, shape the sound, and guide the record.',
+    deliverables: ['Beat built from scratch', 'Arrangement + sound design', 'Mix & master polish', 'Private feedback session', 'Optional promo placement', 'Priority treatment'],
   },
   {
     emoji: '🎙️',
     name: 'Project Launch Package',
     price: '$1,500.00 USD',
     priceNum: '$1,500',
-    features: [
-      '3 custom beats built to your sound',
-      'Full mix & master on all 3 tracks',
-      'Creative direction & vocal production support',
-      'Release planning guidance',
-      'Priority service for the entire project',
-      'Locked in as exec producer across everything',
-    ],
+    description: 'Three custom beats, mixed and mastered, with creative direction across the whole project.',
+    deliverables: ['3 custom beats', 'Full mix & master on all 3', 'Creative direction + vocal production support', 'Release planning guidance', 'Priority service throughout', 'Exec producer credit across everything'],
   },
 ]
 
@@ -252,22 +227,21 @@ export default function CustomBeatsClient() {
               className="pointer-events-none absolute inset-0 opacity-[0.03]"
               style={{ backgroundImage: 'linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
             />
-            <div className="relative z-10 flex flex-col items-center gap-5 px-12 text-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent mb-2" />
+            <div className="relative z-10 flex flex-col items-center gap-4 px-12 text-center">
               <p
-                className="font-display uppercase leading-none text-foreground"
-                style={{ fontSize: 'clamp(42px, 4.5vw, 72px)', letterSpacing: '-0.01em' }}
+                className="font-display leading-none text-foreground"
+                style={{ fontSize: 'clamp(42px, 4.5vw, 72px)', fontWeight: 300, letterSpacing: '-0.02em' }}
               >
-                Custom Beat<br />Package
+                Custom Beat<br />Packages
               </p>
-              <div className="w-10 h-px bg-white/10" />
+              <div className="w-10 h-px bg-white/10 mt-1" />
               <p
-                className="text-[11px] font-semibold uppercase text-muted-low"
-                style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}
+                className="text-[11px] font-normal uppercase text-muted-low"
+                style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}
               >
                 Built for Serious Artists
               </p>
-              <p className="mt-6 text-[11px] text-muted-low" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.12em' }}>
+              <p className="mt-4 text-[11px] text-muted-low" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}>
                 @PRODKJBEATS
               </p>
             </div>
@@ -281,10 +255,10 @@ export default function CustomBeatsClient() {
             style={{ background: 'radial-gradient(ellipse 80% 100% at 50% 50%, rgba(200,168,106,0.07) 0%, transparent 70%)' }}
           />
           <div className="relative z-10 text-center">
-            <p className="font-display uppercase text-foreground leading-none" style={{ fontSize: 'clamp(32px, 8vw, 52px)' }}>
+            <p className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(32px, 8vw, 52px)', fontWeight: 300 }}>
               Custom Beats
             </p>
-            <p className="mt-2 text-[10px] font-semibold uppercase text-muted-low" style={{ letterSpacing: '0.28em', fontFamily: 'var(--font-montserrat)' }}>
+            <p className="mt-2 text-[10px] font-normal uppercase text-muted-low" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
               Built for Serious Artists
             </p>
           </div>
@@ -294,12 +268,12 @@ export default function CustomBeatsClient() {
         <div className="w-full px-8 lg:px-14 py-14 lg:py-16" style={{ flex: 1 }}>
 
           {/* Brand */}
-          <p className="text-[11px] font-semibold uppercase text-muted-low mb-3" style={{ letterSpacing: '0.22em', fontFamily: 'var(--font-montserrat)' }}>
+          <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
             PRODKJBEATS
           </p>
 
           {/* Title */}
-          <h1 className="text-[28px] sm:text-[34px] font-black text-foreground leading-tight mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+          <h1 className="text-foreground leading-tight mb-3" style={{ fontFamily: 'var(--font-inter)', fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 300 }}>
             Custom Production Services
           </h1>
 
@@ -314,7 +288,7 @@ export default function CustomBeatsClient() {
           </div>
 
           {/* Price */}
-          <p className="text-[26px] font-black text-foreground mb-0.5" style={{ fontFamily: 'var(--font-inter)' }}>
+          <p className="text-[24px] text-foreground mb-0.5" style={{ fontFamily: 'var(--font-inter)', fontWeight: 500 }}>
             {selected.price}
           </p>
           <p className="text-[12px] text-muted-low mb-8" style={{ fontFamily: 'var(--font-inter)' }}>
@@ -323,15 +297,34 @@ export default function CustomBeatsClient() {
 
           {/* Package variant selector */}
           <div className="mb-8">
-            <p className="text-[12px] font-semibold text-foreground mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.08em', fontFamily: 'var(--font-inter)' }}>
               Custom Beat
             </p>
-            <div className="flex flex-wrap gap-2">
-              {PACKAGES.map((pkg) => (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {PACKAGES.slice(0, 3).map((pkg) => (
                 <button
                   key={pkg.name}
                   onClick={() => selectPackage(pkg)}
-                  className={`rounded-full px-4 py-2 text-[13px] font-semibold border transition-colors min-h-[40px] ${
+                  className={`rounded-full px-4 py-2 text-[13px] font-normal border transition-colors min-h-[40px] ${
+                    selected.name === pkg.name
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-foreground border-line-card hover:border-muted'
+                  }`}
+                  style={{ fontFamily: 'var(--font-inter)' }}
+                >
+                  {pkg.name}
+                </button>
+              ))}
+            </div>
+            <p className="text-[11px] font-normal uppercase text-muted-low mb-2 mt-4" style={{ letterSpacing: '0.08em', fontFamily: 'var(--font-inter)' }}>
+              Full Direction
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {PACKAGES.slice(3).map((pkg) => (
+                <button
+                  key={pkg.name}
+                  onClick={() => selectPackage(pkg)}
+                  className={`rounded-full px-4 py-2 text-[13px] font-normal border transition-colors min-h-[40px] ${
                     selected.name === pkg.name
                       ? 'bg-white text-black border-white'
                       : 'bg-transparent text-foreground border-line-card hover:border-muted'
@@ -346,7 +339,7 @@ export default function CustomBeatsClient() {
 
           {/* Quantity selector */}
           <div className="mb-8">
-            <p className="text-[12px] font-semibold text-foreground mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.08em', fontFamily: 'var(--font-inter)' }}>
               Quantity
             </p>
             <div className="inline-flex items-center border border-line-card" style={{ height: '44px' }}>
@@ -375,16 +368,14 @@ export default function CustomBeatsClient() {
             </div>
           </div>
 
-          {/* Selected features */}
+          {/* Selected package details */}
           <div className="mb-8 border-t border-line-card pt-6">
-            <ul className="space-y-2.5">
-              {selected.features.map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-[14px] text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
-                  <Check size={14} className="text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+            <p className="text-[14px] text-muted leading-relaxed mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+              {selected.description}
+            </p>
+            <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
+              {selected.deliverables.join(' · ')}
+            </p>
           </div>
 
           {/* CTAs */}
@@ -447,8 +438,8 @@ export default function CustomBeatsClient() {
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 id="cb-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h2>
-                <p className="text-xs text-muted mt-0.5">{selected.name}</p>
+                <h2 id="cb-modal-title" className="text-xl font-medium text-foreground leading-none">Book a Session</h2>
+                <p className="text-xs text-muted mt-1">{selected.name}</p>
               </div>
               <button
                 onClick={closeModal}
@@ -464,7 +455,7 @@ export default function CustomBeatsClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="font-display text-3xl uppercase text-foreground leading-none">Inquiry Sent.</p>
+                <p className="text-2xl font-medium text-foreground">Inquiry Sent.</p>
                 <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
                 <button
                   onClick={closeModal}
@@ -476,7 +467,7 @@ export default function CustomBeatsClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="cb-artist-name" className="block text-sm font-semibold text-foreground mb-2">Artist Name *</label>
+                  <label htmlFor="cb-artist-name" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Artist Name *</label>
                   <input
                     id="cb-artist-name"
                     required
@@ -489,7 +480,7 @@ export default function CustomBeatsClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="cb-email" className="block text-sm font-semibold text-foreground mb-2">Email *</label>
+                  <label htmlFor="cb-email" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Email *</label>
                   <input
                     id="cb-email"
                     required
@@ -502,7 +493,7 @@ export default function CustomBeatsClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="cb-service" className="block text-sm font-semibold text-foreground mb-2">Package</label>
+                  <label htmlFor="cb-service" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Package</label>
                   <input
                     id="cb-service"
                     readOnly
@@ -511,7 +502,7 @@ export default function CustomBeatsClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="cb-details" className="block text-sm font-semibold text-foreground mb-2">Project Details *</label>
+                  <label htmlFor="cb-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Project Details *</label>
                   <textarea
                     id="cb-details"
                     required

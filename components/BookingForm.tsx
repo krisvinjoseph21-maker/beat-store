@@ -79,7 +79,7 @@ export default function BookingForm() {
     'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors'
   const selectClass =
     'w-full rounded border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground outline-none focus:border-muted transition-colors appearance-none'
-  const labelClass = 'block text-sm font-semibold text-foreground mb-2 cursor-pointer'
+  const labelClass = 'block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2 cursor-pointer'
 
   if (sent) {
     return (
@@ -87,7 +87,7 @@ export default function BookingForm() {
         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
           <Check size={30} className="text-accent" />
         </div>
-        <p className="font-display text-4xl uppercase text-foreground leading-none">Request Received.</p>
+        <p className="text-3xl font-medium text-foreground leading-none">Request Received.</p>
         <p className="mt-3 text-sm text-muted-mid max-w-sm mx-auto">
           A confirmation has been sent to <span className="text-foreground">{form.email}</span>.
           I&apos;ll be in touch within 24–48 hours.
@@ -220,7 +220,7 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={sending}
-        className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
+        className="w-full rounded bg-white py-4 text-base font-semibold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
       >
         {sending ? 'Sending…' : 'Submit Booking Request'}
       </button>

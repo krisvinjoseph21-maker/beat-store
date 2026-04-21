@@ -191,7 +191,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); openCart() }}
                 aria-label={`${beat.title} — already in cart, click to view cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
                 style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
               >
                 <Check
@@ -206,7 +206,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={() => setLicenseOpen(o => !o)}
                 aria-label={`Add ${beat.title} to cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[30px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
+                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
                 style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
               >
                 <ShoppingCart size={12} aria-hidden="true" />

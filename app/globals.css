@@ -8,6 +8,7 @@
   --muted-mid: #a1a1a6;
   --muted-low: #787878;   /* 4.54:1 on #000 — WCAG AA ✓ (raised from #767676) */
   --border: rgba(255,255,255,0.1);
+  --glow-soft: rgba(255,255,255,0.04);  /* Hero radial glow tint */
   --card: #1d1d1f;
   --player-height: 64px;
   --accent: #c8a86a;
@@ -62,6 +63,10 @@
   /* Interactive */
   --color-white-hover: #e8e8ed;
   --color-promo: #52b788;
+
+  /* Borders & glows */
+  --color-border: rgba(255,255,255,0.1);
+  --color-glow-soft: rgba(255,255,255,0.04);
 }
 
 * {
@@ -144,22 +149,7 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 .hero-sub          { animation: fadeUp 0.7s ease forwards 0.4s;  opacity: 0; }
 .hero-ctas         { animation: fadeUp 0.7s ease forwards 0.6s;  opacity: 0; }
 
-/* ── Dot pulse ────────────────────────────────── */
-@keyframes dotPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.3; transform: scale(0.6); }
-}
 
-/* ── Hero divider expand ──────────────────────── */
-@keyframes expandLine {
-  from { transform: scaleX(0); opacity: 0; }
-  to   { transform: scaleX(1); opacity: 1; }
-}
-.hero-divider {
-  animation: expandLine 0.8s ease forwards 0.35s;
-  opacity: 0;
-  transform-origin: center;
-}
 
 /* ── Hero headline subtle shimmer ─────────────── */
 @keyframes shimmer {

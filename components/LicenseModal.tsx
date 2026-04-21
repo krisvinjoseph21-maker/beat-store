@@ -6,6 +6,8 @@ import { useCartStore, LicenseType, QuantityTier } from '@/lib/store'
 import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'
 import type { PromoConfig } from '@/lib/promos'
 import { PRICES } from '@/lib/prices'
+import { useLocaleStore, formatPrice } from '@/lib/locale'
+import { useT } from '@/lib/i18n'
 
 // Inlined — discount-codes.ts must NOT be imported in client components
 // (it contains the full code list which would be exposed in the JS bundle)
@@ -38,6 +40,8 @@ const UNLIMITED_FEATURES = [
 export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const { licenseType, quantityTier, setLicenseType, setQuantityTier, items } =
     useCartStore()
+  const { currency } = useLocaleStore()
+  const t = useT()
   const [codeInput, setCodeInput] = useState('')
   const [appliedCode, setAppliedCode] = useState('')
   const [discountPct, setDiscountPct] = useState<number | null>(null)
@@ -179,7 +183,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         className="relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-sm border border-line-card bg-surface-2 p-5 animate-fade-in max-h-[90vh] overflow-y-auto"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="license-modal-title" className="text-lg font-bold text-foreground">Choose Your License</h2>
+          <h2 id="license-modal-title" className="text-lg font-bold text-foreground">{t.license.title}</h2>
           <button
             onClick={onClose}
             aria-label="Close license options"
@@ -235,7 +239,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                   : 'text-muted-mid hover:text-white'
               }`}
             >
-              {type === 'standard' ? 'Standard Lease' : 'Unlimited Lease'}
+              {type === 'standard' ? t.license.standardLease : t.license.unlimitedLease}
             </button>
           ))}
         </div>
@@ -253,7 +257,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* Quantity tiers */}
         <div className="mb-4">
           <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
-            Beat Quantity
+            {t.license.beatQty}
           </p>
           <div className="grid grid-cols-3 gap-2">
             {([1, 3, 5] as QuantityTier[]).map((qty) => {
@@ -265,7 +269,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                   key={qty}
                   onClick={() => handleTierClick(qty)}
                   aria-pressed={isSelected}
-                  aria-label={`${qty} beat${qty > 1 ? 's' : ''} — $${shown}`}
+                  aria-label={`${qty} beat${qty > 1 ? 's' : ''} — ${formatPrice(shown, currency)}`}
                   className={`rounded-sm border py-3 text-center transition-[border-color,background-color,color] ${
                     isSelected
                       ? 'border-accent bg-accent/10 text-foreground'
@@ -276,11 +280,11 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                   <p className="text-xs text-muted">beat{qty > 1 ? 's' : ''}</p>
                   {bestPct !== null ? (
                     <p className="text-sm font-semibold text-foreground mt-1">
-                      <span className="line-through text-muted-low text-xs mr-1">${raw}</span>
-                      ${shown}
+                      <span className="line-through text-muted-low text-xs mr-1">{formatPrice(raw, currency)}</span>
+                      {formatPrice(shown, currency)}
                     </p>
                   ) : (
-                    <p className="text-sm font-semibold text-foreground mt-1">${raw}</p>
+                    <p className="text-sm font-semibold text-foreground mt-1">{formatPrice(raw, currency)}</p>
                   )}
                 </button>
               )
@@ -292,7 +296,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {hasBogo && (
           <div className="mb-4">
             <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
-              Limited Offer
+              {t.license.limitedOffer}
             </p>
             <button
               onClick={() => setBogoSelected((s) => !s)}
@@ -321,11 +325,11 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 <div className="text-right flex-shrink-0">
                   {bestPct !== null ? (
                     <>
-                      <p className="text-xs line-through text-muted-low">${PRICES[licenseType][1]}</p>
-                      <p className="text-base font-bold text-foreground">${applyDiscount(PRICES[licenseType][1], bestPct)}</p>
+                      <p className="text-xs line-through text-muted-low">{formatPrice(PRICES[licenseType][1], currency)}</p>
+                      <p className="text-base font-bold text-foreground">{formatPrice(applyDiscount(PRICES[licenseType][1], bestPct), currency)}</p>
                     </>
                   ) : (
-                    <p className="text-base font-bold text-foreground">${PRICES[licenseType][1]}</p>
+                    <p className="text-base font-bold text-foreground">{formatPrice(PRICES[licenseType][1], currency)}</p>
                   )}
                   <p className="text-[10px]" style={{ color: 'var(--promo)' }}>1-beat price</p>
                 </div>
@@ -348,7 +352,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 onClick={handleRemoveCode}
                 className="text-xs text-muted-low hover:text-white transition-colors"
               >
-                Remove
+                {t.license.remove}
               </button>
             </div>
           ) : (
@@ -360,7 +364,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 value={codeInput}
                 onChange={(e) => { setCodeInput(e.target.value); setCodeError('') }}
                 onKeyDown={(e) => e.key === 'Enter' && handleApplyCode()}
-                placeholder="Discount code"
+                placeholder={t.license.discountCode}
                 autoComplete="off"
                 aria-describedby={codeError ? 'discount-code-error' : undefined}
                 aria-invalid={!!codeError}
@@ -371,7 +375,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                 disabled={codeLoading}
                 className="rounded-sm border border-line-input px-4 py-2 text-sm font-semibold text-foreground hover:text-white hover:border-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {codeLoading ? '…' : 'Apply'}
+                {codeLoading ? '…' : t.license.apply}
               </button>
             </div>
           )}
@@ -385,12 +389,12 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         >
           {bestPct !== null || bogoSelected ? (
             <>
-              Checkout —{' '}
-              <span className="line-through text-black/40 mr-1 font-normal text-sm">${basePrice}</span>
-              ${finalPrice}
+              {t.license.checkout} —{' '}
+              <span className="line-through text-black/40 mr-1 font-normal text-sm">{formatPrice(basePrice, currency)}</span>
+              {formatPrice(finalPrice, currency)}
             </>
           ) : (
-            <>Checkout — ${finalPrice}</>
+            <>{t.license.checkout} — {formatPrice(finalPrice, currency)}</>
           )}
         </button>
 
@@ -405,7 +409,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         )}
 
         <p className="mt-2 text-center text-xs text-muted-low">
-          Powered by Stripe · Secure checkout
+          {t.license.secure}
         </p>
       </div>
     </div>

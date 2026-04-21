@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useCartStore } from '@/lib/store'
 import LicenseModal from './LicenseModal'
 import { useRouter } from 'next/navigation'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   open: boolean
@@ -14,6 +15,7 @@ interface Props {
 
 export default function CartDrawer({ open, onClose }: Props) {
   const { items, removeBeat, total, licenseType, quantityTier } = useCartStore()
+  const t = useT()
   const [licenseOpen, setLicenseOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
@@ -99,7 +101,7 @@ export default function CartDrawer({ open, onClose }: Props) {
       <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden="true" />
       <div ref={drawerRef} className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
-          <h2 className="text-[15px] font-semibold text-foreground">Cart</h2>
+          <h2 className="text-[15px] font-semibold text-foreground">{t.cart.title}</h2>
           <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
             <X size={16} aria-hidden="true" />
           </button>
@@ -111,15 +113,15 @@ export default function CartDrawer({ open, onClose }: Props) {
               <ShoppingBag size={22} className="text-muted-low" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-[13px] font-medium text-foreground mb-1">Your cart is empty</p>
-              <p className="text-[12px] text-muted-low leading-relaxed">Find your sound in the catalog.</p>
+              <p className="text-[13px] font-medium text-foreground mb-1">{t.cart.empty}</p>
+              <p className="text-[12px] text-muted-low leading-relaxed">{t.cart.emptyDesc}</p>
             </div>
             <Link
               href="/store"
               onClick={onClose}
               className="text-[12px] font-semibold text-foreground underline underline-offset-4 hover:text-muted transition-colors"
             >
-              Browse Beats →
+              {t.cart.browseBeats}
             </Link>
           </div>
         ) : (
@@ -167,7 +169,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                     </svg>
                     Redirecting…
                   </>
-                ) : 'Choose License & Checkout'}
+                ) : t.cart.chooseLicense}
               </button>
             </div>
           </>

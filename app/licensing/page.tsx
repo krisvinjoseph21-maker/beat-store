@@ -84,8 +84,8 @@ export default function LicensingPage() {
       {/* Header */}
       <div className="w-full flex justify-center border-b border-white/[0.06] bg-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-4">Beat Licensing</p>
-          <h1 className="font-display text-6xl sm:text-8xl text-foreground uppercase leading-none mb-5">
+          <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Beat Licensing</p>
+          <h1 className="font-display text-foreground leading-none mb-5" style={{ fontSize: 'clamp(44px, 7vw, 88px)', fontWeight: 300 }}>
             Choose Your License.
           </h1>
         </div>
@@ -111,8 +111,8 @@ export default function LicensingPage() {
               <div className="flex flex-col gap-5 p-5 flex-1">
                 {/* Name + Price */}
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-low mb-2">{tier.name}</p>
-                  <p className="font-display text-4xl text-foreground leading-none">{tier.price}</p>
+                  <p className="text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">{tier.name}</p>
+                  <p className="text-foreground leading-none" style={{ fontSize: '2rem', fontWeight: 400 }}>{tier.price}</p>
                 </div>
 
                 {/* CTA */}
@@ -131,7 +131,7 @@ export default function LicensingPage() {
                 <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.06]">
                   {tier.features.map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-low">{label}</span>
+                      <span className="text-[10px] font-normal uppercase tracking-[0.07em] text-muted-low">{label}</span>
                       <span className={`text-[12px] font-medium ${value === '✓' ? 'text-accent' : 'text-muted-mid'}`}
                         aria-label={value === '✓' ? 'Yes' : undefined}>
                         {value === '✓' ? <Check size={13} className="text-accent" aria-hidden="true" /> : value}
@@ -149,7 +149,7 @@ export default function LicensingPage() {
       {/* General rules */}
       <div className="flex justify-center w-full">
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-20">
-        <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-low">General Rules</h2>
+        <h2 className="mb-6 text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low">General Rules</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {RULES.map((rule) => (
             <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-surface-4 p-4">

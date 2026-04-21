@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 import Link from 'next/link'
 import { BadgeCheck } from 'lucide-react'
@@ -65,12 +65,9 @@ export default async function HomePage() {
         <div
           className="pointer-events-none absolute inset-0 z-[2]"
           style={{
-            background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse 80% 60% at 50% 0%, var(--glow-soft) 0%, transparent 70%)',
           }}
         />
-
-        {/* Top edge line */}
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent z-10" />
 
         {/* WebGL shader — volumetric smoke + mouse-driven amber light */}
         <HeroShader />
@@ -79,19 +76,13 @@ export default async function HomePage() {
         <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">
 
           {/* Eyebrow */}
-          <div className="hero-eyebrow flex items-center gap-3 mb-8">
-            <div className="w-8 h-px bg-gradient-to-r from-transparent to-white/20" />
+          <div className="hero-eyebrow mb-7">
             <span
-              className="text-[10px] font-medium tracking-[0.28em] uppercase text-muted"
+              className="text-[10px] font-normal tracking-[0.14em] uppercase text-muted"
               style={{ fontFamily: 'var(--font-inter)' }}
             >
               GloRilla · DeeBaby · Shenseea · Seyi Vibez
             </span>
-            <div
-              className="w-1.5 h-1.5 rounded-full bg-white/40"
-              style={{ animation: 'dotPulse 2.5s ease infinite' }}
-            />
-            <div className="w-8 h-px bg-gradient-to-l from-transparent to-white/20" />
           </div>
 
           {/* Headline */}
@@ -103,9 +94,6 @@ export default async function HomePage() {
               BEATS THAT HIT DIFFERENT.
             </h1>
           </HeadlineParallax>
-
-          {/* Divider */}
-          <div className="hero-divider w-12 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent my-7" />
 
           {/* Sub */}
           <p
@@ -140,7 +128,7 @@ export default async function HomePage() {
                 >
                   {item}
                 </span>
-                <span className="text-[8px] pr-5 text-line-hover" aria-hidden="true">✦</span>
+                <span className="text-[8px] pr-5 text-muted-low" aria-hidden="true">/</span>
               </span>
             ))}
           </div>
@@ -163,10 +151,10 @@ export default async function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <div className="receipts-heading">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-3">
+              <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-3">
                 Verified Credits
               </p>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground uppercase leading-none mb-4">
+              <h2 className="font-display text-foreground leading-none mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
                 The Receipts.
               </h2>
               <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
@@ -181,7 +169,7 @@ export default async function HomePage() {
               <div
                 className="group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full"
               >
-                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-low">
+                <span className="text-[10px] font-normal uppercase tracking-[0.08em] text-muted-low">
                   {role}
                 </span>
                 <div>
@@ -214,12 +202,12 @@ export default async function HomePage() {
           }}
         />
         <ScrollReveal>
-          <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-low mb-5">
+          <p className="relative text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-5">
             Don&apos;t Sleep
           </p>
           <h2
-            className="relative font-display uppercase leading-none mb-6 text-foreground"
-            style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
+            className="relative font-display leading-none mb-6 text-foreground"
+            style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
           >
             Your Next Hit<br />Starts Here.
           </h2>

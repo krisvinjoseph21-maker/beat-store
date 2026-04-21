@@ -249,6 +249,31 @@ export async function sendBookingConfirmationEmail({
   })
 }
 
+export async function sendSubscribeNotificationEmail({
+  name,
+  email,
+}: {
+  name: string
+  email: string
+}) {
+  await getResend().emails.send({
+    from: `PRODKJBEATS <${getFrom()}>`,
+    to: getToAdmin(),
+    subject: subj(`New Subscriber: ${name || email}`),
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
+        <h2 style="color:#fff;margin-bottom:4px">New Email Subscriber</h2>
+        <p style="color:#888;margin-top:0">Someone signed up via the website popup.</p>
+        <table style="width:100%;border-collapse:collapse;margin-top:24px">
+          ${name ? `<tr style="border-bottom:1px solid #222"><td style="padding:10px 8px;color:#888;font-size:13px">Name</td><td style="padding:10px 8px;color:#fff;font-weight:700">${esc(name)}</td></tr>` : ''}
+          <tr><td style="padding:10px 8px;color:#888;font-size:13px">Email</td><td style="padding:10px 8px;color:#fff"><a href="mailto:${esc(email)}" style="color:#c8a86a">${esc(email)}</a></td></tr>
+        </table>
+        <p style="color:#555;font-size:12px;margin-top:24px">— PRODKJBEATS site</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendContactEmail({
   name,
   email,

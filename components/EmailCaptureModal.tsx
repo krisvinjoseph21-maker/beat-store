@@ -6,10 +6,11 @@ import { X, Check } from 'lucide-react'
 export default function EmailCaptureModal() {
   const [visible, setVisible] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [consent, setConsent] = useState(false)
-  const [errors, setErrors] = useState<{ email?: string; consent?: string }>({})
+  const [errors, setErrors] = useState<{ email?: string; consent?: string; submit?: string }>({})
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -110,13 +111,26 @@ export default function EmailCaptureModal() {
     e.preventDefault()
     if (!validate()) return
 
-    // ── Wire up your email service here ──────────────────────────────────────
-    // Example: Mailchimp, ConvertKit, Resend, etc.
-    // await fetch('/api/subscribe', { method: 'POST', body: JSON.stringify({ name, email }) })
-    // ─────────────────────────────────────────────────────────────────────────
-
-    sessionStorage.setItem('email_popup_seen', '1')
-    setSubmitted(true)
+    setLoading(true)
+    setErrors((p) => ({ ...p, submit: undefined }))
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setErrors((p) => ({ ...p, submit: data.error ?? 'Something went wrong. Please try again.' }))
+        return
+      }
+      sessionStorage.setItem('email_popup_seen', '1')
+      setSubmitted(true)
+    } catch {
+      setErrors((p) => ({ ...p, submit: 'Network error. Please check your connection.' }))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -238,12 +252,27 @@ export default function EmailCaptureModal() {
                 )}
               </div>
 
+              {errors.submit && (
+                <p role="alert" className="text-xs text-danger text-center">
+                  {errors.submit}
+                </p>
+              )}
+
               {/* Submit */}
               <button
                 type="submit"
-                className="rounded-sm bg-black py-4 text-sm font-bold text-white hover:bg-black/80 transition-colors"
+                disabled={loading}
+                className="rounded-sm bg-black py-4 text-sm font-bold text-white hover:bg-black/80 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Subscribe Now
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    Subscribing…
+                  </>
+                ) : 'Subscribe Now'}
               </button>
 
               <p className="text-center text-[10px] text-black/35">
