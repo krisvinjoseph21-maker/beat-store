@@ -187,7 +187,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
           <button
             onClick={onClose}
             aria-label="Close license options"
-            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+            className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
           >
             <X size={18} aria-hidden="true" />
           </button>

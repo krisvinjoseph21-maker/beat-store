@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { Check, Minus, Plus, Star, X } from 'lucide-react'
 import { useLocaleStore, formatPrice } from '@/lib/locale'
+import { createBrowserClient } from '@/lib/supabase'
 
 interface Package {
   id: string
@@ -17,7 +19,7 @@ const PACKAGES: Package[] = [
     id: 'basic-mix',
     name: 'Basic Mix',
     usdPrice: 50,
-    dotColor: '#a855f7',
+    dotColor: 'var(--muted-mid)',
     features: [
       'Mixdown of your stereo beat and vocals',
       'Balance, EQ, light reverb/delay, basic automation',
@@ -28,7 +30,7 @@ const PACKAGES: Package[] = [
     id: 'full-mix',
     name: 'Full Mix (Stems)',
     usdPrice: 75,
-    dotColor: '#3b82f6',
+    dotColor: 'var(--accent)',
     features: [
       'Full stem-level mix of your vocals + beat stems',
       'Volume balancing, EQ, compression, reverb, FX, automation',
@@ -41,7 +43,7 @@ const PACKAGES: Package[] = [
     id: 'mix-master',
     name: 'Mix + Master Bundle',
     usdPrice: 100,
-    dotColor: '#ef4444',
+    dotColor: 'var(--foreground)',
     features: [
       'Everything from Full Mix',
       'Plus a final master ready for release',
@@ -85,6 +87,13 @@ export default function MixingMasteringClient() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const modalRef = useRef<HTMLDivElement>(null)
+
+  // Auth
+  const [user, setUser] = useState<{ id: string } | null | undefined>(undefined)
+  useEffect(() => {
+    const supabase = createBrowserClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null))
+  }, [])
 
   // Reviews
   const [reviews, setReviews] = useState<Review[]>([])
@@ -245,7 +254,7 @@ export default function MixingMasteringClient() {
           </div>
 
           {/* Quantity stepper */}
-          <div className="w-full mb-8">
+          <div role="group" aria-label="Quantity" className="w-full mb-8">
             <p className="text-[13px] text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
               Quantity
             </p>
@@ -280,7 +289,7 @@ export default function MixingMasteringClient() {
             </button>
             <button
               onClick={openModal}
-              className="w-full bg-[#5a31f4] py-4 text-sm font-bold text-white hover:bg-[#4b28d4] transition-colors min-h-[52px]"
+              className="w-full bg-white py-4 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[52px]"
             >
               Book with PRODKJBEATS
             </button>
@@ -306,7 +315,7 @@ export default function MixingMasteringClient() {
           {/* Long description */}
           <div className="mb-14">
             <h2 className="font-display text-3xl sm:text-4xl text-foreground leading-tight mb-5">
-              🎚 Your Mix, Dialled In.
+              Your Mix, Dialled In.
             </h2>
             <p className="text-[15px] text-muted leading-relaxed mb-4" style={{ fontFamily: 'var(--font-inter)' }}>
               Whether you need a quick polish or a full stem-level mixdown, this service gives your track the clarity, punch, and space it needs to compete.
@@ -321,8 +330,8 @@ export default function MixingMasteringClient() {
 
           {/* Packages breakdown */}
           <div className="mb-14">
-            <p className="text-[14px] font-semibold text-foreground mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
-              🧾 What&apos;s Included by Package:
+            <p className="text-[11px] font-normal uppercase text-muted-low mb-6" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
+              What&apos;s Included by Package
             </p>
             <div className="flex flex-col gap-5">
               {PACKAGES.map((pkg) => (
@@ -351,12 +360,22 @@ export default function MixingMasteringClient() {
             <div className="flex items-center justify-between mb-6">
               <p className="text-2xl font-medium text-foreground leading-none">Customer Reviews</p>
               {!showReviewForm && !reviewSent && (
-                <button
-                  onClick={() => setShowReviewForm(true)}
-                  className="text-sm font-semibold text-foreground border border-line-card px-4 py-2 hover:border-muted transition-colors"
-                >
-                  Write a review
-                </button>
+                user
+                  ? (
+                    <button
+                      onClick={() => setShowReviewForm(true)}
+                      className="text-sm font-semibold text-foreground border border-line-card px-4 py-2 hover:border-muted transition-colors"
+                    >
+                      Write a review
+                    </button>
+                  ) : user === null ? (
+                    <Link
+                      href="/login"
+                      className="text-sm font-semibold text-muted-mid border border-line-card px-4 py-2 hover:border-muted hover:text-foreground transition-colors"
+                    >
+                      Sign in to review
+                    </Link>
+                  ) : null
               )}
             </div>
 
@@ -394,7 +413,7 @@ export default function MixingMasteringClient() {
             })()}
 
             {/* Write-a-review form */}
-            {showReviewForm && !reviewSent && (
+            {showReviewForm && !reviewSent && user && (
               <form onSubmit={submitReview} className="border border-line-card bg-surface-1 p-5 mb-8 space-y-4">
                 <p className="text-sm font-semibold text-foreground">Leave a review</p>
 
@@ -516,7 +535,7 @@ export default function MixingMasteringClient() {
                 <h2 id="mm-modal-title" className="text-xl font-medium text-foreground leading-none">Book a Session</h2>
                 <p className="text-xs text-muted mt-0.5">{selected.name}</p>
               </div>
-              <button onClick={closeModal} aria-label="Close" className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid">
+              <button onClick={closeModal} aria-label="Close" className="flex h-11 w-11 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid">
                 <X size={18} aria-hidden="true" />
               </button>
             </div>
@@ -535,19 +554,19 @@ export default function MixingMasteringClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="mm-artist" className="block text-sm font-semibold text-foreground mb-2">Artist Name *</label>
+                  <label htmlFor="mm-artist" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Artist Name *</label>
                   <input id="mm-artist" required type="text" autoComplete="name" value={form.artistName} onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors" placeholder="Your artist name" />
                 </div>
                 <div>
-                  <label htmlFor="mm-email" className="block text-sm font-semibold text-foreground mb-2">Email *</label>
+                  <label htmlFor="mm-email" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Email *</label>
                   <input id="mm-email" required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors" placeholder="your@email.com" />
                 </div>
                 <div>
-                  <label htmlFor="mm-service" className="block text-sm font-semibold text-foreground mb-2">Package</label>
+                  <label htmlFor="mm-service" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Package</label>
                   <input id="mm-service" readOnly value={form.serviceType} className="w-full border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed" />
                 </div>
                 <div>
-                  <label htmlFor="mm-details" className="block text-sm font-semibold text-foreground mb-2">Project Details *</label>
+                  <label htmlFor="mm-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Project Details *</label>
                   <textarea id="mm-details" required rows={6} value={form.projectDetails} onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none" placeholder="Tell me about your project, references, timeline…" />
                 </div>
                 {error && <p role="alert" className="animate-shake text-sm text-danger">{error}</p>}

@@ -140,9 +140,6 @@ export default async function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <div className="receipts-heading">
-              <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-3">
-                Verified Credits
-              </p>
               <h2 className="font-display text-foreground leading-none mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
                 The Receipts.
               </h2>

@@ -14,7 +14,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-2',
@@ -29,7 +29,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-3',
@@ -44,7 +44,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-4',
@@ -59,7 +59,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-5',
@@ -74,7 +74,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-6',
@@ -89,7 +89,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-7',
@@ -104,7 +104,7 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
   {
     id: 'beat-8',
@@ -119,6 +119,6 @@ export const PLACEHOLDER_BEATS: Beat[] = [
     cover_url: null,
     stems_path: null,
     is_active: true,
-    created_at: new Date().toISOString(),
+    created_at: '2025-03-01T00:00:00.000Z',
   },
 ]

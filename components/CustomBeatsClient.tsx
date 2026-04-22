@@ -378,10 +378,8 @@ export default function CustomBeatsClient() {
             </button>
             <button
               onClick={openModal}
-              className="w-full py-3.5 text-[14px] font-bold text-white transition-colors min-h-[52px]"
-              style={{ backgroundColor: '#5c6ac4', fontFamily: 'var(--font-inter)' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#4959bd')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#5c6ac4')}
+              className="w-full py-3.5 text-[14px] font-bold text-black transition-colors min-h-[52px] bg-white hover:bg-white-hover"
+              style={{ fontFamily: 'var(--font-inter)' }}
             >
               Enquire Now
             </button>
@@ -433,7 +431,7 @@ export default function CustomBeatsClient() {
               <button
                 onClick={closeModal}
                 aria-label="Close inquiry form"
-                className="flex h-9 w-9 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid"
+                className="flex h-11 w-11 items-center justify-center rounded hover:bg-white/10 transition-colors text-muted-mid"
               >
                 <X size={18} aria-hidden="true" />
               </button>

@@ -39,6 +39,7 @@
 
 /* ── Tailwind v4 theme tokens ─────────────────────── */
 @theme {
+  --color-background: #000000;
   --color-foreground: #f5f5f7;
   --color-muted: #747477;
   --color-muted-mid: #a1a1a6;
@@ -212,19 +213,17 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 
 /* ── Heart pop ────────────────────────────────── */
 @keyframes heartPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.15); }
-  100% { transform: scale(1); }
+  from { transform: scale(0.7); }
+  to   { transform: scale(1); }
 }
-.animate-heart-pop { animation: heartPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-heart-pop { animation: heartPop 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
 /* ── Cart badge pop ───────────────────────────── */
 @keyframes badgePop {
-  0%   { transform: scale(0.3); opacity: 0; }
-  60%  { transform: scale(1.18); }
-  100% { transform: scale(1);   opacity: 1; }
+  from { transform: scale(0.3); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
 }
-.animate-badge-pop { animation: badgePop 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-badge-pop { animation: badgePop 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
 /* ── Check mark scale-in ──────────────────────── */
 @keyframes checkIn {
@@ -328,8 +327,7 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 
 /* ── Success pop ──────────────────────────────── */
 @keyframes successPop {
-  0%   { transform: scale(0.5); opacity: 0; }
-  60%  { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); }
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
 }
 .animate-success-pop { animation: successPop 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }

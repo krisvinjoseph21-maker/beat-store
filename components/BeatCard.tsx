@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import ShareButton from './ShareButton'
@@ -13,7 +13,6 @@ interface Props {
   index: number
   onBuyClick: (beat: Beat) => void
 }
-
 
 const LICENSE_OPTIONS = [
   { id: 'standard' as const, name: 'MP3 License',  desc: 'Non-exclusive · MP3' },
@@ -43,9 +42,11 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     if (inCart && !prevInCartRef.current) setShowCheckAnim(true)
     prevInCartRef.current = inCart
   }, [inCart])
-  const hasAudio      = !!beat.preview_url
-  const isNew         = beat.created_at &&
-    Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+  const hasAudio = !!beat.preview_url
+  const isNew = useMemo(
+    () => beat.created_at && Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000,
+    [beat.created_at]
+  )
 
   const progressPct = isThisActive && duration > 0
     ? Math.min((progress / duration) * 100, 100)

@@ -31,16 +31,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 192px"
           />
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-start justify-end p-4">
-            <span
-              className="font-display text-[56px] leading-none text-foreground/10 uppercase select-none"
-              aria-hidden="true"
-            >
-              {beat.genre.slice(0, 2)}
-            </span>
-          </div>
-        )}
+        ) : null}
         {/* Playing indicator overlay */}
         {isThisPlaying && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">

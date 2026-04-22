@@ -30,5 +30,7 @@ export async function GET(req: NextRequest) {
     cover_url: b.cover_url ?? null,
   }))
 
-  return Response.json(beats)
+  return Response.json(beats, {
+    headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' },
+  })
 }

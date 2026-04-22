@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/lib/store'
 import CartDrawer from './CartDrawer'
@@ -39,12 +39,12 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
 
   const close = useCallback(() => setOpen(false), [])
 
-  const NAV_LABEL_MAP: Record<string, string> = {
+  const NAV_LABEL_MAP = useMemo<Record<string, string>>(() => ({
     '/services': t.nav.services,
     '/services/custom-beats': t.nav.customBeats,
     '/services/mixing-mastering': t.nav.mixingMastering,
     '/sample-packs': t.nav.samplePacks,
-  }
+  }), [t])
 
   useEffect(() => {
     if (!open) return
@@ -113,7 +113,7 @@ export default function Navbar() {
   const [cartAnnouncement, setCartAnnouncement] = useState('')
   const pathname = usePathname()
 
-  const NAV_LABEL_MAP: Record<string, string> = {
+  const NAV_LABEL_MAP = useMemo<Record<string, string>>(() => ({
     '/store': t.nav.beats,
     '/services': t.nav.services,
     '/services/custom-beats': t.nav.customBeats,
@@ -121,7 +121,7 @@ export default function Navbar() {
     '/sample-packs': t.nav.samplePacks,
     '/licensing': t.nav.licensing,
     '/about': t.nav.contact,
-  }
+  }), [t])
 
   useEffect(() => {
     if (items.length === 0) return
@@ -143,6 +143,7 @@ export default function Navbar() {
   return (
     <>
       <nav
+        aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-[100] transition-[background,border-color,backdrop-filter] duration-300 ${
           scrolled ? 'glass border-b border-white/[0.06]' : 'bg-transparent'
         }`}
@@ -253,7 +254,6 @@ export default function Navbar() {
       {/* Mobile menu */}
       <nav
         id="mobile-nav-menu"
-        role="navigation"
         aria-label="Mobile navigation"
         className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
           mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'

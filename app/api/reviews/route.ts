@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
+import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
 export async function GET() {
@@ -20,6 +21,12 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const supabaseUser = await createSupabaseServerClient()
+  const { data: { user } } = await supabaseUser.auth.getUser()
+  if (!user) {
+    return Response.json({ error: 'You must be signed in to submit a review.' }, { status: 401 })
+  }
+
   if (!rateLimit(getRateLimitKey(req, '/api/reviews'), 3, 60_000)) {
     return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
   }

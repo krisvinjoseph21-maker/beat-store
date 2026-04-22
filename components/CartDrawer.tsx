@@ -102,7 +102,7 @@ export default function CartDrawer({ open, onClose }: Props) {
       <div ref={drawerRef} className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <h2 className="text-[15px] font-semibold text-foreground">{t.cart.title}</h2>
-          <button onClick={onClose} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
+          <button onClick={onClose} aria-label="Close cart" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
             <X size={16} aria-hidden="true" />
           </button>
         </div>
