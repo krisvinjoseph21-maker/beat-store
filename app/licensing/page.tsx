@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const TIERS = [
   {
     tag: null,
-    name: 'Standard Lease',
+    name: 'Basic Lease',
     price: `From $${PRICES.standard[1]}`,
     cta: 'Shop Beats',
     href: '/store',
@@ -21,6 +21,25 @@ const TIERS = [
       { label: 'Music Videos',        value: '1 music video' },
       { label: 'Radio Broadcasting',  value: 'Up to 2 stations' },
       { label: 'Monetization',        value: 'YouTube monetization' },
+      { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
+      { label: 'Ownership',           value: 'Non-exclusive' },
+      { label: 'For Sale',            value: '✓' },
+      { label: 'Live Performances',   value: 'Unlimited' },
+    ],
+  },
+  {
+    tag: null,
+    name: 'Premium Lease',
+    price: `From $${PRICES.premium[1]}`,
+    cta: 'Shop Beats',
+    href: '/store',
+    features: [
+      { label: 'File Format',         value: 'MP3 + WAV' },
+      { label: 'Streaming Limit',     value: '1,000,000 streams' },
+      { label: 'Distribution Limit',  value: '75,000 copies' },
+      { label: 'Music Videos',        value: '2 music videos' },
+      { label: 'Radio Broadcasting',  value: 'Up to 5 stations' },
+      { label: 'Monetization',        value: 'Full monetization' },
       { label: 'Credit Required',     value: 'Prod. PRODKJBEATS' },
       { label: 'Ownership',           value: 'Non-exclusive' },
       { label: 'For Sale',            value: '✓' },
@@ -94,7 +113,7 @@ export default function LicensingPage() {
       {/* Tier grid */}
       <div className="flex justify-center w-full">
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TIERS.map((tier) => (
             <div
               key={tier.name}

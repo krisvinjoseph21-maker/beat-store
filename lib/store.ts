@@ -23,7 +23,7 @@ export interface CartItem {
   beat: Beat
 }
 
-export type LicenseType = 'standard' | 'unlimited'
+export type LicenseType = 'standard' | 'premium' | 'unlimited'
 export type QuantityTier = 1 | 3 | 5
 
 interface CartStore {
@@ -43,8 +43,9 @@ interface CartStore {
 }
 
 const PRICES: Record<LicenseType, Record<QuantityTier, number>> = {
-  standard: { 1: 50, 3: 100, 5: 200 },
-  unlimited: { 1: 100, 3: 200, 5: 400 },
+  standard: { 1: 39.95, 3: 80, 5: 160 },
+  premium: { 1: 49.95, 3: 100, 5: 200 },
+  unlimited: { 1: 149.95, 3: 300, 5: 600 },
 }
 
 export const useCartStore = create<CartStore>()(

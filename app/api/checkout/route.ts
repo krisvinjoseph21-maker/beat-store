@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Whitelist validation — never trust client-provided values
-    const VALID_LICENSE_TYPES: LicenseType[] = ['standard', 'unlimited']
+    const VALID_LICENSE_TYPES: LicenseType[] = ['standard', 'premium', 'unlimited']
     const VALID_QTY_TIERS: QuantityTier[] = [1, 3, 5]
 
     if (!beatIds?.length || !Array.isArray(beatIds)) {
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     const rawPrice = bestDiscountPct !== null ? applyDiscount(basePrice, bestDiscountPct) : basePrice
     // Never allow a $0 or negative checkout — enforce $1 minimum
     const price = Math.max(rawPrice, 1)
-    const licenseLabel = licenseType === 'standard' ? 'Standard Lease' : 'Unlimited Lease'
+    const licenseLabel = licenseType === 'standard' ? 'Basic Lease' : licenseType === 'premium' ? 'Premium Lease' : 'Unlimited Lease'
     const promoNote = promoNotes.length > 0 ? ` · ${promoNotes.join(' · ')}` : ''
     const description = `${licenseLabel}${promoNote} · ${beatIds.length} beat${beatIds.length > 1 ? 's' : ''}: ${beatTitles.join(', ')}`
 
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
           quantity: 1,
           price_data: {
             currency: 'usd',
-            unit_amount: price * 100,
+            unit_amount: Math.round(price * 100),
             product_data: {
               name: `PRODKJBEATS — ${licenseLabel}`,
               description,

@@ -22,8 +22,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '/sample-packs', label: 'Sample Packs', children: [
     { href: '/sample-packs/best-sellers',             label: 'Best Sellers'            },
     { href: '/sample-packs/melody-packs',             label: 'Melody Packs'            },
-    { href: '/sample-packs/weekly-essentials',        label: 'Weekly Essentials'       },
-    { href: '/sample-packs/weekly-loop-subscription', label: 'Weekly Loop Subscription' },
+{ href: '/sample-packs/weekly-loop-subscription', label: 'Weekly Loop Subscription' },
     { href: '/sample-packs/drum-kits',                label: 'Drum Kits'               },
   ]},
   { href: '/licensing', label: 'Licensing' },

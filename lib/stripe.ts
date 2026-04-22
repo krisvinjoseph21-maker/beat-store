@@ -21,16 +21,17 @@ export const stripe = new Proxy({} as Stripe, {
 
 // License pricing matrix
 export const LICENSE_PRICES: Record<string, Record<number, number>> = {
-  standard: { 1: 50, 3: 100, 5: 200 },
-  unlimited: { 1: 100, 3: 200, 5: 400 },
+  standard: { 1: 39.95, 3: 80, 5: 160 },
+  premium: { 1: 49.95, 3: 100, 5: 200 },
+  unlimited: { 1: 149.95, 3: 300, 5: 600 },
 }
 
 export function getLicensePrice(
-  type: 'standard' | 'unlimited',
+  type: 'standard' | 'premium' | 'unlimited',
   qty: 1 | 3 | 5
 ): number {
   return LICENSE_PRICES[type][qty]
 }
 
-export type LicenseType = 'standard' | 'unlimited'
+export type LicenseType = 'standard' | 'premium' | 'unlimited'
 export type QuantityTier = 1 | 3 | 5

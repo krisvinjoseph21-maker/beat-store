@@ -23,7 +23,15 @@ interface Props {
 
 const STANDARD_FEATURES = [
   '500k streams',
-  '5,000 paid downloads',
+  '25,000 paid downloads',
+  'Non-exclusive',
+  'MP3 + WAV delivery',
+  'Credit required',
+]
+
+const PREMIUM_FEATURES = [
+  '1M streams',
+  '75,000 paid downloads',
   'Non-exclusive',
   'MP3 + WAV delivery',
   'Credit required',
@@ -115,7 +123,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
   const basePrice = bogoSelected ? PRICES[licenseType][1] : PRICES[licenseType][quantityTier]
   const finalPrice = displayPrice(basePrice)
-  const features = licenseType === 'standard' ? STANDARD_FEATURES : UNLIMITED_FEATURES
+  const features = licenseType === 'standard' ? STANDARD_FEATURES : licenseType === 'premium' ? PREMIUM_FEATURES : UNLIMITED_FEATURES
 
   async function handleApplyCode() {
     const trimmed = codeInput.trim()
@@ -228,18 +236,18 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
         {/* License tabs */}
         <div className="mb-4 flex rounded-sm border border-line-card p-0.5">
-          {(['standard', 'unlimited'] as LicenseType[]).map((type) => (
+          {(['standard', 'premium', 'unlimited'] as LicenseType[]).map((type) => (
             <button
               key={type}
               onClick={() => setLicenseType(type)}
               aria-pressed={licenseType === type}
-              className={`flex-1 rounded-sm py-2 text-sm font-semibold transition-[background-color,color] ${
+              className={`flex-1 rounded-sm py-2 text-xs font-semibold transition-[background-color,color] ${
                 licenseType === type
                   ? 'bg-white text-black'
                   : 'text-muted-mid hover:text-white'
               }`}
             >
-              {type === 'standard' ? t.license.standardLease : t.license.unlimitedLease}
+              {type === 'standard' ? 'Basic' : type === 'premium' ? 'Premium' : 'Unlimited'}
             </button>
           ))}
         </div>

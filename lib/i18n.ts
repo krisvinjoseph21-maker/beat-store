@@ -24,7 +24,8 @@ const translations = {
     },
     license: {
       title: 'Choose Your License',
-      standardLease: 'Standard Lease',
+      standardLease: 'Basic Lease',
+      premiumLease: 'Premium Lease',
       unlimitedLease: 'Unlimited Lease',
       beatQty: 'Beat Quantity',
       checkout: 'Checkout',
@@ -68,7 +69,8 @@ const translations = {
     },
     license: {
       title: 'Elige Tu Licencia',
-      standardLease: 'Licencia Estándar',
+      standardLease: 'Licencia Básica',
+      premiumLease: 'Licencia Premium',
       unlimitedLease: 'Licencia Ilimitada',
       beatQty: 'Cantidad de Beats',
       checkout: 'Pagar',
@@ -112,7 +114,8 @@ const translations = {
     },
     license: {
       title: 'Choisissez Votre Licence',
-      standardLease: 'Licence Standard',
+      standardLease: 'Licence Basique',
+      premiumLease: 'Licence Premium',
       unlimitedLease: 'Licence Illimitée',
       beatQty: 'Quantité de Beats',
       checkout: 'Payer',

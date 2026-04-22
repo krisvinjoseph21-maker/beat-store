@@ -57,18 +57,27 @@ export async function POST(req: NextRequest) {
   }
 
   const session = event.data.object
-  const { beatIds, licenseType, quantityTier, beatTitles } = session.metadata ?? {}
+  const { beatIds, licenseType, quantityTier, beatTitles, packIds, packTitles } = session.metadata ?? {}
 
   const customerEmail = session.customer_details?.email ?? ''
   const customerName = session.customer_details?.name ?? 'Customer'
 
   let parsedBeatIds: string[] = []
   let parsedBeatTitles: string[] = []
+  let parsedPackIds: string[] = []
+  let parsedPackTitles: string[] = []
   try {
     parsedBeatIds = beatIds ? JSON.parse(beatIds) : []
     parsedBeatTitles = beatTitles ? JSON.parse(beatTitles) : []
+    parsedPackIds = packIds ? JSON.parse(packIds) : []
+    parsedPackTitles = packTitles ? JSON.parse(packTitles) : []
   } catch {
-    console.error('[webhook] Failed to parse metadata beat fields')
+    console.error('[webhook] Failed to parse metadata fields')
+    return new Response('Invalid metadata', { status: 400 })
+  }
+
+  if (parsedBeatIds.length === 0 && parsedPackIds.length === 0) {
+    console.error('[webhook] No beat IDs or pack IDs in metadata')
     return new Response('Invalid metadata', { status: 400 })
   }
 
@@ -92,6 +101,7 @@ export async function POST(req: NextRequest) {
       customer_email: customerEmail,
       customer_name: customerName,
       beat_ids: parsedBeatIds,
+      melody_pack_ids: parsedPackIds,
       license_type: licenseType ?? 'standard',
       quantity_tier: Number(quantityTier ?? 1),
       total_price: (session.amount_total ?? 0) / 100,
@@ -120,7 +130,7 @@ export async function POST(req: NextRequest) {
     await sendDownloadEmail({
       customerEmail,
       customerName,
-      beatTitles: parsedBeatTitles,
+      beatTitles: [...parsedBeatTitles, ...parsedPackTitles],
       downloadToken: token,
       licenseType: licenseType ?? 'standard',
     })

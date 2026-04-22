@@ -47,7 +47,7 @@ export async function GET(
   // Look up the download record
   const { data: download, error } = await supabase
     .from('downloads')
-    .select('*, orders(beat_ids, license_type)')
+    .select('*, orders(beat_ids, melody_pack_ids, license_type)')
     .eq('token', token)
     .single()
 
