@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Check, Minus, Plus, Star, X } from 'lucide-react'
+import { useLocaleStore, formatPrice } from '@/lib/locale'
 
 interface Package {
   id: string
   name: string
-  price: string
+  usdPrice: number
   dotColor: string
   features: string[]
 }
@@ -15,7 +16,7 @@ const PACKAGES: Package[] = [
   {
     id: 'basic-mix',
     name: 'Basic Mix',
-    price: '£40',
+    usdPrice: 50,
     dotColor: '#a855f7',
     features: [
       'Mixdown of your stereo beat and vocals',
@@ -26,7 +27,7 @@ const PACKAGES: Package[] = [
   {
     id: 'full-mix',
     name: 'Full Mix (Stems)',
-    price: '£60',
+    usdPrice: 75,
     dotColor: '#3b82f6',
     features: [
       'Full stem-level mix of your vocals + beat stems',
@@ -39,7 +40,7 @@ const PACKAGES: Package[] = [
   {
     id: 'mix-master',
     name: 'Mix + Master Bundle',
-    price: '£80',
+    usdPrice: 100,
     dotColor: '#ef4444',
     features: [
       'Everything from Full Mix',
@@ -75,6 +76,9 @@ interface ReviewFormState {
 export default function MixingMasteringClient() {
   const [selected, setSelected] = useState<Package>(PACKAGES[0])
   const [qty, setQty] = useState(1)
+  const [mounted, setMounted] = useState(false)
+  const currency = useLocaleStore((s) => s.currency)
+  useEffect(() => { setMounted(true) }, [])
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
   const [sending, setSending] = useState(false)
@@ -213,7 +217,9 @@ export default function MixingMasteringClient() {
           </h1>
 
           {/* Price */}
-          <p className="text-[22px] text-foreground mb-1" style={{ fontWeight: 500 }}>{selected.price}</p>
+          <p className="text-[22px] text-foreground mb-1" style={{ fontWeight: 500 }}>
+            {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}
+          </p>
           <p className="text-[12px] text-muted-low mb-8">Taxes included.</p>
 
           {/* Package selector */}
@@ -323,7 +329,9 @@ export default function MixingMasteringClient() {
                 <div key={pkg.id} className="border border-line-card bg-surface-1 p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
-                    <p className="text-[15px] font-medium text-foreground">{pkg.name} — {pkg.price}</p>
+                    <p className="text-[15px] font-medium text-foreground">
+                      {pkg.name} — {mounted ? formatPrice(pkg.usdPrice, currency) : `$${pkg.usdPrice}`}
+                    </p>
                   </div>
                   <p className="text-[12px] text-muted-low leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
                     {pkg.features.join(' · ')}

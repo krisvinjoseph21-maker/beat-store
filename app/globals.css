@@ -254,25 +254,11 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes revealLeft {
-  from { opacity: 0; transform: translateX(-40px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes revealRight {
-  from { opacity: 0; transform: translateX(40px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
 .scroll-reveal {
   opacity: 0;
 }
 .scroll-reveal.is-visible {
   animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.scroll-reveal.reveal-left.is-visible {
-  animation: revealLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.scroll-reveal.reveal-right.is-visible {
-  animation: revealRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* ── Receipts: heading parallax + scroll-driven card cascade ── */
@@ -285,31 +271,6 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   @keyframes receiptsParallax {
     from { transform: translateY(18px); }
     to   { transform: translateY(-10px); }
-  }
-
-  /* Override JS animation with scroll-driven for supporting browsers */
-  .scroll-reveal[data-dir="left"],
-  .scroll-reveal[data-dir="right"] {
-    opacity: 1;
-    animation: none;
-  }
-  .scroll-reveal[data-dir="left"] {
-    animation: sdRevealLeft linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 40%;
-  }
-  .scroll-reveal[data-dir="right"] {
-    animation: sdRevealRight linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 40%;
-  }
-  @keyframes sdRevealLeft {
-    from { opacity: 0; transform: translateX(-48px) scale(0.975); }
-    to   { opacity: 1; transform: translateX(0)     scale(1); }
-  }
-  @keyframes sdRevealRight {
-    from { opacity: 0; transform: translateX(48px)  scale(0.975); }
-    to   { opacity: 1; transform: translateX(0)     scale(1); }
   }
 }
 

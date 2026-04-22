@@ -75,16 +75,6 @@ export default async function HomePage() {
         {/* Hero content */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">
 
-          {/* Eyebrow */}
-          <div className="hero-eyebrow mb-7">
-            <span
-              className="text-[10px] font-normal tracking-[0.14em] uppercase text-muted"
-              style={{ fontFamily: 'var(--font-inter)' }}
-            >
-              GloRilla · DeeBaby · Shenseea · Seyi Vibez
-            </span>
-          </div>
-
           {/* Headline */}
           <HeadlineParallax>
             <h1
@@ -100,8 +90,7 @@ export default async function HomePage() {
             className="hero-sub text-[14px] leading-[1.75] max-w-[480px] mb-8 text-muted"
             style={{ fontFamily: 'var(--font-inter)' }}
           >
-            Verified placements with{' '}
-            <span className="text-muted-mid font-medium">GloRilla, Shenseea & more.</span>
+            Verified placements across multiple genres.
           </p>
 
           {/* CTAs */}
@@ -165,7 +154,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06]">
             {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
-              <ScrollReveal key={artist + song} delay={idx * 80} direction={idx % 2 === 0 ? 'left' : 'right'}>
+              <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
                 className="group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full"
               >

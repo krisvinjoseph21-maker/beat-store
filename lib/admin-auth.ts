@@ -39,9 +39,12 @@ export function verifyAdminPassword(input: string): boolean {
 /**
  * Rate-limited admin auth check for use in admin API routes.
  *
- * Uses a SHARED rate-limit bucket (`admin-auth:<ip>`) across ALL admin routes,
- * so an attacker cannot multiply their guesses by spreading attempts across
- * multiple endpoints. Limit: 5 attempts per minute per IP.
+ * Two separate buckets:
+ *   - `admin-fail:<ip>`  — only incremented on wrong-password attempts.
+ *                          Strict: 10 failures per minute prevents brute force.
+ *   - `admin-ops:<ip>`   — incremented only after a successful auth check.
+ *                          Generous: 200 requests per minute so normal admin
+ *                          usage (toggling beats, editing, uploading) never hits it.
  *
  * Returns { ok: false, rateLimited: true }  → respond 429
  * Returns { ok: false, rateLimited: false } → respond 401
@@ -50,16 +53,23 @@ export function verifyAdminPassword(input: string): boolean {
 export async function checkAdminAuth(
   req: NextRequest
 ): Promise<{ ok: boolean; rateLimited: boolean }> {
-  // Shared key across all admin routes — one bucket, not per-route
-  const key = getRateLimitKey(req, 'admin-auth')
-  if (!rateLimit(key, 5, 60_000)) {
-    return { ok: false, rateLimited: true }
-  }
-
   const headersList = await headers()
   const password = headersList.get('x-admin-password') ?? ''
+
   if (!verifyAdminPassword(password)) {
+    // Count failures — brute-force protection lives here only
+    const failKey = getRateLimitKey(req, 'admin-fail')
+    if (!rateLimit(failKey, 10, 60_000)) {
+      return { ok: false, rateLimited: true }
+    }
     return { ok: false, rateLimited: false }
+  }
+
+  // Password is correct — now enforce a generous ops limit so normal
+  // admin work never triggers a 429
+  const opsKey = getRateLimitKey(req, 'admin-ops')
+  if (!rateLimit(opsKey, 200, 60_000)) {
+    return { ok: false, rateLimited: true }
   }
 
   return { ok: true, rateLimited: false }

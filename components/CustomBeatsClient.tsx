@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Check, X, Star, ChevronDown } from 'lucide-react'
+import { Check, X, ChevronDown } from 'lucide-react'
+import { useLocaleStore, formatPrice } from '@/lib/locale'
 
 const FAQS = [
   {
@@ -78,8 +79,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 interface Package {
   emoji: string
   name: string
-  price: string
-  priceNum: string
+  usdPrice: number
   description: string
   deliverables: string[]
 }
@@ -88,40 +88,35 @@ const PACKAGES: Package[] = [
   {
     emoji: '💡',
     name: 'Basic Custom Beat',
-    price: '$200.00 USD',
-    priceNum: '$200',
+    usdPrice: 200,
     description: 'A single beat built around your reference track. Delivered mixed and ready to record over.',
     deliverables: ['1 beat from your reference', 'Mixed stereo WAV + MP3', '1 revision'],
   },
   {
     emoji: '🚀',
     name: 'Full Custom Beat',
-    price: '$500.00 USD',
-    priceNum: '$500',
+    usdPrice: 500,
     description: 'Fully arranged production with all elements separated for your session.',
     deliverables: ['Arranged beat + full transitions', 'Mixed stereo + stem pack', 'WAV + MP3', 'Up to 3 revisions', 'Priority turnaround'],
   },
   {
     emoji: '🔥',
     name: 'Custom Beat + Mix Bundle',
-    price: '$750.00 USD',
-    priceNum: '$750',
+    usdPrice: 750,
     description: 'Custom beat plus a full vocal mix and master — everything delivered in one package.',
     deliverables: ['Custom beat to your sound', 'Full vocal mix + master', 'All stems provided', 'Master WAV + MP3', 'Up to 5 revisions'],
   },
   {
     emoji: '🧠',
     name: 'Executive Producer Package',
-    price: '$1,000.00 USD',
-    priceNum: '$1,000',
+    usdPrice: 1000,
     description: 'A full creative session. I build around your vision from scratch, shape the sound, and guide the record.',
     deliverables: ['Beat built from scratch', 'Arrangement + sound design', 'Mix & master polish', 'Private feedback session', 'Optional promo placement', 'Priority treatment'],
   },
   {
     emoji: '🎙️',
     name: 'Project Launch Package',
-    price: '$1,500.00 USD',
-    priceNum: '$1,500',
+    usdPrice: 1500,
     description: 'Three custom beats, mixed and mastered, with creative direction across the whole project.',
     deliverables: ['3 custom beats', 'Full mix & master on all 3', 'Creative direction + vocal production support', 'Release planning guidance', 'Priority service throughout', 'Exec producer credit across everything'],
   },
@@ -138,11 +133,15 @@ export default function CustomBeatsClient() {
   const [selected, setSelected] = useState<Package>(PACKAGES[0])
   const [qty, setQty] = useState(1)
   const [modalOpen, setModalOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const currency = useLocaleStore((s) => s.currency)
   const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const modalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => { setMounted(true) }, [])
 
   function selectPackage(pkg: Package) {
     setSelected(pkg)
@@ -277,19 +276,9 @@ export default function CustomBeatsClient() {
             Custom Production Services
           </h1>
 
-          {/* Stars + review count */}
-          <div className="flex items-center gap-2 mb-5">
-            <div className="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} size={14} className="text-accent fill-accent" aria-hidden="true" />
-              ))}
-            </div>
-            <span className="text-sm text-muted" style={{ fontFamily: 'var(--font-inter)' }}>5 reviews</span>
-          </div>
-
           {/* Price */}
           <p className="text-[24px] text-foreground mb-0.5" style={{ fontFamily: 'var(--font-inter)', fontWeight: 500 }}>
-            {selected.price}
+            {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}
           </p>
           <p className="text-[12px] text-muted-low mb-8" style={{ fontFamily: 'var(--font-inter)' }}>
             Taxes included.

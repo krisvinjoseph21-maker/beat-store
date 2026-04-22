@@ -59,15 +59,72 @@ interface BatchBeat {
   errorMsg: string
 }
 
-// Parse beat title and key from filename.
-// "Dark Intentions Bm @KJBEATS.wav" → { title: "Dark Intentions", key: "Bm" }
-function parseTitleAndKey(filename: string): { title: string; key: string } {
-  const base = filename.replace(/\.[^.]+$/, '').replace(/@\w+/g, '').trim()
-  const keyMatch = base.match(/\s([A-G][#b]?(?:maj|min|m)?)\s*$/)
-  if (keyMatch) {
-    return { title: base.slice(0, keyMatch.index).trim() || base, key: keyMatch[1] }
+// Normalise a raw key string to standard format.
+// "c min" → "Cm", "C minor" → "Cm", "Amaj" → "Amaj", "Bm" → "Bm"
+function normalizeKey(raw: string): string {
+  const s = raw.trim()
+  const noteMatch = s.match(/^([A-Ga-g][#b]?)/)
+  if (!noteMatch) return raw
+  const note = noteMatch[1].charAt(0).toUpperCase() + noteMatch[1].slice(1)
+  const quality = s.slice(noteMatch[1].length).trim().toLowerCase()
+  if (quality.startsWith('maj')) return note + 'maj'
+  if (quality.startsWith('min') || quality === 'm') return note + 'm'
+  if (!quality) return note + 'm' // bare note → assume minor
+  return note + quality
+}
+
+// Smart filename parser.
+// Strategy: strip noise tokens, split on the BPM number, take the title
+// from what came before and the key from what came after.
+//
+// Examples:
+//   "! lifetime 153 c min @prodkjbeats @andrzxz.wav"
+//     → { title: "Lifetime", bpm: 153, key: "Cm" }
+//   "(2000s, tecca) whispering to you 104 prodkjbeats x pantydiamanty.mp3"
+//     → { title: "Whispering To You", bpm: 104, key: "Am" }
+function parseBeatFilename(filename: string): { title: string; key: string; bpm: number | null } {
+  let s = filename.replace(/\.[^.]+$/, '')       // strip extension
+  s = s.replace(/^[!*#]+\s*/, '')                // strip leading ! * #
+  s = s.replace(/^\([^)]+\)\s*/g, '')            // strip (tag, genre) prefix
+  s = s.replace(/@\S+/g, '')                     // strip @mentions
+  s = s.trim()
+
+  // BPM: standalone integer in the realistic range 60–220
+  const bpmRe = /\b(2[0-1][0-9]|1[0-9]{2}|[6-9][0-9])\b/
+  const bpmMatch = s.match(bpmRe)
+
+  let rawTitle: string
+  let afterBpm: string
+  let bpm: number | null = null
+
+  if (bpmMatch && bpmMatch.index !== undefined) {
+    bpm = Number(bpmMatch[0])
+    rawTitle = s.slice(0, bpmMatch.index)
+    afterBpm = s.slice(bpmMatch.index + bpmMatch[0].length)
+  } else {
+    rawTitle = s
+    afterBpm = ''
   }
-  return { title: base, key: 'Am' }
+
+  // Key: look in the segment after BPM first, then fall back to tail of title
+  const keyRe = /\b([A-Ga-g][#b]?\s*(?:maj(?:or)?|min(?:or)?|m))\b/i
+  let key = 'Am'
+  const keyInAfter = afterBpm.match(keyRe)
+  if (keyInAfter) {
+    key = normalizeKey(keyInAfter[1])
+  } else {
+    const keyInTitle = rawTitle.match(keyRe)
+    if (keyInTitle) {
+      key = normalizeKey(keyInTitle[1])
+      rawTitle = rawTitle.slice(0, keyInTitle.index).trim()
+    }
+  }
+
+  // Clean up title: strip trailing commas/dashes, collapse spaces, title-case
+  let title = rawTitle.replace(/[,\-–—]+$/, '').replace(/\s+/g, ' ').trim()
+  title = title.replace(/\b\w/g, (c) => c.toUpperCase())
+
+  return { title: title || filename.replace(/\.[^.]+$/, ''), key, bpm }
 }
 
 // Idle timeout: lock the admin session after 30 minutes of inactivity.
@@ -407,6 +464,13 @@ export default function AdminClient() {
 
   async function handleBeatFile(file: File) {
     setDroppedBeat(file)
+    const { title, key, bpm } = parseBeatFilename(file.name)
+    setNewBeat((prev) => ({
+      ...prev,
+      title: title || prev.title,
+      key: key || prev.key,
+      bpm: bpm ?? prev.bpm,
+    }))
     // Auto-generate a 30s preview only if the user hasn't manually set one
     if (!droppedPreview) {
       setGeneratingPreview(true)
@@ -424,12 +488,12 @@ export default function AdminClient() {
 
   async function handleBatchFiles(files: File[]) {
     const newBeats: BatchBeat[] = files.map((f) => {
-      const { title, key } = parseTitleAndKey(f.name)
+      const { title, key, bpm } = parseBeatFilename(f.name)
       return {
         id: Math.random().toString(36).slice(2),
         file: f, preview: null,
         generatingPreview: false, autoPreview: false,
-        title, bpm: sharedMeta.bpm, key,
+        title, bpm: bpm ?? sharedMeta.bpm, key,
         uploadStatus: 'pending', errorMsg: '',
       }
     })
