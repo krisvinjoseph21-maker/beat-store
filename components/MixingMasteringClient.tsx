@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Check, Minus, Plus, Star, X } from 'lucide-react'
 import { useLocaleStore, formatPrice } from '@/lib/locale'
 import { createBrowserClient } from '@/lib/supabase'
+import { useT } from '@/lib/i18n'
 
 interface Package {
   id: string
@@ -80,6 +81,7 @@ export default function MixingMasteringClient() {
   const [qty, setQty] = useState(1)
   const [mounted, setMounted] = useState(false)
   const currency = useLocaleStore((s) => s.currency)
+  const t = useT()
   useEffect(() => { setMounted(true) }, [])
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
@@ -201,7 +203,7 @@ export default function MixingMasteringClient() {
         body: JSON.stringify(form),
       })
       if (res.ok) setSent(true)
-      else setError('Failed to send. Please try again.')
+      else setError(t.services.error)
     } catch {
       setError('Failed to send. Please try again.')
     } finally {
@@ -229,7 +231,7 @@ export default function MixingMasteringClient() {
           <p className="text-[22px] text-foreground mb-1" style={{ fontWeight: 500 }}>
             {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}
           </p>
-          <p className="text-[12px] text-muted-low mb-8">Taxes included.</p>
+          <p className="text-[12px] text-muted-low mb-8">{t.services.taxesIncluded}</p>
 
           {/* Package selector */}
           <div className="w-full mb-8">
@@ -256,7 +258,7 @@ export default function MixingMasteringClient() {
           {/* Quantity stepper */}
           <div role="group" aria-label="Quantity" className="w-full mb-8">
             <p className="text-[13px] text-muted-mid mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
-              Quantity
+              {t.services.quantity}
             </p>
             <div className="flex items-center justify-center">
               <div className="flex items-center border border-line-card">
@@ -285,13 +287,13 @@ export default function MixingMasteringClient() {
               onClick={openModal}
               className="w-full border border-line-card bg-transparent py-4 text-sm font-semibold text-foreground hover:bg-white/5 transition-colors min-h-[52px]"
             >
-              Add to cart
+              {t.services.addToCart}
             </button>
             <button
               onClick={openModal}
               className="w-full bg-white py-4 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[52px]"
             >
-              Book with PRODKJBEATS
+              {t.services.bookWith}
             </button>
           </div>
 
@@ -299,7 +301,7 @@ export default function MixingMasteringClient() {
             onClick={openModal}
             className="text-sm text-foreground underline underline-offset-2 hover:text-muted transition-colors"
           >
-            More payment options
+            {t.services.morePayment}
           </button>
 
         </div>
@@ -545,8 +547,8 @@ export default function MixingMasteringClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="text-2xl font-medium text-foreground">Inquiry Sent.</p>
-                <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
+                <p className="text-2xl font-medium text-foreground">{t.services.inquirySent}</p>
+                <p className="mt-2 text-sm text-muted-mid">{t.services.replyTime}</p>
                 <button onClick={closeModal} className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors">
                   Close
                 </button>
@@ -554,7 +556,7 @@ export default function MixingMasteringClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="mm-artist" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Artist Name *</label>
+                  <label htmlFor="mm-artist" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">{t.services.artistName} *</label>
                   <input id="mm-artist" required type="text" autoComplete="name" value={form.artistName} onChange={(e) => setForm((f) => ({ ...f, artistName: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors" placeholder="Your artist name" />
                 </div>
                 <div>
@@ -566,12 +568,12 @@ export default function MixingMasteringClient() {
                   <input id="mm-service" readOnly value={form.serviceType} className="w-full border border-line-input bg-surface-3 px-4 py-3.5 text-base text-muted outline-none cursor-not-allowed" />
                 </div>
                 <div>
-                  <label htmlFor="mm-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Project Details *</label>
+                  <label htmlFor="mm-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">{t.services.projectDetails} *</label>
                   <textarea id="mm-details" required rows={6} value={form.projectDetails} onChange={(e) => setForm((f) => ({ ...f, projectDetails: e.target.value }))} className="w-full border border-line-input bg-surface-1 px-4 py-3.5 text-base text-foreground placeholder-muted-low outline-none focus:border-muted transition-colors resize-none" placeholder="Tell me about your project, references, timeline…" />
                 </div>
                 {error && <p role="alert" className="animate-shake text-sm text-danger">{error}</p>}
                 <button type="submit" disabled={sending} className="w-full bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50">
-                  {sending ? 'Sending…' : 'Send Inquiry'}
+                  {sending ? t.contact.sending : t.services.sendInquiry}
                 </button>
               </form>
             )}

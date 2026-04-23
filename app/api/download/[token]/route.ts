@@ -83,50 +83,73 @@ export async function GET(
     })
   }
 
-  // Fetch beat file URLs
+  // Fetch file URLs for beats and melody packs
   const beatIds: string[] = download.orders?.beat_ids ?? []
+  const packIds: string[] = download.orders?.melody_pack_ids ?? []
   const licenseType: string = download.orders?.license_type ?? 'standard'
   const includeStems = licenseType === 'unlimited'
-  const { data: beats } = await supabase
-    .from('beats')
-    .select('id, title, bpm, file_url, file_path, stems_path')
-    .in('id', beatIds)
 
-  if (!beats?.length) {
+  if (beatIds.length === 0 && packIds.length === 0) {
     return new Response(null, {
       status: 302,
       headers: { Location: `${SITE_URL}/download-invalid` },
     })
   }
 
-  // Generate signed URLs for each beat file (requires bucket to be private in Supabase)
-  type SignedBeat = { title: string; bpm: number; signedUrl: string; isStems?: boolean }
-  const signed: SignedBeat[] = []
+  type SignedItem = { title: string; bpm?: number; signedUrl: string; isStems?: boolean }
+  const signed: SignedItem[] = []
 
-  for (const beat of beats) {
-    if (!beat.file_url) continue
-    const path = beat.file_path ?? storagePathFromUrl(beat.file_url)
-    if (!path) continue
-
-    const { data: signedData, error: signedError } = await supabase.storage
+  // Generate signed URLs for each beat
+  if (beatIds.length > 0) {
+    const { data: beats } = await supabase
       .from('beats')
-      .createSignedUrl(path, SIGNED_URL_TTL, {
-        download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_${beat.bpm}BPM_@prodkjbeats.mp3`,
-      })
+      .select('id, title, bpm, file_url, file_path, stems_path')
+      .in('id', beatIds)
 
-    if (!signedError && signedData?.signedUrl) {
-      signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
-    }
+    for (const beat of (beats ?? [])) {
+      if (!beat.file_url) continue
+      const path = beat.file_path ?? storagePathFromUrl(beat.file_url)
+      if (!path) continue
 
-    // Include stems if this is an unlimited (stems) license and stems exist
-    if (includeStems && beat.stems_path) {
-      const { data: stemsData, error: stemsError } = await supabase.storage
+      const { data: signedData, error: signedError } = await supabase.storage
         .from('beats')
-        .createSignedUrl(beat.stems_path, SIGNED_URL_TTL, {
-          download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_stems.zip`,
+        .createSignedUrl(path, SIGNED_URL_TTL, {
+          download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_${beat.bpm}BPM_@prodkjbeats.mp3`,
         })
-      if (!stemsError && stemsData?.signedUrl) {
-        signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: stemsData.signedUrl, isStems: true })
+
+      if (!signedError && signedData?.signedUrl) {
+        signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
+      }
+
+      if (includeStems && beat.stems_path) {
+        const { data: stemsData, error: stemsError } = await supabase.storage
+          .from('beats')
+          .createSignedUrl(beat.stems_path, SIGNED_URL_TTL, {
+            download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_stems.zip`,
+          })
+        if (!stemsError && stemsData?.signedUrl) {
+          signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: stemsData.signedUrl, isStems: true })
+        }
+      }
+    }
+  }
+
+  // Generate signed URLs for each melody pack
+  if (packIds.length > 0) {
+    const { data: packs } = await supabase
+      .from('melody_packs')
+      .select('id, title, file_path')
+      .in('id', packIds)
+
+    for (const pack of (packs ?? [])) {
+      if (!pack.file_path) continue
+      const { data: signedData, error: signedError } = await supabase.storage
+        .from('beats')
+        .createSignedUrl(pack.file_path, SIGNED_URL_TTL, {
+          download: `${pack.title.replace(/[^a-z0-9 _-]/gi, '_')}_@prodkjbeats.zip`,
+        })
+      if (!signedError && signedData?.signedUrl) {
+        signed.push({ title: pack.title, signedUrl: signedData.signedUrl })
       }
     }
   }
@@ -138,7 +161,7 @@ export async function GET(
     })
   }
 
-  // Single beat — redirect straight to signed URL (browser triggers download)
+  // Single item — redirect straight to the signed URL (browser triggers download)
   if (signed.length === 1) {
     return new Response(null, {
       status: 302,
@@ -146,7 +169,7 @@ export async function GET(
     })
   }
 
-  // Multiple beats — minimal download page with signed links (each expires in 5 min)
+  // Multiple items — minimal download page with signed links (each expires in 5 min)
   const links = signed
     .map(
       (b) =>
@@ -173,7 +196,7 @@ export async function GET(
 </head>
 <body>
   <h1>Your Downloads</h1>
-  <p>Links expire in 5 minutes. Click each beat to download.</p>
+  <p>Links expire in 5 minutes. Click each item to download.</p>
   <ul>${links}</ul>
 </body>
 </html>`,

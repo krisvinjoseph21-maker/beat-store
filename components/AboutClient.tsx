@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { Check } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function ContactForm() {
+  const t = useT()
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -20,9 +22,9 @@ export default function ContactForm() {
         body: JSON.stringify(form),
       })
       if (res.ok) setSent(true)
-      else setError('Failed to send. Please try again.')
+      else setError(t.contact.error)
     } catch {
-      setError('Failed to send. Please try again.')
+      setError(t.contact.error)
     } finally {
       setSending(false)
     }
@@ -40,8 +42,8 @@ export default function ContactForm() {
         <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/[0.06]">
           <Check size={24} className="text-accent" />
         </div>
-        <p className="font-display text-4xl text-foreground uppercase">Message Sent.</p>
-        <p className="mt-3 text-[13px] text-muted">I&apos;ll get back to you soon.</p>
+        <p className="font-display text-4xl text-foreground uppercase">{t.contact.sent}</p>
+        <p className="mt-3 text-[13px] text-muted">{t.contact.sentDesc}</p>
       </div>
     )
   }
@@ -52,7 +54,7 @@ export default function ContactForm() {
       {/* Name + Email row */}
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-10 mb-12">
         <div className="flex-1">
-          <label htmlFor="c-name" className={labelClass}>Your Name</label>
+          <label htmlFor="c-name" className={labelClass}>{t.contact.yourName}</label>
           <input
             id="c-name"
             required
@@ -65,7 +67,7 @@ export default function ContactForm() {
           />
         </div>
         <div className="flex-1">
-          <label htmlFor="c-email" className={labelClass}>Email Address</label>
+          <label htmlFor="c-email" className={labelClass}>{t.contact.emailAddress}</label>
           <input
             id="c-email"
             required
@@ -81,7 +83,7 @@ export default function ContactForm() {
 
       {/* Subject */}
       <div className="mb-12">
-        <label htmlFor="c-subject" className={labelClass}>Subject</label>
+        <label htmlFor="c-subject" className={labelClass}>{t.contact.subject}</label>
         <input
           id="c-subject"
           required
@@ -96,7 +98,7 @@ export default function ContactForm() {
 
       {/* Message */}
       <div className="mb-14">
-        <label htmlFor="c-message" className={labelClass}>Message</label>
+        <label htmlFor="c-message" className={labelClass}>{t.contact.message}</label>
         <textarea
           id="c-message"
           required
@@ -118,7 +120,7 @@ export default function ContactForm() {
           className="bg-white text-black text-[12px] font-bold uppercase px-8 py-3.5 hover:bg-white-hover transition-colors disabled:opacity-50"
           style={{ fontFamily: 'var(--font-montserrat)' }}
         >
-          {sending ? 'Sending…' : 'Send Message'}
+          {sending ? t.contact.sending : t.contact.send}
         </button>
       </div>
 

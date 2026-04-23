@@ -1,12 +1,13 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import BeatCard from './BeatCard'
 import LicenseModal from './LicenseModal'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
-import { Search, ChevronDown, Heart } from 'lucide-react'
+import { ChevronDown, Heart } from 'lucide-react'
 import StoreAmbient from './StoreAmbient'
+import { useT } from '@/lib/i18n'
 
 const BPM_RANGES = [
   { label: 'All BPM', min: 0, max: Infinity },
@@ -16,8 +17,6 @@ const BPM_RANGES = [
   { label: '130–150', min: 130, max: 150 },
   { label: '150+', min: 150, max: Infinity },
 ]
-
-const MOODS = ['All Moods', 'Dark', 'Melodic', 'Hard', 'Chill', 'Aggressive', 'Emotional', 'Hype', 'Wavy']
 
 const SORT_OPTIONS = [
   { value: 'default', label: 'Default List' },
@@ -62,10 +61,9 @@ function Select({
 }
 
 export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
+  const t = useT()
   const [category, setCategory] = useState('All Genres')
   const [bpmRange, setBpmRange] = useState('All BPM')
-  const [mood, setMood] = useState('All Moods')
-
   const [sortBy, setSortBy] = useState('default')
   const [showAll, setShowAll] = useState(false)
   const [favoritesOnly, setFavoritesOnly] = useState(false)
@@ -73,7 +71,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const MAX_QUERY_LEN = 100
   const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
   const [modalOpen, setModalOpen] = useState(false)
-  const { licenseType, quantityTier, items, openCart } = useCartStore()
+  const { openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
   const { setQueue } = usePlayerStore()
 
@@ -83,10 +81,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
   useEffect(() => {
     setShowAll(false)
-  }, [category, bpmRange, mood, sortBy, search, favoritesOnly])
+  }, [category, bpmRange, sortBy, search, favoritesOnly])
 
-  // Derive available genres from actual beat data.
-  // Deduplicate case-insensitively so "trap" and "Trap" merge into one entry.
+  // Deduplicate genres case-insensitively so 'trap' and 'Trap' merge into one entry.
   const categories = useMemo(() => {
     const seen = new Map<string, string>()
     for (const b of initialBeats) {
@@ -104,12 +101,11 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       if (favoritesOnly && !favoriteIds.includes(b.id)) return false
       if (category !== 'All Genres' && b.genre?.trim().toLowerCase() !== category.toLowerCase()) return false
       if (b.bpm < bpmOpt.min || b.bpm > bpmOpt.max) return false
-      if (mood !== 'All Moods' && !b.tags.some((t) => t.toLowerCase() === mood.toLowerCase())) return false
       if (q && !(
         b.title.toLowerCase().includes(q) ||
         b.key.toLowerCase().includes(q) ||
         (b.subgenre ?? '').toLowerCase().includes(q) ||
-        b.tags.some((t) => t.toLowerCase().includes(q))
+        b.tags.some((tag) => tag.toLowerCase().includes(q))
       )) return false
       return true
     })
@@ -121,11 +117,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       case 'bpm_desc': results = [...results].sort((a, b) => b.bpm - a.bpm); break
       case 'newest': results = [...results].sort((a, b) => b.created_at.localeCompare(a.created_at)); break
       case 'oldest': results = [...results].sort((a, b) => a.created_at.localeCompare(b.created_at)); break
-      // 'default' and 'relevance' keep original order (server returns newest first)
     }
 
     return results
-  }, [initialBeats, category, bpmRange, mood, sortBy, search, favoritesOnly, favoriteIds])
+  }, [initialBeats, category, bpmRange, sortBy, search, favoritesOnly, favoriteIds])
 
   function handleModalCheckout() {
     setModalOpen(false)
@@ -133,72 +128,78 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
-      {/* Header */}
-      <div className="mb-8 flex items-baseline justify-between gap-4">
-        <h1
-          className="font-display uppercase leading-none"
-          style={{ fontSize: 'clamp(40px, 6vw, 72px)', color: 'var(--foreground)' }}
-        >
-          All Beats
-        </h1>
-        <p className="text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
-          {filtered.length} {filtered.length !== 1 ? 'beats' : 'beat'}
-        </p>
-      </div>
+    <div className="w-full">
 
-      {/* Search */}
-      <div className="relative mb-5">
-        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted-low)' }} aria-hidden="true" />
-        <input
-          type="text"
-          aria-label="Search beats"
-          placeholder="Search beats, keys, tags…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
-          maxLength={MAX_QUERY_LEN}
-          className="w-full border border-line-input bg-surface-1 py-3 pl-10 pr-4 text-[13px] outline-none focus:border-line-hover transition-colors placeholder:text-muted-low"
-          style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)' }}
-        />
-      </div>
+      {/* Hero header with dot-grid background */}
+      <div
+        className="w-full relative overflow-hidden"
+        style={{
+          background: '#0a0a0a',
+          backgroundImage: 'radial-gradient(circle, rgba(220,38,38,0.28) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pt-12 pb-8">
+          <p
+            className="mb-3 text-[11px] font-semibold uppercase"
+            style={{ letterSpacing: '0.15em', color: '#e53e3e', fontFamily: 'var(--font-montserrat)' }}
+          >
+            Full Catalog
+          </p>
 
-      {/* Genre pills — primary filter */}
-      <div className="mb-4 -mx-1 overflow-x-auto">
-        <div className="flex items-center gap-2 px-1 pb-1 min-w-max sm:min-w-0 sm:flex-wrap">
-          {categories.map((c) => {
-            const active = category === c
-            return (
-              <button
-                key={c}
-                onClick={() => setCategory(c)}
-                aria-pressed={active}
-                className={`h-9 px-4 text-[12px] font-medium border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 ${
-                  active
-                    ? 'bg-foreground border-foreground text-black'
-                    : 'bg-transparent border-line-input text-muted-low hover:border-muted hover:text-foreground'
-                }`}
-                style={{ fontFamily: 'var(--font-montserrat)' }}
-              >
-                {c === 'All Genres' ? 'All' : c}
-              </button>
-            )
-          })}
+          <h1
+            className="font-display uppercase leading-none mb-8"
+            style={{ fontSize: 'clamp(52px, 9vw, 112px)', color: 'var(--foreground)' }}
+          >
+            All Beats.
+          </h1>
+
+          {/* Search + genre pills row */}
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="text"
+              aria-label="Search beats"
+              placeholder="Search beats, artists, moods..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
+              maxLength={MAX_QUERY_LEN}
+              className="border border-line-input bg-black/60 py-2.5 px-4 text-[13px] outline-none focus:border-white/30 transition-colors placeholder:text-muted-low backdrop-blur-sm"
+              style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)', width: 'clamp(180px, 22vw, 280px)' }}
+            />
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
+              {categories.map((c) => {
+                const active = category === c
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    aria-pressed={active}
+                    className="h-10 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
+                    style={{
+                      fontFamily: 'var(--font-montserrat)',
+                      letterSpacing: '0.04em',
+                      background: active ? '#e53e3e' : 'rgba(0,0,0,0.5)',
+                      borderColor: active ? '#e53e3e' : 'rgba(255,255,255,0.18)',
+                      color: '#ffffff',
+                    }}
+                  >
+                    {c === 'All Genres' ? 'ALL' : c.toUpperCase()}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Secondary filters — compact row */}
-      <div className="mb-6 flex flex-wrap items-center gap-2">
+      {/* Secondary filter row */}
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-4 flex flex-wrap items-center gap-2">
         <Select
           label="Filter by BPM range"
           value={bpmRange}
           onChange={setBpmRange}
           options={BPM_RANGES.map((r) => ({ value: r.label, label: r.label }))}
-        />
-        <Select
-          label="Filter by mood"
-          value={mood}
-          onChange={setMood}
-          options={MOODS.map((m) => ({ value: m, label: m }))}
         />
         <Select
           label="Sort beats"
@@ -217,66 +218,69 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           }}
         >
           <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} />
-          Saved
+          {t.store.saved}
         </button>
+        <p className="ml-auto text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+          {filtered.length} {filtered.length !== 1 ? 'beats' : 'beat'}
+        </p>
       </div>
 
       {/* Beat list */}
-      {filtered.length === 0 ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex h-40 items-center justify-center border border-line text-[13px]"
-          style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
-        >
-          No beats found. Try a different filter.
-        </div>
-      ) : (
-        <>
-          <div className="relative border border-line overflow-hidden">
-            {/* Audio-reactive ambient light layer */}
-            <StoreAmbient />
-            {/* Table header */}
-            <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
-              <span className="w-6 flex-shrink-0" />
-              <span className="w-11 flex-shrink-0" />
-              <span
-                className="flex-1 text-[10px] font-bold uppercase"
-                style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
-              >
-                Title
-              </span>
-              <span
-                className="hidden md:block text-[10px] font-bold uppercase text-center"
-                style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
-              >
-                Genre
-              </span>
-              <span style={{ width: '160px' }} />
-            </div>
-            {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
-              <BeatCard
-                key={beat.id}
-                beat={beat}
-                index={i + 1}
-                onBuyClick={(_beat) => setModalOpen(true)}
-              />
-            ))}
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pb-12">
+        {filtered.length === 0 ? (
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex h-40 items-center justify-center border border-line text-[13px]"
+            style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+          >
+            {t.store.noBeats}
           </div>
-          {!showAll && filtered.length > 10 && (
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={() => setShowAll(true)}
-                aria-expanded={showAll}
-                aria-label={`Browse all tracks — ${filtered.length - 10} more`}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-[border-color,background-color,transform] active:scale-95"
-              >
-                Browse All Tracks ({filtered.length - 10} more)
-              </button>
+        ) : (
+          <>
+            <div className="relative border border-line overflow-hidden">
+              <StoreAmbient />
+              <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
+                <span className="w-6 flex-shrink-0" />
+                <span className="w-11 flex-shrink-0" />
+                <span
+                  className="flex-1 text-[10px] font-bold uppercase"
+                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
+                >
+                  {t.store.tableTitle}
+                </span>
+                <span
+                  className="hidden md:block text-[10px] font-bold uppercase text-center"
+                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
+                >
+                  {t.store.tableGenre}
+                </span>
+                <span style={{ width: '160px' }} />
+              </div>
+              {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
+                <BeatCard
+                  key={beat.id}
+                  beat={beat}
+                  index={i + 1}
+                  onBuyClick={(_beat) => setModalOpen(true)}
+                />
+              ))}
             </div>
-          )}
-        </>
-      )}
+            {!showAll && filtered.length > 10 && (
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={() => setShowAll(true)}
+                  aria-expanded={showAll}
+                  aria-label={`Browse all tracks - ${filtered.length - 10} more`}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[13px] font-semibold text-foreground hover:border-white/40 hover:bg-white/5 transition-[border-color,background-color,transform] active:scale-95"
+                >
+                  {t.store.browseAll} ({filtered.length - 10} more)
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       <LicenseModal
         open={modalOpen}

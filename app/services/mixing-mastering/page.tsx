@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import MixingMasteringClient from '@/components/MixingMasteringClient'
+import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
   title: 'Mixing & Mastering — PRODKJBEATS',
@@ -7,5 +8,14 @@ export const metadata: Metadata = {
 }
 
 export default function MixingMasteringPage() {
-  return <MixingMasteringClient />
+  return (
+    <>
+      <MixingMasteringClient />
+      <CtaBanner
+        label="The Beats Are Waiting"
+        heading="The Beats Are Ready."
+        subtext="Pick your sound, license instantly, and bring it in for a professional mix."
+      />
+    </>
+  )
 }

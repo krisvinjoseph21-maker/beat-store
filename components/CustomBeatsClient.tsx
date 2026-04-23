@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Check, X, ChevronDown } from 'lucide-react'
 import { useLocaleStore, formatPrice } from '@/lib/locale'
+import { useT } from '@/lib/i18n'
 
 const FAQS = [
   {
@@ -135,6 +136,7 @@ export default function CustomBeatsClient() {
   const [modalOpen, setModalOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const currency = useLocaleStore((s) => s.currency)
+  const t = useT()
   const [form, setForm] = useState<FormState>({ artistName: '', email: '', serviceType: PACKAGES[0].name, projectDetails: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -197,9 +199,9 @@ export default function CustomBeatsClient() {
         body: JSON.stringify(form),
       })
       if (res.ok) setSent(true)
-      else setError('Failed to send. Please try again.')
+      else setError(t.services.error)
     } catch {
-      setError('Failed to send. Please try again.')
+      setError(t.services.error)
     } finally {
       setSending(false)
     }
@@ -281,7 +283,7 @@ export default function CustomBeatsClient() {
             {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}
           </p>
           <p className="text-[12px] text-muted-low mb-8" style={{ fontFamily: 'var(--font-inter)' }}>
-            Taxes included.
+            {t.services.taxesIncluded}
           </p>
 
           {/* Package variant selector */}
@@ -329,7 +331,7 @@ export default function CustomBeatsClient() {
           {/* Quantity selector */}
           <div className="mb-8">
             <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.08em', fontFamily: 'var(--font-inter)' }}>
-              Quantity
+              {t.services.quantity}
             </p>
             <div className="inline-flex items-center border border-line-card" style={{ height: '44px' }}>
               <button
@@ -374,14 +376,14 @@ export default function CustomBeatsClient() {
               className="w-full border border-foreground bg-transparent py-3.5 text-[14px] font-bold text-foreground hover:bg-white/5 transition-colors min-h-[52px]"
               style={{ fontFamily: 'var(--font-inter)' }}
             >
-              Book This Package
+              {t.services.bookPackage}
             </button>
             <button
               onClick={openModal}
               className="w-full py-3.5 text-[14px] font-bold text-black transition-colors min-h-[52px] bg-white hover:bg-white-hover"
               style={{ fontFamily: 'var(--font-inter)' }}
             >
-              Enquire Now
+              {t.services.enquireNow}
             </button>
           </div>
 
@@ -442,8 +444,8 @@ export default function CustomBeatsClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="text-2xl font-medium text-foreground">Inquiry Sent.</p>
-                <p className="mt-2 text-sm text-muted-mid">I&apos;ll get back to you within 24 hours.</p>
+                <p className="text-2xl font-medium text-foreground">{t.services.inquirySent}</p>
+                <p className="mt-2 text-sm text-muted-mid">{t.services.replyTime}</p>
                 <button
                   onClick={closeModal}
                   className="mt-6 border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
@@ -454,7 +456,7 @@ export default function CustomBeatsClient() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="cb-artist-name" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Artist Name *</label>
+                  <label htmlFor="cb-artist-name" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">{t.services.artistName} *</label>
                   <input
                     id="cb-artist-name"
                     required
@@ -489,7 +491,7 @@ export default function CustomBeatsClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="cb-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">Project Details *</label>
+                  <label htmlFor="cb-details" className="block text-[11px] font-normal uppercase tracking-[0.08em] text-muted-low mb-2">{t.services.projectDetails} *</label>
                   <textarea
                     id="cb-details"
                     required
@@ -506,7 +508,7 @@ export default function CustomBeatsClient() {
                   disabled={sending}
                   className="w-full bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
                 >
-                  {sending ? 'Sending…' : 'Send Inquiry'}
+                  {sending ? t.contact.sending : t.services.sendInquiry}
                 </button>
               </form>
             )}

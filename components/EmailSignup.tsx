@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { ArrowRight, Check } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function EmailSignup() {
+  const t = useT()
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -11,7 +13,7 @@ export default function EmailSignup() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email.includes('@')) {
-      setError('Enter a valid email address.')
+      setError(t.email.invalidEmail)
       return
     }
     setError('')
@@ -25,8 +27,8 @@ export default function EmailSignup() {
         <div className="flex h-12 w-12 items-center justify-center rounded-full border border-line-input bg-surface-1">
           <Check size={20} className="text-white" />
         </div>
-        <p className="text-sm font-bold text-white">You&apos;re in — check your inbox.</p>
-        <p className="text-xs text-muted-low">Beat on its way to {email}</p>
+        <p className="text-sm font-bold text-white">{t.email.youreIn}</p>
+        <p className="text-xs text-muted-low">{t.email.beatOnWayTo} {email}</p>
       </div>
     )
   }
@@ -48,11 +50,11 @@ export default function EmailSignup() {
           type="submit"
           className="flex-shrink-0 inline-flex items-center gap-2 rounded-sm bg-white px-6 py-3.5 text-sm font-black text-black hover:bg-white-hover transition-colors"
         >
-          Get Beat <ArrowRight size={14} />
+          {t.email.getBeat} <ArrowRight size={14} />
         </button>
       </div>
       {error && <p className="text-xs text-danger">{error}</p>}
-      <p className="text-[11px] text-muted-low text-center">No spam. Unsubscribe any time.</p>
+      <p className="text-[11px] text-muted-low text-center">{t.email.noSpam}</p>
     </form>
   )
 }

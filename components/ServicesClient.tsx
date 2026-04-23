@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Check, X } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 interface ServiceItem {
   id: string
@@ -49,6 +50,7 @@ interface FormState {
 }
 
 export default function ServicesClient() {
+  const t = useT()
   const [activeService, setActiveService] = useState<string | null>(null)
   const [form, setForm] = useState<FormState>({
     artistName: '',
@@ -117,7 +119,7 @@ export default function ServicesClient() {
       if (res.ok) {
         setSent(true)
       } else {
-        setError('Failed to send. Please try again.')
+        setError(t.services.error)
       }
     } catch {
       setError('Failed to send. Please try again.')
@@ -160,7 +162,7 @@ export default function ServicesClient() {
               onClick={() => openInquiry(svc.id, svc.title)}
               className="w-full rounded bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors min-h-[48px]"
             >
-              Book a Session
+              {t.services.bookSession}
             </button>
           </div>
         ))}
@@ -183,7 +185,7 @@ export default function ServicesClient() {
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 id="services-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">Book a Session</h3>
+                <h3 id="services-modal-title" className="font-display text-2xl uppercase text-foreground leading-none">{t.services.bookSession}</h3>
                 <p className="text-xs text-muted mt-0.5">{form.serviceType}</p>
               </div>
               <button
@@ -200,22 +202,20 @@ export default function ServicesClient() {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                   <Check size={30} className="text-accent" aria-hidden="true" />
                 </div>
-                <p className="font-display text-3xl uppercase text-foreground leading-none">Inquiry Sent.</p>
-                <p className="mt-2 text-sm text-muted-mid">
-                  I&apos;ll get back to you within 24 hours.
-                </p>
+                <p className="font-display text-3xl uppercase text-foreground leading-none">{t.services.inquirySent}</p>
+                <p className="mt-2 text-sm text-muted-mid">{t.services.replyTime}</p>
                 <button
                   onClick={closeModal}
                   className="mt-6 rounded border border-line-input px-8 py-3 text-sm text-foreground hover:border-muted transition-colors"
                 >
-                  Close
+                  {t.services.close}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="services-artist-name" className="block text-sm font-semibold text-foreground mb-2">
-                    Artist Name *
+                    {t.services.artistName} *
                   </label>
                   <input
                     id="services-artist-name"
@@ -230,7 +230,7 @@ export default function ServicesClient() {
                 </div>
                 <div>
                   <label htmlFor="services-email" className="block text-sm font-semibold text-foreground mb-2">
-                    Email *
+                    {t.contact.emailAddress} *
                   </label>
                   <input
                     id="services-email"
@@ -245,7 +245,7 @@ export default function ServicesClient() {
                 </div>
                 <div>
                   <label htmlFor="services-service-type" className="block text-sm font-semibold text-foreground mb-2">
-                    Service
+                    {t.services.service}
                   </label>
                   <input
                     id="services-service-type"
@@ -256,7 +256,7 @@ export default function ServicesClient() {
                 </div>
                 <div>
                   <label htmlFor="services-project-details" className="block text-sm font-semibold text-foreground mb-2">
-                    Project Details *
+                    {t.services.projectDetails} *
                   </label>
                   <textarea
                     id="services-project-details"
@@ -274,7 +274,7 @@ export default function ServicesClient() {
                   disabled={sending}
                   className="w-full rounded bg-white py-4 text-base font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
                 >
-                  {sending ? 'Sending…' : 'Send Inquiry'}
+                  {sending ? t.contact.sending : t.services.sendInquiry}
                 </button>
               </form>
             )}

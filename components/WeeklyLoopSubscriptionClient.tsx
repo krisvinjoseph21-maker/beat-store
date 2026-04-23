@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Check, ChevronRight } from 'lucide-react'
 import { useLocaleStore, formatPrice } from '@/lib/locale'
+import { useT } from '@/lib/i18n'
 
 interface Plan {
   id: string
@@ -37,6 +38,7 @@ export default function WeeklyLoopSubscriptionClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const currency = useLocaleStore((s) => s.currency)
+  const t = useT()
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -53,10 +55,10 @@ export default function WeeklyLoopSubscriptionClient() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError(data.error ?? 'Checkout failed. Please try again.')
+        setError(data.error ?? t.loop.error)
       }
     } catch {
-      setError('Checkout failed. Please try again.')
+      setError(t.loop.error)
     } finally {
       setLoading(false)
     }
@@ -75,46 +77,10 @@ export default function WeeklyLoopSubscriptionClient() {
           <span className="text-foreground">Loop Subscription</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
+        <div className="max-w-xl">
 
-          {/* ── Left: Product Visual ─────────────────────────────── */}
-          <div className="relative aspect-square bg-surface-3 rounded-xl overflow-hidden border border-line-card flex items-end justify-start p-8 sm:p-10">
-            {/* Waveform line strip backdrop */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-              {[14, 22, 30, 46, 54, 62, 70, 78].map((top) => (
-                <div
-                  key={top}
-                  className="absolute left-0 right-0 h-px"
-                  style={{ top: `${top}%`, background: `rgba(200,168,106,${top % 16 === 14 ? 0.18 : 0.06})` }}
-                />
-              ))}
-              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent/20" />
-            </div>
-
-            {/* Large display text */}
-            <div className="relative z-10 w-full">
-              <p className="text-[11px] font-normal uppercase tracking-[0.25em] text-muted-low mb-4">PRODBATTS</p>
-              <h2
-                className="font-['Bebas_Neue'] leading-[0.88] text-foreground mb-6 select-none"
-                style={{ fontSize: 'clamp(72px, 13vw, 118px)' }}
-                aria-hidden="true"
-              >
-                WEEKLY<br />LOOPS
-              </h2>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-accent/40 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  <span className="text-[11px] font-medium tracking-[0.1em] text-accent uppercase">50+ drops / week</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Right: Product Details ────────────────────────────── */}
+          {/* ── Product Details ───────────────────────────────────── */}
           <div>
-            {/* Brand eyebrow */}
-            <p className="text-[11px] font-normal uppercase tracking-[0.25em] text-muted-low mb-3">PRODBATTS</p>
-
             {/* Title */}
             <h1 className="font-['Bebas_Neue'] leading-[0.93] text-foreground mb-6" style={{ fontSize: 'clamp(48px, 8vw, 68px)' }}>
               LOOP SUBSCRIPTION
@@ -125,7 +91,7 @@ export default function WeeklyLoopSubscriptionClient() {
               {mounted ? (
                 <>
                   <span className="text-[15px] text-muted line-through">
-                    {formatPrice(ORIGINAL_USD_VALUE, currency)} value
+                    {formatPrice(ORIGINAL_USD_VALUE, currency)} {t.loop.value}
                   </span>
                   <span className="text-[30px] font-bold text-foreground tracking-tight">
                     From {formatPrice(PLANS[0].usdPrice, currency)}
@@ -135,15 +101,15 @@ export default function WeeklyLoopSubscriptionClient() {
                 <span className="text-[30px] font-bold text-foreground tracking-tight">From $7</span>
               )}
               <span className="self-center px-2.5 py-0.5 bg-accent/10 border border-accent/30 rounded text-[10px] font-semibold tracking-[0.08em] uppercase text-accent">
-                Sale
+                {t.loop.sale}
               </span>
             </div>
-            <p className="text-[12px] text-muted-low mb-8">Taxes included.</p>
+            <p className="text-[12px] text-muted-low mb-8">{t.loop.taxesIncluded}</p>
 
             {/* Subscription Options */}
             <div className="mb-6" role="group" aria-label="Subscription options">
               <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-3">
-                Subscription Options
+                {t.loop.subscriptionOptions}
               </p>
               <div className="flex flex-wrap gap-2.5">
                 {PLANS.map((plan) => (
@@ -160,7 +126,7 @@ export default function WeeklyLoopSubscriptionClient() {
                     {plan.label}
                     {plan.badge && (
                       <span className="absolute -top-2 -right-1 px-1.5 py-0.5 bg-accent text-background text-[9px] font-bold uppercase rounded-full leading-none">
-                        {plan.badge}
+                        {t.loop.bestValue}
                       </span>
                     )}
                   </button>
@@ -172,13 +138,13 @@ export default function WeeklyLoopSubscriptionClient() {
             {selected.perMonth !== undefined && (
               <p className="text-[13px] text-muted-low mb-8">
                 {mounted
-                  ? `${formatPrice(selected.usdPrice, currency)} total · ${formatPrice(selected.perMonth, currency)}/mo`
-                  : `$${selected.usdPrice} total · $${selected.perMonth}/mo`}
+                  ? `${formatPrice(selected.usdPrice, currency)} ${t.loop.total} · ${formatPrice(selected.perMonth, currency)}${t.loop.perMonth}`
+                  : `$${selected.usdPrice} ${t.loop.total} · $${selected.perMonth}${t.loop.perMonth}`}
               </p>
             )}
             {selected.id === 'lifetime' && (
               <p className="text-[13px] text-muted-low mb-8">
-                {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`} one-time · unlimited access
+                {mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`} {t.loop.oneTime} · {t.loop.unlimitedAccess}
               </p>
             )}
 
@@ -199,8 +165,8 @@ export default function WeeklyLoopSubscriptionClient() {
               className="w-full py-4 text-[14px] font-bold text-black bg-white hover:bg-white-hover transition-colors min-h-[52px] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading
-                ? 'Redirecting…'
-                : `Get Access — ${mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}`}
+                ? t.loop.redirecting
+                : `${t.loop.getAccess} — ${mounted ? formatPrice(selected.usdPrice, currency) : `$${selected.usdPrice}`}`}
             </button>
 
             {error && (
@@ -211,7 +177,7 @@ export default function WeeklyLoopSubscriptionClient() {
 
         {/* ── Description ─────────────────────────────────────────── */}
         <div className="mt-24 pt-16 border-t border-line max-w-2xl">
-          <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">About the Pack</p>
+          <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">{t.loop.aboutPack}</p>
           <h2 className="font-['Bebas_Neue'] text-[38px] sm:text-[44px] leading-[0.95] text-foreground mb-6">
             BUILT FOR PRODUCERS
           </h2>

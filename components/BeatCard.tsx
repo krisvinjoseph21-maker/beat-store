@@ -7,6 +7,7 @@ import ShareButton from './ShareButton'
 import WaveformVisualizer from './WaveformVisualizer'
 import Link from 'next/link'
 import { PRICES } from '@/lib/prices'
+import { useT } from '@/lib/i18n'
 
 interface Props {
   beat: Beat
@@ -14,16 +15,16 @@ interface Props {
   onBuyClick: (beat: Beat) => void
 }
 
-const LICENSE_OPTIONS = [
-  { id: 'standard' as const, name: 'MP3 License',  desc: 'Non-exclusive · MP3' },
-  { id: 'standard' as const, name: 'WAV License',  desc: 'Non-exclusive · WAV' },
-  { id: 'unlimited' as const,name: 'Stem License', desc: 'Trackout stems'       },
-  { id: null,                 name: 'Exclusive',    desc: 'Full ownership'       },
-]
-
 export default function BeatCard({ beat, index, onBuyClick }: Props) {
+  const t = useT()
   const { currentBeat, isPlaying, progress, duration, setCurrentBeat, togglePlay, setPlaying } =
     usePlayerStore()
+  const LICENSE_OPTIONS = [
+    { id: 'standard' as const, name: t.beatCard.mp3License,   desc: t.beatCard.mp3Desc },
+    { id: 'standard' as const, name: t.beatCard.wavLicense,   desc: t.beatCard.wavDesc },
+    { id: 'unlimited' as const, name: t.beatCard.stemLicense, desc: t.beatCard.stemDesc },
+    { id: null,                 name: t.beatCard.exclusive,    desc: t.beatCard.exclusiveDesc },
+  ]
   const { isInCart, addBeat, setLicenseType, openCart } = useCartStore()
   const { toggle: toggleFavorite, isFavorited } = useFavoritesStore()
   const [mounted, setMounted] = useState(false)
@@ -145,7 +146,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   className="text-[9px] font-bold uppercase tracking-wider shrink-0"
                   style={{ color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
                 >
-                  new
+                  {t.beatCard.new}
                 </span>
               )}
             </div>
@@ -156,7 +157,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 </span>
               )}
               <span style={{ fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '10px', color: 'var(--muted-low)' }}>
-                {beat.genre.toLowerCase()} type beat
+                {beat.genre.toLowerCase()} {t.beatCard.typeBeat}
               </span>
             </div>
             {/* BPM + key — visible on mobile where the metadata columns are hidden */}
@@ -192,7 +193,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <button
                 onClick={(e) => { e.stopPropagation(); openCart() }}
                 aria-label={`${beat.title} — already in cart, click to view cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
+                className="flex items-center gap-1.5 h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
                 style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
               >
                 <Check
@@ -201,13 +202,13 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   onAnimationEnd={() => setShowCheckAnim(false)}
                   aria-hidden="true"
                 />
-                In Cart
+                {t.beat.inCart}
               </button>
             ) : (
               <button
                 onClick={() => setLicenseOpen(o => !o)}
                 aria-label={`Add ${beat.title} to cart`}
-                className="flex items-center gap-1.5 rounded-full h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
+                className="flex items-center gap-1.5 h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
                 style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
               >
                 <ShoppingCart size={12} aria-hidden="true" />
@@ -252,7 +253,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           <div className="bg-surface-2 border-b border-line px-4 sm:pl-[72px] sm:pr-10 py-3">
             {/* Column headers — desktop only */}
             <div className="hidden sm:grid grid-cols-4 gap-px mb-px">
-              {(['MP3 License', 'WAV License', 'Stem License', 'Exclusive'] as const).map((label) => (
+              {([t.beatCard.mp3License, t.beatCard.wavLicense, t.beatCard.stemLicense, t.beatCard.exclusive]).map((label) => (
                 <div key={label} className="px-4 py-2 text-[9px] font-semibold uppercase text-muted-low"
                   style={{ letterSpacing: '0.18em', fontFamily: 'var(--font-montserrat)' }}>
                   {label}
@@ -278,7 +279,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                     </div>
                     <span className="mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors"
                       style={{ fontFamily: 'var(--font-montserrat)' }}>
-                      Inquire →
+                      {t.beat.inquire}
                     </span>
                   </Link>
                 ) : (
@@ -295,7 +296,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                     </div>
                     <span className="mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors"
                       style={{ fontFamily: 'var(--font-montserrat)' }}>
-                      Select →
+                      {t.beat.select}
                     </span>
                   </button>
                 )

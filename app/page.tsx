@@ -30,12 +30,12 @@ async function getPageData(): Promise<{ featured: Beat | null }> {
 }
 
 const RECEIPTS = [
-  { role: 'Featured Credit', artist: 'DeeBaby',      song: '"Chicago Baby"', detail: 'Producer · Verified Credit',   spotifyId: '64KlYVNyF3OkdvG13L6m2X' },
-  { role: 'Featured Credit', artist: 'Paris Bryant', song: '"A Crush"',      detail: 'Producer · Verified Credit',   spotifyId: '4DVN3vtMENFsClxJTuP6yY' },
-  { role: 'Unreleased',      artist: 'GloRilla',     song: 'Placement',      detail: 'CMG / Interscope · Unreleased'   },
-  { role: 'Unreleased',      artist: 'Shenseea',     song: 'Placement',      detail: 'Interscope Records · Unreleased' },
-  { role: 'Unreleased',      artist: 'Seyi Vibez',   song: 'Placement',      detail: 'Afrobeats · Unreleased'         },
-  { role: 'Unreleased',      artist: 'Est Gee',      song: 'Placement',      detail: 'Trap · Unreleased'              },
+  { role: 'Featured Credit', artist: 'DeeBaby',      song: '"Chicago Baby"', detail: 'Producer · Verified Credit',   streams: '500K+', spotifyId: '64KlYVNyF3OkdvG13L6m2X' },
+  { role: 'Featured Credit', artist: 'Paris Bryant', song: '"A Crush"',      detail: 'Producer · Verified Credit',   streams: null,    spotifyId: '4DVN3vtMENFsClxJTuP6yY' },
+  { role: 'Unreleased',      artist: 'GloRilla',     song: 'Placement',      detail: 'CMG / Interscope · Unreleased',   streams: null },
+  { role: 'Unreleased',      artist: 'Shenseea',     song: 'Placement',      detail: 'Interscope Records · Unreleased', streams: null },
+  { role: 'Unreleased',      artist: 'Seyi Vibez',   song: 'Placement',      detail: 'Afrobeats · Unreleased',          streams: null },
+  { role: 'Unreleased',      artist: 'Est Gee',      song: 'Placement',      detail: 'Trap · Unreleased',               streams: null },
 ]
 
 const TICKER_ITEMS = [
@@ -150,14 +150,29 @@ export default async function HomePage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06]">
-            {RECEIPTS.map(({ role, artist, song, detail, spotifyId }, idx) => (
+            {RECEIPTS.map(({ role, artist, song, detail, spotifyId, streams }, idx) => {
+              const isFeatured = role === 'Featured Credit'
+              return (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
                 className="group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full"
+                style={isFeatured ? { outline: '1px solid rgba(255,255,255,0.25)', outlineOffset: '-1px' } : undefined}
               >
-                <span className="text-[10px] font-normal uppercase tracking-[0.08em] text-muted-low">
-                  {role}
-                </span>
+                {/* Top row: badge + streams */}
+                <div className="flex items-start justify-between gap-3">
+                  <span className={`text-[10px] font-semibold uppercase tracking-[0.08em] ${isFeatured ? 'text-foreground' : 'text-muted-low'}`}>
+                    {isFeatured && <span className="mr-1 text-accent">★</span>}{role}
+                  </span>
+                  {streams && (
+                    <span
+                      className="text-[14px] font-display leading-none text-accent shrink-0"
+                      style={{ fontFamily: 'var(--font-bebas)', letterSpacing: '0.04em' }}
+                    >
+                      {streams} STREAMS
+                    </span>
+                  )}
+                </div>
+
                 <div>
                   <p className="text-[17px] font-semibold text-foreground leading-tight">{artist}</p>
                   <p className="text-[13px] mt-1 text-muted">{song} · Producer</p>
@@ -174,7 +189,8 @@ export default async function HomePage() {
                 </div>
               </div>
               </ScrollReveal>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

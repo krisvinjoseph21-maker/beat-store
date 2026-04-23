@@ -34,6 +34,20 @@ interface Order {
   created_at: string
 }
 
+interface MelodyPack {
+  id: string
+  title: string
+  vendor: string
+  description: string
+  price: number
+  compare_at_price: number | null
+  cover_url: string | null
+  file_path: string | null
+  is_active: boolean
+  is_featured: boolean
+  created_at: string
+}
+
 const BLANK_BEAT = {
   title: '',
   bpm: 140,
@@ -178,7 +192,7 @@ export default function AdminClient() {
   const [authError, setAuthError] = useState('')
   const [beats, setBeats] = useState<Beat[]>([])
   const [orders, setOrders] = useState<Order[]>([])
-  const [tab, setTab] = useState<'beats' | 'orders' | 'upload' | 'promos'>('beats')
+  const [tab, setTab] = useState<'beats' | 'orders' | 'upload' | 'promos' | 'melody-packs'>('beats')
   const [loading, setLoading] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Beat>>({})
@@ -209,6 +223,23 @@ export default function AdminClient() {
   const [batchDragOver, setBatchDragOver] = useState(false)
   const [batchUploading, setBatchUploading] = useState(false)
   const batchFileRef = useRef<HTMLInputElement>(null)
+
+  // Melody packs state
+  const [melodyPacks, setMelodyPacks] = useState<MelodyPack[]>([])
+  const [mpEditId, setMpEditId] = useState<string | null>(null)
+  const [mpEditForm, setMpEditForm] = useState<Partial<MelodyPack>>({})
+  const [mpNewPack, setMpNewPack] = useState({ title: '', vendor: 'PRODBATTS', description: '', price: '', compare_at_price: '' })
+  const [mpError, setMpError] = useState<string | null>(null)
+  const [mpUploading, setMpUploading] = useState(false)
+  const [mpUploadMsg, setMpUploadMsg] = useState('')
+  const [mpCoverUrl, setMpCoverUrl] = useState('')
+  const [mpFilePath, setMpFilePath] = useState('')
+  const [mpEditCoverUrl, setMpEditCoverUrl] = useState('')
+  const [mpEditFilePath, setMpEditFilePath] = useState('')
+  const mpCoverRef = useRef<HTMLInputElement>(null)
+  const mpFileRef = useRef<HTMLInputElement>(null)
+  const mpEditCoverRef = useRef<HTMLInputElement>(null)
+  const mpEditFileRef = useRef<HTMLInputElement>(null)
 
   // Clear the password from memory and force re-login after SESSION_TIMEOUT_MS of inactivity.
   function resetIdleTimer() {
@@ -268,6 +299,100 @@ export default function AdminClient() {
     })
     if (res.ok) setOrders(await res.json())
   }
+
+  // ── Melody Packs ─────────────────────────────────────────────────────────
+  async function fetchMelodyPacks() {
+    const res = await fetch('/api/admin/melody-packs', {
+      headers: { 'x-admin-password': password },
+    })
+    if (res.ok) setMelodyPacks(await res.json())
+  }
+
+  async function uploadMpFile(file: File, type: 'cover' | 'stems'): Promise<{ publicUrl?: string; path?: string } | null> {
+    const res = await fetch(`/api/admin/upload?type=${type}&filename=${encodeURIComponent(file.name)}`, {
+      headers: { 'x-admin-password': password },
+    })
+    if (!res.ok) return null
+    const { signedUrl, path, publicUrl } = await res.json()
+    const put = await fetch(signedUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type || (type === 'cover' ? 'image/jpeg' : 'application/zip') } })
+    if (!put.ok) return null
+    return { publicUrl, path }
+  }
+
+  async function handleMpCreate(e: React.FormEvent) {
+    e.preventDefault()
+    setMpError(null)
+    setMpUploading(true)
+    setMpUploadMsg('')
+    try {
+      const body: Record<string, unknown> = {
+        title: mpNewPack.title,
+        vendor: mpNewPack.vendor,
+        description: mpNewPack.description,
+        price: Number(mpNewPack.price) || 0,
+        compare_at_price: mpNewPack.compare_at_price !== '' ? Number(mpNewPack.compare_at_price) : null,
+        cover_url: mpCoverUrl || null,
+        file_path: mpFilePath || null,
+        is_active: true,
+      }
+      const res = await fetch('/api/admin/melody-packs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) { setMpError(data.error ?? 'Failed to create'); return }
+      setMelodyPacks((prev) => [data, ...prev])
+      setMpNewPack({ title: '', vendor: 'PRODBATTS', description: '', price: '', compare_at_price: '' })
+      setMpCoverUrl('')
+      setMpFilePath('')
+      setMpUploadMsg('Pack created successfully.')
+    } finally {
+      setMpUploading(false)
+    }
+  }
+
+  async function handleMpSave(id: string) {
+    setMpError(null)
+    const updates: Record<string, unknown> = { id, ...mpEditForm }
+    if (mpEditCoverUrl) updates.cover_url = mpEditCoverUrl
+    if (mpEditFilePath) updates.file_path = mpEditFilePath
+    const res = await fetch('/api/admin/melody-packs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify(updates),
+    })
+    const data = await res.json()
+    if (!res.ok) { setMpError(data.error ?? 'Failed to update'); return }
+    setMelodyPacks((prev) => prev.map((p) => (p.id === id ? data : p)))
+    setMpEditId(null)
+    setMpEditCoverUrl('')
+    setMpEditFilePath('')
+  }
+
+  async function handleMpToggle(pack: MelodyPack) {
+    const res = await fetch('/api/admin/melody-packs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ id: pack.id, is_active: !pack.is_active }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setMelodyPacks((prev) => prev.map((p) => (p.id === pack.id ? data : p)))
+    }
+  }
+
+  async function handleMpDelete(id: string) {
+    if (!confirm('Delete this melody pack? This cannot be undone.')) return
+    const res = await fetch('/api/admin/melody-packs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ id }),
+    })
+    if (res.ok) setMelodyPacks((prev) => prev.filter((p) => p.id !== id))
+    else setMpError('Failed to delete pack')
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   async function fetchPromos() {
     const res = await fetch('/api/admin/promos', {
@@ -686,18 +811,18 @@ export default function AdminClient() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-2 border-b border-[#1f1f1f] pb-0">
-        {(['beats', 'orders', 'upload', 'promos'] as const).map((t) => (
+      <div className="mb-6 flex gap-2 border-b border-[#1f1f1f] pb-0 overflow-x-auto">
+        {(['beats', 'orders', 'upload', 'promos', 'melody-packs'] as const).map((t) => (
           <button
             key={t}
-            onClick={() => { setTab(t); if (t === 'promos') fetchPromos() }}
-            className={`px-4 py-3 text-sm font-semibold capitalize transition-colors border-b-2 -mb-px ${
+            onClick={() => { setTab(t); if (t === 'promos') fetchPromos(); if (t === 'melody-packs') fetchMelodyPacks() }}
+            className={`px-4 py-3 text-sm font-semibold whitespace-nowrap capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? 'border-white text-white'
                 : 'border-transparent text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : 'Promos'}
+            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : t === 'promos' ? 'Promos' : `Melody Packs (${melodyPacks.length})`}
           </button>
         ))}
       </div>
@@ -1322,6 +1447,218 @@ export default function AdminClient() {
               </button>
             </form>
           </details>
+        </div>
+      )}
+
+      {/* Melody Packs tab */}
+      {tab === 'melody-packs' && (
+        <div className="space-y-6 max-w-3xl">
+          {mpError && (
+            <div className="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+              <span>{mpError}</span>
+              <button onClick={() => setMpError(null)} className="ml-3 text-red-400/60 hover:text-red-400"><X size={14} /></button>
+            </div>
+          )}
+
+          {/* Create new pack */}
+          <div className="rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-5">
+            <h2 className="text-base font-bold text-white mb-4">Add Melody Pack</h2>
+            <form onSubmit={handleMpCreate} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Title *</label>
+                  <input required value={mpNewPack.title} onChange={(e) => setMpNewPack((f) => ({ ...f, title: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Sentiments" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Vendor</label>
+                  <input value={mpNewPack.vendor} onChange={(e) => setMpNewPack((f) => ({ ...f, vendor: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="PRODBATTS" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Price (USD) *</label>
+                  <input required type="number" min="0" step="0.01" value={mpNewPack.price} onChange={(e) => setMpNewPack((f) => ({ ...f, price: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="25.00" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Compare-at Price (sale)</label>
+                  <input type="number" min="0" step="0.01" value={mpNewPack.compare_at_price} onChange={(e) => setMpNewPack((f) => ({ ...f, compare_at_price: e.target.value }))}
+                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="42.00 (optional)" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Description</label>
+                <input value={mpNewPack.description} onChange={(e) => setMpNewPack((f) => ({ ...f, description: e.target.value }))}
+                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Emotive sample bundle…" />
+              </div>
+
+              {/* Cover image upload */}
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
+                <div
+                  onClick={() => mpCoverRef.current?.click()}
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-[#1f1f1f] bg-[#111] px-4 py-4 text-center hover:border-zinc-600 transition-colors"
+                >
+                  <input ref={mpCoverRef} type="file" accept="image/*" className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      setMpUploading(true)
+                      const result = await uploadMpFile(file, 'cover')
+                      if (result?.publicUrl) setMpCoverUrl(result.publicUrl)
+                      else setMpError('Cover upload failed')
+                      setMpUploading(false)
+                      e.target.value = ''
+                    }}
+                  />
+                  <Upload size={16} className="mx-auto mb-1 text-zinc-500" />
+                  <p className="text-xs text-zinc-400">{mpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
+                </div>
+              </div>
+
+              {/* Pack file upload */}
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
+                <div
+                  onClick={() => mpFileRef.current?.click()}
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-[#1f1f1f] bg-[#111] px-4 py-4 text-center hover:border-zinc-600 transition-colors"
+                >
+                  <input ref={mpFileRef} type="file" accept=".zip,application/zip" className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      setMpUploading(true)
+                      const result = await uploadMpFile(file, 'stems')
+                      if (result?.path) setMpFilePath(result.path)
+                      else setMpError('File upload failed')
+                      setMpUploading(false)
+                      e.target.value = ''
+                    }}
+                  />
+                  <Upload size={16} className="mx-auto mb-1 text-zinc-500" />
+                  <p className="text-xs text-zinc-400">{mpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
+                </div>
+              </div>
+
+              {mpUploadMsg && <p className="text-sm text-green-400">{mpUploadMsg}</p>}
+
+              <button type="submit" disabled={mpUploading}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50">
+                <Upload size={15} />
+                {mpUploading ? 'Uploading…' : 'Create Melody Pack'}
+              </button>
+            </form>
+          </div>
+
+          {/* Existing packs list */}
+          {melodyPacks.length === 0 ? (
+            <p className="text-center text-zinc-500 py-8">No melody packs yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {melodyPacks.map((pack) => (
+                <div key={pack.id} className="rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3">
+                  {mpEditId === pack.id ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <input value={mpEditForm.title ?? pack.title} onChange={(e) => setMpEditForm((f) => ({ ...f, title: e.target.value }))}
+                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none col-span-2" placeholder="Title" />
+                        <input value={mpEditForm.vendor ?? pack.vendor} onChange={(e) => setMpEditForm((f) => ({ ...f, vendor: e.target.value }))}
+                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="Vendor" />
+                        <input value={mpEditForm.description ?? pack.description} onChange={(e) => setMpEditForm((f) => ({ ...f, description: e.target.value }))}
+                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="Description" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[10px] text-zinc-500 mb-1">Price (USD)</label>
+                          <input type="number" min="0" step="0.01" value={mpEditForm.price ?? pack.price} onChange={(e) => setMpEditForm((f) => ({ ...f, price: Number(e.target.value) }))}
+                            className="w-full rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] text-zinc-500 mb-1">Compare-at Price</label>
+                          <input type="number" min="0" step="0.01"
+                            value={mpEditForm.compare_at_price !== undefined ? (mpEditForm.compare_at_price ?? '') : (pack.compare_at_price ?? '')}
+                            onChange={(e) => setMpEditForm((f) => ({ ...f, compare_at_price: e.target.value === '' ? null : Number(e.target.value) }))}
+                            className="w-full rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="(none)" />
+                        </div>
+                      </div>
+
+                      {/* Cover update */}
+                      <div>
+                        <label className="block text-[10px] text-zinc-500 mb-1">Cover Image</label>
+                        <div onClick={() => mpEditCoverRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-[#2a2a2a] px-3 py-2 text-center hover:border-zinc-500">
+                          <input ref={mpEditCoverRef} type="file" accept="image/*" className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]; if (!file) return
+                              const result = await uploadMpFile(file, 'cover')
+                              if (result?.publicUrl) setMpEditCoverUrl(result.publicUrl)
+                              e.target.value = ''
+                            }} />
+                          <p className="text-xs text-zinc-400">{mpEditCoverUrl ? '✓ New cover uploaded' : 'Click to replace cover'}</p>
+                        </div>
+                      </div>
+
+                      {/* File update */}
+                      <div>
+                        <label className="block text-[10px] text-zinc-500 mb-1">Pack File (ZIP)</label>
+                        <div onClick={() => mpEditFileRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-[#2a2a2a] px-3 py-2 text-center hover:border-zinc-500">
+                          <input ref={mpEditFileRef} type="file" accept=".zip,application/zip" className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]; if (!file) return
+                              const result = await uploadMpFile(file, 'stems')
+                              if (result?.path) setMpEditFilePath(result.path)
+                              e.target.value = ''
+                            }} />
+                          <p className="text-xs text-zinc-400">{mpEditFilePath ? '✓ New file uploaded' : pack.file_path ? '✓ File on record — click to replace' : 'Click to upload ZIP'}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button onClick={() => handleMpSave(pack.id)} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black hover:bg-zinc-200 transition-colors">
+                          <Check size={13} /> Save
+                        </button>
+                        <button onClick={() => { setMpEditId(null); setMpEditForm({}); setMpEditCoverUrl(''); setMpEditFilePath('') }}
+                          className="flex items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors">
+                          <X size={13} /> Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      {pack.cover_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={pack.cover_url} alt="" className="h-10 w-10 rounded-md object-cover flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">{pack.title}</p>
+                        <p className="text-xs text-zinc-500">
+                          {pack.vendor} · ${pack.price.toFixed(2)}
+                          {pack.compare_at_price ? ` (was $${pack.compare_at_price.toFixed(2)})` : ''}
+                          {!pack.file_path && <span className="ml-2 text-amber-500">⚠ No file</span>}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button onClick={() => handleMpToggle(pack)} title={pack.is_active ? 'Deactivate' : 'Activate'}
+                          className="text-zinc-500 hover:text-white transition-colors">
+                          {pack.is_active ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />}
+                        </button>
+                        <button onClick={() => { setMpEditId(pack.id); setMpEditForm({ title: pack.title, vendor: pack.vendor, description: pack.description, price: pack.price, compare_at_price: pack.compare_at_price }) }}
+                          className="text-zinc-500 hover:text-white transition-colors">
+                          <Edit3 size={15} />
+                        </button>
+                        <button onClick={() => handleMpDelete(pack.id)} className="text-zinc-600 hover:text-red-400 transition-colors">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

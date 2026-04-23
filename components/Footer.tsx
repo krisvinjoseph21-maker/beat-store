@@ -1,21 +1,26 @@
+'use client'
+
 import Link from 'next/link'
-
-const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/store', label: 'All Beats' },
-  { href: '/services', label: 'Services' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'Contact' },
-]
-
-const LEGAL_LINKS = [
-  { href: '/licensing', label: 'Licensing Info' },
-  { href: '/terms', label: 'Terms of Use' },
-  { href: '/privacy', label: 'Privacy Policy' },
-  { href: '/cookies', label: 'Cookie Preferences' },
-]
+import { useT } from '@/lib/i18n'
 
 export default function Footer() {
+  const t = useT()
+
+  const NAV_LINKS = [
+    { href: '/',          label: t.footer.home },
+    { href: '/store',     label: t.footer.allBeats },
+    { href: '/services',  label: t.footer.services },
+    { href: '/faq',       label: t.footer.faq },
+    { href: '/about',     label: t.footer.contact },
+  ]
+
+  const LEGAL_LINKS = [
+    { href: '/licensing', label: t.footer.licensingInfo },
+    { href: '/terms',     label: t.footer.termsOfUse },
+    { href: '/privacy',   label: t.footer.privacyPolicy },
+    { href: '/cookies',   label: t.footer.cookiePrefs },
+  ]
+
   return (
     <footer className="w-full flex justify-center border-t border-white/[0.06] bg-black pb-24">
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pt-12 pb-8">
@@ -31,11 +36,11 @@ export default function Footer() {
               PRODKJ<span className="text-muted-low">BEATS</span>
             </Link>
             <p className="text-[12px] text-muted-low leading-relaxed max-w-[200px]">
-              Premium beats for serious artists.
+              {t.footer.tagline}
             </p>
             <div className="flex items-center gap-3 mt-1">
               <p className="text-[11px] text-muted-low">
-                © {new Date().getFullYear()} PRODKJBEATS. All rights reserved.
+                © {new Date().getFullYear()} PRODKJBEATS. {t.footer.allRights}
               </p>
               <a
                 href="https://www.instagram.com/prodkjbeats/"
@@ -49,7 +54,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Right — nav links stacked in two rows */}
+          {/* Right — nav links */}
           <div className="flex flex-col gap-3 sm:items-end">
             <div className="flex flex-wrap gap-x-8 gap-y-2 sm:justify-end">
               {NAV_LINKS.map(({ href, label }) => (
