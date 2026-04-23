@@ -288,5 +288,11 @@ export default function LicensingPage() {
       </div>
 
     </div>
+      <CtaBanner
+        label="Get Started"
+        heading="Ready to License?"
+        subtext="Pick a beat, choose your license, and download instantly — no waiting."
+      />
+    </>
   )
 }

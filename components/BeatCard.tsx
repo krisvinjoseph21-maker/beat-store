@@ -61,8 +61,9 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation()
+    setLicenseType('standard')
     addBeat(beat)
-    onBuyClick(beat)
+    openCart()
   }
 
   function handleFavorite(e: React.MouseEvent) {
@@ -76,21 +77,24 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     setLicenseType(id)
     addBeat(beat)
     setLicenseOpen(false)
-    onBuyClick(beat)
+    openCart()
   }
 
   return (
     <div className="w-full">
 
       {/* ── Main row ─────────────────────────────────────────── */}
-      <div className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer">
+      <div
+        className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer"
+        onClick={() => setLicenseOpen(o => !o)}
+      >
 
-        {/* Expand/collapse button — fills the row behind all content. Real <button>, no nested-button violation. */}
-        <button
+        {/* Hidden focus target for keyboard users — click bubbles to the row div above */}
+        <span
           className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
-          onClick={() => setLicenseOpen(o => !o)}
           aria-expanded={licenseOpen}
           aria-label={`${beat.title} — ${licenseOpen ? 'close' : 'open'} license options`}
+          tabIndex={-1}
         />
 
         {isThisActive && (
@@ -119,7 +123,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Play button */}
           <button
-            onClick={handlePlay}
+            onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? 'Pause' : 'Play'}
             className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-[background-color,transform,opacity] duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
@@ -206,7 +210,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               </button>
             ) : (
               <button
-                onClick={() => setLicenseOpen(o => !o)}
+                onClick={handleAddToCart}
                 aria-label={`Add ${beat.title} to cart`}
                 className="flex items-center gap-1.5 h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
                 style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
@@ -230,7 +234,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               />
             </button>
 
-            <div>
+            <div onClick={(e) => e.stopPropagation()}>
               <ShareButton beatId={beat.id} />
             </div>
           </div>

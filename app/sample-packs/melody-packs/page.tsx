@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase-admin'
 import MelodyPacksGrid from '@/components/MelodyPacksGrid'
+import CtaBanner from '@/components/CtaBanner'
 
 export const revalidate = 60
 
@@ -17,8 +18,15 @@ export default async function MelodyPacksPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <main className="min-h-screen pt-[48px]">
-      <MelodyPacksGrid initialPacks={packs ?? []} />
-    </main>
+    <>
+      <main className="min-h-screen pt-[48px]">
+        <MelodyPacksGrid initialPacks={packs ?? []} />
+      </main>
+      <CtaBanner
+        label="Shop the Beats"
+        heading="Shop the Beats Too."
+        subtext="Pair your new melody pack with a licensed beat from the full catalog."
+      />
+    </>
   )
 }
