@@ -46,7 +46,7 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
-        className="w-full h-[42px] appearance-none border border-line-input bg-transparent py-0 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-line-hover"
+        className="w-full h-11 appearance-none border border-line-input bg-transparent py-0 pl-3.5 pr-8 text-[11px] font-medium outline-none transition-colors cursor-pointer hover:border-line-hover"
         style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
       >
         {options.map((o) => (
@@ -128,16 +128,16 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col items-center">
 
       {/* Hero header with dot-grid background */}
       <div
-        className="w-full relative overflow-hidden"
+        className="w-full relative overflow-hidden flex flex-col items-center"
         style={{
-          background: '#0a0a0a',
+          background: 'var(--surface-3)',
         }}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pt-12 pb-8">
+        <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pt-12 pb-8">
           <p
             className="mb-3 text-[11px] font-semibold uppercase"
             style={{ letterSpacing: '0.15em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
@@ -173,13 +173,12 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={c}
                     onClick={() => setCategory(c)}
                     aria-pressed={active}
-                    className="h-10 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
+                    className="h-11 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
                     style={{
                       fontFamily: 'var(--font-montserrat)',
-                      letterSpacing: '0.04em',
                       background: active ? 'var(--accent)' : 'rgba(0,0,0,0.5)',
                       borderColor: active ? 'var(--accent)' : 'rgba(255,255,255,0.18)',
-                      color: '#ffffff',
+                      color: 'var(--foreground)',
                     }}
                   >
                     {c === 'All Genres' ? 'ALL' : c.toUpperCase()}
@@ -192,7 +191,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       </div>
 
       {/* Secondary filter row */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-4 flex flex-wrap items-center gap-2">
+      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-4 flex flex-wrap items-center gap-2">
         <Select
           label="Filter by BPM range"
           value={bpmRange}
@@ -208,7 +207,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           aria-pressed={favoritesOnly}
-          className={`flex items-center gap-1.5 border h-[42px] px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
+          className={`flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
           style={{
             borderColor: favoritesOnly ? 'var(--accent)' : 'var(--line-input)',
             color: favoritesOnly ? 'var(--accent)' : 'var(--muted-low)',
@@ -224,7 +223,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       </div>
 
       {/* Beat list */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pb-12">
+      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-12">
         {filtered.length === 0 ? (
           <div
             role="status"

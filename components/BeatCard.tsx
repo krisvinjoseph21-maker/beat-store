@@ -89,12 +89,15 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
         onClick={() => setLicenseOpen(o => !o)}
       >
 
-        {/* Hidden focus target for keyboard users — click bubbles to the row div above */}
+        {/* Keyboard expand target — tabIndex 0 makes it reachable; stopPropagation prevents double-fire with outer div */}
         <span
           className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
+          role="button"
           aria-expanded={licenseOpen}
           aria-label={`${beat.title} — ${licenseOpen ? 'close' : 'open'} license options`}
-          tabIndex={-1}
+          tabIndex={0}
+          onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
+          onKeyDown={(e) => { if (e.key === ' ') e.preventDefault() }}
         />
 
         {isThisActive && (

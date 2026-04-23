@@ -20,9 +20,8 @@ const NAV_LINKS: NavLink[] = [
     { href: '/services/mixing-mastering', label: 'Mixing & Mastering' },
   ]},
   { href: '/sample-packs', label: 'Sample Packs', children: [
-    { href: '/sample-packs/best-sellers',             label: 'Best Sellers'            },
     { href: '/sample-packs/melody-packs',             label: 'Melody Packs'            },
-{ href: '/sample-packs/weekly-loop-subscription', label: 'Weekly Loop Subscription' },
+    { href: '/sample-packs/weekly-loop-subscription', label: 'Weekly Loop Subscription' },
     { href: '/sample-packs/drum-kits',                label: 'Drum Kits'               },
   ]},
   { href: '/licensing', label: 'Licensing' },
@@ -34,6 +33,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
   const active = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
 
   const close = useCallback(() => setOpen(false), [])
@@ -47,6 +47,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
 
   useEffect(() => {
     if (!open) return
+    menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus()
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') { close(); triggerRef.current?.focus() }
     }
@@ -67,7 +68,6 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
         ref={triggerRef}
         onClick={() => setOpen(o => !o)}
         className={`flex items-center gap-0.5 text-[12px] transition-colors duration-150 ${active ? 'text-foreground font-medium' : 'font-normal text-muted hover:text-foreground'}`}
-        style={{ letterSpacing: '0.01em' }}
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -83,6 +83,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
       </button>
       {open && (
         <div
+          ref={menuRef}
           role="menu"
           className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-44 glass border border-white/[0.08] py-1"
         >
@@ -174,8 +175,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={`relative shrink-0 text-[12px] transition-colors duration-150 ${active ? 'text-foreground font-medium' : 'font-normal text-muted hover:text-foreground'}`}
-                  style={{ letterSpacing: '0.01em' }}
-                >
+                          >
                   {NAV_LABEL_MAP[link.href] ?? link.label}
                   {active && (
                     <span className="absolute -bottom-[14px] left-0 right-0 h-px bg-foreground/40" />

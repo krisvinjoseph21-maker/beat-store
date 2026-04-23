@@ -459,8 +459,8 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="hidden sm:block cursor-pointer flex-shrink-0"
-              style={{ width: '60px' }}
+              className="cursor-pointer flex-shrink-0"
+              style={{ width: '50px' }}
               aria-label="Volume"
             />
           </div>

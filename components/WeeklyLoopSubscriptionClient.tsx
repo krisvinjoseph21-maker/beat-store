@@ -178,7 +178,7 @@ export default function WeeklyLoopSubscriptionClient() {
         </div>
 
         {/* ── Description ─────────────────────────────────────────── */}
-        <div className="mt-24 pt-16 border-t border-line max-w-2xl">
+        <div className="mt-24 pt-16 border-t border-line w-full max-w-[500px] text-center">
           <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">{t.loop.aboutPack}</p>
           <h2 className="font-['Bebas_Neue'] text-[38px] sm:text-[44px] leading-[0.95] text-foreground mb-6">
             BUILT FOR PRODUCERS

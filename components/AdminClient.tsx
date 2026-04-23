@@ -767,7 +767,7 @@ export default function AdminClient() {
       <div className="flex min-h-[80vh] items-center justify-center px-4">
         <form
           onSubmit={handleAuth}
-          className="w-full max-w-sm rounded-2xl border border-[#1f1f1f] bg-[#111] p-8"
+          className="w-full max-w-sm rounded-2xl border border-line-card bg-surface-1 p-8"
         >
           <h1 className="mb-6 text-xl font-black text-white">Admin Login</h1>
           <input
@@ -775,13 +775,13 @@ export default function AdminClient() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="mb-4 w-full rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
+            className="mb-4 w-full rounded-xl border border-line-card bg-surface-3 px-4 py-3 text-sm text-white outline-none focus:border-muted"
           />
           {authError && <p className="mb-3 text-sm text-danger">{authError}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+            className="w-full rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
           >
             {loading ? 'Checking…' : 'Enter'}
           </button>
@@ -797,13 +797,13 @@ export default function AdminClient() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { fetchBeats(); fetchOrders(); fetchPromos() }}
-            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 rounded-lg border border-line-card px-3 py-2 text-xs text-muted-mid hover:text-white transition-colors"
           >
             <RefreshCw size={14} /> Refresh
           </button>
           <button
             onClick={() => { setAuthed(false); setPassword('') }}
-            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-danger transition-colors"
+            className="flex items-center gap-2 rounded-lg border border-line-card px-3 py-2 text-xs text-muted-mid hover:text-danger transition-colors"
           >
             <X size={14} /> Lock
           </button>
@@ -811,7 +811,7 @@ export default function AdminClient() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-2 border-b border-[#1f1f1f] pb-0 overflow-x-auto">
+      <div className="mb-6 flex gap-2 border-b border-line-card pb-0 overflow-x-auto">
         {(['beats', 'orders', 'upload', 'promos', 'melody-packs'] as const).map((t) => (
           <button
             key={t}
@@ -819,7 +819,7 @@ export default function AdminClient() {
             className={`px-4 py-3 text-sm font-semibold whitespace-nowrap capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? 'border-white text-white'
-                : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                : 'border-transparent text-muted hover:text-foreground'
             }`}
           >
             {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : t === 'promos' ? 'Promos' : `Melody Packs (${melodyPacks.length})`}
@@ -843,7 +843,7 @@ export default function AdminClient() {
               <button
                 type="button"
                 onClick={() => setSelectedIds(selectedIds.size === beats.length ? new Set() : new Set(beats.map((b) => b.id)))}
-                className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.size > 0 ? 'border-white bg-white' : 'border-zinc-500 bg-transparent hover:border-zinc-300'}`}
+                className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.size > 0 ? 'border-white bg-white' : 'border-muted bg-transparent hover:border-muted-mid'}`}
               >
                 {selectedIds.size > 0 && (
                   <svg viewBox="0 0 10 10" className="w-full h-full p-0.5" fill="none">
@@ -853,7 +853,7 @@ export default function AdminClient() {
                   </svg>
                 )}
               </button>
-              <span className="text-xs text-zinc-500">{selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}</span>
+              <span className="text-xs text-muted">{selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}</span>
               {selectedIds.size > 0 && (
                 <button
                   onClick={deleteSelected}
@@ -865,38 +865,38 @@ export default function AdminClient() {
             </div>
           )}
           {beats.length === 0 && (
-            <p className="text-center text-zinc-500 py-12">No beats yet. Add some in the Upload tab.</p>
+            <p className="text-center text-muted py-12">No beats yet. Add some in the Upload tab.</p>
           )}
           {beats.map((beat) => (
             <div
               key={beat.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3"
+              className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-line-card bg-surface-1 px-4 py-3"
             >
               {editId === beat.id ? (
                 <div className="flex-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   <input
                     value={editForm.title ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
-                    className="col-span-2 rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="col-span-2 rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                     placeholder="Title"
                   />
                   <input
                     type="number"
                     value={editForm.bpm ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, bpm: Number(e.target.value) }))}
-                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                     placeholder="BPM"
                   />
                   <input
                     value={editForm.key ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, key: e.target.value }))}
-                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                     placeholder="Key"
                   />
                   <select
                     value={editForm.genre ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, genre: e.target.value }))}
-                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                   >
                     <option>Trap</option>
                     <option>Drill</option>
@@ -906,20 +906,20 @@ export default function AdminClient() {
                   <input
                     value={editForm.subgenre ?? ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, subgenre: e.target.value }))}
-                    className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                     placeholder="Subgenre"
                   />
                   <input
                     value={editTagsStr}
                     onChange={(e) => setEditTagsStr(e.target.value)}
-                    className="col-span-2 rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none"
+                    className="col-span-2 rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none"
                     placeholder="Tags (comma separated)"
                   />
                   <div className="col-span-2 flex gap-2">
                     <button onClick={saveEdit} className="flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black">
                       <Check size={12} /> Save
                     </button>
-                    <button onClick={() => setEditId(null)} className="flex items-center gap-1 rounded-lg border border-[#2a2a2a] px-3 py-2 text-xs text-zinc-400">
+                    <button onClick={() => setEditId(null)} className="flex items-center gap-1 rounded-lg border border-line-input px-3 py-2 text-xs text-muted-mid">
                       <X size={12} /> Cancel
                     </button>
                   </div>
@@ -929,7 +929,7 @@ export default function AdminClient() {
                   <button
                     type="button"
                     onClick={() => setSelectedIds((prev) => { const next = new Set(prev); prev.has(beat.id) ? next.delete(beat.id) : next.add(beat.id); return next })}
-                    className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.has(beat.id) ? 'border-white bg-white' : 'border-zinc-600 bg-transparent hover:border-zinc-400'}`}
+                    className={`h-4 w-4 flex-shrink-0 rounded border transition-colors ${selectedIds.has(beat.id) ? 'border-white bg-white' : 'border-line-hover bg-transparent hover:border-muted-mid'}`}
                   >
                     {selectedIds.has(beat.id) && (
                       <svg viewBox="0 0 10 10" className="w-full h-full p-0.5" fill="none">
@@ -939,12 +939,12 @@ export default function AdminClient() {
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className={`h-2 w-2 rounded-full flex-shrink-0 ${beat.is_active ? 'bg-green-400' : 'bg-zinc-600'}`} />
+                      <span className={`h-2 w-2 rounded-full flex-shrink-0 ${beat.is_active ? 'bg-green-400' : 'bg-muted-low'}`} />
                       <p className="text-sm font-semibold text-white truncate">{beat.title}</p>
                     </div>
-                    <p className="text-xs text-zinc-500 mt-0.5 ml-4">
+                    <p className="text-xs text-muted mt-0.5 ml-4">
                       {beat.genre} · {beat.subgenre} · {beat.bpm} BPM · {beat.key}
-                      {beat.stems_path && <span className="ml-2 text-emerald-500">· stems ✓</span>}
+                      {beat.stems_path && <span className="ml-2 text-promo">· stems ✓</span>}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
@@ -954,7 +954,7 @@ export default function AdminClient() {
                       className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
                         beat.is_featured
                           ? 'text-yellow-400 bg-yellow-400/10'
-                          : 'text-zinc-600 hover:text-yellow-400 hover:bg-yellow-400/10'
+                          : 'text-muted-low hover:text-yellow-400 hover:bg-yellow-400/10'
                       }`}
                       title={beat.is_featured ? 'Remove from featured' : 'Set as featured track'}
                     >
@@ -963,7 +963,7 @@ export default function AdminClient() {
                     {/* Pin control */}
                     {beat.pin_order !== null ? (
                       <div className="flex items-center gap-1">
-                        <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 rounded px-1.5 py-0.5">
+                        <span className="text-[10px] font-bold text-accent bg-accent/10 rounded px-1.5 py-0.5">
                           #{beat.pin_order}
                         </span>
                         <input
@@ -975,11 +975,11 @@ export default function AdminClient() {
                             const v = parseInt(e.target.value)
                             if (!isNaN(v) && v > 0 && v !== beat.pin_order) setPinOrder(beat, v)
                           }}
-                          className="w-10 rounded border border-amber-400/30 bg-[#0a0a0a] px-1 py-0.5 text-center text-xs text-white outline-none"
+                          className="w-10 rounded border border-accent/30 bg-surface-3 px-1 py-0.5 text-center text-xs text-white outline-none"
                         />
                         <button
                           onClick={() => setPinOrder(beat, null)}
-                          className="flex h-7 w-7 items-center justify-center rounded text-amber-400 hover:bg-amber-400/10 transition-colors"
+                          className="flex h-7 w-7 items-center justify-center rounded text-accent hover:bg-accent/10 transition-colors"
                           title="Unpin"
                         >
                           <PinOff size={13} />
@@ -988,13 +988,13 @@ export default function AdminClient() {
                     ) : (
                       <button
                         onClick={() => setPinOrder(beat, (Math.max(0, ...beats.filter(b => b.pin_order !== null).map(b => b.pin_order as number))) + 1)}
-                        className="flex h-8 items-center gap-1 rounded-lg border border-[#2a2a2a] px-2 text-xs text-zinc-500 hover:text-amber-400 hover:border-amber-400/30 transition-colors"
+                        className="flex h-8 items-center gap-1 rounded-lg border border-line-input px-2 text-xs text-muted hover:text-accent hover:border-accent/30 transition-colors"
                         title="Pin to top"
                       >
                         <Pin size={12} /> Pin
                       </button>
                     )}
-                    <button onClick={() => startEdit(beat)} className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
+                    <button onClick={() => startEdit(beat)} className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-muted-mid hover:text-white transition-colors">
                       <Edit3 size={14} />
                     </button>
                     <button
@@ -1002,23 +1002,23 @@ export default function AdminClient() {
                       className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
                         beat.is_active
                           ? 'text-green-400 hover:bg-green-400/10'
-                          : 'text-zinc-600 hover:bg-white/10 hover:text-zinc-300'
+                          : 'text-muted-low hover:bg-white/10 hover:text-foreground'
                       }`}
                     >
                       {beat.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                     </button>
                     {beat.file_url ? (
-                      <a href={beat.file_url} target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
+                      <a href={beat.file_url} target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-muted-mid hover:text-white transition-colors">
                         <Eye size={14} />
                       </a>
                     ) : (
-                      <span className="flex h-8 w-8 items-center justify-center text-zinc-700">
+                      <span className="flex h-8 w-8 items-center justify-center text-muted-low">
                         <EyeOff size={14} />
                       </span>
                     )}
                     <button
                       onClick={() => deleteBeat(beat)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-danger/10 hover:text-danger transition-colors"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-low hover:bg-danger/10 hover:text-danger transition-colors"
                       title="Delete beat"
                     >
                       <Trash2 size={14} />
@@ -1035,15 +1035,15 @@ export default function AdminClient() {
       {tab === 'orders' && (
         <div className="space-y-2">
           {orders.length === 0 && (
-            <p className="text-center text-zinc-500 py-12">No orders yet.</p>
+            <p className="text-center text-muted py-12">No orders yet.</p>
           )}
           {orders.map((order) => (
-            <div key={order.id} className="rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3">
+            <div key={order.id} className="rounded-xl border border-line-card bg-surface-1 px-4 py-3">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-white">{order.customer_name}</p>
-                  <p className="text-xs text-zinc-500">{order.customer_email}</p>
-                  <p className="mt-1 text-xs text-zinc-400">
+                  <p className="text-xs text-muted">{order.customer_email}</p>
+                  <p className="mt-1 text-xs text-muted-mid">
                     {order.license_type} · {order.quantity_tier} beat{order.quantity_tier > 1 ? 's' : ''} · ${order.total_price}
                   </p>
                 </div>
@@ -1053,7 +1053,7 @@ export default function AdminClient() {
                   }`}>
                     {order.status}
                   </span>
-                  <p className="mt-1 text-xs text-zinc-600">
+                  <p className="mt-1 text-xs text-muted-low">
                     {new Date(order.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -1068,39 +1068,39 @@ export default function AdminClient() {
         <div className="max-w-xl space-y-6">
           <div>
             <h2 className="text-lg font-bold text-white mb-1">Promotions</h2>
-            <p className="text-xs text-zinc-500">Changes apply immediately to all visitors. Set a value to 0 or leave blank to disable.</p>
+            <p className="text-xs text-muted">Changes apply immediately to all visitors. Set a value to 0 or leave blank to disable.</p>
           </div>
 
           {/* Status cards */}
           <div className="grid grid-cols-2 gap-3">
-            <div className={`rounded-xl border px-4 py-3 ${promo.sitewide_discount_pct ? 'border-amber-500/30 bg-amber-500/10' : 'border-[#1f1f1f] bg-[#111]'}`}>
+            <div className={`rounded-xl border px-4 py-3 ${promo.sitewide_discount_pct ? 'border-accent/30 bg-accent/10' : 'border-line-card bg-surface-1'}`}>
               <div className="flex items-center gap-2 mb-1">
-                <Tag size={13} className={promo.sitewide_discount_pct ? 'text-amber-400' : 'text-zinc-600'} />
-                <p className="text-xs font-semibold text-zinc-400">Sitewide Discount</p>
+                <Tag size={13} className={promo.sitewide_discount_pct ? 'text-accent' : 'text-muted-low'} />
+                <p className="text-xs font-semibold text-muted-mid">Sitewide Discount</p>
               </div>
-              <p className={`text-2xl font-black ${promo.sitewide_discount_pct ? 'text-amber-400' : 'text-zinc-700'}`}>
+              <p className={`text-2xl font-black ${promo.sitewide_discount_pct ? 'text-accent' : 'text-muted-low'}`}>
                 {promo.sitewide_discount_pct ? `${promo.sitewide_discount_pct}% OFF` : 'Off'}
               </p>
             </div>
-            <div className={`rounded-xl border px-4 py-3 ${promo.bogo_free_count ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-[#1f1f1f] bg-[#111]'}`}>
+            <div className={`rounded-xl border px-4 py-3 ${promo.bogo_free_count ? 'border-promo/30 bg-promo/10' : 'border-line-card bg-surface-1'}`}>
               <div className="flex items-center gap-2 mb-1">
-                <Zap size={13} className={promo.bogo_free_count ? 'text-emerald-400' : 'text-zinc-600'} />
-                <p className="text-xs font-semibold text-zinc-400">BOGO</p>
+                <Zap size={13} className={promo.bogo_free_count ? 'text-promo' : 'text-muted-low'} />
+                <p className="text-xs font-semibold text-muted-mid">BOGO</p>
               </div>
-              <p className={`text-2xl font-black ${promo.bogo_free_count ? 'text-emerald-400' : 'text-zinc-700'}`}>
+              <p className={`text-2xl font-black ${promo.bogo_free_count ? 'text-promo' : 'text-muted-low'}`}>
                 {promo.bogo_free_count ? `Buy 1 Get ${promo.bogo_free_count}` : 'Off'}
               </p>
             </div>
           </div>
 
           {/* Edit form */}
-          <div className="rounded-xl border border-[#1f1f1f] bg-[#111] p-5 space-y-5">
+          <div className="rounded-xl border border-line-card bg-surface-1 p-5 space-y-5">
             {/* Sitewide discount */}
             <div>
-              <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+              <label className="block text-xs font-semibold text-muted-mid mb-1.5">
                 Sitewide Discount (%)
               </label>
-              <p className="text-[11px] text-zinc-600 mb-2">Applies a % off all beats at checkout. Takes effect over any coupon code that gives less.</p>
+              <p className="text-[11px] text-muted-low mb-2">Applies a % off all beats at checkout. Takes effect over any coupon code that gives less.</p>
               <div className="flex items-center gap-3">
                 <input
                   type="number"
@@ -1109,20 +1109,20 @@ export default function AdminClient() {
                   value={promoForm.sitewide_discount_pct}
                   onChange={(e) => setPromoForm((f) => ({ ...f, sitewide_discount_pct: e.target.value }))}
                   placeholder="0 = off"
-                  className="w-32 rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-2.5 text-sm text-white outline-none focus:border-zinc-500"
+                  className="w-32 rounded-xl border border-line-card bg-surface-3 px-4 py-2.5 text-sm text-white outline-none focus:border-muted"
                 />
-                <span className="text-sm text-zinc-500">% off all beats</span>
+                <span className="text-sm text-muted">% off all beats</span>
               </div>
             </div>
 
-            <div className="h-px bg-[#1f1f1f]" />
+            <div className="h-px bg-line-card" />
 
             {/* BOGO */}
             <div>
-              <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+              <label className="block text-xs font-semibold text-muted-mid mb-1.5">
                 BOGO — Free Beats Count
               </label>
-              <p className="text-[11px] text-zinc-600 mb-2">
+              <p className="text-[11px] text-muted-low mb-2">
                 When set, customers see a &ldquo;Buy 1 Get N Free&rdquo; deal in the checkout modal — they pay the single-beat price regardless of how many beats they add up to that limit.
               </p>
               <div className="flex items-center gap-3">
@@ -1133,9 +1133,9 @@ export default function AdminClient() {
                   value={promoForm.bogo_free_count}
                   onChange={(e) => setPromoForm((f) => ({ ...f, bogo_free_count: e.target.value }))}
                   placeholder="0 = off"
-                  className="w-32 rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-2.5 text-sm text-white outline-none focus:border-zinc-500"
+                  className="w-32 rounded-xl border border-line-card bg-surface-3 px-4 py-2.5 text-sm text-white outline-none focus:border-muted"
                 />
-                <span className="text-sm text-zinc-500">
+                <span className="text-sm text-muted">
                   {promoForm.bogo_free_count && Number(promoForm.bogo_free_count) > 0
                     ? `→ "Buy 1 Get ${promoForm.bogo_free_count} Free" (${1 + Number(promoForm.bogo_free_count)} beats total)`
                     : 'free beats (e.g. 1 = classic BOGO, 2 = buy 1 get 2 free)'}
@@ -1153,7 +1153,7 @@ export default function AdminClient() {
           <button
             onClick={savePromos}
             disabled={promoSaving}
-            className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
           >
             <Check size={14} />
             {promoSaving ? 'Saving…' : 'Save Promotions'}
@@ -1168,17 +1168,17 @@ export default function AdminClient() {
           {/* ── BATCH UPLOAD ─────────────────────────────────── */}
           <div>
             <h2 className="text-lg font-bold text-white mb-1">Batch Upload</h2>
-            <p className="text-xs text-zinc-500 mb-5">Drop multiple beats at once. Set shared metadata below, then tweak individual fields per beat.</p>
+            <p className="text-xs text-muted mb-5">Drop multiple beats at once. Set shared metadata below, then tweak individual fields per beat.</p>
 
             {/* Shared metadata */}
-            <div className="rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-4 space-y-4 mb-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Shared Metadata — applies to all beats</p>
+            <div className="rounded-xl border border-line-card bg-surface-2 p-4 space-y-4 mb-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Shared Metadata — applies to all beats</p>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Genre</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Genre</label>
                   <select value={sharedMeta.genre} onChange={(e) => setSharedMeta((m) => ({ ...m, genre: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500">
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted">
                     <option>Trap</option>
                     <option>Drill</option>
                     <option>R&B</option>
@@ -1186,37 +1186,37 @@ export default function AdminClient() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Subgenre</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Subgenre</label>
                   <input value={sharedMeta.subgenre} onChange={(e) => setSharedMeta((m) => ({ ...m, subgenre: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Trap" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Dark Trap" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tags (comma separated)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Tags (comma separated)</label>
                 <input value={sharedMeta.tags} onChange={(e) => setSharedMeta((m) => ({ ...m, tags: e.target.value }))}
-                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="dark, 808, hard" />
+                  className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="dark, 808, hard" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Default BPM</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Default BPM</label>
                   <div className="flex gap-2">
                     <input type="number" value={sharedMeta.bpm} onChange={(e) => setSharedMeta((m) => ({ ...m, bpm: Number(e.target.value) }))}
-                      className="flex-1 rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="140" />
+                      className="flex-1 rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="140" />
                     <button type="button" onClick={() => applySharedToAll('bpm')}
-                      className="rounded-xl border border-[#1f1f1f] bg-[#111] px-3 py-2 text-xs text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors whitespace-nowrap">
+                      className="rounded-xl border border-line-card bg-surface-1 px-3 py-2 text-xs text-muted-mid hover:border-muted hover:text-white transition-colors whitespace-nowrap">
                       Apply all
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Default Key</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Default Key</label>
                   <div className="flex gap-2">
                     <input value={sharedMeta.key} onChange={(e) => setSharedMeta((m) => ({ ...m, key: e.target.value }))}
-                      className="flex-1 rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Am" />
+                      className="flex-1 rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Am" />
                     <button type="button" onClick={() => applySharedToAll('key')}
-                      className="rounded-xl border border-[#1f1f1f] bg-[#111] px-3 py-2 text-xs text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors whitespace-nowrap">
+                      className="rounded-xl border border-line-card bg-surface-1 px-3 py-2 text-xs text-muted-mid hover:border-muted hover:text-white transition-colors whitespace-nowrap">
                       Apply all
                     </button>
                   </div>
@@ -1234,7 +1234,7 @@ export default function AdminClient() {
                 if (files.length) handleBatchFiles(files)
               }}
               onClick={() => batchFileRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors mb-4 ${batchDragOver ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors mb-4 ${batchDragOver ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
             >
               <input ref={batchFileRef} type="file" accept="audio/*" multiple className="hidden"
                 onChange={(e) => {
@@ -1243,33 +1243,33 @@ export default function AdminClient() {
                   e.target.value = ''
                 }}
               />
-              <Upload size={20} className="mx-auto mb-2 text-zinc-500" />
-              <p className="text-sm text-zinc-400">Drop multiple audio files here or click to browse</p>
-              <p className="text-xs text-zinc-600 mt-1">MP3, WAV, FLAC — previews auto-generated from first 30s</p>
+              <Upload size={20} className="mx-auto mb-2 text-muted" />
+              <p className="text-sm text-muted-mid">Drop multiple audio files here or click to browse</p>
+              <p className="text-xs text-muted-low mt-1">MP3, WAV, FLAC — previews auto-generated from first 30s</p>
             </div>
 
             {/* Beat queue */}
             {batchBeats.length > 0 && (
               <form onSubmit={handleBatchUpload} className="space-y-3">
                 {batchBeats.map((b) => (
-                  <div key={b.id} className={`rounded-xl border px-4 py-3 ${b.uploadStatus === 'done' ? 'border-emerald-500/30 bg-emerald-500/5' : b.uploadStatus === 'error' ? 'border-danger/30 bg-danger/5' : b.uploadStatus === 'uploading' ? 'border-zinc-600 bg-[#111]' : 'border-[#1f1f1f] bg-[#111]'}`}>
+                  <div key={b.id} className={`rounded-xl border px-4 py-3 ${b.uploadStatus === 'done' ? 'border-promo/30 bg-promo/5' : b.uploadStatus === 'error' ? 'border-danger/30 bg-danger/5' : b.uploadStatus === 'uploading' ? 'border-line-hover bg-surface-1' : 'border-line-card bg-surface-1'}`}>
                     <div className="flex items-center gap-3 mb-2.5">
                       {/* Status indicator */}
                       <div className="shrink-0 w-5 h-5 flex items-center justify-center">
-                        {b.uploadStatus === 'done' && <Check size={14} className="text-emerald-400" />}
+                        {b.uploadStatus === 'done' && <Check size={14} className="text-promo" />}
                         {b.uploadStatus === 'error' && <span className="text-danger text-xs font-bold">!</span>}
-                        {b.uploadStatus === 'uploading' && <RefreshCw size={12} className="text-zinc-400 animate-spin" />}
-                        {b.uploadStatus === 'pending' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 block" />}
+                        {b.uploadStatus === 'uploading' && <RefreshCw size={12} className="text-muted-mid animate-spin" />}
+                        {b.uploadStatus === 'pending' && <span className="w-1.5 h-1.5 rounded-full bg-muted-low block" />}
                       </div>
                       {/* Filename */}
-                      <span className="text-[11px] text-zinc-500 truncate flex-1 min-w-0">{b.file.name}</span>
+                      <span className="text-[11px] text-muted truncate flex-1 min-w-0">{b.file.name}</span>
                       {/* Preview badge */}
-                      {b.generatingPreview && <span className="text-[10px] text-zinc-500 shrink-0 flex items-center gap-1"><RefreshCw size={9} className="animate-spin" />Preview…</span>}
-                      {!b.generatingPreview && b.autoPreview && <span className="text-[10px] text-emerald-400 shrink-0">Preview ✓</span>}
+                      {b.generatingPreview && <span className="text-[10px] text-muted shrink-0 flex items-center gap-1"><RefreshCw size={9} className="animate-spin" />Preview…</span>}
+                      {!b.generatingPreview && b.autoPreview && <span className="text-[10px] text-promo shrink-0">Preview ✓</span>}
                       {/* Remove button */}
                       {b.uploadStatus !== 'uploading' && (
                         <button type="button" onClick={() => setBatchBeats((prev) => prev.filter((x) => x.id !== b.id))}
-                          className="text-zinc-600 hover:text-zinc-300 transition-colors shrink-0 text-xs">✕</button>
+                          className="text-muted-low hover:text-foreground transition-colors shrink-0 text-xs">✕</button>
                       )}
                     </div>
 
@@ -1277,19 +1277,19 @@ export default function AdminClient() {
                       <div className="col-span-1 sm:col-span-1">
                         <input value={b.title} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, title: e.target.value } : x))}
                           disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
-                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40 col-span-full sm:col-span-1"
+                          className="w-full rounded-lg border border-line-card bg-surface-3 px-3 py-2 text-xs text-white outline-none focus:border-muted disabled:opacity-40 col-span-full sm:col-span-1"
                           placeholder="Title" />
                       </div>
                       <div>
                         <input type="number" value={b.bpm} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, bpm: Number(e.target.value) } : x))}
                           disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
-                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40"
+                          className="w-full rounded-lg border border-line-card bg-surface-3 px-3 py-2 text-xs text-white outline-none focus:border-muted disabled:opacity-40"
                           placeholder="BPM" />
                       </div>
                       <div>
                         <input value={b.key} onChange={(e) => setBatchBeats((prev) => prev.map((x) => x.id === b.id ? { ...x, key: e.target.value } : x))}
                           disabled={b.uploadStatus === 'uploading' || b.uploadStatus === 'done'}
-                          className="w-full rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-xs text-white outline-none focus:border-zinc-500 disabled:opacity-40"
+                          className="w-full rounded-lg border border-line-card bg-surface-3 px-3 py-2 text-xs text-white outline-none focus:border-muted disabled:opacity-40"
                           placeholder="Key" />
                       </div>
                     </div>
@@ -1300,14 +1300,14 @@ export default function AdminClient() {
 
                 <div className="flex items-center gap-3 pt-1">
                   <button type="submit" disabled={batchUploading || batchBeats.every((b) => b.uploadStatus === 'done')}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50">
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50">
                     <Upload size={15} />
                     {batchUploading
                       ? `Uploading ${batchBeats.filter((b) => b.uploadStatus === 'uploading').length > 0 ? `(${batchBeats.findIndex((b) => b.uploadStatus === 'uploading') + 1}/${batchBeats.filter((b) => b.uploadStatus !== 'done').length})` : '…'}`
                       : `Upload ${batchBeats.filter((b) => b.uploadStatus === 'pending' || b.uploadStatus === 'error').length} Beat${batchBeats.filter((b) => b.uploadStatus === 'pending' || b.uploadStatus === 'error').length !== 1 ? 's' : ''}`}
                   </button>
                   <button type="button" onClick={() => setBatchBeats([])} disabled={batchUploading}
-                    className="rounded-xl border border-[#1f1f1f] px-4 py-3.5 text-xs text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-40">
+                    className="rounded-xl border border-line-card px-4 py-3.5 text-xs text-muted hover:border-line-hover hover:text-foreground transition-colors disabled:opacity-40">
                     Clear all
                   </button>
                 </div>
@@ -1317,7 +1317,7 @@ export default function AdminClient() {
 
           {/* ── SINGLE UPLOAD (cover + stems) ────────────────── */}
           <details className="group">
-            <summary className="cursor-pointer list-none flex items-center gap-2 text-xs font-semibold text-zinc-500 hover:text-zinc-300 transition-colors">
+            <summary className="cursor-pointer list-none flex items-center gap-2 text-xs font-semibold text-muted hover:text-foreground transition-colors">
               <span className="group-open:hidden">▸</span>
               <span className="hidden group-open:inline">▾</span>
               Single upload — use when adding cover art or stems
@@ -1325,29 +1325,29 @@ export default function AdminClient() {
 
             <form onSubmit={handleAddBeat} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Title *</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Title *</label>
                 <input required value={newBeat.title} onChange={(e) => setNewBeat((f) => ({ ...f, title: e.target.value }))}
-                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Intentions" />
+                  className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Dark Intentions" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">BPM *</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">BPM *</label>
                   <input required type="number" value={newBeat.bpm} onChange={(e) => setNewBeat((f) => ({ ...f, bpm: Number(e.target.value) }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="140" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="140" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Key *</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Key *</label>
                   <input required value={newBeat.key} onChange={(e) => setNewBeat((f) => ({ ...f, key: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Am" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Am" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Genre *</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Genre *</label>
                   <select required value={newBeat.genre} onChange={(e) => setNewBeat((f) => ({ ...f, genre: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500">
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted">
                     <option>Trap</option>
                     <option>Drill</option>
                     <option>R&B</option>
@@ -1355,83 +1355,83 @@ export default function AdminClient() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Subgenre</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Subgenre</label>
                   <input value={newBeat.subgenre} onChange={(e) => setNewBeat((f) => ({ ...f, subgenre: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Dark Trap" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Dark Trap" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tags (comma separated)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Tags (comma separated)</label>
                 <input value={newBeat.tags} onChange={(e) => setNewBeat((f) => ({ ...f, tags: e.target.value }))}
-                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="dark, 808, hard" />
+                  className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="dark, 808, hard" />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Beat File (MP3/WAV)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Beat File (MP3/WAV)</label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) handleBeatFile(f) }}
                   onClick={() => fileRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleBeatFile(e.target.files[0]) }} />
-                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-                  <p className="text-xs text-zinc-400">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
+                  <Upload size={16} className="mx-auto mb-1.5 text-muted" />
+                  <p className="text-xs text-muted-mid">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">
                   Preview File (30s clip)
-                  {autoPreview && <span className="ml-2 text-emerald-400">· auto-generated ✓</span>}
+                  {autoPreview && <span className="ml-2 text-promo">· auto-generated ✓</span>}
                 </label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) { setDroppedPreview(f); setAutoPreview(false) } }}
                   onClick={() => previewRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-promo/30 bg-promo/5 hover:border-promo/50' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { setDroppedPreview(e.target.files[0]); setAutoPreview(false) } }} />
                   {generatingPreview
-                    ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-zinc-500 animate-spin" /><p className="text-xs text-zinc-500">Generating 30s preview…</p></>
-                    : <><Upload size={16} className="mx-auto mb-1.5 text-zinc-500" /><p className="text-xs text-zinc-400">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
+                    ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-muted animate-spin" /><p className="text-xs text-muted">Generating 30s preview…</p></>
+                    : <><Upload size={16} className="mx-auto mb-1.5 text-muted" /><p className="text-xs text-muted-mid">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
                   }
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (optional — replaces the genre square)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (optional — replaces the genre square)</label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); setDragOver('cover') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedCover(f) }}
                   onClick={() => coverRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedCover(e.target.files[0]) }} />
-                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-                  <p className="text-xs text-zinc-400">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
+                  <Upload size={16} className="mx-auto mb-1.5 text-muted" />
+                  <p className="text-xs text-muted-mid">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
                 </div>
-                <p className="mt-1 text-[10px] text-zinc-600">JPG, PNG, WEBP — will show in the beat list and player bar</p>
+                <p className="mt-1 text-[10px] text-muted-low">JPG, PNG, WEBP — will show in the beat list and player bar</p>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Stems (optional — ZIP file of all track stems)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Stems (optional — ZIP file of all track stems)</label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); setDragOver('stems') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedStems(f) }}
                   onClick={() => stemsRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-[#1f1f1f] bg-[#111] hover:border-zinc-600'}`}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={stemsRef} type="file" accept=".zip,application/zip" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedStems(e.target.files[0]) }} />
-                  <Upload size={16} className="mx-auto mb-1.5 text-zinc-500" />
-                  <p className="text-xs text-zinc-400">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
+                  <Upload size={16} className="mx-auto mb-1.5 text-muted" />
+                  <p className="text-xs text-muted-mid">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
                 </div>
-                <p className="mt-1 text-[10px] text-zinc-600">ZIP only — delivered automatically to customers who buy the Stems License</p>
+                <p className="mt-1 text-[10px] text-muted-low">ZIP only — delivered automatically to customers who buy the Stems License</p>
               </div>
 
               {uploadMsg && (
@@ -1441,7 +1441,7 @@ export default function AdminClient() {
               )}
 
               <button type="submit" disabled={uploading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50 min-h-[52px]">
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50 min-h-[52px]">
                 <Upload size={16} />
                 {uploading ? 'Uploading…' : 'Add Beat'}
               </button>
@@ -1461,47 +1461,47 @@ export default function AdminClient() {
           )}
 
           {/* Create new pack */}
-          <div className="rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-5">
+          <div className="rounded-xl border border-line-card bg-surface-2 p-5">
             <h2 className="text-base font-bold text-white mb-4">Add Melody Pack</h2>
             <form onSubmit={handleMpCreate} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Title *</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Title *</label>
                   <input required value={mpNewPack.title} onChange={(e) => setMpNewPack((f) => ({ ...f, title: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Sentiments" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Sentiments" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Vendor</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Vendor</label>
                   <input value={mpNewPack.vendor} onChange={(e) => setMpNewPack((f) => ({ ...f, vendor: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="PRODBATTS" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="PRODBATTS" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Price (USD) *</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Price (USD) *</label>
                   <input required type="number" min="0" step="0.01" value={mpNewPack.price} onChange={(e) => setMpNewPack((f) => ({ ...f, price: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="25.00" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="25.00" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Compare-at Price (sale)</label>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Compare-at Price (sale)</label>
                   <input type="number" min="0" step="0.01" value={mpNewPack.compare_at_price} onChange={(e) => setMpNewPack((f) => ({ ...f, compare_at_price: e.target.value }))}
-                    className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="42.00 (optional)" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="42.00 (optional)" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Description</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Description</label>
                 <input value={mpNewPack.description} onChange={(e) => setMpNewPack((f) => ({ ...f, description: e.target.value }))}
-                  className="w-full rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500" placeholder="Emotive sample bundle…" />
+                  className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Emotive sample bundle…" />
               </div>
 
               {/* Cover image upload */}
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
                 <div
                   onClick={() => mpCoverRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-[#1f1f1f] bg-[#111] px-4 py-4 text-center hover:border-zinc-600 transition-colors"
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={mpCoverRef} type="file" accept="image/*" className="hidden"
                     onChange={async (e) => {
@@ -1515,17 +1515,17 @@ export default function AdminClient() {
                       e.target.value = ''
                     }}
                   />
-                  <Upload size={16} className="mx-auto mb-1 text-zinc-500" />
-                  <p className="text-xs text-zinc-400">{mpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
+                  <Upload size={16} className="mx-auto mb-1 text-muted" />
+                  <p className="text-xs text-muted-mid">{mpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
                 </div>
               </div>
 
               {/* Pack file upload */}
               <div>
-                <label className="block text-xs font-medium text-zinc-400 mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
                 <div
                   onClick={() => mpFileRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-[#1f1f1f] bg-[#111] px-4 py-4 text-center hover:border-zinc-600 transition-colors"
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={mpFileRef} type="file" accept=".zip,application/zip" className="hidden"
                     onChange={async (e) => {
@@ -1539,15 +1539,15 @@ export default function AdminClient() {
                       e.target.value = ''
                     }}
                   />
-                  <Upload size={16} className="mx-auto mb-1 text-zinc-500" />
-                  <p className="text-xs text-zinc-400">{mpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
+                  <Upload size={16} className="mx-auto mb-1 text-muted" />
+                  <p className="text-xs text-muted-mid">{mpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
                 </div>
               </div>
 
               {mpUploadMsg && <p className="text-sm text-green-400">{mpUploadMsg}</p>}
 
               <button type="submit" disabled={mpUploading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-zinc-200 transition-colors disabled:opacity-50">
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50">
                 <Upload size={15} />
                 {mpUploading ? 'Uploading…' : 'Create Melody Pack'}
               </button>
@@ -1556,40 +1556,40 @@ export default function AdminClient() {
 
           {/* Existing packs list */}
           {melodyPacks.length === 0 ? (
-            <p className="text-center text-zinc-500 py-8">No melody packs yet.</p>
+            <p className="text-center text-muted py-8">No melody packs yet.</p>
           ) : (
             <div className="space-y-2">
               {melodyPacks.map((pack) => (
-                <div key={pack.id} className="rounded-xl border border-[#1f1f1f] bg-[#111] px-4 py-3">
+                <div key={pack.id} className="rounded-xl border border-line-card bg-surface-1 px-4 py-3">
                   {mpEditId === pack.id ? (
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-2">
                         <input value={mpEditForm.title ?? pack.title} onChange={(e) => setMpEditForm((f) => ({ ...f, title: e.target.value }))}
-                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none col-span-2" placeholder="Title" />
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none col-span-2" placeholder="Title" />
                         <input value={mpEditForm.vendor ?? pack.vendor} onChange={(e) => setMpEditForm((f) => ({ ...f, vendor: e.target.value }))}
-                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="Vendor" />
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="Vendor" />
                         <input value={mpEditForm.description ?? pack.description} onChange={(e) => setMpEditForm((f) => ({ ...f, description: e.target.value }))}
-                          className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="Description" />
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="Description" />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-[10px] text-zinc-500 mb-1">Price (USD)</label>
+                          <label className="block text-[10px] text-muted mb-1">Price (USD)</label>
                           <input type="number" min="0" step="0.01" value={mpEditForm.price ?? pack.price} onChange={(e) => setMpEditForm((f) => ({ ...f, price: Number(e.target.value) }))}
-                            className="w-full rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" />
+                            className="w-full rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" />
                         </div>
                         <div>
-                          <label className="block text-[10px] text-zinc-500 mb-1">Compare-at Price</label>
+                          <label className="block text-[10px] text-muted mb-1">Compare-at Price</label>
                           <input type="number" min="0" step="0.01"
                             value={mpEditForm.compare_at_price !== undefined ? (mpEditForm.compare_at_price ?? '') : (pack.compare_at_price ?? '')}
                             onChange={(e) => setMpEditForm((f) => ({ ...f, compare_at_price: e.target.value === '' ? null : Number(e.target.value) }))}
-                            className="w-full rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white outline-none" placeholder="(none)" />
+                            className="w-full rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="(none)" />
                         </div>
                       </div>
 
                       {/* Cover update */}
                       <div>
-                        <label className="block text-[10px] text-zinc-500 mb-1">Cover Image</label>
-                        <div onClick={() => mpEditCoverRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-[#2a2a2a] px-3 py-2 text-center hover:border-zinc-500">
+                        <label className="block text-[10px] text-muted mb-1">Cover Image</label>
+                        <div onClick={() => mpEditCoverRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-line-input px-3 py-2 text-center hover:border-muted">
                           <input ref={mpEditCoverRef} type="file" accept="image/*" className="hidden"
                             onChange={async (e) => {
                               const file = e.target.files?.[0]; if (!file) return
@@ -1597,14 +1597,14 @@ export default function AdminClient() {
                               if (result?.publicUrl) setMpEditCoverUrl(result.publicUrl)
                               e.target.value = ''
                             }} />
-                          <p className="text-xs text-zinc-400">{mpEditCoverUrl ? '✓ New cover uploaded' : 'Click to replace cover'}</p>
+                          <p className="text-xs text-muted-mid">{mpEditCoverUrl ? '✓ New cover uploaded' : 'Click to replace cover'}</p>
                         </div>
                       </div>
 
                       {/* File update */}
                       <div>
-                        <label className="block text-[10px] text-zinc-500 mb-1">Pack File (ZIP)</label>
-                        <div onClick={() => mpEditFileRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-[#2a2a2a] px-3 py-2 text-center hover:border-zinc-500">
+                        <label className="block text-[10px] text-muted mb-1">Pack File (ZIP)</label>
+                        <div onClick={() => mpEditFileRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-line-input px-3 py-2 text-center hover:border-muted">
                           <input ref={mpEditFileRef} type="file" accept=".zip,application/zip" className="hidden"
                             onChange={async (e) => {
                               const file = e.target.files?.[0]; if (!file) return
@@ -1612,16 +1612,16 @@ export default function AdminClient() {
                               if (result?.path) setMpEditFilePath(result.path)
                               e.target.value = ''
                             }} />
-                          <p className="text-xs text-zinc-400">{mpEditFilePath ? '✓ New file uploaded' : pack.file_path ? '✓ File on record — click to replace' : 'Click to upload ZIP'}</p>
+                          <p className="text-xs text-muted-mid">{mpEditFilePath ? '✓ New file uploaded' : pack.file_path ? '✓ File on record — click to replace' : 'Click to upload ZIP'}</p>
                         </div>
                       </div>
 
                       <div className="flex gap-2">
-                        <button onClick={() => handleMpSave(pack.id)} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black hover:bg-zinc-200 transition-colors">
+                        <button onClick={() => handleMpSave(pack.id)} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black hover:bg-white-hover transition-colors">
                           <Check size={13} /> Save
                         </button>
                         <button onClick={() => { setMpEditId(null); setMpEditForm({}); setMpEditCoverUrl(''); setMpEditFilePath('') }}
-                          className="flex items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors">
+                          className="flex items-center gap-1.5 rounded-lg border border-line-input px-3 py-2 text-xs text-muted-mid hover:text-white transition-colors">
                           <X size={13} /> Cancel
                         </button>
                       </div>
@@ -1634,7 +1634,7 @@ export default function AdminClient() {
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-white truncate">{pack.title}</p>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-muted">
                           {pack.vendor} · ${pack.price.toFixed(2)}
                           {pack.compare_at_price ? ` (was $${pack.compare_at_price.toFixed(2)})` : ''}
                           {!pack.file_path && <span className="ml-2 text-amber-500">⚠ No file</span>}
@@ -1642,14 +1642,14 @@ export default function AdminClient() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button onClick={() => handleMpToggle(pack)} title={pack.is_active ? 'Deactivate' : 'Activate'}
-                          className="text-zinc-500 hover:text-white transition-colors">
+                          className="text-muted hover:text-white transition-colors">
                           {pack.is_active ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />}
                         </button>
                         <button onClick={() => { setMpEditId(pack.id); setMpEditForm({ title: pack.title, vendor: pack.vendor, description: pack.description, price: pack.price, compare_at_price: pack.compare_at_price }) }}
-                          className="text-zinc-500 hover:text-white transition-colors">
+                          className="text-muted hover:text-white transition-colors">
                           <Edit3 size={15} />
                         </button>
-                        <button onClick={() => handleMpDelete(pack.id)} className="text-zinc-600 hover:text-danger transition-colors">
+                        <button onClick={() => handleMpDelete(pack.id)} className="text-muted-low hover:text-danger transition-colors">
                           <Trash2 size={15} />
                         </button>
                       </div>

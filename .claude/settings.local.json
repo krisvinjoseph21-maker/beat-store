@@ -17,7 +17,9 @@
       "Bash(grep -n \"export async function\\\\|export function\" /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app/api/*/*.ts)",
       "Bash(grep -v \"^\\\\s*$\")",
       "Bash(grep -r \"\\\\$[0-9]\\\\|\\\\${[0-9]\\\\|price\\\\|total\\\\|amount\" /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app /c/Users/AWSExam/Desktop/Projects/prodkjbeats/lib --include=\"*.tsx\" --include=\"*.ts\" -n)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(cat tailwind.config.ts)",
+      "Bash(cat tailwind.config.js)"
     ]
   }
 }

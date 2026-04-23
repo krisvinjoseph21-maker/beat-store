@@ -69,7 +69,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
               aria-label={isThisPlaying ? 'Pause preview' : 'Play preview'}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
-              {isThisPlaying ? <Pause size={18} fill="black" /> : <Play size={18} fill="black" />}
+              {isThisPlaying ? <Pause size={18} fill="black" aria-hidden="true" /> : <Play size={18} fill="black" aria-hidden="true" />}
             </button>
 
             <button
