@@ -36,7 +36,7 @@ export default function EmailCaptureModal() {
       function onMouseOut(e: MouseEvent) {
         if (e.clientY <= 0) show()
       }
-      const timer = setTimeout(show, 8000)
+      const timer = setTimeout(show, 20000)
       document.addEventListener('mouseleave', onMouseOut)
       return () => {
         clearTimeout(timer)

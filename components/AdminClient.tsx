@@ -777,7 +777,7 @@ export default function AdminClient() {
             placeholder="Password"
             className="mb-4 w-full rounded-xl border border-[#1f1f1f] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
           />
-          {authError && <p className="mb-3 text-sm text-red-400">{authError}</p>}
+          {authError && <p className="mb-3 text-sm text-danger">{authError}</p>}
           <button
             type="submit"
             disabled={loading}
@@ -803,7 +803,7 @@ export default function AdminClient() {
           </button>
           <button
             onClick={() => { setAuthed(false); setPassword('') }}
-            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-red-400 transition-colors"
+            className="flex items-center gap-2 rounded-lg border border-[#1f1f1f] px-3 py-2 text-xs text-zinc-400 hover:text-danger transition-colors"
           >
             <X size={14} /> Lock
           </button>
@@ -831,9 +831,9 @@ export default function AdminClient() {
       {tab === 'beats' && (
         <div className="space-y-2">
           {actionError && (
-            <div className="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+            <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
               <span>{actionError}</span>
-              <button onClick={() => setActionError(null)} className="ml-3 text-red-400/60 hover:text-red-400">
+              <button onClick={() => setActionError(null)} className="ml-3 text-danger/60 hover:text-danger">
                 <X size={14} />
               </button>
             </div>
@@ -857,7 +857,7 @@ export default function AdminClient() {
               {selectedIds.size > 0 && (
                 <button
                   onClick={deleteSelected}
-                  className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors"
+                  className="ml-auto flex items-center gap-1.5 rounded-lg bg-danger/10 border border-danger/20 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/20 transition-colors"
                 >
                   <Trash2 size={12} /> Delete {selectedIds.size}
                 </button>
@@ -1018,7 +1018,7 @@ export default function AdminClient() {
                     )}
                     <button
                       onClick={() => deleteBeat(beat)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-danger/10 hover:text-danger transition-colors"
                       title="Delete beat"
                     >
                       <Trash2 size={14} />
@@ -1145,7 +1145,7 @@ export default function AdminClient() {
           </div>
 
           {promoMsg && (
-            <p className={`text-sm ${promoMsg.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
+            <p className={`text-sm ${promoMsg.startsWith('Error') ? 'text-danger' : 'text-green-400'}`}>
               {promoMsg}
             </p>
           )}
@@ -1252,12 +1252,12 @@ export default function AdminClient() {
             {batchBeats.length > 0 && (
               <form onSubmit={handleBatchUpload} className="space-y-3">
                 {batchBeats.map((b) => (
-                  <div key={b.id} className={`rounded-xl border px-4 py-3 ${b.uploadStatus === 'done' ? 'border-emerald-500/30 bg-emerald-500/5' : b.uploadStatus === 'error' ? 'border-red-500/30 bg-red-500/5' : b.uploadStatus === 'uploading' ? 'border-zinc-600 bg-[#111]' : 'border-[#1f1f1f] bg-[#111]'}`}>
+                  <div key={b.id} className={`rounded-xl border px-4 py-3 ${b.uploadStatus === 'done' ? 'border-emerald-500/30 bg-emerald-500/5' : b.uploadStatus === 'error' ? 'border-danger/30 bg-danger/5' : b.uploadStatus === 'uploading' ? 'border-zinc-600 bg-[#111]' : 'border-[#1f1f1f] bg-[#111]'}`}>
                     <div className="flex items-center gap-3 mb-2.5">
                       {/* Status indicator */}
                       <div className="shrink-0 w-5 h-5 flex items-center justify-center">
                         {b.uploadStatus === 'done' && <Check size={14} className="text-emerald-400" />}
-                        {b.uploadStatus === 'error' && <span className="text-red-400 text-xs font-bold">!</span>}
+                        {b.uploadStatus === 'error' && <span className="text-danger text-xs font-bold">!</span>}
                         {b.uploadStatus === 'uploading' && <RefreshCw size={12} className="text-zinc-400 animate-spin" />}
                         {b.uploadStatus === 'pending' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 block" />}
                       </div>
@@ -1294,7 +1294,7 @@ export default function AdminClient() {
                       </div>
                     </div>
 
-                    {b.errorMsg && <p className="mt-1.5 text-[11px] text-red-400">{b.errorMsg}</p>}
+                    {b.errorMsg && <p className="mt-1.5 text-[11px] text-danger">{b.errorMsg}</p>}
                   </div>
                 ))}
 
@@ -1435,7 +1435,7 @@ export default function AdminClient() {
               </div>
 
               {uploadMsg && (
-                <p className={`text-sm ${uploadMsg.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                <p className={`text-sm ${uploadMsg.startsWith('Error') ? 'text-danger' : 'text-green-400'}`}>
                   {uploadMsg}
                 </p>
               )}
@@ -1454,9 +1454,9 @@ export default function AdminClient() {
       {tab === 'melody-packs' && (
         <div className="space-y-6 max-w-3xl">
           {mpError && (
-            <div className="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+            <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
               <span>{mpError}</span>
-              <button onClick={() => setMpError(null)} className="ml-3 text-red-400/60 hover:text-red-400"><X size={14} /></button>
+              <button onClick={() => setMpError(null)} className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
             </div>
           )}
 
@@ -1649,7 +1649,7 @@ export default function AdminClient() {
                           className="text-zinc-500 hover:text-white transition-colors">
                           <Edit3 size={15} />
                         </button>
-                        <button onClick={() => handleMpDelete(pack.id)} className="text-zinc-600 hover:text-red-400 transition-colors">
+                        <button onClick={() => handleMpDelete(pack.id)} className="text-zinc-600 hover:text-danger transition-colors">
                           <Trash2 size={15} />
                         </button>
                       </div>

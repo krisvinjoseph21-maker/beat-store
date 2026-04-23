@@ -66,8 +66,10 @@ export default function BottomPlayer() {
   useEffect(() => {
     const dpr = window.devicePixelRatio || 1
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    // Accent color — mirrors --accent (#c8a86a). Single source so a token change only requires updating here.
-    const ACCENT = '200,168,106'
+    const rawAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+    const ACCENT = rawAccent.startsWith('#') && rawAccent.length === 7
+      ? [parseInt(rawAccent.slice(1, 3), 16), parseInt(rawAccent.slice(3, 5), 16), parseInt(rawAccent.slice(5, 7), 16)].join(',')
+      : '200,168,106'
 
     // Reusable FFT data buffer — never allocate inside the hot path
     let fftData: Uint8Array<ArrayBuffer> | null = null

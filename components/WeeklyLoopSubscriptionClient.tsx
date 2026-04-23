@@ -77,10 +77,12 @@ export default function WeeklyLoopSubscriptionClient() {
           <span className="text-foreground">Loop Subscription</span>
         </nav>
 
-        <div className="max-w-xl">
+      </div>
 
-          {/* ── Product Details ───────────────────────────────────── */}
-          <div>
+      {/* ── Product Details — centered ─────────────────────────────── */}
+      <div className="w-full flex flex-col items-center px-4 sm:px-6 pb-12">
+        <div className="w-full max-w-[500px] flex flex-col items-center text-center">
+          <div className="w-full">
             {/* Title */}
             <h1 className="font-['Bebas_Neue'] leading-[0.93] text-foreground mb-6" style={{ fontSize: 'clamp(48px, 8vw, 68px)' }}>
               LOOP SUBSCRIPTION

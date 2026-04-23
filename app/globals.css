@@ -13,7 +13,7 @@
   --player-height: 64px;
   --accent: #c8a86a;
   --accent-dim: rgba(200,168,106,0.6);
-  --danger: #e01f1f;
+  --danger: #e07b39;
   --line-mid: #252525;    /* Play button hover BG — between --line and --line-hover */
   --line-hover: #3a3a3a;
 
@@ -46,7 +46,7 @@
   --color-muted-low: #787878;
   --color-accent: #c8a86a;
   --color-accent-dim: rgba(200,168,106,0.6);
-  --color-danger: #e01f1f;
+  --color-danger: #e07b39;
   --color-line-mid: #252525;
   --color-line-hover: #3a3a3a;
 

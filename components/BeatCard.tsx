@@ -228,7 +228,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
               <Heart
                 size={12}
                 fill={favorited ? 'currentColor' : 'none'}
-                className={`${favorited ? 'text-danger' : 'text-muted-low'} ${heartPlaying ? 'animate-heart-pop' : ''}`}
+                className={`${favorited ? 'text-accent' : 'text-muted-low'} ${heartPlaying ? 'animate-heart-pop' : ''}`}
                 onAnimationEnd={() => setHeartPlaying(false)}
                 aria-hidden="true"
               />

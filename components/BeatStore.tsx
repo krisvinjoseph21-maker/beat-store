@@ -135,14 +135,12 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         className="w-full relative overflow-hidden"
         style={{
           background: '#0a0a0a',
-          backgroundImage: 'radial-gradient(circle, rgba(220,38,38,0.28) 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
         }}
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pt-12 pb-8">
           <p
             className="mb-3 text-[11px] font-semibold uppercase"
-            style={{ letterSpacing: '0.15em', color: '#e53e3e', fontFamily: 'var(--font-montserrat)' }}
+            style={{ letterSpacing: '0.15em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
           >
             Full Catalog
           </p>
@@ -179,8 +177,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     style={{
                       fontFamily: 'var(--font-montserrat)',
                       letterSpacing: '0.04em',
-                      background: active ? '#e53e3e' : 'rgba(0,0,0,0.5)',
-                      borderColor: active ? '#e53e3e' : 'rgba(255,255,255,0.18)',
+                      background: active ? 'var(--accent)' : 'rgba(0,0,0,0.5)',
+                      borderColor: active ? 'var(--accent)' : 'rgba(255,255,255,0.18)',
                       color: '#ffffff',
                     }}
                   >
@@ -210,10 +208,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           aria-pressed={favoritesOnly}
-          className={`flex items-center gap-1.5 border h-[42px] px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-danger/10' : 'bg-transparent'}`}
+          className={`flex items-center gap-1.5 border h-[42px] px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
           style={{
-            borderColor: favoritesOnly ? 'var(--danger)' : 'var(--line-input)',
-            color: favoritesOnly ? 'var(--danger)' : 'var(--muted-low)',
+            borderColor: favoritesOnly ? 'var(--accent)' : 'var(--line-input)',
+            color: favoritesOnly ? 'var(--accent)' : 'var(--muted-low)',
             fontFamily: 'var(--font-montserrat)',
           }}
         >

@@ -105,7 +105,7 @@ export default function AuthClient() {
           />
         </div>
 
-        {error && <p className="text-sm text-red-400 text-center">{error}</p>}
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
         {message && <p className="text-sm text-emerald-400 text-center">{message}</p>}
 
         <button

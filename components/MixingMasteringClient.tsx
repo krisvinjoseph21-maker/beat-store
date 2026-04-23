@@ -332,25 +332,30 @@ export default function MixingMasteringClient() {
 
           {/* Packages breakdown */}
           <div className="mb-14">
-            <p className="text-[11px] font-normal uppercase text-muted-low mb-6" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
-              What&apos;s Included by Package
+            <p className="text-[13px] font-medium text-foreground mb-8" style={{ fontFamily: 'var(--font-inter)' }}>
+              What&apos;s Included by Package:
             </p>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-8">
               {PACKAGES.map((pkg) => (
-                <div key={pkg.id} className="border border-line-card bg-surface-1 p-5">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
-                    <p className="text-[15px] font-medium text-foreground">
+                <div key={pkg.id}>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: pkg.dotColor }} />
+                    <p className="text-[15px] font-medium text-foreground" style={{ fontFamily: 'var(--font-inter)' }}>
                       {pkg.name} — {mounted ? formatPrice(pkg.usdPrice, currency) : `$${pkg.usdPrice}`}
                     </p>
                   </div>
-                  <p className="text-[12px] text-muted-low leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
-                    {pkg.features.join(' · ')}
-                  </p>
+                  <ul className="ml-[22px] flex flex-col gap-2">
+                    {pkg.features.map((feat, i) => (
+                      <li key={i} className="flex items-start gap-2 text-[14px] text-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
+                        <span className="mt-[7px] w-1 h-1 rounded-full bg-muted-low flex-shrink-0" />
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-[13px] text-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="mt-8 text-[13px] text-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
               Let me know if you want it all done for you in a custom bundle, or if you&apos;re working on a project that needs full sound direction — I also offer Executive Production.
             </p>
           </div>
@@ -403,7 +408,7 @@ export default function MixingMasteringClient() {
                         <div key={star} className="flex items-center gap-3">
                           <span className="text-xs text-muted-low w-2">{star}</span>
                           <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                            <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${pct}%` }} />
+                            <div className="h-full bg-accent transition-[transform] origin-left" style={{ width: '100%', transform: `scaleX(${pct / 100})` }} />
                           </div>
                           <span className="text-xs text-muted-low w-3">{count}</span>
                         </div>
