@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
+import { sharedAudioElement } from '@/lib/player-ref'
 import ShareButton from './ShareButton'
 import WaveformVisualizer from './WaveformVisualizer'
 import Link from 'next/link'
 import { PRICES } from '@/lib/prices'
 import { useT } from '@/lib/i18n'
+import { trackAddToCart } from '@/lib/analytics'
 
 interface Props {
   beat: Beat
@@ -55,8 +57,20 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
   function handlePlay() {
     if (!hasAudio) return
-    if (currentBeat?.id === beat.id) togglePlay()
-    else { setCurrentBeat(beat); setPlaying(true) }
+    if (currentBeat?.id === beat.id) {
+      togglePlay()
+    } else {
+      // Call audio.src + play() synchronously within the gesture context so iOS Safari
+      // doesn't block playback. BottomPlayer's useEffect detects the already-playing
+      // src and skips the re-load.
+      const audio = sharedAudioElement.current
+      if (audio && beat.preview_url) {
+        audio.src = beat.preview_url
+        audio.play().catch(() => {})
+      }
+      setCurrentBeat(beat)
+      setPlaying(true)
+    }
   }
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -64,6 +78,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     setLicenseType('standard')
     addBeat(beat)
     openCart()
+    trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES.standard[1] })
   }
 
   function handleFavorite(e: React.MouseEvent) {
@@ -78,6 +93,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     addBeat(beat)
     setLicenseOpen(false)
     openCart()
+    trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES[id][1] })
   }
 
   return (

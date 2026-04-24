@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
       },
       customer_email: undefined,
       billing_address_collection: 'auto',
-      success_url: `${SITE_URL}/success`,
+      success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/cancel`,
     })
 

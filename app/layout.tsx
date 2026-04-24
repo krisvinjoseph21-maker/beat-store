@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import BottomPlayer from '@/components/BottomPlayer'
 import EmailCaptureModal from '@/components/EmailCaptureModal'
+import AnalyticsScripts from '@/components/AnalyticsScripts'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -75,6 +76,7 @@ export default function RootLayout({
         <Footer />
         <BottomPlayer />
         <EmailCaptureModal />
+        <AnalyticsScripts />
       </body>
     </html>
   )

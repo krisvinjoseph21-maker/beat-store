@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Cookie Preferences — PRODKJBEATS',
+  description: 'Manage cookie settings for PRODKJBEATS — essential, analytics, and preference cookies explained.',
 }
 
 const COOKIE_TYPES = [

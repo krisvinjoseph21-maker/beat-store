@@ -37,21 +37,32 @@ export async function generateMetadata(
     ? [{ url: data.cover_url, width: 1200, height: 630, alt: `${data.title} by PRODKJBEATS` }]
     : []
 
+  const desc = `${data.genre} beat by PRODKJBEATS · ${data.bpm} BPM · ${data.key} · Buy from $39.95 — Standard, Premium & Unlimited leases available.`
+  const shortDesc = `${data.genre} · ${data.bpm} BPM · ${data.key} · From $39.95`
+
   return {
     title: `${data.title} — PRODKJBEATS`,
-    description: `${data.genre} beat by PRODKJBEATS · ${data.bpm} BPM · ${data.key}`,
+    description: desc,
     openGraph: {
       title: `${data.title} — PRODKJBEATS`,
-      description: `${data.genre} · ${data.bpm} BPM · ${data.key}`,
+      description: shortDesc,
       type: 'website',
       ...(ogImages.length > 0 ? { images: ogImages } : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: `${data.title} — PRODKJBEATS`,
-      description: `${data.genre} · ${data.bpm} BPM · ${data.key}`,
+      description: shortDesc,
       ...(data.cover_url ? { images: [data.cover_url] } : {}),
     },
+    ...(data.preview_url
+      ? {
+          other: {
+            'og:audio': data.preview_url,
+            'og:audio:type': 'audio/mpeg',
+          },
+        }
+      : {}),
   }
 }
 

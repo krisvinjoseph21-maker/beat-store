@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, AlertCircle, Loader2 } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
 import { connectAudioElement, resumeContext, getAnalyser } from '@/lib/audio-analyser'
+import { sharedAudioElement } from '@/lib/player-ref'
 import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 
 const PREVIEW_LIMIT = 30
@@ -50,11 +51,18 @@ export default function BottomPlayer() {
   const drawRef         = useRef<(() => void) | null>(null)
 
   const [previewEnded, setPreviewEnded] = useState(false)
+  const [hasError, setHasError]         = useState(false)
+  const [isBuffering, setIsBuffering]   = useState(false)
   const [volume, setVolume]             = useState(1)
   const [muted, setMuted]               = useState(false)
 
   useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
   useEffect(() => { durationRef.current = duration }, [duration])
+  // Expose audio element so BeatCard/BeatPageClient can call play() within the gesture context
+  useEffect(() => {
+    sharedAudioElement.current = audioRef.current
+    return () => { sharedAudioElement.current = null }
+  }, [])
   // Restart the RAF draw loop whenever a beat loads and the loop has gone idle
   useEffect(() => {
     if (currentBeat && playerRafRef.current === 0 && drawRef.current) {
@@ -234,6 +242,25 @@ export default function BottomPlayer() {
     if (audioRef.current) audioRef.current.volume = next ? 0 : volume
   }
 
+  function handleRetry() {
+    const audio = audioRef.current
+    const src = currentBeat?.preview_url
+    if (!audio || !src) return
+    setHasError(false)
+    setIsBuffering(true)
+    audio.src = src
+    audio.load()
+    audio.addEventListener('canplay', () => {
+      setIsBuffering(false)
+      connectAudioElement(audio)
+      audio.play().catch((err) => {
+        setPlaying(false)
+        if (err?.name !== 'NotAllowedError') setHasError(true)
+      })
+    }, { once: true })
+    setPlaying(true)
+  }
+
   // Update seek input value and time text directly via DOM — no React re-render.
   // Progress visualisation is handled by the canvas draw loop (reads localProgressRef directly).
   function updateProgressDOM(t: number) {
@@ -248,15 +275,33 @@ export default function BottomPlayer() {
     if (!audio || !currentBeat) return
     const src = currentBeat.preview_url ?? ''
     setPreviewEnded(false)
+    setHasError(false)
     localProgressRef.current = 0
     updateProgressDOM(0)
-    audio.pause()
     if (!src) { setPlaying(false); return }
+
+    // iOS Safari: BeatCard may have already set audio.src and called audio.play()
+    // synchronously from the gesture handler. If audio is already playing the correct
+    // source, skip the reload — interrupting it would break gesture-initiated playback.
+    if (audio.src === src && !audio.paused) {
+      connectAudioElement(audio)
+      if (audio.readyState >= 2) setIsBuffering(false)
+      return
+    }
+
+    setIsBuffering(true)
+    audio.pause()
     audio.src = src
     audio.load()
     const handleCanPlay = () => {
+      setIsBuffering(false)
       connectAudioElement(audio)
-      if (isPlayingRef.current) audio.play().catch(() => setPlaying(false))
+      if (isPlayingRef.current) {
+        audio.play().catch((err) => {
+          setPlaying(false)
+          if (err?.name !== 'NotAllowedError') setHasError(true)
+        })
+      }
     }
     audio.addEventListener('canplay', handleCanPlay, { once: true })
     return () => audio.removeEventListener('canplay', handleCanPlay)
@@ -269,7 +314,10 @@ export default function BottomPlayer() {
     if (isPlaying) {
       connectAudioElement(audio)
       resumeContext()
-      audio.play().catch(() => setPlaying(false))
+      audio.play().catch((err) => {
+        setPlaying(false)
+        if (err?.name !== 'NotAllowedError') setHasError(true)
+      })
     } else {
       audio.pause()
     }
@@ -317,7 +365,10 @@ export default function BottomPlayer() {
           setDuration(d)
         }}
         onEnded={() => { setPlaying(false); setProgress(0); updateProgressDOM(0) }}
-        onError={() => setPlaying(false)}
+        onWaiting={() => setIsBuffering(true)}
+        onStalled={() => setIsBuffering(true)}
+        onPlaying={() => setIsBuffering(false)}
+        onError={() => { setPlaying(false); setIsBuffering(false); setHasError(true) }}
       />
 
       {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="region" aria-label="Music player">
@@ -378,9 +429,16 @@ export default function BottomPlayer() {
               <p className="truncate text-[13px] font-semibold text-foreground leading-tight">
                 {currentBeat.title}
               </p>
-              <p className="text-[11px] text-muted leading-tight">
-                {currentBeat.bpm} BPM · {currentBeat.key}
-              </p>
+              {hasError ? (
+                <p className="flex items-center gap-1 text-[11px] leading-tight" style={{ color: '#f87171' }}>
+                  <AlertCircle size={10} aria-hidden="true" />
+                  Failed to load
+                </p>
+              ) : (
+                <p className="text-[11px] text-muted leading-tight">
+                  {currentBeat.bpm} BPM · {currentBeat.key}
+                </p>
+              )}
             </div>
           </div>
 
@@ -394,7 +452,15 @@ export default function BottomPlayer() {
               <SkipBack size={15} aria-hidden="true" />
             </button>
 
-            {previewEnded ? (
+            {hasError ? (
+              <button
+                onClick={handleRetry}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors"
+                aria-label="Retry loading audio"
+              >
+                <Play size={16} fill="black" aria-hidden="true" />
+              </button>
+            ) : previewEnded ? (
               <button
                 onClick={() => {
                   if (audioRef.current) audioRef.current.currentTime = 0
@@ -426,7 +492,12 @@ export default function BottomPlayer() {
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black hover:bg-white-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
-                {isPlaying ? <Pause size={16} fill="black" aria-hidden="true" /> : <Play size={16} fill="black" aria-hidden="true" />}
+                {isBuffering && isPlaying
+                  ? <Loader2 size={16} className="animate-spin" aria-hidden="true" />
+                  : isPlaying
+                    ? <Pause size={16} fill="black" aria-hidden="true" />
+                    : <Play size={16} fill="black" aria-hidden="true" />
+                }
               </button>
             )}
 

@@ -4,6 +4,8 @@ import AuthClient from '@/components/AuthClient'
 
 export const metadata: Metadata = {
   title: 'Sign In — PRODKJBEATS',
+  description: 'Sign in to access your PRODKJBEATS purchases and download history.',
+  robots: { index: false, follow: false },
 }
 
 export default function LoginPage() {

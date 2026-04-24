@@ -9,6 +9,7 @@ import { useLocaleStore, formatPrice } from '@/lib/locale'
 import LicenseModal from './LicenseModal'
 import { useRouter } from 'next/navigation'
 import { useT } from '@/lib/i18n'
+import { trackBeginCheckout, trackCartAbandonment } from '@/lib/analytics'
 
 const LICENSE_LABELS: Record<LicenseType, string> = {
   standard: 'MP3 LICENSE',
@@ -31,6 +32,8 @@ export default function CartDrawer({ open, onClose }: Props) {
   const [removingId, setRemovingId] = useState<string | null>(null)
   const router = useRouter()
   const drawerRef = useRef<HTMLDivElement>(null)
+  const checkoutInitiatedRef = useRef(false)
+  const prevOpenRef = useRef(false)
 
   // Focus trap: keep keyboard focus inside drawer while open
   useEffect(() => {
@@ -64,6 +67,24 @@ export default function CartDrawer({ open, onClose }: Props) {
     }
   }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    const wasOpen = prevOpenRef.current
+    prevOpenRef.current = open
+    if (open && !wasOpen) {
+      checkoutInitiatedRef.current = false
+      return
+    }
+    if (!wasOpen || open) return
+    // Cart just closed — fire abandonment if items remain and checkout wasn't started
+    const { items: currentItems, licenseType: currentLicense, total: currentTotal } = useCartStore.getState()
+    if (currentItems.length > 0 && !checkoutInitiatedRef.current) {
+      trackCartAbandonment(
+        currentItems.map((i) => ({ id: i.beat.id, name: i.beat.title, category: currentLicense, price: PRICES[currentLicense][1] })),
+        currentTotal()
+      )
+    }
+  }, [open])
+
   function handleRemove(beatId: string) {
     setRemovingId(beatId)
   }
@@ -78,6 +99,11 @@ export default function CartDrawer({ open, onClose }: Props) {
   async function handleCheckout(discountCode: string, useBogo?: boolean) {
     setLoading(true)
     setCheckoutError('')
+    checkoutInitiatedRef.current = true
+    trackBeginCheckout(
+      items.map((i) => ({ id: i.beat.id, name: i.beat.title, category: licenseType, price: PRICES[licenseType][1] })),
+      total()
+    )
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',

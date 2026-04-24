@@ -1,11 +1,19 @@
 import Link from 'next/link'
 import { Check } from 'lucide-react'
+import { Suspense } from 'react'
+import PurchaseTracker from '@/components/PurchaseTracker'
 
-export const metadata = { title: 'Order Confirmed — PRODKJBEATS' }
+export const metadata = {
+  title: 'Order Confirmed — PRODKJBEATS',
+  robots: { index: false, follow: false },
+}
 
 export default function SuccessPage() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center">
+      <Suspense>
+        <PurchaseTracker />
+      </Suspense>
       <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/20">
         <Check size={40} className="text-green-400" />
       </div>

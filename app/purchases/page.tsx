@@ -6,6 +6,8 @@ import PurchasesClient from '@/components/PurchasesClient'
 
 export const metadata: Metadata = {
   title: 'Purchases — PRODKJBEATS',
+  description: 'View and re-download your purchased beats from PRODKJBEATS.',
+  robots: { index: false, follow: false },
 }
 
 export default async function PurchasesPage() {

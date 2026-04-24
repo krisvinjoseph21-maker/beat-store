@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Play, Pause, ShoppingCart, Check, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import Link from 'next/link'
 import { usePlayerStore, useCartStore, type Beat, type LicenseType } from '@/lib/store'
+import { sharedAudioElement } from '@/lib/player-ref'
 import ShareButton from './ShareButton'
 import ExclusiveOfferForm from './ExclusiveOfferForm'
 import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 import { PRICES } from '@/lib/prices'
+import { trackViewItem, trackAddToCart } from '@/lib/analytics'
 
 type TierId = LicenseType | 'exclusive'
 
@@ -60,19 +62,34 @@ const COMPARE_ROWS: Array<{ label: string; values: [string, string, string, stri
 ]
 
 export default function BeatPageClient({ beat }: { beat: Beat }) {
-  const { currentBeat, isPlaying, setCurrentBeat, togglePlay } = usePlayerStore()
+  const { currentBeat, isPlaying, setCurrentBeat, togglePlay, setPlaying } = usePlayerStore()
   const { addBeat, isInCart, setLicenseType } = useCartStore()
   const [selectedTier, setSelectedTier] = useState<TierId>('standard')
   const [compareOpen, setCompareOpen] = useState(false)
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
+
+  useEffect(() => {
+    trackViewItem({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES.standard[1] })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const genreBg = GENRE_COLORS[beat.genre] ?? GENRE_COLOR_FALLBACK
   const activeTierData = TIERS.find((t) => t.id === selectedTier)!
 
   function handlePlay() {
-    if (currentBeat?.id === beat.id) togglePlay()
-    else setCurrentBeat(beat)
+    if (currentBeat?.id === beat.id) {
+      togglePlay()
+    } else {
+      // Call audio.src + play() synchronously within the gesture context (iOS Safari requirement).
+      // BottomPlayer's useEffect detects the already-playing src and skips the re-load.
+      const audio = sharedAudioElement.current
+      if (audio && beat.preview_url) {
+        audio.src = beat.preview_url
+        audio.play().catch(() => {})
+      }
+      setCurrentBeat(beat)
+      setPlaying(true)  // bug fix: was missing, so clicking play on this page never started playback
+    }
   }
 
   function handleSelectTier(id: TierId) {
@@ -267,7 +284,12 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
           {/* ── CTA ─────────────────────────────────────────────── */}
           {selectedTier !== 'exclusive' ? (
             <button
-              onClick={() => addBeat(beat)}
+              onClick={() => {
+                if (inCart) return
+                const licenseId = selectedTier as LicenseType
+                addBeat(beat)
+                trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES[licenseId][1] })
+              }}
               disabled={inCart}
               className={`w-full flex items-center justify-center gap-2 rounded-sm px-5 py-3.5 text-sm font-bold transition-colors ${
                 inCart

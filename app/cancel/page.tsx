@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { X } from 'lucide-react'
 
-export const metadata = { title: 'Order Cancelled — PRODKJBEATS' }
+export const metadata = {
+  title: 'Order Cancelled — PRODKJBEATS',
+  robots: { index: false, follow: false },
+}
 
 export default function CancelPage() {
   return (
