@@ -6,6 +6,7 @@ import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
   title: 'Beat Licensing — PRODKJBEATS',
+  description: 'Compare Standard, Premium, Unlimited, and Exclusive beat licenses. Transparent pricing, instant download, non-exclusive leases starting at $39.95.',
 }
 
 const TIERS = [

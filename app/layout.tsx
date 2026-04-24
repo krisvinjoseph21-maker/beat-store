@@ -32,6 +32,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prodkjbeats.com'),
   title: 'PRODKJBEATS — Premium Beats',
   description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
   icons: {
@@ -40,9 +41,18 @@ export const metadata: Metadata = {
     apple: '/android-chrome-512x512.png',
   },
   openGraph: {
-    title: 'PRODKJBEATS',
-    description: 'Premium beats for serious artists.',
+    title: 'PRODKJBEATS — Premium Beats',
+    description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
     type: 'website',
+    siteName: 'PRODKJBEATS',
+    locale: 'en_US',
+    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PRODKJBEATS — Premium Beats',
+    description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
+    images: ['/android-chrome-512x512.png'],
   },
 }
 

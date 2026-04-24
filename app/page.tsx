@@ -1,6 +1,22 @@
 export const revalidate = 60
 
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'PRODKJBEATS — Premium Beats',
+  description: 'Verified placements with GloRilla, DeeBaby, Shenseea & more. Shop trap, drill, R&B, and Afrobeats beats — instant download.',
+  openGraph: {
+    title: 'PRODKJBEATS — Premium Beats',
+    description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PRODKJBEATS — Premium Beats',
+    description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
+  },
+}
 import { BadgeCheck } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase-admin'
 import type { Beat } from '@/lib/store'

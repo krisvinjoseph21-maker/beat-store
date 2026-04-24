@@ -30,7 +30,17 @@ export const revalidate = 30
 
 export const metadata = {
   title: 'Beat Store — PRODKJBEATS',
-  description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
+  description: 'Shop trap, drill, R&B, and Afrobeats instrumentals. Instant download. Standard, Premium, and Unlimited leases available.',
+  openGraph: {
+    title: 'Beat Store — PRODKJBEATS',
+    description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Beat Store — PRODKJBEATS',
+    description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
+  },
 }
 
 export default async function StorePage() {
