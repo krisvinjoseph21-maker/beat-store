@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { Eye, EyeOff, Upload, ToggleLeft, ToggleRight, Edit3, Check, X, RefreshCw, Pin, PinOff, Trash2, Star, Tag, Zap } from 'lucide-react'
 import type { PromoConfig } from '@/lib/promos'
 
@@ -35,6 +36,20 @@ interface Order {
 }
 
 interface MelodyPack {
+  id: string
+  title: string
+  vendor: string
+  description: string
+  price: number
+  compare_at_price: number | null
+  cover_url: string | null
+  file_path: string | null
+  is_active: boolean
+  is_featured: boolean
+  created_at: string
+}
+
+interface DrumPack {
   id: string
   title: string
   vendor: string
@@ -192,7 +207,7 @@ export default function AdminClient() {
   const [authError, setAuthError] = useState('')
   const [beats, setBeats] = useState<Beat[]>([])
   const [orders, setOrders] = useState<Order[]>([])
-  const [tab, setTab] = useState<'beats' | 'orders' | 'upload' | 'promos' | 'melody-packs'>('beats')
+  const [tab, setTab] = useState<'beats' | 'orders' | 'upload' | 'promos' | 'melody-packs' | 'drum-packs'>('beats')
   const [loading, setLoading] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Beat>>({})
@@ -240,6 +255,23 @@ export default function AdminClient() {
   const mpFileRef = useRef<HTMLInputElement>(null)
   const mpEditCoverRef = useRef<HTMLInputElement>(null)
   const mpEditFileRef = useRef<HTMLInputElement>(null)
+
+  // Drum packs state
+  const [drumPacks, setDrumPacks] = useState<DrumPack[]>([])
+  const [dpEditId, setDpEditId] = useState<string | null>(null)
+  const [dpEditForm, setDpEditForm] = useState<Partial<DrumPack>>({})
+  const [dpNewPack, setDpNewPack] = useState({ title: '', vendor: 'PRODBATTS', description: '', price: '', compare_at_price: '' })
+  const [dpError, setDpError] = useState<string | null>(null)
+  const [dpUploading, setDpUploading] = useState(false)
+  const [dpUploadMsg, setDpUploadMsg] = useState('')
+  const [dpCoverUrl, setDpCoverUrl] = useState('')
+  const [dpFilePath, setDpFilePath] = useState('')
+  const [dpEditCoverUrl, setDpEditCoverUrl] = useState('')
+  const [dpEditFilePath, setDpEditFilePath] = useState('')
+  const dpCoverRef = useRef<HTMLInputElement>(null)
+  const dpFileRef = useRef<HTMLInputElement>(null)
+  const dpEditCoverRef = useRef<HTMLInputElement>(null)
+  const dpEditFileRef = useRef<HTMLInputElement>(null)
 
   // Clear the password from memory and force re-login after SESSION_TIMEOUT_MS of inactivity.
   function resetIdleTimer() {
@@ -391,6 +423,89 @@ export default function AdminClient() {
     })
     if (res.ok) setMelodyPacks((prev) => prev.filter((p) => p.id !== id))
     else setMpError('Failed to delete pack')
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // ── Drum Packs ────────────────────────────────────────────────────────────
+  async function fetchDrumPacks() {
+    const res = await fetch('/api/admin/drum-packs', {
+      headers: { 'x-admin-password': password },
+    })
+    if (res.ok) setDrumPacks(await res.json())
+  }
+
+  async function handleDpCreate(e: React.FormEvent) {
+    e.preventDefault()
+    setDpError(null)
+    setDpUploading(true)
+    setDpUploadMsg('')
+    try {
+      const body: Record<string, unknown> = {
+        title: dpNewPack.title,
+        vendor: dpNewPack.vendor,
+        description: dpNewPack.description,
+        price: Number(dpNewPack.price) || 0,
+        compare_at_price: dpNewPack.compare_at_price !== '' ? Number(dpNewPack.compare_at_price) : null,
+        cover_url: dpCoverUrl || null,
+        file_path: dpFilePath || null,
+        is_active: true,
+      }
+      const res = await fetch('/api/admin/drum-packs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) { setDpError(data.error ?? 'Failed to create'); return }
+      setDrumPacks((prev) => [data, ...prev])
+      setDpNewPack({ title: '', vendor: 'PRODBATTS', description: '', price: '', compare_at_price: '' })
+      setDpCoverUrl('')
+      setDpFilePath('')
+      setDpUploadMsg('Pack created successfully.')
+    } finally {
+      setDpUploading(false)
+    }
+  }
+
+  async function handleDpSave(id: string) {
+    setDpError(null)
+    const updates: Record<string, unknown> = { id, ...dpEditForm }
+    if (dpEditCoverUrl) updates.cover_url = dpEditCoverUrl
+    if (dpEditFilePath) updates.file_path = dpEditFilePath
+    const res = await fetch('/api/admin/drum-packs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify(updates),
+    })
+    const data = await res.json()
+    if (!res.ok) { setDpError(data.error ?? 'Failed to update'); return }
+    setDrumPacks((prev) => prev.map((p) => (p.id === id ? data : p)))
+    setDpEditId(null)
+    setDpEditCoverUrl('')
+    setDpEditFilePath('')
+  }
+
+  async function handleDpToggle(pack: DrumPack) {
+    const res = await fetch('/api/admin/drum-packs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ id: pack.id, is_active: !pack.is_active }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setDrumPacks((prev) => prev.map((p) => (p.id === pack.id ? data : p)))
+    }
+  }
+
+  async function handleDpDelete(id: string) {
+    if (!confirm('Delete this drum pack? This cannot be undone.')) return
+    const res = await fetch('/api/admin/drum-packs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ id }),
+    })
+    if (res.ok) setDrumPacks((prev) => prev.filter((p) => p.id !== id))
+    else setDpError('Failed to delete pack')
   }
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -812,17 +927,17 @@ export default function AdminClient() {
 
       {/* Tabs */}
       <div className="mb-6 flex gap-2 border-b border-line-card pb-0 overflow-x-auto">
-        {(['beats', 'orders', 'upload', 'promos', 'melody-packs'] as const).map((t) => (
+        {(['beats', 'orders', 'upload', 'promos', 'melody-packs', 'drum-packs'] as const).map((t) => (
           <button
             key={t}
-            onClick={() => { setTab(t); if (t === 'promos') fetchPromos(); if (t === 'melody-packs') fetchMelodyPacks() }}
+            onClick={() => { setTab(t); if (t === 'promos') fetchPromos(); if (t === 'melody-packs') fetchMelodyPacks(); if (t === 'drum-packs') fetchDrumPacks() }}
             className={`px-4 py-3 text-sm font-semibold whitespace-nowrap capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? 'border-white text-white'
                 : 'border-transparent text-muted hover:text-foreground'
             }`}
           >
-            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : t === 'promos' ? 'Promos' : `Melody Packs (${melodyPacks.length})`}
+            {t === 'beats' ? `Beats (${beats.length})` : t === 'orders' ? `Orders (${orders.length})` : t === 'upload' ? 'Add Beat' : t === 'promos' ? 'Promos' : t === 'melody-packs' ? `Melody Packs (${melodyPacks.length})` : `Drum Packs (${drumPacks.length})`}
           </button>
         ))}
       </div>
@@ -1629,8 +1744,7 @@ export default function AdminClient() {
                   ) : (
                     <div className="flex items-center gap-3">
                       {pack.cover_url && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={pack.cover_url} alt="" className="h-10 w-10 rounded-md object-cover flex-shrink-0" />
+                        <Image src={pack.cover_url} alt="" width={40} height={40} className="rounded-md object-cover flex-shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-white truncate">{pack.title}</p>
@@ -1650,6 +1764,217 @@ export default function AdminClient() {
                           <Edit3 size={15} />
                         </button>
                         <button onClick={() => handleMpDelete(pack.id)} className="text-muted-low hover:text-danger transition-colors">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Drum Packs tab */}
+      {tab === 'drum-packs' && (
+        <div className="space-y-6 max-w-3xl">
+          {dpError && (
+            <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
+              <span>{dpError}</span>
+              <button onClick={() => setDpError(null)} className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
+            </div>
+          )}
+
+          {/* Create new pack */}
+          <div className="rounded-xl border border-line-card bg-surface-2 p-5">
+            <h2 className="text-base font-bold text-white mb-4">Add Drum Pack</h2>
+            <form onSubmit={handleDpCreate} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Title *</label>
+                  <input required value={dpNewPack.title} onChange={(e) => setDpNewPack((f) => ({ ...f, title: e.target.value }))}
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="808 Essentials" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Vendor</label>
+                  <input value={dpNewPack.vendor} onChange={(e) => setDpNewPack((f) => ({ ...f, vendor: e.target.value }))}
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="PRODBATTS" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Price (USD) *</label>
+                  <input required type="number" min="0" step="0.01" value={dpNewPack.price} onChange={(e) => setDpNewPack((f) => ({ ...f, price: e.target.value }))}
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="25.00" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-mid mb-1.5">Compare-at Price (sale)</label>
+                  <input type="number" min="0" step="0.01" value={dpNewPack.compare_at_price} onChange={(e) => setDpNewPack((f) => ({ ...f, compare_at_price: e.target.value }))}
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="42.00 (optional)" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Description</label>
+                <input value={dpNewPack.description} onChange={(e) => setDpNewPack((f) => ({ ...f, description: e.target.value }))}
+                  className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="Hard-hitting drum kit…" />
+              </div>
+
+              {/* Cover image upload */}
+              <div>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
+                <div
+                  onClick={() => dpCoverRef.current?.click()}
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                >
+                  <input ref={dpCoverRef} type="file" accept="image/*" className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      setDpUploading(true)
+                      const result = await uploadMpFile(file, 'cover')
+                      if (result?.publicUrl) setDpCoverUrl(result.publicUrl)
+                      else setDpError('Cover upload failed')
+                      setDpUploading(false)
+                      e.target.value = ''
+                    }}
+                  />
+                  <Upload size={16} className="mx-auto mb-1 text-muted" />
+                  <p className="text-xs text-muted-mid">{dpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
+                </div>
+              </div>
+
+              {/* Pack file upload */}
+              <div>
+                <label className="block text-xs font-medium text-muted-mid mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
+                <div
+                  onClick={() => dpFileRef.current?.click()}
+                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                >
+                  <input ref={dpFileRef} type="file" accept=".zip,application/zip" className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      setDpUploading(true)
+                      const result = await uploadMpFile(file, 'stems')
+                      if (result?.path) setDpFilePath(result.path)
+                      else setDpError('File upload failed')
+                      setDpUploading(false)
+                      e.target.value = ''
+                    }}
+                  />
+                  <Upload size={16} className="mx-auto mb-1 text-muted" />
+                  <p className="text-xs text-muted-mid">{dpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
+                </div>
+              </div>
+
+              {dpUploadMsg && <p className="text-sm text-green-400">{dpUploadMsg}</p>}
+
+              <button type="submit" disabled={dpUploading}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50">
+                <Upload size={15} />
+                {dpUploading ? 'Uploading…' : 'Create Drum Pack'}
+              </button>
+            </form>
+          </div>
+
+          {/* Existing packs list */}
+          {drumPacks.length === 0 ? (
+            <p className="text-center text-muted py-8">No drum packs yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {drumPacks.map((pack) => (
+                <div key={pack.id} className="rounded-xl border border-line-card bg-surface-1 px-4 py-3">
+                  {dpEditId === pack.id ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <input value={dpEditForm.title ?? pack.title} onChange={(e) => setDpEditForm((f) => ({ ...f, title: e.target.value }))}
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none col-span-2" placeholder="Title" />
+                        <input value={dpEditForm.vendor ?? pack.vendor} onChange={(e) => setDpEditForm((f) => ({ ...f, vendor: e.target.value }))}
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="Vendor" />
+                        <input value={dpEditForm.description ?? pack.description} onChange={(e) => setDpEditForm((f) => ({ ...f, description: e.target.value }))}
+                          className="rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="Description" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[10px] text-muted mb-1">Price (USD)</label>
+                          <input type="number" min="0" step="0.01" value={dpEditForm.price ?? pack.price} onChange={(e) => setDpEditForm((f) => ({ ...f, price: Number(e.target.value) }))}
+                            className="w-full rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] text-muted mb-1">Compare-at Price</label>
+                          <input type="number" min="0" step="0.01"
+                            value={dpEditForm.compare_at_price !== undefined ? (dpEditForm.compare_at_price ?? '') : (pack.compare_at_price ?? '')}
+                            onChange={(e) => setDpEditForm((f) => ({ ...f, compare_at_price: e.target.value === '' ? null : Number(e.target.value) }))}
+                            className="w-full rounded-lg border border-line-input bg-surface-3 px-3 py-2 text-sm text-white outline-none" placeholder="(none)" />
+                        </div>
+                      </div>
+
+                      {/* Cover update */}
+                      <div>
+                        <label className="block text-[10px] text-muted mb-1">Cover Image</label>
+                        <div onClick={() => dpEditCoverRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-line-input px-3 py-2 text-center hover:border-muted">
+                          <input ref={dpEditCoverRef} type="file" accept="image/*" className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]; if (!file) return
+                              const result = await uploadMpFile(file, 'cover')
+                              if (result?.publicUrl) setDpEditCoverUrl(result.publicUrl)
+                              e.target.value = ''
+                            }} />
+                          <p className="text-xs text-muted-mid">{dpEditCoverUrl ? '✓ New cover uploaded' : 'Click to replace cover'}</p>
+                        </div>
+                      </div>
+
+                      {/* File update */}
+                      <div>
+                        <label className="block text-[10px] text-muted mb-1">Pack File (ZIP)</label>
+                        <div onClick={() => dpEditFileRef.current?.click()} className="cursor-pointer rounded-lg border border-dashed border-line-input px-3 py-2 text-center hover:border-muted">
+                          <input ref={dpEditFileRef} type="file" accept=".zip,application/zip" className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]; if (!file) return
+                              const result = await uploadMpFile(file, 'stems')
+                              if (result?.path) setDpEditFilePath(result.path)
+                              e.target.value = ''
+                            }} />
+                          <p className="text-xs text-muted-mid">{dpEditFilePath ? '✓ New file uploaded' : pack.file_path ? '✓ File on record — click to replace' : 'Click to upload ZIP'}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button onClick={() => handleDpSave(pack.id)} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-black hover:bg-white-hover transition-colors">
+                          <Check size={13} /> Save
+                        </button>
+                        <button onClick={() => { setDpEditId(null); setDpEditForm({}); setDpEditCoverUrl(''); setDpEditFilePath('') }}
+                          className="flex items-center gap-1.5 rounded-lg border border-line-input px-3 py-2 text-xs text-muted-mid hover:text-white transition-colors">
+                          <X size={13} /> Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      {pack.cover_url && (
+                        <Image src={pack.cover_url} alt="" width={40} height={40} className="rounded-md object-cover flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">{pack.title}</p>
+                        <p className="text-xs text-muted">
+                          {pack.vendor} · ${pack.price.toFixed(2)}
+                          {pack.compare_at_price ? ` (was $${pack.compare_at_price.toFixed(2)})` : ''}
+                          {!pack.file_path && <span className="ml-2 text-amber-500">⚠ No file</span>}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button onClick={() => handleDpToggle(pack)} title={pack.is_active ? 'Deactivate' : 'Activate'}
+                          className="text-muted hover:text-white transition-colors">
+                          {pack.is_active ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />}
+                        </button>
+                        <button onClick={() => { setDpEditId(pack.id); setDpEditForm({ title: pack.title, vendor: pack.vendor, description: pack.description, price: pack.price, compare_at_price: pack.compare_at_price }) }}
+                          className="text-muted hover:text-white transition-colors">
+                          <Edit3 size={15} />
+                        </button>
+                        <button onClick={() => handleDpDelete(pack.id)} className="text-muted-low hover:text-danger transition-colors">
                           <Trash2 size={15} />
                         </button>
                       </div>

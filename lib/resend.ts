@@ -26,7 +26,7 @@ function getFrom() {
   return process.env.RESEND_FROM_EMAIL ?? 'beats@prodkjbeats.com'
 }
 function getToAdmin() {
-  return process.env.RESEND_TO_EMAIL ?? ''
+  return process.env.RESEND_TO_EMAIL ?? 'kjbeats6@gmail.com'
 }
 function getSiteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
@@ -80,7 +80,7 @@ export async function sendServiceInquiryEmail({
   serviceType: string
   projectDetails: string
 }) {
-  await getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     subject: subj(`New Service Inquiry: ${serviceType} — ${artistName}`),
@@ -96,6 +96,7 @@ export async function sendServiceInquiryEmail({
       </div>
     `,
   })
+  if (error) throw new Error(error.message)
 }
 
 export async function sendExclusiveOfferEmail({
@@ -114,7 +115,7 @@ export async function sendExclusiveOfferEmail({
   message?: string
 }) {
   const siteUrl = getSiteUrl()
-  await getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
@@ -149,6 +150,7 @@ export async function sendExclusiveOfferEmail({
       </div>
     `,
   })
+  if (error) throw new Error(error.message)
 }
 
 export async function sendBookingEmail({
@@ -171,7 +173,7 @@ export async function sendBookingEmail({
   const refHtml = referenceTracks
     ? `<tr style="border-bottom:1px solid #222"><td style="padding:10px 8px;color:#888;font-size:13px;vertical-align:top">Reference Tracks</td><td style="padding:10px 8px;color:#fff;white-space:pre-wrap">${esc(referenceTracks)}</td></tr>`
     : ''
-  await getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
@@ -211,6 +213,7 @@ export async function sendBookingEmail({
       </div>
     `,
   })
+  if (error) throw new Error(error.message)
 }
 
 export async function sendBookingConfirmationEmail({
@@ -256,7 +259,7 @@ export async function sendSubscribeNotificationEmail({
   name: string
   email: string
 }) {
-  await getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     subject: subj(`New Subscriber: ${name || email}`),
@@ -272,6 +275,7 @@ export async function sendSubscribeNotificationEmail({
       </div>
     `,
   })
+  if (error) throw new Error(error.message)
 }
 
 export async function sendContactEmail({
@@ -285,7 +289,7 @@ export async function sendContactEmail({
   subject: string
   message: string
 }) {
-  await getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: `PRODKJBEATS <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
@@ -301,4 +305,5 @@ export async function sendContactEmail({
       </div>
     `,
   })
+  if (error) throw new Error(error.message)
 }

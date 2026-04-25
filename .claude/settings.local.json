@@ -19,7 +19,10 @@
       "Bash(grep -r \"\\\\$[0-9]\\\\|\\\\${[0-9]\\\\|price\\\\|total\\\\|amount\" /c/Users/AWSExam/Desktop/Projects/prodkjbeats/components /c/Users/AWSExam/Desktop/Projects/prodkjbeats/app /c/Users/AWSExam/Desktop/Projects/prodkjbeats/lib --include=\"*.tsx\" --include=\"*.ts\" -n)",
       "Bash(xargs cat *)",
       "Bash(cat tailwind.config.ts)",
-      "Bash(cat tailwind.config.js)"
+      "Bash(cat tailwind.config.js)",
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(xargs wc *)",
+      "Bash(NEXT_TURBOPACK=0 npx next build)"
     ]
   }
 }

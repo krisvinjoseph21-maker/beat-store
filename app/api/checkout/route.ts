@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     let pricingTier: QuantityTier = quantityTier
     let promoNotes: string[] = []
 
-    if (useBogo && bogoIsActive(promo)) {
+    if (useBogo && bogoIsActive(promo) && licenseType !== 'unlimited') {
       pricingTier = 1
       promoNotes.push(`BOGO: Buy 1 Get ${promo.bogo_free_count} Free`)
     }

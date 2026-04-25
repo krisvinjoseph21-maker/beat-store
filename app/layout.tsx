@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 import { Bebas_Neue, Inter, Montserrat } from 'next/font/google'
+import dynamic from 'next/dynamic'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import BottomPlayer from '@/components/BottomPlayer'
-import EmailCaptureModal from '@/components/EmailCaptureModal'
 import AnalyticsScripts from '@/components/AnalyticsScripts'
+
+const EmailCaptureModal = dynamic(() => import('@/components/EmailCaptureModal'), { ssr: false })
 
 const bebasNeue = Bebas_Neue({
   weight: '400',

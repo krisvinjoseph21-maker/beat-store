@@ -2,12 +2,23 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
-import LicenseModal from './LicenseModal'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
-import { ChevronDown, Heart } from 'lucide-react'
-import StoreAmbient from './StoreAmbient'
+import { BadgeCheck, ChevronDown, Heart } from 'lucide-react'
 import { useT } from '@/lib/i18n'
+
+const LicenseModal = dynamic(() => import('./LicenseModal'), { ssr: false })
+const StoreAmbient = dynamic(() => import('./StoreAmbient'), { ssr: false })
+
+const PLACEMENT_CREDITS = [
+  { artist: 'GloRilla',     detail: 'CMG / Interscope' },
+  { artist: 'DeeBaby',      detail: '"Chicago Baby" · 500K+' },
+  { artist: 'Paris Bryant', detail: '"A Crush"' },
+  { artist: 'Shenseea',     detail: 'Interscope Records' },
+  { artist: 'Seyi Vibez',   detail: 'Afrobeats' },
+  { artist: 'Est Gee',      detail: 'Trap' },
+]
 
 const BPM_RANGES = [
   { label: 'All BPM', min: 0, max: Infinity },
@@ -19,14 +30,11 @@ const BPM_RANGES = [
 ]
 
 const SORT_OPTIONS = [
-  { value: 'default', label: 'Default List' },
-  { value: 'relevance', label: 'Relevance' },
-  { value: 'az', label: 'A → Z' },
-  { value: 'za', label: 'Z → A' },
-  { value: 'bpm_asc', label: 'BPM: Low → High' },
+  { value: 'default',   label: 'Default List' },
+  { value: 'bpm_asc',  label: 'BPM: Low → High' },
   { value: 'bpm_desc', label: 'BPM: High → Low' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
+  { value: 'newest',   label: 'Newest' },
+  { value: 'oldest',   label: 'Oldest' },
 ]
 
 function Select({
@@ -111,12 +119,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     })
 
     switch (sortBy) {
-      case 'az': results = [...results].sort((a, b) => a.title.localeCompare(b.title)); break
-      case 'za': results = [...results].sort((a, b) => b.title.localeCompare(a.title)); break
-      case 'bpm_asc': results = [...results].sort((a, b) => a.bpm - b.bpm); break
+      case 'bpm_asc':  results = [...results].sort((a, b) => a.bpm - b.bpm); break
       case 'bpm_desc': results = [...results].sort((a, b) => b.bpm - a.bpm); break
-      case 'newest': results = [...results].sort((a, b) => b.created_at.localeCompare(a.created_at)); break
-      case 'oldest': results = [...results].sort((a, b) => a.created_at.localeCompare(b.created_at)); break
+      case 'newest':   results = [...results].sort((a, b) => b.created_at.localeCompare(a.created_at)); break
+      case 'oldest':   results = [...results].sort((a, b) => a.created_at.localeCompare(b.created_at)); break
     }
 
     return results
@@ -151,6 +157,47 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           >
             All Beats.
           </h1>
+
+          {/* Placement credit strip */}
+          <div
+            className="mb-6 flex items-center gap-0 overflow-hidden"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)', height: '30px' }}
+            aria-label="Verified artist placements"
+          >
+            <div
+              className="flex items-center gap-1.5 pr-4 shrink-0"
+              style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
+              <span
+                className="text-[9px] font-bold uppercase whitespace-nowrap"
+                style={{ letterSpacing: '0.18em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
+              >
+                Verified Credits
+              </span>
+            </div>
+            <div className="relative flex-1 overflow-hidden" aria-hidden="true">
+              <div className="ticker-wrap flex items-center whitespace-nowrap pl-5" style={{ animationDuration: '28s' }}>
+                {[...PLACEMENT_CREDITS, ...PLACEMENT_CREDITS].map(({ artist, detail }, i) => (
+                  <span key={i} className="inline-flex items-center gap-3 mr-8">
+                    <span
+                      className="text-[10px] font-semibold"
+                      style={{ color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)' }}
+                    >
+                      {artist}
+                    </span>
+                    <span
+                      className="text-[9px]"
+                      style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+                    >
+                      {detail}
+                    </span>
+                    <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Search + genre pills row */}
           <div className="flex flex-wrap items-center gap-3">
@@ -214,7 +261,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             fontFamily: 'var(--font-montserrat)',
           }}
         >
-          <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} />
+          <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} aria-hidden="true" />
           {t.store.saved}
         </button>
         <p className="ml-auto text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
@@ -254,14 +301,16 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 </span>
                 <span style={{ width: '160px' }} />
               </div>
-              {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
-                <BeatCard
-                  key={beat.id}
-                  beat={beat}
-                  index={i + 1}
-                  onBuyClick={(_beat) => setModalOpen(true)}
-                />
-              ))}
+              <div role="list" aria-label="Beat tracks">
+                {(showAll ? filtered : filtered.slice(0, 10)).map((beat, i) => (
+                  <BeatCard
+                    key={beat.id}
+                    beat={beat}
+                    index={i + 1}
+                    onBuyClick={(_beat) => setModalOpen(true)}
+                  />
+                ))}
+              </div>
             </div>
             {!showAll && filtered.length > 10 && (
               <div className="flex justify-center mt-6">

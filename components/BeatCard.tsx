@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
-import { Beat, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
+import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { BadgeCheck, Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
+import { Beat, LicenseType, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import { sharedAudioElement } from '@/lib/player-ref'
 import ShareButton from './ShareButton'
-import WaveformVisualizer from './WaveformVisualizer'
-import Link from 'next/link'
 import { PRICES } from '@/lib/prices'
 import { useT } from '@/lib/i18n'
 import { trackAddToCart } from '@/lib/analytics'
+
+const WaveformVisualizer = dynamic(() => import('./WaveformVisualizer'), { ssr: false })
 
 interface Props {
   beat: Beat
@@ -22,9 +24,9 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   const { currentBeat, isPlaying, progress, duration, setCurrentBeat, togglePlay, setPlaying } =
     usePlayerStore()
   const LICENSE_OPTIONS = [
-    { id: 'standard' as const, name: t.beatCard.mp3License,   desc: t.beatCard.mp3Desc },
-    { id: 'standard' as const, name: t.beatCard.wavLicense,   desc: t.beatCard.wavDesc },
-    { id: 'unlimited' as const, name: t.beatCard.stemLicense, desc: t.beatCard.stemDesc },
+    { id: 'standard' as const,  name: t.beatCard.mp3License,   desc: t.beatCard.mp3Desc },
+    { id: 'premium' as const,   name: t.beatCard.wavLicense,   desc: t.beatCard.wavDesc },
+    { id: 'unlimited' as const, name: t.beatCard.stemLicense,  desc: t.beatCard.stemDesc },
     { id: null,                 name: t.beatCard.exclusive,    desc: t.beatCard.exclusiveDesc },
   ]
   const { isInCart, addBeat, setLicenseType, openCart } = useCartStore()
@@ -46,6 +48,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     prevInCartRef.current = inCart
   }, [inCart])
   const hasAudio = !!beat.preview_url
+  const hasCredit = beat.tags.includes('verified-credit')
   const isNew = useMemo(
     () => beat.created_at && Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000,
     [beat.created_at]
@@ -87,7 +90,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
     toggleFavorite(beat.id)
   }
 
-  function handleSelectLicense(e: React.MouseEvent, id: 'standard' | 'unlimited') {
+  function handleSelectLicense(e: React.MouseEvent, id: LicenseType) {
     e.stopPropagation()
     setLicenseType(id)
     addBeat(beat)
@@ -97,7 +100,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full" role="listitem">
 
       {/* ── Main row ─────────────────────────────────────────── */}
       <div
@@ -107,13 +110,16 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
         {/* Keyboard expand target — tabIndex 0 makes it reachable; stopPropagation prevents double-fire with outer div */}
         <span
-          className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-inset"
+          className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
           role="button"
           aria-expanded={licenseOpen}
           aria-label={`${beat.title} — ${licenseOpen ? 'close' : 'open'} license options`}
           tabIndex={0}
           onClick={(e) => { e.stopPropagation(); setLicenseOpen(o => !o) }}
-          onKeyDown={(e) => { if (e.key === ' ') e.preventDefault() }}
+          onKeyDown={(e) => {
+            if (e.key === ' ') { e.preventDefault(); setLicenseOpen(o => !o) }
+            else if (e.key === 'Enter') { e.preventDefault(); setLicenseOpen(o => !o) }
+          }}
         />
 
         {isThisActive && (
@@ -144,7 +150,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
           <button
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
-            aria-label={isThisPlaying ? 'Pause' : 'Play'}
+            aria-label={isThisPlaying ? `Pause ${beat.title}` : `Play ${beat.title}`}
             className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-[background-color,transform,opacity] duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{ width: '44px', height: '44px' }}
           >
@@ -170,6 +176,21 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                   style={{ color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
                 >
                   {t.beatCard.new}
+                </span>
+              )}
+              {hasCredit && (
+                <span
+                  className="inline-flex items-center gap-1 shrink-0"
+                  title="Verified placement credit"
+                  aria-label="Verified placement credit"
+                >
+                  <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
+                  <span
+                    className="text-[9px] font-semibold uppercase"
+                    style={{ letterSpacing: '0.12em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
+                  >
+                    Credit
+                  </span>
                 </span>
               )}
             </div>
@@ -212,37 +233,39 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Price + CTA + icons */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {inCart ? (
-              <button
-                onClick={(e) => { e.stopPropagation(); openCart() }}
-                aria-label={`${beat.title} — already in cart, click to view cart`}
-                className="flex items-center gap-1.5 h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-80 shrink-0"
-                style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
-              >
-                <Check
-                  size={11}
-                  className={showCheckAnim ? 'animate-check-in' : ''}
-                  onAnimationEnd={() => setShowCheckAnim(false)}
-                  aria-hidden="true"
-                />
-                {t.beat.inCart}
-              </button>
-            ) : (
-              <button
-                onClick={handleAddToCart}
-                aria-label={`Add ${beat.title} to cart`}
-                className="flex items-center gap-1.5 h-[44px] sm:h-[40px] px-3 sm:px-4 whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
-                style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
-              >
-                <ShoppingCart size={12} aria-hidden="true" />
-                From ${PRICES.standard[1]}
-              </button>
-            )}
+            <div className="shrink-0 w-[116px]">
+              {inCart ? (
+                <button
+                  onClick={(e) => { e.stopPropagation(); openCart() }}
+                  aria-label={`${beat.title} — already in cart, click to view cart`}
+                  className="w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-80"
+                  style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600 }}
+                >
+                  <Check
+                    size={11}
+                    className={showCheckAnim ? 'animate-check-in' : ''}
+                    onAnimationEnd={() => setShowCheckAnim(false)}
+                    aria-hidden="true"
+                  />
+                  {t.beat.inCart}
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  aria-label={`Add ${beat.title} to cart`}
+                  className="w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-90"
+                  style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontFamily: 'Montserrat, var(--font-montserrat), sans-serif', fontSize: '12px', fontWeight: 600 }}
+                >
+                  <ShoppingCart size={12} aria-hidden="true" />
+                  From ${PRICES.standard[1]}
+                </button>
+              )}
+            </div>
 
             <button
               onClick={handleFavorite}
               className="flex h-11 w-11 items-center justify-center hover:opacity-70 transition-opacity"
-              aria-label={favorited ? 'Unfavorite' : 'Favorite'}
+              aria-label={favorited ? `Remove ${beat.title} from favorites` : `Add ${beat.title} to favorites`}
             >
               <Heart
                 size={12}
@@ -308,7 +331,7 @@ export default function BeatCard({ beat, index, onBuyClick }: Props) {
                 ) : (
                   <button
                     key={i}
-                    onClick={(e) => handleSelectLicense(e, opt.id as 'standard' | 'unlimited')}
+                    onClick={(e) => handleSelectLicense(e, opt.id as LicenseType)}
                     className="bg-surface-2 flex flex-col justify-between p-4 text-left hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
                   >
                     <div>

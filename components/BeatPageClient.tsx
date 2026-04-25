@@ -19,6 +19,7 @@ const TIERS: Array<{
   format: string
   price: string
   bullets: string[]
+  tag?: string
   popular?: true
 }> = [
   {
@@ -26,21 +27,39 @@ const TIERS: Array<{
     name: 'Basic Lease',
     format: 'MP3 (320kbps)',
     price: `$${PRICES.standard[1]}`,
-    bullets: ['100k streams', '10k copies', '1 music video'],
+    bullets: [
+      '100k streams',
+      '10k distribution copies',
+      '1 music video',
+      '2 radio stations',
+      'Non-exclusive',
+    ],
   },
   {
     id: 'premium',
     name: 'Premium Lease',
     format: 'WAV (24-bit)',
     price: `$${PRICES.premium[1]}`,
-    bullets: ['500k streams', '25k copies', '1 music video'],
+    bullets: [
+      '500k streams',
+      '25k distribution copies',
+      '1 music video',
+      '5 radio stations',
+      'Non-exclusive',
+    ],
   },
   {
     id: 'unlimited',
     name: 'Unlimited Lease',
     format: 'WAV + Trackout Stems',
     price: `$${PRICES.unlimited[1]}`,
-    bullets: ['1.5M streams', '75k copies', 'Unlimited videos'],
+    bullets: [
+      '1.5M streams',
+      '75k distribution copies',
+      'Unlimited music videos',
+      'Unlimited radio / live',
+      'Non-exclusive',
+    ],
     popular: true,
   },
   {
@@ -48,17 +67,26 @@ const TIERS: Array<{
     name: 'Exclusive',
     format: 'WAV + Stems + MP3',
     price: '$500+',
-    bullets: ['Unlimited streams', 'Full exclusive rights', 'Beat removed from store'],
+    bullets: [
+      'Unlimited streams',
+      'Unlimited distribution',
+      'Unlimited music videos',
+      'Full performance rights',
+      'Full exclusive ownership',
+    ],
+    tag: 'Contact us',
   },
 ]
 
 const COMPARE_ROWS: Array<{ label: string; values: [string, string, string, string] }> = [
-  { label: 'Format',    values: ['MP3 320kbps',  'WAV 24-bit',    'WAV + Stems',   'WAV + Stems + MP3'] },
-  { label: 'Streams',   values: ['100k',          '500k',          '1.5M',          'Unlimited']         },
-  { label: 'Copies',    values: ['10k',           '25k',           '75k',           'Unlimited']         },
-  { label: 'Videos',    values: ['1',             '1',             'Unlimited',     'Unlimited']         },
-  { label: 'Radio',     values: ['2 stations',    '5 stations',    'Unlimited',     'Unlimited']         },
-  { label: 'Ownership', values: ['Non-exclusive', 'Non-exclusive', 'Non-exclusive', 'Full exclusive']    },
+  { label: 'Format',       values: ['MP3 320kbps',  'WAV 24-bit',    'WAV + Stems',       'WAV + Stems + MP3']    },
+  { label: 'Streams',      values: ['100k',          '500k',          '1.5M',              'Unlimited']            },
+  { label: 'Distribution', values: ['10k copies',    '25k copies',    '75k copies',        'Unlimited']            },
+  { label: 'Music Videos', values: ['1',             '1',             'Unlimited',         'Unlimited']            },
+  { label: 'Performance',  values: ['2 stations',    '5 stations',    'Unlimited',         'Full rights']          },
+  { label: 'Live Shows',   values: ['Unlimited',     'Unlimited',     'Unlimited',         'Unlimited']            },
+  { label: 'Credit',       values: ['Required',      'Required',      'Required',          'Optional']             },
+  { label: 'Ownership',    values: ['Non-exclusive', 'Non-exclusive', 'Non-exclusive',     'Full exclusive']       },
 ]
 
 export default function BeatPageClient({ beat }: { beat: Beat }) {
@@ -172,13 +200,13 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
                       : 'border-white/[0.08] hover:border-white/20'
                   }`}
                 >
-                  {tier.popular && (
-                    <span className="absolute top-2 right-2 rounded-full bg-white px-1.5 py-0.5 text-[9px] font-bold uppercase text-black">
-                      Popular
+                  {(tier.popular || tier.tag) && (
+                    <span className={`absolute top-2 right-2 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase ${tier.popular ? 'bg-white text-black' : 'bg-white/10 text-muted'}`}>
+                      {tier.popular ? 'Popular' : tier.tag}
                     </span>
                   )}
-                  <p className="text-[11px] font-semibold text-foreground pr-10">{tier.name}</p>
-                  <p className="text-[10px] text-muted mb-2">{tier.format}</p>
+                  <p className="text-[11px] font-semibold text-foreground pr-14">{tier.name}</p>
+                  <p className="text-[10px] text-muted mb-1.5">{tier.format}</p>
                   <p className="text-base font-bold text-foreground mb-2">{tier.price}</p>
                   <ul className="space-y-1">
                     {tier.bullets.map((b) => (
@@ -214,17 +242,18 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
                 <table className="w-full border-collapse min-w-[480px]">
                   <thead>
                     <tr className="border-b border-white/[0.08]">
-                      <th className="py-2 px-3 text-left text-[9px] font-normal uppercase tracking-[0.1em] text-muted-low w-[22%]">
+                      <th scope="col" className="py-2 px-3 text-left text-[9px] font-normal uppercase tracking-[0.1em] text-muted-low w-[22%]">
                         Feature
                       </th>
                       {TIERS.map((t) => (
                         <th
                           key={t.id}
-                          className={`py-2 px-2 text-center text-[9px] font-semibold uppercase tracking-[0.08em] ${
+                          scope="col"
+                          className={`py-2 px-2 text-center text-[9px] font-semibold uppercase tracking-[0.08em] w-[19%] ${
                             selectedTier === t.id ? 'text-foreground' : 'text-muted-low'
                           }`}
                         >
-                          {t.id === 'standard' ? 'Basic' : t.id === 'premium' ? 'Premium' : t.id === 'unlimited' ? 'Unlimited' : 'Exclusive'}
+                          {t.id === 'standard' ? 'Basic' : t.id === 'premium' ? 'Prem' : t.id === 'unlimited' ? 'Unlim' : 'Excl'}
                         </th>
                       ))}
                     </tr>

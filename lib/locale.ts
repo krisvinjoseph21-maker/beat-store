@@ -26,8 +26,9 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
 }
 
 export function formatPrice(usdAmount: number, currency: Currency): string {
-  const converted = Math.round(usdAmount * EXCHANGE_RATES[currency])
-  return `${CURRENCY_SYMBOLS[currency]}${converted}`
+  const converted = usdAmount * EXCHANGE_RATES[currency]
+  const str = converted.toFixed(2)
+  return `${CURRENCY_SYMBOLS[currency]}${str.endsWith('.00') ? str.slice(0, -3) : str}`
 }
 
 export const useLocaleStore = create<LocaleStore>()(

@@ -20,6 +20,7 @@ export default function HeroVideo() {
       muted
       loop
       playsInline
+      preload="none"
       aria-hidden="true"
     >
       <source src="/videos/hero.mp4" type="video/mp4" />

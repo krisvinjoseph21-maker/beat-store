@@ -75,7 +75,8 @@ export const useCartStore = create<CartStore>()(
       isInCart: (beatId) => !!get().items.find((i) => i.beat.id === beatId),
 
       total: () => {
-        const { licenseType, quantityTier } = get()
+        const { items, licenseType, quantityTier } = get()
+        if (quantityTier === 1) return PRICES[licenseType][1] * items.length
         return PRICES[licenseType][quantityTier]
       },
 

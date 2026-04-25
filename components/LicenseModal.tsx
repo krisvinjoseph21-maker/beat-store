@@ -12,7 +12,7 @@ import { useT } from '@/lib/i18n'
 // Inlined — discount-codes.ts must NOT be imported in client components
 // (it contains the full code list which would be exposed in the JS bundle)
 function applyDiscount(price: number, pct: number): number {
-  return Math.round(price * (1 - pct / 100))
+  return price * (1 - pct / 100)
 }
 
 interface Props {
@@ -239,7 +239,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
           {(['standard', 'premium', 'unlimited'] as LicenseType[]).map((type) => (
             <button
               key={type}
-              onClick={() => setLicenseType(type)}
+              onClick={() => { setLicenseType(type); if (type === 'unlimited') setBogoSelected(false) }}
               aria-pressed={licenseType === type}
               className={`flex-1 rounded-sm py-2 text-xs font-semibold transition-[background-color,color] ${
                 licenseType === type
@@ -300,8 +300,8 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
           </div>
         </div>
 
-        {/* BOGO deal option */}
-        {hasBogo && (
+        {/* BOGO deal option — standard and premium only */}
+        {hasBogo && licenseType !== 'unlimited' && (
           <div className="mb-4">
             <p className="mb-2 text-xs font-medium text-muted-mid uppercase tracking-wide">
               {t.license.limitedOffer}

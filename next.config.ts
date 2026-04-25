@@ -55,6 +55,7 @@ const nextConfig: NextConfig = {
   },
 
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         // Supabase storage for cover images
