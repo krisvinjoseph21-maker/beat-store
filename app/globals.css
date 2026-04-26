@@ -121,7 +121,6 @@ body {
 
 .font-display {
   font-family: var(--font-bebas, 'Impact', sans-serif);
-  letter-spacing: 0.02em;
 }
 
 .font-montserrat {

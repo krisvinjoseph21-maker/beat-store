@@ -48,11 +48,13 @@ async function getPageData(): Promise<{ featured: Beat | null }> {
 const RECEIPTS = [
   { role: 'Featured Credit', artist: 'DeeBaby',      song: '"Chicago Baby"', detail: 'Producer · Verified Credit', streams: '500K+', spotifyId: '64KlYVNyF3OkdvG13L6m2X' },
   { role: 'Credit',          artist: 'Paris Bryant', song: '"A Crush"',      detail: 'Producer · Verified Credit', streams: null,    spotifyId: '4DVN3vtMENFsClxJTuP6yY' },
-  { role: 'Unreleased',      artist: 'GloRilla',     song: 'Placement',      detail: 'CMG / Interscope · Unreleased',   streams: null },
-  { role: 'Unreleased',      artist: 'Shenseea',     song: 'Placement',      detail: 'Interscope Records · Unreleased', streams: null },
-  { role: 'Unreleased',      artist: 'Seyi Vibez',   song: 'Placement',      detail: 'Afrobeats · Unreleased',          streams: null },
-  { role: 'Unreleased',      artist: 'Est Gee',      song: 'Placement',      detail: 'Trap · Unreleased',               streams: null },
+  { role: 'Unreleased',      artist: 'GloRilla',     song: 'Unreleased Record', detail: 'CMG / Interscope · Unreleased',   streams: null },
+  { role: 'Unreleased',      artist: 'Shenseea',     song: 'Unreleased Record', detail: 'Interscope Records · Unreleased', streams: null },
+  { role: 'Unreleased',      artist: 'Seyi Vibez',   song: 'Unreleased Record', detail: 'Afrobeats · Unreleased',          streams: null },
+  { role: 'Unreleased',      artist: 'Est Gee',      song: 'Unreleased Record', detail: 'Trap · Unreleased',               streams: null },
 ]
+
+const RECEIPTS_DOUBLED = [...RECEIPTS, ...RECEIPTS]
 
 
 export default async function HomePage() {
@@ -120,10 +122,7 @@ export default async function HomePage() {
 
         {/* Ticker */}
         <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-black/80 backdrop-blur-sm overflow-hidden flex items-center">
-          <div
-            className="flex items-center gap-1.5 px-4 shrink-0"
-            style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}
-          >
+          <div className="flex items-center gap-1.5 px-4 shrink-0 border-r border-white/[0.07]">
             <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
             <span
               className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
@@ -134,7 +133,7 @@ export default async function HomePage() {
           </div>
           <div className="relative flex-1 overflow-hidden" aria-hidden="true">
             <div className="ticker-wrap flex items-center whitespace-nowrap pl-5" style={{ animationDuration: '28s' }}>
-              {[...RECEIPTS, ...RECEIPTS].map(({ artist, detail }, i) => (
+              {RECEIPTS_DOUBLED.map(({ artist, detail }, i) => (
                 <span key={i} className="inline-flex items-center gap-3 mr-8">
                   <span
                     className="font-montserrat text-[10px] font-semibold"
@@ -148,7 +147,7 @@ export default async function HomePage() {
                   >
                     {detail}
                   </span>
-                  <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+                  <span className="text-[8px] text-white/[0.15]">·</span>
                 </span>
               ))}
             </div>
@@ -187,8 +186,7 @@ export default async function HomePage() {
               return (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
-                className="group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full"
-                style={{ boxShadow: isFeatured ? 'inset 0 0 0 1px rgba(255,255,255,0.25)' : 'inset 0 0 0 1px rgba(255,255,255,0.07)' }}
+                className={`group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full ring-1 ring-inset ${isFeatured ? 'ring-white/25' : 'ring-white/[0.07]'}`}
               >
                 {/* Top row: badge + streams */}
                 <div className="flex items-start justify-between gap-3">
@@ -237,13 +235,13 @@ export default async function HomePage() {
         />
         <ScrollReveal>
           <p className="relative text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-5">
-            Don&apos;t Sleep
+            Available Now
           </p>
           <h2
             className="relative font-display leading-none mb-6 text-foreground"
             style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
           >
-            Your Next Hit<br />Starts Here.
+            The Beat Is Ready.
           </h2>
 
           <Link

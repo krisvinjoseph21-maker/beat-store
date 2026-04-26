@@ -1,6 +1,6 @@
 'use client'
 
-import { X, ShoppingBag } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useCartStore, LicenseType } from '@/lib/store'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function CartDrawer({ open, onClose }: Props) {
-  const { items, removeBeat, clearCart, total, licenseType } = useCartStore()
+  const { items, removeBeat, clearCart, total } = useCartStore()
   const { currency } = useLocaleStore()
   const t = useT()
   const [loading, setLoading] = useState(false)
@@ -75,10 +75,10 @@ export default function CartDrawer({ open, onClose }: Props) {
     }
     if (!wasOpen || open) return
     // Cart just closed — fire abandonment if items remain and checkout wasn't started
-    const { items: currentItems, licenseType: currentLicense, total: currentTotal } = useCartStore.getState()
+    const { items: currentItems, total: currentTotal } = useCartStore.getState()
     if (currentItems.length > 0 && !checkoutInitiatedRef.current) {
       trackCartAbandonment(
-        currentItems.map((i) => ({ id: i.beat.id, name: i.beat.title, category: currentLicense, price: PRICES[currentLicense][1] })),
+        currentItems.map((i) => ({ id: i.beat.id, name: i.beat.title, category: i.licenseType ?? 'standard', price: PRICES[i.licenseType ?? 'standard'][1] })),
         currentTotal()
       )
     }
@@ -102,7 +102,7 @@ export default function CartDrawer({ open, onClose }: Props) {
     setCheckoutError('')
     checkoutInitiatedRef.current = true
     trackBeginCheckout(
-      items.map((i) => ({ id: i.beat.id, name: i.beat.title, category: licenseType, price: PRICES[licenseType][1] })),
+      items.map((i) => ({ id: i.beat.id, name: i.beat.title, category: i.licenseType ?? 'standard', price: PRICES[i.licenseType ?? 'standard'][1] })),
       total()
     )
     const controller = new AbortController()
@@ -112,8 +112,7 @@ export default function CartDrawer({ open, onClose }: Props) {
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          beatIds: items.map((i) => i.beat.id),
-          licenseType,
+          items: items.map((i) => ({ beatId: i.beat.id, licenseType: i.licenseType ?? 'standard' })),
         }),
       })
       const data = await res.json()
@@ -148,18 +147,14 @@ export default function CartDrawer({ open, onClose }: Props) {
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/[0.04] border border-white/[0.06]">
-              <ShoppingBag size={22} className="text-muted-low" aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-[13px] font-medium text-foreground mb-1">{t.cart.empty}</p>
-              <p className="text-[12px] text-muted-low leading-relaxed">{t.cart.emptyDesc}</p>
-            </div>
+          <div className="flex flex-1 flex-col justify-center p-8">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-low mb-5">Nothing here yet</p>
+            <p className="text-[22px] font-bold text-foreground leading-tight mb-2">{t.cart.empty}</p>
+            <p className="text-[12px] text-muted-low leading-relaxed mb-6">{t.cart.emptyDesc}</p>
             <Link
               href="/store"
               onClick={onClose}
-              className="text-[12px] font-semibold text-foreground underline underline-offset-4 hover:text-muted transition-colors"
+              className="text-[12px] font-semibold text-foreground hover:text-muted transition-colors"
             >
               {t.cart.browseBeats}
             </Link>
@@ -167,28 +162,31 @@ export default function CartDrawer({ open, onClose }: Props) {
         ) : (
           <>
             <div className="flex-1 px-5 py-4 space-y-2">
-              {items.map(({ beat }) => (
-                <div
-                  key={beat.id}
-                  className={`flex items-start justify-between gap-3 rounded-sm border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
-                    removingId === beat.id ? 'animate-item-fade-out' : ''
-                  }`}
-                  onAnimationEnd={() => handleRemoveAnimationEnd(beat.id)}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[14px] font-bold text-foreground truncate">{beat.title}</p>
-                    <p className="text-[10px] font-bold text-accent uppercase mt-1">{LICENSE_LABELS[licenseType]}</p>
-                    <p className="text-[16px] font-bold text-foreground mt-1">{formatPrice(PRICES[licenseType][1], currency)}</p>
-                  </div>
-                  <button
-                    onClick={() => handleRemove(beat.id)}
-                    aria-label={`Remove ${beat.title} from cart`}
-                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] text-muted-low hover:text-foreground transition-colors mt-0.5"
+              {items.map(({ beat, licenseType: itemLicense }) => {
+                const license = itemLicense ?? 'standard'
+                return (
+                  <div
+                    key={beat.id}
+                    className={`flex items-start justify-between gap-3 rounded-sm border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
+                      removingId === beat.id ? 'animate-item-fade-out' : ''
+                    }`}
+                    onAnimationEnd={() => handleRemoveAnimationEnd(beat.id)}
                   >
-                    <X size={14} aria-hidden="true" />
-                  </button>
-                </div>
-              ))}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[14px] font-bold text-foreground truncate">{beat.title}</p>
+                      <p className="text-[10px] font-bold text-accent uppercase mt-1">{LICENSE_LABELS[license]}</p>
+                      <p className="text-[16px] font-bold text-foreground mt-1">{formatPrice(PRICES[license][1], currency)}</p>
+                    </div>
+                    <button
+                      onClick={() => handleRemove(beat.id)}
+                      aria-label={`Remove ${beat.title} from cart`}
+                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] text-muted-low hover:text-foreground transition-colors mt-0.5"
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                )
+              })}
             </div>
 
             <div className="border-t border-white/[0.06] px-5 py-5 space-y-3">

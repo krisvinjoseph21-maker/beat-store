@@ -286,9 +286,9 @@ export default function LicensingPage() {
 
     </div>
       <CtaBanner
-        label="Get Started"
-        heading="Ready to License?"
-        subtext="Pick a beat, choose your license, and download instantly — no waiting."
+        label="Instant Download"
+        heading="Find the Beat."
+        subtext="Pick a beat, pick your license, and download instantly — no waiting, no back-and-forth."
       />
     </>
   )

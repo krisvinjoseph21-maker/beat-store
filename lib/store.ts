@@ -21,6 +21,7 @@ export interface Beat {
 
 export interface CartItem {
   beat: Beat
+  licenseType: LicenseType
 }
 
 export type LicenseType = 'standard' | 'premium' | 'unlimited'
@@ -31,7 +32,7 @@ interface CartStore {
   licenseType: LicenseType
   quantityTier: QuantityTier
   cartOpen: boolean
-  addBeat: (beat: Beat) => void
+  addBeat: (beat: Beat, licenseType: LicenseType) => void
   removeBeat: (beatId: string) => void
   clearCart: () => void
   setLicenseType: (type: LicenseType) => void
@@ -56,10 +57,10 @@ export const useCartStore = create<CartStore>()(
       quantityTier: 1,
       cartOpen: false,
 
-      addBeat: (beat) => {
+      addBeat: (beat, licenseType) => {
         const { items } = get()
         if (items.find((i) => i.beat.id === beat.id)) return
-        set({ items: [...items, { beat }] })
+        set({ items: [...items, { beat, licenseType }] })
       },
 
       removeBeat: (beatId) => {
@@ -75,8 +76,8 @@ export const useCartStore = create<CartStore>()(
       isInCart: (beatId) => !!get().items.find((i) => i.beat.id === beatId),
 
       total: () => {
-        const { items, licenseType } = get()
-        return PRICES[licenseType][1] * items.length
+        const { items } = get()
+        return items.reduce((sum, i) => sum + PRICES[i.licenseType ?? 'standard'][1], 0)
       },
 
       openCart: () => set({ cartOpen: true }),

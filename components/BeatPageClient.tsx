@@ -219,7 +219,7 @@ function BeatWaveform({
 
 export default function BeatPageClient({ beat }: { beat: Beat }) {
   const { currentBeat, isPlaying, setCurrentBeat, togglePlay, setPlaying } = usePlayerStore()
-  const { addBeat, isInCart, setLicenseType } = useCartStore()
+  const { addBeat, isInCart } = useCartStore()
   const [selectedTier, setSelectedTier] = useState<TierId>('standard')
   const [compareOpen, setCompareOpen] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -268,13 +268,12 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
 
   function handleSelectTier(id: TierId) {
     setSelectedTier(id)
-    if (id !== 'exclusive') setLicenseType(id)
   }
 
   function handleAddToCart() {
     if (inCart || selectedTier === 'exclusive') return
     const licenseId = selectedTier as LicenseType
-    addBeat(beat)
+    addBeat(beat, licenseId)
     trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES[licenseId][1] })
   }
 

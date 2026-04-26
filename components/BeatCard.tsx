@@ -45,8 +45,8 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
   ]
   // Granular cart selector: only re-renders when this beat's cart status changes
   const isInCartRaw = useCartStore((s) => s.items.some((i) => i.beat.id === beat.id))
-  const { addBeat, setLicenseType, openCart } = useCartStore(
-    useShallow((s) => ({ addBeat: s.addBeat, setLicenseType: s.setLicenseType, openCart: s.openCart }))
+  const { addBeat, openCart } = useCartStore(
+    useShallow((s) => ({ addBeat: s.addBeat, openCart: s.openCart }))
   )
   // Granular favorites selector: only re-renders when this beat's favorite status changes
   const isFavoritedRaw = useFavoritesStore((s) => s.ids.includes(beat.id))
@@ -92,8 +92,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation()
-    setLicenseType('standard')
-    addBeat(beat)
+    addBeat(beat, 'standard')
     openCart()
     trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES.standard[1] })
   }
@@ -106,8 +105,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
   function handleSelectLicense(e: React.MouseEvent, id: LicenseType) {
     e.stopPropagation()
-    setLicenseType(id)
-    addBeat(beat)
+    addBeat(beat, id)
     setLicenseOpen(false)
     openCart()
     trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES[id][1] })
@@ -247,8 +245,8 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
                 <button
                   onClick={(e) => { e.stopPropagation(); openCart() }}
                   aria-label={`${beat.title} — already in cart, click to view cart`}
-                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-80"
-                  style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--foreground)', fontSize: '12px', fontWeight: 600 }}
+                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-80 bg-white/[0.1]"
+                  style={{ color: 'var(--foreground)', fontSize: '12px', fontWeight: 600 }}
                 >
                   <Check
                     size={11}

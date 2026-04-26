@@ -20,6 +20,8 @@ const PLACEMENT_CREDITS = [
   { artist: 'Est Gee',      detail: 'Trap' },
 ]
 
+const PLACEMENT_CREDITS_DOUBLED = [...PLACEMENT_CREDITS, ...PLACEMENT_CREDITS]
+
 const BPM_RANGES = [
   { label: 'All BPM', min: 0, max: Infinity },
   { label: '70–90', min: 70, max: 90 },
@@ -167,14 +169,11 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
           {/* Placement credit strip */}
           <div
-            className="mb-6 flex items-center gap-0 overflow-hidden"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)', height: '30px' }}
+            className="mb-6 flex items-center gap-0 overflow-hidden border-y border-white/[0.07]"
+            style={{ height: '30px' }}
             aria-label="Verified artist placements"
           >
-            <div
-              className="flex items-center gap-1.5 pr-4 shrink-0"
-              style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}
-            >
+            <div className="flex items-center gap-1.5 pr-4 shrink-0 border-r border-white/[0.07]">
               <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
               <span
                 className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
@@ -185,7 +184,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             </div>
             <div className="relative flex-1 overflow-hidden" aria-hidden="true">
               <div className="ticker-wrap flex items-center whitespace-nowrap pl-5" style={{ animationDuration: '28s' }}>
-                {[...PLACEMENT_CREDITS, ...PLACEMENT_CREDITS].map(({ artist, detail }, i) => (
+                {PLACEMENT_CREDITS_DOUBLED.map(({ artist, detail }, i) => (
                   <span key={i} className="inline-flex items-center gap-3 mr-8">
                     <span
                       className="font-montserrat text-[10px] font-semibold"
@@ -199,7 +198,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     >
                       {detail}
                     </span>
-                    <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+                    <span className="text-[8px] text-white/[0.15]">·</span>
                   </span>
                 ))}
               </div>
@@ -219,7 +218,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
               style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)', width: 'clamp(180px, 22vw, 280px)' }}
             />
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
+            <div className="relative min-w-0 flex-1">
+              <div role="group" aria-label="Filter by genre" className="flex items-center gap-2 overflow-x-auto pb-0.5">
               {categories.map((c) => {
                 const active = category === c
                 return (
@@ -238,6 +238,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                   </button>
                 )
               })}
+              </div>
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-[#0a0a0a] to-transparent" aria-hidden="true" />
             </div>
           </div>
         </div>

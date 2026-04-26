@@ -286,9 +286,9 @@ export default function Navbar() {
             if (link.children) {
               return (
                 <div key={link.href} className="animate-menu-item-in" style={{ animationDelay: `${idx * 55}ms` }}>
-                  <p className="py-3 text-[11px] font-semibold uppercase text-muted-low border-b border-white/[0.05]" style={{ letterSpacing: '0.15em' }}>
+                  <span className="block py-3 text-[11px] font-semibold uppercase text-muted-low border-b border-white/[0.05]" style={{ letterSpacing: '0.15em' }}>
                     {NAV_LABEL_MAP[link.href] ?? link.label}
-                  </p>
+                  </span>
                   {link.children.map((child, cIdx) => (
                     <Link
                       key={child.href}
