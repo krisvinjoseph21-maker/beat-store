@@ -105,7 +105,7 @@ export default async function BeatPage(
   }
 
   return (
-    <>
+    <div className="flex justify-center w-full">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -116,6 +116,6 @@ export default async function BeatPage(
         }}
       />
       <BeatPageClient beat={beat} />
-    </>
+    </div>
   )
 }

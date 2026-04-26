@@ -279,7 +279,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-8">
+    <div className="w-full max-w-3xl px-4 py-8">
       <Link
         href="/store"
         className="mb-6 inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors"
