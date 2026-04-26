@@ -101,7 +101,6 @@ export default async function BeatPage(
     ...data,
     file_url: null,
     tags: data.tags ?? [],
-    cover_url: null,
     stems_path: null,
   }
 

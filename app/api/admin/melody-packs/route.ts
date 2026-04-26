@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       .from('melody_packs')
       .insert({
         title,
-        vendor: typeof body.vendor === 'string' ? body.vendor.trim().slice(0, 100) : 'PRODBATTS',
+        vendor: typeof body.vendor === 'string' ? body.vendor.trim().slice(0, 100) : 'PRODKJBEATS',
         description: typeof body.description === 'string' ? body.description.trim().slice(0, 1000) : '',
         price,
         compare_at_price,
@@ -103,7 +103,7 @@ export async function PATCH(req: NextRequest) {
       updates.title = body.title.trim().slice(0, 200)
     }
     if ('vendor' in body) {
-      updates.vendor = typeof body.vendor === 'string' ? body.vendor.trim().slice(0, 100) : 'PRODBATTS'
+      updates.vendor = typeof body.vendor === 'string' ? body.vendor.trim().slice(0, 100) : 'PRODKJBEATS'
     }
     if ('description' in body) {
       updates.description = typeof body.description === 'string' ? body.description.trim().slice(0, 1000) : ''
