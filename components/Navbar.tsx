@@ -43,6 +43,9 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
     '/services/custom-beats': t.nav.customBeats,
     '/services/mixing-mastering': t.nav.mixingMastering,
     '/sample-packs': t.nav.samplePacks,
+    '/sample-packs/melody-packs': t.nav.melodyPacks,
+    '/sample-packs/weekly-loop-subscription': t.nav.loopSubscription,
+    '/sample-packs/drum-kits': t.nav.drumKits,
   }), [t])
 
   useEffect(() => {
@@ -66,6 +69,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
     <div ref={ref} className="relative">
       <button
         ref={triggerRef}
+        id={`nav-trigger${link.href.replaceAll('/', '-')}`}
         onClick={() => setOpen(o => !o)}
         className={`flex items-center gap-0.5 text-[12px] transition-colors duration-150 ${active ? 'text-foreground font-medium' : 'font-normal text-muted hover:text-foreground'}`}
         aria-haspopup="menu"
@@ -85,6 +89,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
         <div
           ref={menuRef}
           role="menu"
+          aria-labelledby={`nav-trigger${link.href.replaceAll('/', '-')}`}
           className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-44 glass border border-white/[0.08] py-1"
         >
           {link.children.map((child) => (
@@ -119,6 +124,9 @@ export default function Navbar() {
     '/services/custom-beats': t.nav.customBeats,
     '/services/mixing-mastering': t.nav.mixingMastering,
     '/sample-packs': t.nav.samplePacks,
+    '/sample-packs/melody-packs': t.nav.melodyPacks,
+    '/sample-packs/weekly-loop-subscription': t.nav.loopSubscription,
+    '/sample-packs/drum-kits': t.nav.drumKits,
     '/licensing': t.nav.licensing,
     '/about': t.nav.contact,
   }), [t])

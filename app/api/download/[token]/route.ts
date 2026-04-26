@@ -8,7 +8,16 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 const SIGNED_URL_TTL = 300 // 5 minutes — enough time to trigger a browser download
 
 function escapeHtml(str: string): string {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
+function safeFilename(title: string): string {
+  return title.slice(0, 50).replace(/[^a-z0-9 _-]/gi, '_')
 }
 
 /**
@@ -114,7 +123,7 @@ export async function GET(
       const { data: signedData, error: signedError } = await supabase.storage
         .from('beats')
         .createSignedUrl(path, SIGNED_URL_TTL, {
-          download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_${beat.bpm}BPM_@prodkjbeats.mp3`,
+          download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@prodkjbeats.mp3`,
         })
 
       if (!signedError && signedData?.signedUrl) {
@@ -125,7 +134,7 @@ export async function GET(
         const { data: stemsData, error: stemsError } = await supabase.storage
           .from('beats')
           .createSignedUrl(beat.stems_path, SIGNED_URL_TTL, {
-            download: `${beat.title.replace(/[^a-z0-9 _-]/gi, '_')}_stems.zip`,
+            download: `${safeFilename(beat.title)}_stems.zip`,
           })
         if (!stemsError && stemsData?.signedUrl) {
           signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: stemsData.signedUrl, isStems: true })
@@ -146,7 +155,7 @@ export async function GET(
       const { data: signedData, error: signedError } = await supabase.storage
         .from('beats')
         .createSignedUrl(pack.file_path, SIGNED_URL_TTL, {
-          download: `${pack.title.replace(/[^a-z0-9 _-]/gi, '_')}_@prodkjbeats.zip`,
+          download: `${safeFilename(pack.title)}_@prodkjbeats.zip`,
         })
       if (!signedError && signedData?.signedUrl) {
         signed.push({ title: pack.title, signedUrl: signedData.signedUrl })
@@ -202,7 +211,11 @@ export async function GET(
 </html>`,
     {
       status: 200,
-      headers: { 'Content-Type': 'text/html' },
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'",
+        'X-Content-Type-Options': 'nosniff',
+      },
     }
   )
 }

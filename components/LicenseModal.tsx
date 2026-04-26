@@ -21,29 +21,6 @@ interface Props {
   onCheckout: (discountCode: string, useBogo?: boolean) => void
 }
 
-const STANDARD_FEATURES = [
-  '500k streams',
-  '25,000 paid downloads',
-  'Non-exclusive',
-  'MP3 + WAV delivery',
-  'Credit required',
-]
-
-const PREMIUM_FEATURES = [
-  '1M streams',
-  '75,000 paid downloads',
-  'Non-exclusive',
-  'MP3 + WAV delivery',
-  'Credit required',
-]
-
-const UNLIMITED_FEATURES = [
-  'Unlimited streams',
-  'Unlimited paid downloads',
-  'Non-exclusive',
-  'MP3 + WAV + Track stems',
-  'Credit required',
-]
 
 export default function LicenseModal({ open, onClose, onCheckout }: Props) {
   const { licenseType, quantityTier, setLicenseType, setQuantityTier, items } =
@@ -123,7 +100,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
 
   const basePrice = bogoSelected ? PRICES[licenseType][1] : PRICES[licenseType][quantityTier]
   const finalPrice = displayPrice(basePrice)
-  const features = licenseType === 'standard' ? STANDARD_FEATURES : licenseType === 'premium' ? PREMIUM_FEATURES : UNLIMITED_FEATURES
+  const features = licenseType === 'standard' ? t.license.standardFeatures : licenseType === 'premium' ? t.license.premiumFeatures : t.license.unlimitedFeatures
 
   async function handleApplyCode() {
     const trimmed = codeInput.trim()
@@ -142,12 +119,12 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         setAppliedCode(trimmed.toUpperCase())
         setCodeError('')
       } else {
-        setCodeError('Invalid code.')
+        setCodeError(t.license.invalidCode)
         setAppliedCode('')
         setDiscountPct(null)
       }
     } catch {
-      setCodeError('Could not validate code. Try again.')
+      setCodeError(t.license.codeError)
     } finally {
       setCodeLoading(false)
     }
@@ -225,7 +202,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         {/* Cart summary */}
         {items.length > 0 && (
           <div className="mb-4 rounded-sm bg-white/5 p-3">
-            <p className="text-xs text-muted-mid mb-2 font-medium">IN CART</p>
+            <p className="text-xs text-muted-mid mb-2 font-medium">{t.license.inCart}</p>
             {items.map(({ beat }) => (
               <p key={beat.id} className="text-sm text-foreground">
                 {beat.title}
@@ -247,7 +224,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
                   : 'text-muted-mid hover:text-white'
               }`}
             >
-              {type === 'standard' ? 'Basic' : type === 'premium' ? 'Premium' : 'Unlimited'}
+              {type === 'standard' ? t.license.licenseBasic : type === 'premium' ? t.license.licensePremium : t.license.licenseUnlimited}
             </button>
           ))}
         </div>

@@ -22,7 +22,12 @@
       "Bash(cat tailwind.config.js)",
       "Bash(grep -E \"\\\\.ts$\")",
       "Bash(xargs wc *)",
-      "Bash(NEXT_TURBOPACK=0 npx next build)"
+      "Bash(NEXT_TURBOPACK=0 npx next build)",
+      "Bash(TURBOPACK=0 npm run build)",
+      "Bash(rm -rf .next)",
+      "Bash(npm install *)",
+      "Bash(git stash *)",
+      "Bash(npm view *)"
     ]
   }
 }

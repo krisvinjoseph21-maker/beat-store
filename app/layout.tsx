@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from 'next'
 import { Bebas_Neue, Inter, Montserrat } from 'next/font/google'
-import dynamic from 'next/dynamic'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import BottomPlayer from '@/components/BottomPlayer'
 import AnalyticsScripts from '@/components/AnalyticsScripts'
-
-const EmailCaptureModal = dynamic(() => import('@/components/EmailCaptureModal'), { ssr: false })
+import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -77,7 +75,7 @@ export default function RootLayout({
         <main id="main-content" className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
         <Footer />
         <BottomPlayer />
-        <EmailCaptureModal />
+        <EmailCaptureModalClient />
         <AnalyticsScripts />
       </body>
     </html>

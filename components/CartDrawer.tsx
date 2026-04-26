@@ -33,6 +33,7 @@ export default function CartDrawer({ open, onClose }: Props) {
   const router = useRouter()
   const drawerRef = useRef<HTMLDivElement>(null)
   const checkoutInitiatedRef = useRef(false)
+  const checkoutInProgressRef = useRef(false)
   const prevOpenRef = useRef(false)
 
   // Focus trap: keep keyboard focus inside drawer while open
@@ -97,6 +98,8 @@ export default function CartDrawer({ open, onClose }: Props) {
   }
 
   async function handleCheckout(discountCode: string, useBogo?: boolean) {
+    if (checkoutInProgressRef.current) return
+    checkoutInProgressRef.current = true
     setLoading(true)
     setCheckoutError('')
     checkoutInitiatedRef.current = true
@@ -104,10 +107,12 @@ export default function CartDrawer({ open, onClose }: Props) {
       items.map((i) => ({ id: i.beat.id, name: i.beat.title, category: licenseType, price: PRICES[licenseType][1] })),
       total()
     )
+    const controller = new AbortController()
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           beatIds: items.map((i) => i.beat.id),
           licenseType,
@@ -122,9 +127,11 @@ export default function CartDrawer({ open, onClose }: Props) {
       } else {
         setCheckoutError('Checkout failed. Please try again.')
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return
       setCheckoutError('Network error. Please check your connection and try again.')
     } finally {
+      checkoutInProgressRef.current = false
       setLoading(false)
     }
   }
@@ -137,8 +144,8 @@ export default function CartDrawer({ open, onClose }: Props) {
       <div ref={drawerRef} className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <div>
-            <h2 className="text-xl font-bold text-foreground uppercase tracking-tight">Your Cart</h2>
-            <p className="text-xs text-muted mt-0.5">{items.length} item{items.length !== 1 ? 's' : ''}</p>
+            <h2 className="text-xl font-bold text-foreground uppercase tracking-tight">{t.cart.cartTitle}</h2>
+            <p className="text-xs text-muted mt-0.5">{items.length} {items.length !== 1 ? t.cart.itemPlural : t.cart.itemSingle}</p>
           </div>
           <button onClick={onClose} aria-label="Close cart" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
             <X size={16} aria-hidden="true" />
@@ -196,29 +203,29 @@ export default function CartDrawer({ open, onClose }: Props) {
                 </p>
               )}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted">Total</span>
+                <span className="text-sm text-muted">{t.cart.total}</span>
                 <span className="text-2xl font-bold text-foreground">{formatPrice(total(), currency)}</span>
               </div>
               <button
                 onClick={() => setLicenseOpen(true)}
                 disabled={loading}
-                className="w-full rounded bg-red-600 py-4 text-[15px] font-bold text-white uppercase hover:bg-red-700 transition-[background-color,transform,opacity] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded bg-white py-4 text-[15px] font-bold text-black uppercase hover:bg-white-hover transition-[background-color,transform,opacity] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <svg className="animate-spin h-3.5 w-3.5 text-black" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                     </svg>
-                    Redirecting…
+                    {t.cart.redirecting}
                   </>
-                ) : 'Checkout →'}
+                ) : t.cart.checkoutArrow}
               </button>
               <button
                 onClick={clearCart}
                 className="w-full text-center text-xs text-muted-low hover:text-muted transition-colors py-1"
               >
-                Clear cart
+                {t.cart.clearCart}
               </button>
             </div>
           </>

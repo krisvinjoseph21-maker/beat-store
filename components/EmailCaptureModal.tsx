@@ -148,27 +148,27 @@ export default function EmailCaptureModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="email-modal-title"
-        className="relative w-full max-w-md rounded-sm bg-white p-7 animate-fade-in shadow-2xl"
+        className="relative w-full max-w-md rounded-sm border border-white/[0.08] bg-surface-1 p-7 animate-fade-in"
       >
         {/* Close button */}
         <button
           onClick={dismiss}
           aria-label="Close"
-          className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-black/40 hover:bg-black/8 hover:text-black transition-colors"
+          className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-muted-low hover:bg-white/[0.08] hover:text-foreground transition-colors"
         >
           <X size={18} aria-hidden="true" />
         </button>
 
         {submitted ? (
           <div className="flex flex-col items-center gap-4 py-4 text-center">
-            <div className="animate-success-pop flex h-12 w-12 items-center justify-center rounded-full bg-black">
-              <Check size={20} className="text-white" aria-hidden="true" />
+            <div className="animate-success-pop flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+              <Check size={20} className="text-accent" aria-hidden="true" />
             </div>
-            <p className="text-lg font-bold text-black">You&apos;re on the list.</p>
-            <p className="text-sm text-black/50">Check your inbox — we&apos;ll be in touch.</p>
+            <p className="text-lg font-bold text-foreground">You&apos;re on the list.</p>
+            <p className="text-sm text-muted">Check your inbox — we&apos;ll be in touch.</p>
             <button
               onClick={dismiss}
-              className="mt-2 rounded-sm bg-black px-6 py-3 text-sm font-bold text-white hover:bg-black/80 transition-colors"
+              className="mt-2 rounded-sm bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors"
             >
               Continue
             </button>
@@ -176,22 +176,22 @@ export default function EmailCaptureModal() {
         ) : (
           <>
             {/* Eyebrow */}
-            <p className="mb-1 text-[11px] font-semibold uppercase text-black/40">
+            <p className="mb-1 text-[11px] font-semibold uppercase text-muted-low">
               Exclusive Access
             </p>
 
-            <h2 id="email-modal-title" className="mb-1 font-[family-name:var(--font-bebas)] text-3xl text-black">
+            <h2 id="email-modal-title" className="mb-1 font-[family-name:var(--font-bebas)] text-3xl text-foreground">
               Get Free Beats &amp; Exclusive Deals
             </h2>
 
-            <p className="mb-6 text-sm text-black/50">
+            <p className="mb-6 text-sm text-muted">
               Join the list and be first to hear new drops, get free samples, and unlock subscriber-only discounts.
             </p>
 
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {/* Full Name */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="popup-name" className="text-xs font-semibold text-black/60">
+                <label htmlFor="popup-name" className="text-xs font-semibold text-muted-low">
                   Full Name
                 </label>
                 <input
@@ -200,13 +200,13 @@ export default function EmailCaptureModal() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
-                  className="rounded-sm border border-black/15 bg-black/4 px-4 py-3 text-sm text-black placeholder-black/30 outline-none focus:border-black/40 transition-colors"
+                  className="rounded-sm border border-line-input bg-surface-2 px-4 py-3 text-sm text-foreground placeholder:text-muted-low outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
               {/* Email Address */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="popup-email" className="text-xs font-semibold text-black/60">
+                <label htmlFor="popup-email" className="text-xs font-semibold text-muted-low">
                   Email Address <span aria-hidden="true">*</span>
                 </label>
                 <input
@@ -219,8 +219,8 @@ export default function EmailCaptureModal() {
                   aria-required="true"
                   aria-describedby={errors.email ? 'popup-email-error' : undefined}
                   aria-invalid={!!errors.email}
-                  className={`rounded-sm border px-4 py-3 text-sm text-black placeholder-black/30 outline-none transition-colors ${
-                    errors.email ? 'border-danger bg-danger/5' : 'border-black/15 bg-black/4 focus:border-black/40'
+                  className={`rounded-sm border px-4 py-3 text-sm text-foreground placeholder:text-muted-low outline-none transition-colors ${
+                    errors.email ? 'border-danger bg-danger/[0.08]' : 'border-line-input bg-surface-2 focus:border-white/30'
                   }`}
                 />
                 {errors.email && (
@@ -239,9 +239,9 @@ export default function EmailCaptureModal() {
                     onChange={(e) => { setConsent(e.target.checked); setErrors((p) => ({ ...p, consent: undefined })) }}
                     aria-describedby={errors.consent ? 'popup-consent-error' : undefined}
                     aria-invalid={!!errors.consent}
-                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-black"
+                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--accent)]"
                   />
-                  <span className="text-xs text-black/50 leading-relaxed">
+                  <span className="text-xs text-muted leading-relaxed">
                     I agree to receive email updates, free beats, and promotional offers from PRODKJBEATS. I can unsubscribe at any time.
                   </span>
                 </label>
@@ -262,7 +262,7 @@ export default function EmailCaptureModal() {
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-sm bg-black py-4 text-sm font-bold text-white hover:bg-black/80 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="rounded-sm bg-white py-4 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -275,7 +275,7 @@ export default function EmailCaptureModal() {
                 ) : 'Subscribe Now'}
               </button>
 
-              <p className="text-center text-[10px] text-black/35">
+              <p className="text-center text-[10px] text-muted-low">
                 No spam. Unsubscribe any time.
               </p>
             </form>

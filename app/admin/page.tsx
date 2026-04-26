@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import AdminClient from '@/components/AdminClient'
+import dynamic from 'next/dynamic'
+
+const AdminClient = dynamic(() => import('@/components/AdminClient'))
 
 export const metadata: Metadata = {
   title: 'Admin — PRODKJBEATS',

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { User } from 'lucide-react'
 import { createBrowserClient } from '@/lib/supabase'
-import type { User as SupabaseUser } from '@supabase/supabase-js'
+import type { AuthUser as SupabaseUser } from '@supabase/supabase-js'
 
 export default function NavAuthButton() {
   const [user, setUser] = useState<SupabaseUser | null>(null)

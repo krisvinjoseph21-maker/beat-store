@@ -183,17 +183,18 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
           </div>
 
           {/* ── License picker ──────────────────────────────────── */}
-          <p className="mb-2.5 text-[10px] font-normal uppercase tracking-[0.12em] text-muted-low">
+          <p id="license-picker-label" className="mb-2.5 text-[10px] font-normal uppercase tracking-[0.12em] text-muted-low">
             Select License
           </p>
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          <div role="radiogroup" aria-labelledby="license-picker-label" className="grid grid-cols-2 gap-2 mb-3">
             {TIERS.map((tier) => {
               const isSelected = selectedTier === tier.id
               return (
                 <button
                   key={tier.id}
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() => handleSelectTier(tier.id)}
-                  aria-pressed={isSelected}
                   className={`relative text-left rounded-sm border p-3 transition-[border-color,background-color] ${
                     isSelected
                       ? 'border-white/40 bg-white/[0.07]'
@@ -249,6 +250,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
                         <th
                           key={t.id}
                           scope="col"
+                          aria-label={t.name}
                           className={`py-2 px-2 text-center text-[9px] font-semibold uppercase tracking-[0.08em] w-[19%] ${
                             selectedTier === t.id ? 'text-foreground' : 'text-muted-low'
                           }`}

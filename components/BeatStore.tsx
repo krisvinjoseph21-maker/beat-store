@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
@@ -78,6 +78,11 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const searchParams = useSearchParams()
   const MAX_QUERY_LEN = 100
   const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
+  const [debouncedSearch, setDebouncedSearch] = useState(search)
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(t)
+  }, [search])
   const [modalOpen, setModalOpen] = useState(false)
   const { openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
@@ -89,7 +94,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
   useEffect(() => {
     setShowAll(false)
-  }, [category, bpmRange, sortBy, search, favoritesOnly])
+  }, [category, bpmRange, sortBy, debouncedSearch, favoritesOnly])
 
   // Deduplicate genres case-insensitively so 'trap' and 'Trap' merge into one entry.
   const categories = useMemo(() => {
@@ -103,7 +108,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
   const filtered = useMemo(() => {
     const bpmOpt = BPM_RANGES.find((r) => r.label === bpmRange) ?? BPM_RANGES[0]
-    const q = search.toLowerCase()
+    const q = debouncedSearch.toLowerCase()
 
     let results = initialBeats.filter((b) => {
       if (favoritesOnly && !favoriteIds.includes(b.id)) return false
@@ -126,7 +131,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     }
 
     return results
-  }, [initialBeats, category, bpmRange, sortBy, search, favoritesOnly, favoriteIds])
+  }, [initialBeats, category, bpmRange, sortBy, debouncedSearch, favoritesOnly, favoriteIds])
+
+  const handleBuyClick = useCallback(() => setModalOpen(true), [])
 
   function handleModalCheckout() {
     setModalOpen(false)
@@ -145,17 +152,17 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       >
         <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pt-12 pb-8">
           <p
-            className="mb-3 text-[11px] font-semibold uppercase"
-            style={{ letterSpacing: '0.15em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
+            className="font-montserrat mb-3 text-[11px] font-semibold uppercase"
+            style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}
           >
-            Full Catalog
+            {t.store.fullCatalog}
           </p>
 
           <h1
             className="font-display uppercase leading-none mb-8"
             style={{ fontSize: 'clamp(52px, 9vw, 112px)', color: 'var(--foreground)' }}
           >
-            All Beats.
+            {t.store.allBeatsHeading}
           </h1>
 
           {/* Placement credit strip */}
@@ -170,10 +177,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             >
               <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
               <span
-                className="text-[9px] font-bold uppercase whitespace-nowrap"
-                style={{ letterSpacing: '0.18em', color: 'var(--accent)', fontFamily: 'var(--font-montserrat)' }}
+                className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
+                style={{ letterSpacing: '0.18em', color: 'var(--accent)' }}
               >
-                Verified Credits
+                {t.store.verifiedCredits}
               </span>
             </div>
             <div className="relative flex-1 overflow-hidden" aria-hidden="true">
@@ -181,8 +188,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 {[...PLACEMENT_CREDITS, ...PLACEMENT_CREDITS].map(({ artist, detail }, i) => (
                   <span key={i} className="inline-flex items-center gap-3 mr-8">
                     <span
-                      className="text-[10px] font-semibold"
-                      style={{ color: 'var(--foreground)', fontFamily: 'var(--font-montserrat)' }}
+                      className="font-montserrat text-[10px] font-semibold"
+                      style={{ color: 'var(--foreground)' }}
                     >
                       {artist}
                     </span>
@@ -203,8 +210,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"
-              aria-label="Search beats"
-              placeholder="Search beats, artists, moods..."
+              aria-label={t.store.searchPlaceholder}
+              placeholder={t.store.searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
               maxLength={MAX_QUERY_LEN}
@@ -220,15 +227,14 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={c}
                     onClick={() => setCategory(c)}
                     aria-pressed={active}
-                    className="h-11 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
+                    className="font-montserrat h-11 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
                     style={{
-                      fontFamily: 'var(--font-montserrat)',
                       background: active ? 'var(--accent)' : 'rgba(0,0,0,0.5)',
                       borderColor: active ? 'var(--accent)' : 'rgba(255,255,255,0.18)',
                       color: 'var(--foreground)',
                     }}
                   >
-                    {c === 'All Genres' ? 'ALL' : c.toUpperCase()}
+                    {c === 'All Genres' ? t.store.filterAll.toUpperCase() : c.toUpperCase()}
                   </button>
                 )
               })}
@@ -254,11 +260,10 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
         <button
           onClick={() => setFavoritesOnly(!favoritesOnly)}
           aria-pressed={favoritesOnly}
-          className={`flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
+          className={`font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
           style={{
             borderColor: favoritesOnly ? 'var(--accent)' : 'var(--line-input)',
             color: favoritesOnly ? 'var(--accent)' : 'var(--muted-low)',
-            fontFamily: 'var(--font-montserrat)',
           }}
         >
           <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} aria-hidden="true" />
@@ -288,14 +293,14 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 <span className="w-6 flex-shrink-0" />
                 <span className="w-11 flex-shrink-0" />
                 <span
-                  className="flex-1 text-[10px] font-bold uppercase"
-                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)' }}
+                  className="font-montserrat flex-1 text-[10px] font-bold uppercase"
+                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)' }}
                 >
                   {t.store.tableTitle}
                 </span>
                 <span
-                  className="hidden md:block text-[10px] font-bold uppercase text-center"
-                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', fontFamily: 'var(--font-montserrat)', width: '200px' }}
+                  className="font-montserrat hidden md:block text-[10px] font-bold uppercase text-center"
+                  style={{ letterSpacing: '0.18em', color: 'var(--muted-low)', width: '200px' }}
                 >
                   {t.store.tableGenre}
                 </span>
@@ -307,7 +312,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={beat.id}
                     beat={beat}
                     index={i + 1}
-                    onBuyClick={(_beat) => setModalOpen(true)}
+                    onBuyClick={handleBuyClick}
                   />
                 ))}
               </div>

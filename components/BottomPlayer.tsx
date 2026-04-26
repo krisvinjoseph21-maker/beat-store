@@ -63,6 +63,17 @@ export default function BottomPlayer() {
     sharedAudioElement.current = audioRef.current
     return () => { sharedAudioElement.current = null }
   }, [])
+  // Clean up audio on unmount to release media resources
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        audio.src = ''
+        audio.load()
+      }
+    }
+  }, [])
   // Restart the RAF draw loop whenever a beat loads and the loop has gone idle
   useEffect(() => {
     if (currentBeat && playerRafRef.current === 0 && drawRef.current) {
@@ -430,7 +441,7 @@ export default function BottomPlayer() {
                 {currentBeat.title}
               </p>
               {hasError ? (
-                <p className="flex items-center gap-1 text-[11px] leading-tight" style={{ color: '#f87171' }}>
+                <p className="flex items-center gap-1 text-[11px] leading-tight text-danger">
                   <AlertCircle size={10} aria-hidden="true" />
                   Failed to load
                 </p>
@@ -530,7 +541,7 @@ export default function BottomPlayer() {
               step={0.02}
               value={muted ? 0 : volume}
               onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              className="cursor-pointer flex-shrink-0"
+              className="hidden sm:block cursor-pointer flex-shrink-0"
               style={{ width: '50px' }}
               aria-label="Volume"
             />
