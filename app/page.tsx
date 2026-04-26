@@ -54,16 +54,6 @@ const RECEIPTS = [
   { role: 'Unreleased',      artist: 'Est Gee',      song: 'Placement',      detail: 'Trap · Unreleased',               streams: null },
 ]
 
-const TICKER_ITEMS = [
-  'DeeBaby — "Chicago Baby"',
-  'Paris Bryant — "A Crush"',
-  'GloRilla (unreleased)',
-  'Shenseea',
-  'Seyi Vibez',
-  '5+ Placements',
-  'Prod. KJBEATS',
-  'Verified',
-]
 
 export default async function HomePage() {
   const { featured } = await getPageData()
@@ -130,18 +120,38 @@ export default async function HomePage() {
 
         {/* Ticker */}
         <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-black/80 backdrop-blur-sm overflow-hidden flex items-center">
-          <div className="ticker-wrap flex whitespace-nowrap" aria-hidden="true">
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-              <span key={i} className="inline-flex items-center">
-                <span
-                  className="text-[8px] font-medium tracking-[0.22em] uppercase pr-5 text-muted-low"
-                  style={{ fontFamily: 'var(--font-inter)' }}
-                >
-                  {item}
+          <div
+            className="flex items-center gap-1.5 px-4 shrink-0"
+            style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}
+          >
+            <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
+            <span
+              className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
+              style={{ letterSpacing: '0.18em', color: 'var(--accent)' }}
+            >
+              Verified Credits
+            </span>
+          </div>
+          <div className="relative flex-1 overflow-hidden" aria-hidden="true">
+            <div className="ticker-wrap flex items-center whitespace-nowrap pl-5" style={{ animationDuration: '28s' }}>
+              {[...RECEIPTS, ...RECEIPTS].map(({ artist, detail }, i) => (
+                <span key={i} className="inline-flex items-center gap-3 mr-8">
+                  <span
+                    className="font-montserrat text-[10px] font-semibold"
+                    style={{ color: 'var(--foreground)' }}
+                  >
+                    {artist}
+                  </span>
+                  <span
+                    className="text-[9px]"
+                    style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+                  >
+                    {detail}
+                  </span>
+                  <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
                 </span>
-                <span className="text-[8px] pr-5 text-muted-low" aria-hidden="true">/</span>
-              </span>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
