@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import BottomPlayer from '@/components/BottomPlayer'
 import AnalyticsScripts from '@/components/AnalyticsScripts'
 import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
+import HtmlLang from '@/components/HtmlLang'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS' }],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'PRODKJBEATS — Premium Beats',
     description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
     images: ['/android-chrome-512x512.png'],
@@ -71,6 +72,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <HtmlLang />
         <Navbar />
         <main id="main-content" className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
         <Footer />

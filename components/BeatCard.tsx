@@ -242,7 +242,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Price + CTA + icons */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            <div className="shrink-0 w-[116px]">
+            <div className="shrink-0 min-w-[96px] max-w-[148px]">
               {inCart ? (
                 <button
                   onClick={(e) => { e.stopPropagation(); openCart() }}
@@ -308,7 +308,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
       {/* ── License drawer ───────────────────────────────────── */}
       <div className={`license-drawer-grid${licenseOpen ? ' is-open' : ''}`}>
-        <div className="license-drawer-inner">
+        <div className="license-drawer-inner" inert={!licenseOpen}>
           <div className="bg-surface-2 border-b border-line px-4 sm:pl-[72px] sm:pr-10 py-3">
             {/* Column headers — desktop only */}
             <div className="hidden sm:grid grid-cols-4 gap-px mb-px">

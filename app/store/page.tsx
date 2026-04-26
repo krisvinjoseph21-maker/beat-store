@@ -37,7 +37,7 @@ export const metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'Beat Store — PRODKJBEATS',
     description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
   },

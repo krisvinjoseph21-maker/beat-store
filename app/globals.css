@@ -68,6 +68,9 @@
   /* Borders & glows */
   --color-border: rgba(255,255,255,0.1);
   --color-glow-soft: rgba(255,255,255,0.04);
+
+  /* Card */
+  --color-card: #1d1d1f;
 }
 
 * {
@@ -267,6 +270,7 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 /* ── Receipts: heading parallax + scroll-driven card cascade ── */
 @supports (animation-timeline: scroll()) {
   .receipts-heading {
+    will-change: transform;
     animation: receiptsParallax linear both;
     animation-timeline: view(block);
     animation-range: entry 0% cover 60%;

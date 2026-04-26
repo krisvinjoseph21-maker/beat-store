@@ -12,7 +12,7 @@ import { useT } from '@/lib/i18n'
 // Inlined — discount-codes.ts must NOT be imported in client components
 // (it contains the full code list which would be exposed in the JS bundle)
 function applyDiscount(price: number, pct: number): number {
-  return price * (1 - pct / 100)
+  return Math.round(price * (1 - pct / 100) * 100) / 100
 }
 
 interface Props {

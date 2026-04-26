@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'PRODKJBEATS — Premium Beats',
     description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
   },
@@ -55,8 +55,14 @@ const RECEIPTS = [
 ]
 
 const TICKER_ITEMS = [
-  'GloRilla', '"Chicago Baby"', 'DeeBaby', '"A Crush"', 'Paris Bryant',
-  'Shenseea', 'Seyi Vibez', '5+ Placements', 'Prod. KJBEATS', 'Verified',
+  'DeeBaby — "Chicago Baby"',
+  'Paris Bryant — "A Crush"',
+  'GloRilla (unreleased)',
+  'Shenseea',
+  'Seyi Vibez',
+  '5+ Placements',
+  'Prod. KJBEATS',
+  'Verified',
 ]
 
 export default async function HomePage() {
@@ -97,7 +103,7 @@ export default async function HomePage() {
               className="hero-headline font-display leading-[0.88] text-foreground"
               style={{ fontSize: 'clamp(60px, 11vw, 148px)', letterSpacing: '-0.01em' }}
             >
-              BEATS THAT HIT DIFFERENT.
+              PLACEMENT-PROVEN BEATS.
             </h1>
           </HeadlineParallax>
 
@@ -106,7 +112,7 @@ export default async function HomePage() {
             className="hero-sub text-[14px] leading-[1.75] max-w-[480px] mb-8 text-muted"
             style={{ fontFamily: 'var(--font-inter)' }}
           >
-            Verified placements across multiple genres.
+            Placed with GloRilla, DeeBaby, Shenseea, and Seyi Vibez.
           </p>
 
           {/* CTAs */}
@@ -238,7 +244,7 @@ export default async function HomePage() {
             Shop Beats
           </Link>
           <p className="relative mt-5 text-[11px] text-muted-low">
-            From $50 · Instant Download · All Licenses Available
+            From $39.95 · Instant Download · All Licenses Available
           </p>
         </ScrollReveal>
       </section>

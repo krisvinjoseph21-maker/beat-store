@@ -52,7 +52,17 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
     if (!open) return
     menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus()
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') { close(); triggerRef.current?.focus() }
+      if (e.key === 'Escape') { close(); triggerRef.current?.focus(); return }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        const items = Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [])
+        if (!items.length) return
+        const idx = items.indexOf(document.activeElement as HTMLElement)
+        const next = e.key === 'ArrowDown'
+          ? items[(idx + 1) % items.length]
+          : items[(idx - 1 + items.length) % items.length]
+        next?.focus()
+      }
     }
     function onPointerDown(e: PointerEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) close()
@@ -113,6 +123,7 @@ export default function Navbar() {
   const { items, cartOpen, openCart, closeCart } = useCartStore()
   const t = useT()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileOpenRef = useRef(false)
   const [scrolled, setScrolled]     = useState(false)
   const menuTriggerRef = useRef<HTMLButtonElement>(null)
   const [cartAnnouncement, setCartAnnouncement] = useState('')
@@ -136,17 +147,19 @@ export default function Navbar() {
     setCartAnnouncement(`${items.length} item${items.length === 1 ? '' : 's'} in cart`)
   }, [items.length])
 
+  useEffect(() => { mobileOpenRef.current = mobileOpen }, [mobileOpen])
+
   useEffect(() => {
     let lastScrollY = window.scrollY
     function onScroll() {
       const y = window.scrollY
       setScrolled(y > 10)
-      if (mobileOpen && y > lastScrollY + 8) setMobileOpen(false)
+      if (mobileOpenRef.current && y > lastScrollY + 8) setMobileOpen(false)
       lastScrollY = y
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [mobileOpen])
+  }, [])
 
   return (
     <>
@@ -168,7 +181,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex flex-1 items-center justify-center gap-5 lg:gap-7 min-w-0">
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-7 min-w-0">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
 
@@ -194,7 +207,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop actions */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             <LocaleSwitcher />
             <NavAuthButton />
 
@@ -220,7 +233,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile controls */}
-          <div className="flex md:hidden items-center gap-4 ml-auto">
+          <div className="flex lg:hidden items-center gap-4 ml-auto">
             <button
               onClick={() => openCart()}
               aria-label={items.length > 0 ? `${t.nav.cart} — ${items.length} item${items.length === 1 ? '' : 's'}` : t.nav.cart}
@@ -252,7 +265,7 @@ export default function Navbar() {
       {/* Mobile menu backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-[48px] z-[98] md:hidden"
+          className="fixed inset-0 top-[48px] z-[98] lg:hidden"
           aria-hidden="true"
           onClick={() => setMobileOpen(false)}
         />
@@ -262,6 +275,7 @@ export default function Navbar() {
       <nav
         id="mobile-nav-menu"
         aria-label="Mobile navigation"
+        inert={!mobileOpen}
         className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
           mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}

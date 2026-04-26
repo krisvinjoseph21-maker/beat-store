@@ -27,7 +27,9 @@
       "Bash(rm -rf .next)",
       "Bash(npm install *)",
       "Bash(git stash *)",
-      "Bash(npm view *)"
+      "Bash(npm view *)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(awk '{print $9, \"\\(\" $5 \"\\)\"}')"
     ]
   }
 }

@@ -95,6 +95,10 @@ export async function POST(req: NextRequest) {
     return new Response('OK', { status: 200 })
   }
 
+  const VALID_QTY_TIERS = [1, 3, 5]
+  const parsedTier = Number(quantityTier ?? 1)
+  const validatedTier = VALID_QTY_TIERS.includes(parsedTier) ? parsedTier : 1
+
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert({
@@ -103,7 +107,7 @@ export async function POST(req: NextRequest) {
       beat_ids: parsedBeatIds,
       melody_pack_ids: parsedPackIds,
       license_type: licenseType ?? 'standard',
-      quantity_tier: Number(quantityTier ?? 1),
+      quantity_tier: validatedTier,
       total_price: (session.amount_total ?? 0) / 100,
       stripe_session_id: session.id,
       status: 'paid',

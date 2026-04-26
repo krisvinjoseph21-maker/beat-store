@@ -30,5 +30,5 @@ export function getDiscountPct(code: string): number | null {
 }
 
 export function applyDiscount(price: number, pct: number): number {
-  return Math.round(price * (1 - pct / 100))
+  return Math.round(price * (1 - pct / 100) * 100) / 100
 }
