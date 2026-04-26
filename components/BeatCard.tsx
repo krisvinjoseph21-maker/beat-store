@@ -92,9 +92,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation()
-    addBeat(beat, 'standard')
-    openCart()
-    trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES.standard[1] })
+    setLicenseOpen(true)
   }
 
   function handleFavorite(e: React.MouseEvent) {
