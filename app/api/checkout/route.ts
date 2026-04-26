@@ -3,10 +3,8 @@ export const runtime = 'nodejs'
 import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
-import { getDiscountPct, applyDiscount } from '@/lib/discount-codes'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
-import { bogoIsActive, sitewideIsActive, effectiveDiscountPct } from '@/lib/promos'
-import type { LicenseType, QuantityTier } from '@/lib/stripe'
+import type { LicenseType } from '@/lib/stripe'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
@@ -16,17 +14,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { beatIds, licenseType, quantityTier, discountCode, useBogo } = (await req.json()) as {
+    const { beatIds, licenseType } = (await req.json()) as {
       beatIds: string[]
       licenseType: LicenseType
-      quantityTier: QuantityTier
-      discountCode?: string
-      useBogo?: boolean
     }
 
-    // Whitelist validation — never trust client-provided values
     const VALID_LICENSE_TYPES: LicenseType[] = ['standard', 'premium', 'unlimited']
-    const VALID_QTY_TIERS: QuantityTier[] = [1, 3, 5]
 
     if (!beatIds?.length || !Array.isArray(beatIds)) {
       return Response.json({ error: 'No beats selected' }, { status: 400 })
@@ -39,9 +32,6 @@ export async function POST(req: NextRequest) {
     }
     if (!VALID_LICENSE_TYPES.includes(licenseType)) {
       return Response.json({ error: 'Invalid license type' }, { status: 400 })
-    }
-    if (!VALID_QTY_TIERS.includes(quantityTier)) {
-      return Response.json({ error: 'Invalid quantity tier' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -65,45 +55,12 @@ export async function POST(req: NextRequest) {
 
     const beatTitles = (validBeats ?? []).map((b: { title: string }) => b.title)
 
-    // Fetch active promo config from DB (server-side enforcement)
-    let promo = { sitewide_discount_pct: null as number | null, bogo_free_count: null as number | null }
-    try {
-      const { data } = await supabase
-        .from('promos')
-        .select('sitewide_discount_pct, bogo_free_count')
-        .eq('id', 1)
-        .single()
-      if (data) promo = data
-    } catch {
-      // Continue without promo if DB read fails
-    }
+    // Price: per-beat rate × number of beats in cart
+    const perBeatPrice = getLicensePrice(licenseType, 1)
+    const price = Math.max(perBeatPrice * beatIds.length, 1)
 
-    // Determine pricing tier — BOGO overrides quantityTier to 1-beat price
-    let pricingTier: QuantityTier = quantityTier
-    let promoNotes: string[] = []
-
-    if (useBogo && bogoIsActive(promo) && licenseType !== 'unlimited') {
-      pricingTier = 1
-      promoNotes.push(`BOGO: Buy 1 Get ${promo.bogo_free_count} Free`)
-    }
-
-    const basePrice = getLicensePrice(licenseType, pricingTier)
-
-    // Coupon code discount
-    const couponPct = discountCode ? getDiscountPct(discountCode) : null
-    // Sitewide discount — take the better of sitewide vs coupon (no stacking)
-    const sitewisePct = sitewideIsActive(promo) ? promo.sitewide_discount_pct : null
-    const bestDiscountPct = effectiveDiscountPct(sitewisePct, couponPct)
-
-    if (sitewisePct !== null) promoNotes.push(`${sitewisePct}% sitewide discount`)
-    if (couponPct !== null && couponPct > (sitewisePct ?? 0)) promoNotes.push(`${couponPct}% coupon (${discountCode})`)
-
-    const rawPrice = bestDiscountPct !== null ? applyDiscount(basePrice, bestDiscountPct) : basePrice
-    // Never allow a $0 or negative checkout — enforce $1 minimum
-    const price = Math.max(rawPrice, 1)
     const licenseLabel = licenseType === 'standard' ? 'Basic Lease' : licenseType === 'premium' ? 'Premium Lease' : 'Unlimited Lease'
-    const promoNote = promoNotes.length > 0 ? ` · ${promoNotes.join(' · ')}` : ''
-    const description = `${licenseLabel}${promoNote} · ${beatIds.length} beat${beatIds.length > 1 ? 's' : ''}: ${beatTitles.join(', ')}`
+    const description = `${licenseLabel} · ${beatIds.length} beat${beatIds.length > 1 ? 's' : ''}: ${beatTitles.join(', ')}`
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -123,7 +80,6 @@ export async function POST(req: NextRequest) {
       metadata: {
         beatIds: JSON.stringify(beatIds),
         licenseType,
-        quantityTier: String(pricingTier),
         // Stripe metadata values max 500 chars — truncate if needed
         beatTitles: JSON.stringify(beatTitles).slice(0, 490),
       },

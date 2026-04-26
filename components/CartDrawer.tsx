@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { useCartStore, LicenseType } from '@/lib/store'
 import { PRICES } from '@/lib/prices'
 import { useLocaleStore, formatPrice } from '@/lib/locale'
-import LicenseModal from './LicenseModal'
 import { useRouter } from 'next/navigation'
 import { useT } from '@/lib/i18n'
 import { trackBeginCheckout, trackCartAbandonment } from '@/lib/analytics'
@@ -23,10 +22,9 @@ interface Props {
 }
 
 export default function CartDrawer({ open, onClose }: Props) {
-  const { items, removeBeat, clearCart, total, licenseType, quantityTier } = useCartStore()
+  const { items, removeBeat, clearCart, total, licenseType } = useCartStore()
   const { currency } = useLocaleStore()
   const t = useT()
-  const [licenseOpen, setLicenseOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
@@ -97,7 +95,7 @@ export default function CartDrawer({ open, onClose }: Props) {
     }
   }
 
-  async function handleCheckout(discountCode: string, useBogo?: boolean) {
+  async function handleCheckout() {
     if (checkoutInProgressRef.current) return
     checkoutInProgressRef.current = true
     setLoading(true)
@@ -116,9 +114,6 @@ export default function CartDrawer({ open, onClose }: Props) {
         body: JSON.stringify({
           beatIds: items.map((i) => i.beat.id),
           licenseType,
-          quantityTier,
-          discountCode: discountCode || undefined,
-          useBogo: useBogo || undefined,
         }),
       })
       const data = await res.json()
@@ -207,7 +202,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 <span className="text-2xl font-bold text-foreground">{formatPrice(total(), currency)}</span>
               </div>
               <button
-                onClick={() => setLicenseOpen(true)}
+                onClick={handleCheckout}
                 disabled={loading}
                 className="w-full rounded bg-white py-4 text-[15px] font-bold text-black uppercase hover:bg-white-hover transition-[background-color,transform,opacity] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
@@ -232,14 +227,6 @@ export default function CartDrawer({ open, onClose }: Props) {
         )}
       </div>
 
-      <LicenseModal
-        open={licenseOpen}
-        onClose={() => setLicenseOpen(false)}
-        onCheckout={(discountCode, useBogo) => {
-          setLicenseOpen(false)
-          handleCheckout(discountCode, useBogo)
-        }}
-      />
     </div>
   )
 }
