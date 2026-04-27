@@ -67,7 +67,7 @@ export default function StoreAmbient() {
     let   prevBass = 0   // for transient detection
 
     function drawFrame() {
-      if (canvas.width === 0 || canvas.height === 0) return false
+      if (!canvas || canvas.width === 0 || canvas.height === 0) return false
 
       // Lerp tint toward genre target
       const tgt = genreRef.current && GENRE_RGB[genreRef.current]
