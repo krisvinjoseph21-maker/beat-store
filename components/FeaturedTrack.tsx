@@ -1,21 +1,41 @@
 'use client'
 
-import { Play, Pause, ShoppingCart, Check } from 'lucide-react'
+import { useState } from 'react'
+import { Play, Pause, ShoppingCart, Check, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
-import { usePlayerStore, useCartStore, type Beat } from '@/lib/store'
+import Link from 'next/link'
+import { usePlayerStore, useCartStore, type Beat, type LicenseType } from '@/lib/store'
 import ShareButton from './ShareButton'
 import { PRICES } from '@/lib/prices'
+import { useT } from '@/lib/i18n'
+import { trackAddToCart } from '@/lib/analytics'
 
 export default function FeaturedTrack({ beat }: { beat: Beat }) {
+  const t = useT()
   const { currentBeat, isPlaying, setCurrentBeat, togglePlay } = usePlayerStore()
-  const { addBeat, isInCart } = useCartStore()
+  const { addBeat, openCart, isInCart } = useCartStore()
+  const [licenseOpen, setLicenseOpen] = useState(false)
 
   const isThisPlaying = currentBeat?.id === beat.id && isPlaying
   const inCart = isInCart(beat.id)
 
+  const LICENSE_OPTIONS = [
+    { id: 'standard' as const,  name: t.beatCard.mp3License,  desc: t.beatCard.mp3Desc },
+    { id: 'premium' as const,   name: t.beatCard.wavLicense,  desc: t.beatCard.wavDesc },
+    { id: 'unlimited' as const, name: t.beatCard.stemLicense, desc: t.beatCard.stemDesc },
+    { id: null,                 name: t.beatCard.exclusive,   desc: t.beatCard.exclusiveDesc },
+  ]
+
   function handlePlay() {
     if (currentBeat?.id === beat.id) togglePlay()
     else setCurrentBeat(beat)
+  }
+
+  function handleSelectLicense(id: LicenseType) {
+    addBeat(beat, id)
+    setLicenseOpen(false)
+    openCart()
+    trackAddToCart({ id: beat.id, name: beat.title, category: beat.genre, price: PRICES[id][1] })
   }
 
   return (
@@ -89,24 +109,80 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
               : <Play size={15} fill="black" style={{ marginLeft: '2px' }} aria-hidden="true" />}
           </button>
 
-          <button
-            onClick={() => addBeat(beat, 'standard')}
-            disabled={inCart}
-            aria-label={inCart ? `${beat.title} — in cart` : `Add ${beat.title} to cart`}
-            className={`inline-flex items-center gap-2 border text-[12px] font-semibold transition-[background-color,border-color,color] px-4 py-2.5 ${
-              inCart
-                ? 'border-line-input text-muted-low cursor-default'
-                : 'border-foreground bg-transparent text-foreground hover:bg-white hover:text-black'
-            }`}
-            style={{ fontFamily: 'var(--font-montserrat)' }}
-          >
-            {inCart
-              ? <><Check size={12} aria-hidden="true" /> In Cart</>
-              : <><ShoppingCart size={12} aria-hidden="true" /> Add to Cart — From ${PRICES.standard[1]}</>}
-          </button>
+          {inCart ? (
+            <button
+              onClick={openCart}
+              aria-label={`${beat.title} — already in cart, click to view cart`}
+              className="inline-flex items-center gap-2 border border-line-input text-muted-low text-[12px] font-semibold px-4 py-2.5 cursor-default"
+              style={{ fontFamily: 'var(--font-montserrat)' }}
+            >
+              <Check size={12} aria-hidden="true" /> In Cart
+            </button>
+          ) : (
+            <button
+              onClick={() => setLicenseOpen(o => !o)}
+              aria-expanded={licenseOpen}
+              aria-label={`Add ${beat.title} to cart — select license`}
+              className="inline-flex items-center gap-2 border border-foreground bg-transparent text-foreground text-[12px] font-semibold transition-[background-color,border-color,color] px-4 py-2.5 hover:bg-white hover:text-black"
+              style={{ fontFamily: 'var(--font-montserrat)' }}
+            >
+              <ShoppingCart size={12} aria-hidden="true" />
+              Add to Cart — From ${PRICES.standard[1]}
+              <ChevronDown size={12} className={`transition-transform duration-200 ${licenseOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+            </button>
+          )}
 
           <div className="ml-auto">
             <ShareButton beatId={beat.id} />
+          </div>
+        </div>
+
+        {/* License drawer */}
+        <div className={`license-drawer-grid${licenseOpen ? ' is-open' : ''}`}>
+          <div className="license-drawer-inner" inert={!licenseOpen}>
+            <div className="bg-surface-2 border-t border-line px-5 sm:px-6 py-3">
+              <div className="hidden sm:grid grid-cols-4 gap-px mb-px">
+                {LICENSE_OPTIONS.map((opt) => (
+                  <div key={opt.name} className="font-montserrat px-4 py-2 text-[9px] font-semibold uppercase text-muted-low" style={{ letterSpacing: '0.18em' }}>
+                    {opt.name}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-line">
+                {LICENSE_OPTIONS.map((opt, i) =>
+                  opt.id === null ? (
+                    <Link
+                      key={i}
+                      href="/about"
+                      aria-label="Inquire about exclusive license"
+                      className="bg-surface-2 flex flex-col justify-between p-4 hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
+                    >
+                      <div>
+                        <div className="font-montserrat text-[10px] text-muted-low sm:hidden mb-1">{opt.name}</div>
+                        <div className="font-montserrat text-[11px] text-muted-low">{opt.desc}</div>
+                      </div>
+                      <span className="font-montserrat mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors">
+                        {t.beat.inquire}
+                      </span>
+                    </Link>
+                  ) : (
+                    <button
+                      key={i}
+                      onClick={() => handleSelectLicense(opt.id as LicenseType)}
+                      className="bg-surface-2 flex flex-col justify-between p-4 text-left hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
+                    >
+                      <div>
+                        <div className="font-montserrat text-[10px] text-muted-low sm:hidden mb-1">{opt.name}</div>
+                        <div className="font-montserrat text-[11px] text-muted-low">{opt.desc}</div>
+                      </div>
+                      <span className="font-montserrat mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors">
+                        {t.beat.select}
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
