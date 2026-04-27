@@ -17,8 +17,9 @@ const MAGNET_SCALE = 0.38  // fraction of (offset × strength) applied as transl
  */
 export function useRowSpring(containerRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const containerOrNull = containerRef.current
+    if (!containerOrNull) return
+    const container: HTMLElement = containerOrNull
     if (window.matchMedia('(pointer: coarse)').matches) return
 
     let px = -9999, py = -9999
