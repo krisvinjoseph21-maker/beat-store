@@ -331,6 +331,43 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 }
 .animate-spin { animation: spin 0.7s linear infinite; }
 
+/* ── Beat row spring tilt (pointer interaction) ──────────────────────── */
+/*
+ * perspective is set on the container (BeatStore) not here — one stacking
+ * context instead of N. [data-row] uses rotateX/Y only.
+ * fast: 80ms response while pointer is near
+ * [data-resting]: 500ms expo-out return when pointer leaves
+ */
+[data-row] {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition:
+    transform 80ms ease-out,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+[data-row][data-resting] {
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+/* Play button magnetic pull — CSS translate so it composes with Tailwind scale */
+[data-play-btn] {
+  translate: var(--mx, 0px) var(--my, 0px);
+  transition:
+    translate 70ms ease-out,
+    background-color 100ms ease,
+    opacity 100ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-row], [data-play-btn] {
+    transform: none !important;
+    translate: none !important;
+    transition: background-color 150ms ease, border-color 150ms ease !important;
+  }
+}
 /* ── Playing accent bar pulse ─────────────────── */
 @keyframes accentPulse {
   0%, 100% { opacity: 1;   transform: scaleY(1);    }

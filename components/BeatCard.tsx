@@ -4,6 +4,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+
+const WaveformVisualizer = dynamic(() => import('./WaveformVisualizer'), { ssr: false })
 import { BadgeCheck, Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, LicenseType, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import { sharedAudioElement } from '@/lib/player-ref'
@@ -11,8 +13,6 @@ import ShareButton from './ShareButton'
 import { PRICES } from '@/lib/prices'
 import { useT } from '@/lib/i18n'
 import { trackAddToCart } from '@/lib/analytics'
-
-const WaveformVisualizer = dynamic(() => import('./WaveformVisualizer'), { ssr: false })
 
 interface Props {
   beat: Beat
@@ -114,7 +114,8 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
       {/* ── Main row ─────────────────────────────────────────── */}
       <div
-        className="bg-black transition-colors duration-150 border-b border-line relative hover:bg-surface-2 cursor-pointer"
+        data-row
+        className="bg-black border-b border-line relative hover:bg-surface-2 cursor-pointer"
         onClick={() => setLicenseOpen(o => !o)}
       >
 
@@ -134,11 +135,6 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
           />
         )}
 
-        {/* Frequency visualiser — absolutely positioned at row bottom */}
-        {isThisActive && (
-          <WaveformVisualizer progressPct={progressPct} isPlaying={isThisPlaying} />
-        )}
-
         {/* Content row — z-10 sits above the expand button; inner buttons capture their own clicks without stopPropagation */}
         <div className="relative z-10 flex flex-row items-center w-full px-4 sm:px-10" style={{ color: 'var(--foreground)', gap: '12px', paddingTop: '18px', paddingBottom: '18px' }}>
 
@@ -153,10 +149,11 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
 
           {/* Play button */}
           <button
+            data-play-btn
             onClick={(e) => { e.stopPropagation(); handlePlay() }}
             disabled={!hasAudio}
             aria-label={isThisPlaying ? `Pause ${beat.title}` : `Play ${beat.title}`}
-            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 transition-[background-color,transform,opacity] duration-100 disabled:opacity-25 disabled:cursor-not-allowed"
+            className="rounded-full bg-line flex items-center justify-center shrink-0 hover:bg-line-mid active:scale-90 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{ width: '44px', height: '44px' }}
           >
             {isThisPlaying
@@ -287,7 +284,12 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
         </div>
 
-        {/* Row separator — WaveformVisualizer draws the progress track for the active beat */}
+        {/* Frequency visualiser — absolutely positioned at row bottom */}
+        {isThisActive && (
+          <WaveformVisualizer progressPct={progressPct} isPlaying={isThisPlaying} />
+        )}
+
+        {/* Row separator — 2px rule between rows */}
         <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true" />
       </div>
 

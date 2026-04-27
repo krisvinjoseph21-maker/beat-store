@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, AlertCircle, Loader2 } from 'lucide-react'
 import { usePlayerStore } from '@/lib/store'
-import { connectAudioElement, resumeContext, getAnalyser } from '@/lib/audio-analyser'
+import { connectAudioElement, resumeContext } from '@/lib/audio-analyser'
 import { sharedAudioElement } from '@/lib/player-ref'
 import { GENRE_COLORS, GENRE_COLOR_FALLBACK } from '@/lib/genre-colors'
 
@@ -43,12 +43,7 @@ export default function BottomPlayer() {
   const localProgressRef   = useRef(0)
   const lastStoreSyncRef   = useRef(0)
   const durationRef        = useRef(duration)
-  // Canvas visualizer refs
-  const playerCanvasRef = useRef<HTMLCanvasElement>(null)
-  const playerRafRef    = useRef<number>(0)
-  const barDecayRef     = useRef<Float32Array>(new Float32Array(0))
-  // Stable ref to the draw function so it can be restarted from outside the visualizer effect
-  const drawRef         = useRef<(() => void) | null>(null)
+  const progressBarRef  = useRef<HTMLDivElement>(null)
 
   const [previewEnded, setPreviewEnded] = useState(false)
   const [hasError, setHasError]         = useState(false)
@@ -74,172 +69,6 @@ export default function BottomPlayer() {
       }
     }
   }, [])
-  // Restart the RAF draw loop whenever a beat loads and the loop has gone idle
-  useEffect(() => {
-    if (currentBeat && playerRafRef.current === 0 && drawRef.current) {
-      playerRafRef.current = requestAnimationFrame(drawRef.current)
-    }
-  }, [currentBeat])
-
-  // ── Canvas spectrum visualizer ──────────────────────────────────────────
-  useEffect(() => {
-    const dpr = window.devicePixelRatio || 1
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const rawAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
-    const ACCENT = rawAccent.startsWith('#') && rawAccent.length === 7
-      ? [parseInt(rawAccent.slice(1, 3), 16), parseInt(rawAccent.slice(3, 5), 16), parseInt(rawAccent.slice(5, 7), 16)].join(',')
-      : '200,168,106'
-
-    // Reusable FFT data buffer — never allocate inside the hot path
-    let fftData: Uint8Array<ArrayBuffer> | null = null
-    // ResizeObserver attached lazily once the canvas mounts
-    let ro: ResizeObserver | null = null
-    let observedCanvas: HTMLCanvasElement | null = null
-
-    function draw() {
-      const canvas = playerCanvasRef.current
-
-      if (!canvas) {
-        // No canvas means no beat is loaded — stop the loop entirely.
-        // Restarted by the currentBeat effect once a beat mounts the canvas.
-        playerRafRef.current = 0
-        return
-      }
-
-      // Attach ResizeObserver the first time the canvas appears in the DOM
-      if (observedCanvas !== canvas) {
-        ro?.disconnect()
-        observedCanvas = canvas
-        ro = new ResizeObserver(() => {
-          const w = canvas.offsetWidth
-          const h = canvas.offsetHeight
-          if (w > 0 && h > 0) {
-            canvas.width  = Math.round(w * dpr)
-            canvas.height = Math.round(h * dpr)
-          }
-        })
-        ro.observe(canvas)
-        const w = canvas.offsetWidth
-        const h = canvas.offsetHeight
-        if (w > 0 && h > 0) {
-          canvas.width  = Math.round(w * dpr)
-          canvas.height = Math.round(h * dpr)
-        }
-      }
-
-      const ctx = canvas.getContext('2d')
-      if (!ctx || canvas.width === 0) {
-        playerRafRef.current = requestAnimationFrame(draw)
-        return
-      }
-
-      const W = canvas.width
-      const H = canvas.height
-
-      ctx.clearRect(0, 0, W, H)
-
-      const trackH      = Math.round(2 * dpr)
-      const barMaxLocal = durationRef.current > 0
-        ? Math.min(durationRef.current, PREVIEW_LIMIT)
-        : PREVIEW_LIMIT
-      const progressFrac = barMaxLocal > 0
-        ? Math.min(localProgressRef.current / barMaxLocal, 1)
-        : 0
-      const cursorX = Math.round(W * progressFrac)
-
-      // ── Progress track at the TOP (matches seek input position) ──────────
-      // Dark base
-      ctx.fillStyle = 'rgba(255,255,255,0.06)'
-      ctx.fillRect(0, 0, W, trackH)
-      // Amber fill
-      if (cursorX > 0) {
-        ctx.fillStyle = `rgba(${ACCENT},0.9)`
-        ctx.fillRect(0, 0, cursorX, trackH)
-      }
-      // Cursor tick — extends below the track into the bar zone
-      if (progressFrac > 0.005 && progressFrac < 0.995) {
-        const tickH = Math.round(10 * dpr)
-        ctx.fillStyle = `rgba(${ACCENT},0.85)`
-        ctx.fillRect(cursorX - Math.round(0.5 * dpr), trackH, Math.round(1.5 * dpr), tickH)
-      }
-
-      if (!reducedMotion) {
-        const BAR_W   = Math.round(3 * dpr)
-        const GAP     = Math.round(2 * dpr)
-        const STEP    = BAR_W + GAP
-        const numBars = Math.floor(W / STEP)
-        const maxBarH = H - trackH - Math.round(4 * dpr)
-
-        if (barDecayRef.current.length !== numBars) {
-          barDecayRef.current = new Float32Array(numBars)
-        }
-
-        const analyser = getAnalyser()
-        let hasData = false
-        if (analyser && isPlayingRef.current) {
-          const binCount = analyser.frequencyBinCount
-          if (!fftData || fftData.length !== binCount) fftData = new Uint8Array(binCount) as Uint8Array<ArrayBuffer>
-          analyser.getByteFrequencyData(fftData)
-          hasData = true
-        }
-
-        // Subtle glow behind the played region
-        if (cursorX > 4) {
-          const grad = ctx.createLinearGradient(0, 0, cursorX, 0)
-          grad.addColorStop(0, `rgba(${ACCENT},0)`)
-          grad.addColorStop(1, `rgba(${ACCENT},0.04)`)
-          ctx.fillStyle = grad
-          ctx.fillRect(0, trackH, cursorX, H - trackH)
-        }
-
-        // Frequency bars — grow downward from the track
-        for (let i = 0; i < numBars; i++) {
-          let v = 0
-          if (hasData && fftData && analyser) {
-            const bin = Math.floor((i / numBars) * analyser.frequencyBinCount * 0.72)
-            v = fftData[bin] / 255
-            if (v > barDecayRef.current[i]) {
-              barDecayRef.current[i] = v
-            } else {
-              barDecayRef.current[i] = Math.max(0, barDecayRef.current[i] - 0.022)
-              v = barDecayRef.current[i]
-            }
-          } else {
-            // Graceful decay when paused or no analyser
-            barDecayRef.current[i] = Math.max(0, barDecayRef.current[i] - 0.012)
-            v = barDecayRef.current[i]
-          }
-
-          const barH = Math.round(v * maxBarH)
-          if (barH < 1) continue
-
-          const x        = i * STEP
-          const isPlayed = x < cursorX
-          const alpha    = isPlayed ? 0.2 + v * 0.65 : 0.06 + v * 0.32
-          ctx.fillStyle  = `rgba(${ACCENT},${alpha.toFixed(2)})`
-          // Bars cascade downward from the progress track
-          ctx.fillRect(x, trackH, BAR_W, barH)
-        }
-      }
-
-      playerRafRef.current = requestAnimationFrame(draw)
-    }
-
-    // Expose draw so the currentBeat effect can restart the loop after it idles
-    drawRef.current = draw
-
-    // Only start immediately if a beat is already loaded (e.g. on hot-reload)
-    if (playerCanvasRef.current) {
-      playerRafRef.current = requestAnimationFrame(draw)
-    }
-
-    return () => {
-      drawRef.current = null
-      cancelAnimationFrame(playerRafRef.current)
-      playerRafRef.current = 0
-      ro?.disconnect()
-    }
-  }, []) // intentionally empty — all state accessed via refs
 
   function handleVolumeChange(v: number) {
     setVolume(v)
@@ -272,13 +101,15 @@ export default function BottomPlayer() {
     setPlaying(true)
   }
 
-  // Update seek input value and time text directly via DOM — no React re-render.
-  // Progress visualisation is handled by the canvas draw loop (reads localProgressRef directly).
+  // Update seek input, time text, and progress bar directly via DOM — no React re-render.
   function updateProgressDOM(t: number) {
-    const cappedT = Math.min(t, PREVIEW_LIMIT)
-    if (seekInputRef.current)  seekInputRef.current.value       = String(cappedT)
-    if (timeTextRef.current)   timeTextRef.current.textContent  =
+    const cappedT   = Math.min(t, PREVIEW_LIMIT)
+    const barMaxLocal = durationRef.current > 0 ? Math.min(durationRef.current, PREVIEW_LIMIT) : PREVIEW_LIMIT
+    if (seekInputRef.current)   seekInputRef.current.value      = String(cappedT)
+    if (timeTextRef.current)    timeTextRef.current.textContent =
       `${formatTime(cappedT)} / ${formatTime(Math.min(durationRef.current || 0, PREVIEW_LIMIT))}`
+    if (progressBarRef.current) progressBarRef.current.style.width =
+      `${barMaxLocal > 0 ? Math.min(cappedT / barMaxLocal, 1) * 100 : 0}%`
   }
 
   useEffect(() => {
@@ -383,13 +214,10 @@ export default function BottomPlayer() {
       />
 
       {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="region" aria-label="Music player">
-        {/* Canvas fills the entire player — progress track at top, bars cascade down */}
-        <canvas
-          ref={playerCanvasRef}
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ zIndex: 0 }}
-        />
+        {/* Progress track */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none" style={{ background: 'rgba(255,255,255,0.06)', zIndex: 0 }} aria-hidden="true">
+          <div ref={progressBarRef} className="h-full" style={{ width: '0%', background: 'var(--accent)', transition: 'none' }} />
+        </div>
 
         {/* Seek scrubber — in its original position, overlaid on the top progress track */}
         {/* [&:has(input:focus-visible)] shows an outline on the progress track when keyboard-focused,

@@ -1,12 +1,13 @@
 ﻿'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
 import { BadgeCheck, ChevronDown, Heart } from 'lucide-react'
 import { useT } from '@/lib/i18n'
+import { useRowSpring } from '@/lib/use-row-spring'
 
 const LicenseModal = dynamic(() => import('./LicenseModal'), { ssr: false })
 const StoreAmbient = dynamic(() => import('./StoreAmbient'), { ssr: false })
@@ -89,6 +90,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const { openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
   const { setQueue } = usePlayerStore()
+  const listContainerRef = useRef<HTMLDivElement>(null)
+  useRowSpring(listContainerRef)
 
   useEffect(() => {
     setQueue(initialBeats)
@@ -295,7 +298,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           </div>
         ) : (
           <>
-            <div className="relative border border-line overflow-hidden">
+            <div ref={listContainerRef} className="relative border border-line overflow-hidden" style={{ perspective: '1200px' }}>
               <StoreAmbient />
               <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
                 <span className="w-6 flex-shrink-0" />

@@ -4,20 +4,34 @@
  * Audio-reactive ambient canvas behind the beat store list.
  *
  * Performance design:
- *   - Sleeps completely (no RAF, no CPU) when no audio is playing.
- *   - Polls with setTimeout(200ms) while idle, wakes to RAF when energy detected.
- *   - DPR fixed at 1.0 — the effect is large soft gradients, sub-pixel rendering
- *     adds nothing visible but doubles GPU work on retina screens.
- *   - mix-blend-mode: screen so black pixels are free (invisible).
+ *   - Completely idle (no RAF, no CPU) when no audio is playing or canvas is off-screen.
+ *   - 200ms poll while idle; wakes to RAF when non-trivial signal detected.
+ *   - DPR fixed at 1.0 — soft gradients don't benefit from retina resolution.
+ *   - mix-blend-mode: screen so black pixels cost nothing (invisible).
+ *   - Genre color smoothly lerps toward the active beat's genre tint.
  */
 
 import { useEffect, useRef } from 'react'
 import { getAnalyser } from '@/lib/audio-analyser'
+import { usePlayerStore } from '@/lib/store'
 
-const AR = 200, AG = 168, AB = 106   /* --accent rgb components */
-const SLEEP_THRESHOLD = 0.008        /* total energy below this → sleep */
+// Genre-tuned RGB tints — brighter than GENRE_COLORS dots so they're visible at low opacity
+const GENRE_RGB: Record<string, readonly [number, number, number]> = {
+  Trap:      [210, 70,  45],
+  Drill:     [70,  120, 220],
+  'R&B':     [180, 70,  155],
+  Afrobeats: [215, 155, 45],
+}
+const ACCENT_RGB = [200, 168, 106] as const   // --accent fallback
+
+const SLEEP_THRESHOLD = 0.008
+const LERP_SPEED      = 0.035   // how fast the tint shifts between genres
 
 export default function StoreAmbient() {
+  const genre    = usePlayerStore((s) => s.currentBeat?.genre ?? null)
+  const genreRef = useRef<string | null>(null)
+  genreRef.current = genre
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -28,11 +42,12 @@ export default function StoreAmbient() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    /* Fixed DPR of 1 — soft gradients don't need retina resolution */
-    let rafId    = 0
-    let timerId  = 0
-    let visible  = true
-    let sleeping = true   /* start sleeping; audio will wake us */
+    let rafId   = 0
+    let timerId = 0
+    let visible = true
+
+    // Current interpolated tint (RGB floats)
+    let cr = ACCENT_RGB[0], cg = ACCENT_RGB[1], cb = ACCENT_RGB[2]
 
     const ro = new ResizeObserver(() => {
       canvas.width  = canvas.offsetWidth
@@ -46,101 +61,117 @@ export default function StoreAmbient() {
     )
     io.observe(canvas)
 
-    const NUM_BINS  = 64
-    const fftData   = new Uint8Array(NUM_BINS)
-    const decayBins = new Float32Array(NUM_BINS)
-    const cvs = canvas
-    const ctx2 = ctx
+    const NUM_BINS = 64
+    const fftData  = new Uint8Array(NUM_BINS)
+    const decay    = new Float32Array(NUM_BINS)
+    let   prevBass = 0   // for transient detection
 
     function drawFrame() {
-      if (cvs.width === 0 || cvs.height === 0) return
+      if (canvas.width === 0 || canvas.height === 0) return false
 
-      ctx2.clearRect(0, 0, cvs.width, cvs.height)
+      // Lerp tint toward genre target
+      const tgt = genreRef.current && GENRE_RGB[genreRef.current]
+        ? GENRE_RGB[genreRef.current]
+        : ACCENT_RGB
+      cr += (tgt[0] - cr) * LERP_SPEED
+      cg += (tgt[1] - cg) * LERP_SPEED
+      cb += (tgt[2] - cb) * LERP_SPEED
+      const R = Math.round(cr), G = Math.round(cg), B = Math.round(cb)
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const analyser = getAnalyser()
       if (analyser) analyser.getByteFrequencyData(fftData)
 
-      /* Decay */
       let totalEnergy = 0
       for (let i = 0; i < NUM_BINS; i++) {
         const v = analyser ? fftData[i] / 255 : 0
-        decayBins[i] = v > decayBins[i] ? v : Math.max(0, decayBins[i] - 0.014)
-        totalEnergy += decayBins[i]
+        decay[i] = v > decay[i] ? v : Math.max(0, decay[i] - 0.014)
+        totalEnergy += decay[i]
       }
 
-      /* If all energy has decayed to nothing, clear and go to sleep */
       if (totalEnergy < SLEEP_THRESHOLD) {
-        ctx2.clearRect(0, 0, cvs.width, cvs.height)
-        return true  /* signal: sleep */
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        return true   // signal: go to sleep
       }
 
-      const CW = cvs.width
-      const CH = cvs.height
+      const CW = canvas.width
+      const CH = canvas.height
 
-      /* Bass wash (bins 0–7) */
+      // ── Bass left-to-right wash ───────────────────────────────────────────
       let bassSum = 0
-      for (let i = 0; i < 8; i++) bassSum += decayBins[i]
+      for (let i = 0; i < 8; i++) bassSum += decay[i]
       const bass = Math.min(bassSum / 8, 1)
 
-      if (bass > 0.015) {
-        const grad = ctx2.createLinearGradient(0, 0, CW * (0.55 + bass * 0.3), 0)
-        grad.addColorStop(0,    `rgba(${AR},${AG},${AB},${(bass * 0.055).toFixed(3)})`)
-        grad.addColorStop(0.35, `rgba(${AR},${AG},${AB},${(bass * 0.018).toFixed(3)})`)
-        grad.addColorStop(1,    `rgba(${AR},${AG},${AB},0)`)
-        ctx2.fillStyle = grad
-        ctx2.fillRect(0, 0, CW, CH)
+      // Transient: sudden spike in bass energy
+      const transient = Math.max(0, bass - prevBass)
+      prevBass = bass * 0.82
 
+      if (bass > 0.015) {
+        const grad = ctx.createLinearGradient(0, 0, CW * (0.55 + bass * 0.3), 0)
+        grad.addColorStop(0,    `rgba(${R},${G},${B},${(bass * 0.055).toFixed(3)})`)
+        grad.addColorStop(0.35, `rgba(${R},${G},${B},${(bass * 0.018).toFixed(3)})`)
+        grad.addColorStop(1,    `rgba(${R},${G},${B},0)`)
+        ctx.fillStyle = grad
+        ctx.fillRect(0, 0, CW, CH)
+
+        // Radial bloom from left edge on strong bass
         if (bass > 0.35) {
-          const bloom = ctx2.createRadialGradient(0, CH * 0.5, 0, 0, CH * 0.5, CW * 0.45)
-          bloom.addColorStop(0, `rgba(${AR},${AG},${AB},${(bass * 0.035).toFixed(3)})`)
-          bloom.addColorStop(1, `rgba(${AR},${AG},${AB},0)`)
-          ctx2.fillStyle = bloom
-          ctx2.fillRect(0, 0, CW, CH)
+          const bloom = ctx.createRadialGradient(0, CH * 0.5, 0, 0, CH * 0.5, CW * 0.45)
+          bloom.addColorStop(0, `rgba(${R},${G},${B},${(bass * 0.035).toFixed(3)})`)
+          bloom.addColorStop(1, `rgba(${R},${G},${B},0)`)
+          ctx.fillStyle = bloom
+          ctx.fillRect(0, 0, CW, CH)
         }
       }
 
-      /* Frequency columns — 16 (was 32, half saves fillRect calls) */
-      const NUM_COLS = 16
-      const colW = CW / NUM_COLS
-      for (let i = 0; i < NUM_COLS; i++) {
-        const bin = Math.floor((i / NUM_COLS) * NUM_BINS * 0.75)
-        const v   = decayBins[bin]
-        if (v < 0.06) continue
-        ctx2.fillStyle = `rgba(${AR},${AG},${AB},${(v * 0.02).toFixed(3)})`
-        ctx2.fillRect(Math.round(i * colW), 0, Math.ceil(colW), CH)
+      // ── Beat transient flash — brief sweep on drum hits ──────────────────
+      if (transient > 0.05) {
+        const fw = CW * Math.min(transient * 0.7, 0.5)
+        const flash = ctx.createLinearGradient(0, 0, fw, 0)
+        flash.addColorStop(0, `rgba(${R},${G},${B},${(transient * 0.11).toFixed(3)})`)
+        flash.addColorStop(1, `rgba(${R},${G},${B},0)`)
+        ctx.fillStyle = flash
+        ctx.fillRect(0, 0, CW, CH)
       }
 
-      /* Treble flash (bins 40–63) */
+      // ── Drifting frequency columns ────────────────────────────────────────
+      const NUM_COLS = 16
+      const colW     = CW / NUM_COLS
+      const now      = Date.now() / 1000
+      for (let i = 0; i < NUM_COLS; i++) {
+        const bin   = Math.floor((i / NUM_COLS) * NUM_BINS * 0.75)
+        const drift = Math.sin(i * 0.28 + now * 0.45) * 0.14 + 0.86   // gentle sway
+        const v     = decay[bin] * drift
+        if (v < 0.05) continue
+        ctx.fillStyle = `rgba(${R},${G},${B},${(v * 0.022).toFixed(3)})`
+        ctx.fillRect(Math.round(i * colW), 0, Math.ceil(colW), CH)
+      }
+
+      // ── Treble shimmer at the top ─────────────────────────────────────────
       let trebleSum = 0
-      for (let i = 40; i < NUM_BINS; i++) trebleSum += decayBins[i]
+      for (let i = 40; i < NUM_BINS; i++) trebleSum += decay[i]
       const treble = Math.min(trebleSum / 24, 1)
       if (treble > 0.28) {
         const flashH = CH * 0.12
-        const flash  = ctx2.createLinearGradient(0, 0, 0, flashH)
-        flash.addColorStop(0, `rgba(248,234,195,${(treble * 0.04).toFixed(3)})`)
-        flash.addColorStop(1, 'rgba(248,234,195,0)')
-        ctx2.fillStyle = flash
-        ctx2.fillRect(0, 0, CW, flashH)
+        const shimmer = ctx.createLinearGradient(0, 0, 0, flashH)
+        shimmer.addColorStop(0, `rgba(248,234,195,${(treble * 0.04).toFixed(3)})`)
+        shimmer.addColorStop(1, 'rgba(248,234,195,0)')
+        ctx.fillStyle = shimmer
+        ctx.fillRect(0, 0, CW, flashH)
       }
 
-      return false  /* not sleeping */
+      return false
     }
 
-    /* Active render loop (RAF) */
     function activeLoop() {
       rafId = requestAnimationFrame(() => {
         if (!visible) { activeLoop(); return }
         const shouldSleep = drawFrame()
-        if (shouldSleep) {
-          sleeping = true
-          scheduleWake()
-        } else {
-          activeLoop()
-        }
+        if (shouldSleep) { scheduleWake() } else { activeLoop() }
       })
     }
 
-    /* Idle polling — check every 200ms if audio has started, cheap */
     function scheduleWake() {
       timerId = window.setTimeout(checkForAudio, 200)
     }
@@ -151,16 +182,11 @@ export default function StoreAmbient() {
         analyser.getByteFrequencyData(fftData)
         let sum = 0
         for (let i = 0; i < NUM_BINS; i++) sum += fftData[i]
-        if (sum / NUM_BINS > 2) {   /* non-trivial signal detected */
-          sleeping = false
-          activeLoop()
-          return
-        }
+        if (sum / NUM_BINS > 2) { activeLoop(); return }
       }
-      scheduleWake()   /* still silent, check again later */
+      scheduleWake()
     }
 
-    /* Boot — start in idle mode */
     scheduleWake()
 
     return () => {
