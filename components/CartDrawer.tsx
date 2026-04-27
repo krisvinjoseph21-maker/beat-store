@@ -28,6 +28,10 @@ export default function CartDrawer({ open, onClose }: Props) {
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [discountInput, setDiscountInput] = useState('')
+  const [discountStatus, setDiscountStatus] = useState<'idle' | 'loading' | 'valid' | 'invalid'>('idle')
+  const [appliedCode, setAppliedCode] = useState('')
+  const [discountPct, setDiscountPct] = useState(0)
   const router = useRouter()
   const drawerRef = useRef<HTMLDivElement>(null)
   const checkoutInitiatedRef = useRef(false)
@@ -95,6 +99,49 @@ export default function CartDrawer({ open, onClose }: Props) {
     }
   }
 
+  function handleClearCart() {
+    clearCart()
+    setDiscountInput('')
+    setDiscountStatus('idle')
+    setAppliedCode('')
+    setDiscountPct(0)
+  }
+
+  async function handleApplyDiscount() {
+    const code = discountInput.trim()
+    if (!code || discountStatus === 'loading') return
+    setDiscountStatus('loading')
+    try {
+      const res = await fetch('/api/validate-discount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      if (res.status === 429) {
+        setDiscountStatus('invalid')
+        setCheckoutError('Too many attempts. Please wait a moment.')
+        return
+      }
+      const data = await res.json()
+      if (data.valid && typeof data.pct === 'number') {
+        setAppliedCode(code.toUpperCase())
+        setDiscountPct(data.pct)
+        setDiscountStatus('valid')
+      } else {
+        setDiscountStatus('invalid')
+      }
+    } catch {
+      setDiscountStatus('invalid')
+    }
+  }
+
+  function handleRemoveDiscount() {
+    setDiscountInput('')
+    setDiscountStatus('idle')
+    setAppliedCode('')
+    setDiscountPct(0)
+  }
+
   async function handleCheckout() {
     if (checkoutInProgressRef.current) return
     checkoutInProgressRef.current = true
@@ -113,6 +160,7 @@ export default function CartDrawer({ open, onClose }: Props) {
         signal: controller.signal,
         body: JSON.stringify({
           items: items.map((i) => ({ beatId: i.beat.id, licenseType: i.licenseType ?? 'standard' })),
+          ...(appliedCode ? { discountCode: appliedCode } : {}),
         }),
       })
       const data = await res.json()
@@ -190,15 +238,78 @@ export default function CartDrawer({ open, onClose }: Props) {
             </div>
 
             <div className="border-t border-white/[0.06] px-5 py-5 space-y-3">
+              {/* Discount code input */}
+              <div className="space-y-1.5">
+                {discountStatus !== 'valid' ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountInput}
+                      onChange={(e) => {
+                        setDiscountInput(e.target.value.toUpperCase().slice(0, 50))
+                        if (discountStatus === 'invalid') setDiscountStatus('idle')
+                      }}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleApplyDiscount() }}
+                      placeholder="DISCOUNT CODE"
+                      aria-label="Discount code"
+                      maxLength={50}
+                      disabled={discountStatus === 'loading'}
+                      className="flex-1 min-w-0 rounded bg-white/[0.04] border border-white/[0.08] px-3 py-2 text-[11px] font-bold text-foreground placeholder:text-muted-low uppercase focus:outline-none focus:border-white/[0.18] transition-colors disabled:opacity-50"
+                    />
+                    <button
+                      onClick={handleApplyDiscount}
+                      disabled={!discountInput.trim() || discountStatus === 'loading'}
+                      className="px-3 py-2 rounded bg-white/[0.08] text-[11px] font-bold text-foreground hover:bg-white/[0.14] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                    >
+                      {discountStatus === 'loading' ? (
+                        <svg className="animate-spin h-3 w-3 text-foreground" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                      ) : 'APPLY'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between rounded bg-white/[0.04] border border-white/[0.08] px-3 py-2">
+                    <span className="text-[11px] font-bold text-accent uppercase">{appliedCode} — {discountPct}% off</span>
+                    <button
+                      onClick={handleRemoveDiscount}
+                      aria-label="Remove discount code"
+                      className="flex items-center justify-center h-5 w-5 rounded-full hover:bg-white/[0.08] text-muted-low hover:text-foreground transition-colors ml-2 shrink-0"
+                    >
+                      <X size={10} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+                {discountStatus === 'invalid' && (
+                  <p role="alert" className="text-[10px] text-danger">Invalid or expired code.</p>
+                )}
+              </div>
+
               {checkoutError && (
                 <p role="alert" className="animate-shake text-[11px] text-danger text-center">
                   {checkoutError}
                 </p>
               )}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted">{t.cart.total}</span>
-                <span className="text-2xl font-bold text-foreground">{formatPrice(total(), currency)}</span>
-              </div>
+
+              {/* Total */}
+              {discountPct > 0 ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted">{t.cart.total}</span>
+                  <div className="text-right">
+                    <span className="text-xs text-muted-low line-through mr-2">{formatPrice(total(), currency)}</span>
+                    <span className="text-2xl font-bold text-foreground">
+                      {formatPrice(Math.round(total() * (1 - discountPct / 100) * 100) / 100, currency)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted">{t.cart.total}</span>
+                  <span className="text-2xl font-bold text-foreground">{formatPrice(total(), currency)}</span>
+                </div>
+              )}
+
               <button
                 onClick={handleCheckout}
                 disabled={loading}
@@ -215,7 +326,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 ) : t.cart.checkoutArrow}
               </button>
               <button
-                onClick={clearCart}
+                onClick={handleClearCart}
                 className="w-full text-center text-xs text-muted-low hover:text-muted transition-colors py-1"
               >
                 {t.cart.clearCart}

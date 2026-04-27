@@ -2,10 +2,8 @@
 
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-const WaveformVisualizer = dynamic(() => import('./WaveformVisualizer'), { ssr: false })
 import { BadgeCheck, Check, Heart, Play, Pause, ShoppingCart } from 'lucide-react'
 import { Beat, LicenseType, usePlayerStore, useCartStore, useFavoritesStore } from '@/lib/store'
 import { sharedAudioElement } from '@/lib/player-ref'
@@ -283,11 +281,6 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
             </div>
           </div>
         </div>
-
-        {/* Frequency visualiser — absolutely positioned at row bottom */}
-        {isThisActive && (
-          <WaveformVisualizer progressPct={progressPct} isPlaying={isThisPlaying} />
-        )}
 
         {/* Row separator — 2px rule between rows */}
         <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true" />

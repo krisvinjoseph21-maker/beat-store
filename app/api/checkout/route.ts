@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
+import { getDiscountPct } from '@/lib/discount-codes'
 import type { LicenseType } from '@/lib/stripe'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
@@ -80,9 +81,24 @@ export async function POST(req: NextRequest) {
 
     // Per-item pricing: sum each beat's individual license price
     // Global pricing: per-beat rate × count (used by bundle flow)
-    const price = perItemLicenses
+    const rawPrice = perItemLicenses
       ? Math.max(beatIds.reduce((sum, id) => sum + getLicensePrice(perItemLicenses![id] ?? licenseType, 1), 0), 1)
       : Math.max(getLicensePrice(licenseType, 1) * beatIds.length, 1)
+
+    // Server-side discount validation — never trust the client-computed price
+    const rawDiscountCode = typeof body.discountCode === 'string' ? body.discountCode.trim() : null
+    let appliedDiscountPct = 0
+    let validatedCode: string | null = null
+    if (rawDiscountCode && rawDiscountCode.length <= 50) {
+      const pct = getDiscountPct(rawDiscountCode)
+      if (pct !== null) {
+        appliedDiscountPct = pct
+        validatedCode = rawDiscountCode.toUpperCase()
+      }
+    }
+    const price = appliedDiscountPct > 0
+      ? Math.max(Math.round(rawPrice * (1 - appliedDiscountPct / 100) * 100) / 100, 1)
+      : rawPrice
 
     const licenseLabel = licenseType === 'standard' ? 'Basic Lease' : licenseType === 'premium' ? 'Premium Lease' : 'Unlimited Lease'
     const description = `${licenseLabel} · ${beatIds.length} beat${beatIds.length > 1 ? 's' : ''}: ${beatTitles.join(', ')}`
@@ -95,6 +111,10 @@ export async function POST(req: NextRequest) {
     }
     if (perItemLicenses) {
       metadata.beatLicenses = JSON.stringify(perItemLicenses).slice(0, 490)
+    }
+    if (validatedCode) {
+      metadata.discountCode = validatedCode
+      metadata.discountPct = String(appliedDiscountPct)
     }
 
     const session = await stripe.checkout.sessions.create({
