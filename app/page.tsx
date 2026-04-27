@@ -180,15 +180,15 @@ export default async function HomePage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-white/[0.06]">
-            {RECEIPTS.map(({ role, artist, song, detail, spotifyId, streams }, idx) => {
+          {/* Verified credits — full cards with Spotify embeds */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[1px] bg-white/[0.06] mb-[1px]">
+            {RECEIPTS.filter(r => r.role !== 'Unreleased').map(({ role, artist, song, detail, spotifyId, streams }, idx) => {
               const isFeatured = role === 'Featured Credit'
               return (
               <ScrollReveal key={artist + song} delay={idx * 80}>
               <div
                 className={`group flex flex-col gap-4 bg-surface-4 p-7 hover:bg-surface-3 transition-colors duration-200 h-full ring-1 ring-inset ${isFeatured ? 'ring-white/25' : 'ring-white/[0.07]'}`}
               >
-                {/* Top row: badge + streams */}
                 <div className="flex items-start justify-between gap-3">
                   <span className={`text-[10px] font-semibold uppercase tracking-[0.08em] ${isFeatured ? 'text-foreground' : 'text-muted-low'}`}>
                     {isFeatured && <span className="mr-1 text-accent">★</span>}{role}
@@ -202,7 +202,6 @@ export default async function HomePage() {
                     </span>
                   )}
                 </div>
-
                 <div>
                   <p className="text-[17px] font-semibold text-foreground leading-tight">{artist}</p>
                   <p className="text-[13px] mt-1 text-muted">{song} · Producer</p>
@@ -211,16 +210,31 @@ export default async function HomePage() {
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.06]">
                   <span className="text-[11px] text-muted-low">{detail}</span>
                   <div className="flex items-center gap-1">
-                    {role !== 'Unreleased' && <BadgeCheck size={11} className="text-accent" />}
-                    <span className="text-[9px] text-accent">
-                      {role === 'Unreleased' ? 'Unreleased' : 'Verified'}
-                    </span>
+                    <BadgeCheck size={11} className="text-accent" />
+                    <span className="text-[9px] text-accent">Verified</span>
                   </div>
                 </div>
               </div>
               </ScrollReveal>
               )
             })}
+          </div>
+
+          {/* Unreleased — compact 2×2 grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/[0.06]">
+            {RECEIPTS.filter(r => r.role === 'Unreleased').map(({ artist, detail }, idx) => (
+              <ScrollReveal key={artist} delay={(idx + 2) * 80}>
+              <div className="group flex flex-col justify-between bg-surface-4 p-5 hover:bg-surface-3 transition-colors duration-200 h-full ring-1 ring-inset ring-white/[0.04]">
+                <div>
+                  <p className="text-[15px] font-semibold text-foreground leading-tight mb-1">{artist}</p>
+                  <p className="text-[11px] text-muted-low leading-snug">{detail}</p>
+                </div>
+                <div className="flex items-center gap-1 mt-4">
+                  <span className="text-[8px] text-muted-low uppercase tracking-[0.1em]">Unreleased</span>
+                </div>
+              </div>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>

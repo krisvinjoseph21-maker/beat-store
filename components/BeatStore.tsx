@@ -229,8 +229,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     aria-pressed={active}
                     className="font-montserrat h-11 px-5 text-[12px] font-semibold border transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0 active:scale-95"
                     style={{
-                      background: active ? 'var(--accent)' : 'rgba(0,0,0,0.5)',
-                      borderColor: active ? 'var(--accent)' : 'rgba(255,255,255,0.18)',
+                      background: active ? 'var(--accent)' : 'var(--surface-overlay)',
+                      borderColor: active ? 'var(--accent)' : 'var(--border-mid)',
                       color: 'var(--foreground)',
                     }}
                   >
@@ -246,34 +246,40 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       </div>
 
       {/* Secondary filter row */}
-      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-4 flex flex-wrap items-center gap-2">
-        <Select
-          label="Filter by BPM range"
-          value={bpmRange}
-          onChange={setBpmRange}
-          options={BPM_RANGES.map((r) => ({ value: r.label, label: r.label }))}
-        />
-        <Select
-          label="Sort beats"
-          value={sortBy}
-          onChange={setSortBy}
-          options={SORT_OPTIONS}
-        />
-        <button
-          onClick={() => setFavoritesOnly(!favoritesOnly)}
-          aria-pressed={favoritesOnly}
-          className={`font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
-          style={{
-            borderColor: favoritesOnly ? 'var(--accent)' : 'var(--line-input)',
-            color: favoritesOnly ? 'var(--accent)' : 'var(--muted-low)',
-          }}
-        >
-          <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} aria-hidden="true" />
-          {t.store.saved}
-        </button>
-        <p className="ml-auto text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
-          {filtered.length} {filtered.length !== 1 ? 'beats' : 'beat'}
-        </p>
+      <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2">
+        {/* Selects always share one row */}
+        <div className="flex gap-2">
+          <Select
+            label="Filter by BPM range"
+            value={bpmRange}
+            onChange={setBpmRange}
+            options={BPM_RANGES.map((r) => ({ value: r.label, label: r.label }))}
+          />
+          <Select
+            label="Sort beats"
+            value={sortBy}
+            onChange={setSortBy}
+            options={SORT_OPTIONS}
+          />
+        </div>
+        {/* Favorites toggle + beat count share the second row on mobile */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setFavoritesOnly(!favoritesOnly)}
+            aria-pressed={favoritesOnly}
+            className={`font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-medium transition-[background-color,border-color,color] flex-shrink-0 ${favoritesOnly ? 'bg-accent/10' : 'bg-transparent'}`}
+            style={{
+              borderColor: favoritesOnly ? 'var(--accent)' : 'var(--line-input)',
+              color: favoritesOnly ? 'var(--accent)' : 'var(--muted-low)',
+            }}
+          >
+            <Heart size={11} fill={favoritesOnly ? 'currentColor' : 'none'} aria-hidden="true" />
+            {t.store.saved}
+          </button>
+          <p className="ml-auto sm:ml-0 text-[12px] shrink-0" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+            {filtered.length} {filtered.length !== 1 ? 'beats' : 'beat'}
+          </p>
+        </div>
       </div>
 
       {/* Beat list */}

@@ -35,6 +35,10 @@
   --promo: #52b788;       /* BOGO / limited-offer green — distinct from amber accent */
   --promo-dim: rgba(82,183,136,0.1);
   --promo-border: rgba(82,183,136,0.3);
+
+  /* ── Utility alphas ──────────────────────────────── */
+  --border-mid: rgba(255,255,255,0.18);   /* Genre pill / mid-opacity border */
+  --surface-overlay: rgba(0,0,0,0.5);    /* Inactive pill / overlay surface bg */
 }
 
 /* ── Tailwind v4 theme tokens ─────────────────────── */
@@ -64,6 +68,10 @@
   /* Interactive */
   --color-white-hover: #e8e8ed;
   --color-promo: #52b788;
+
+  /* Utility alphas */
+  --color-border-mid: rgba(255,255,255,0.18);
+  --color-surface-overlay: rgba(0,0,0,0.5);
 
   /* Borders & glows */
   --color-border: rgba(255,255,255,0.1);
@@ -170,7 +178,8 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.ticker-wrap { animation: ticker 35s linear infinite; will-change: transform; }
+.ticker-wrap { animation: ticker 28s linear infinite; will-change: transform; }
+.ticker-wrap:hover { animation-play-state: paused; }
 
 /* ── Marquee ──────────────────────────────────── */
 @keyframes marquee {

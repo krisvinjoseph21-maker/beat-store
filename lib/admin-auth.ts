@@ -59,7 +59,7 @@ export async function checkAdminAuth(
   if (!verifyAdminPassword(password)) {
     // Count failures — brute-force protection lives here only
     const failKey = getRateLimitKey(req, 'admin-fail')
-    if (!rateLimit(failKey, 10, 60_000)) {
+    if (!rateLimit(failKey, 5, 60_000)) {
       return { ok: false, rateLimited: true }
     }
     return { ok: false, rateLimited: false }

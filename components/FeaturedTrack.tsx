@@ -46,7 +46,7 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
         {beat.cover_url ? (
           <Image
             src={beat.cover_url}
-            alt={beat.title}
+            alt={`Cover art for ${beat.title}`}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 192px"

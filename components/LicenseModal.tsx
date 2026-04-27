@@ -212,12 +212,15 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
         )}
 
         {/* License tabs */}
-        <div className="mb-4 flex rounded-sm border border-line-card p-0.5">
+        <div role="tablist" aria-label="License type" className="mb-4 flex rounded-sm border border-line-card p-0.5">
           {(['standard', 'premium', 'unlimited'] as LicenseType[]).map((type) => (
             <button
               key={type}
+              role="tab"
+              id={`license-tab-${type}`}
+              aria-selected={licenseType === type}
+              aria-controls="license-tab-panel"
               onClick={() => { setLicenseType(type); if (type === 'unlimited') setBogoSelected(false) }}
-              aria-pressed={licenseType === type}
               className={`flex-1 rounded-sm py-2 text-xs font-semibold transition-[background-color,color] ${
                 licenseType === type
                   ? 'bg-white text-black'
@@ -229,6 +232,12 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
           ))}
         </div>
 
+        {/* Tab panel — features + quantity tiers for the selected license */}
+        <div
+          role="tabpanel"
+          id="license-tab-panel"
+          aria-labelledby={`license-tab-${licenseType}`}
+        >
         {/* Features */}
         <ul className="mb-4 space-y-1.5">
           {features.map((f) => (
@@ -276,6 +285,7 @@ export default function LicenseModal({ open, onClose, onCheckout }: Props) {
             })}
           </div>
         </div>
+        </div>{/* end tabpanel */}
 
         {/* BOGO deal option — standard and premium only */}
         {hasBogo && licenseType !== 'unlimited' && (

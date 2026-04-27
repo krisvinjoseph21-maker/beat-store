@@ -197,11 +197,22 @@ export default function HeroShader() {
   }, [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 w-full h-full"
-      style={{ zIndex: 3, mixBlendMode: 'screen' }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 w-full h-full hidden md:block"
+        style={{ zIndex: 3, mixBlendMode: 'screen' }}
+      />
+      {/* Static amber glow fallback for mobile where WebGL is skipped */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 w-full h-full md:hidden"
+        style={{
+          zIndex: 3,
+          background: 'radial-gradient(ellipse 80% 55% at 50% 65%, rgba(200,168,106,0.07) 0%, transparent 70%)',
+        }}
+      />
+    </>
   )
 }

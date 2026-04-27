@@ -287,15 +287,8 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
           </div>
         </div>
 
-        {/* Progress bar — pointer-events-none so clicks pass through to the expand button */}
-        <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true">
-          {!isThisActive && (
-            <div
-              className="absolute left-0 top-0 h-full transition-[width] duration-100 ease-linear"
-              style={{ width: `${progressPct}%`, background: 'rgba(255,255,255,0.3)' }}
-            />
-          )}
-        </div>
+        {/* Row separator — WaveformVisualizer draws the progress track for the active beat */}
+        <div className="relative z-10 h-[2px] bg-line w-full pointer-events-none" aria-hidden="true" />
       </div>
 
       <span className="sr-only" role="status" aria-live="polite">
