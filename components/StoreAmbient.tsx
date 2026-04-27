@@ -39,8 +39,9 @@ export default function StoreAmbient() {
     if (!canvas) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const ctxOrNull = canvas.getContext('2d')
+    if (!ctxOrNull) return
+    const ctx: CanvasRenderingContext2D = ctxOrNull
 
     let rafId   = 0
     let timerId = 0
