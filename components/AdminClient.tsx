@@ -220,6 +220,10 @@ export default function AdminClient() {
   const [promoForm, setPromoForm] = useState({ sitewide_discount_pct: '', bogo_free_count: '' })
   const [promoSaving, setPromoSaving] = useState(false)
   const [promoMsg, setPromoMsg] = useState('')
+  const [discountCodes, setDiscountCodes] = useState<{ code: string; pct: number; created_at: string }[]>([])
+  const [dcForm, setDcForm] = useState({ code: '', pct: '' })
+  const [dcSaving, setDcSaving] = useState(false)
+  const [dcMsg, setDcMsg] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -528,7 +532,6 @@ export default function AdminClient() {
     setPromoMsg('')
     try {
       const body: Partial<PromoConfig> = {
-        sitewide_discount_pct: promoForm.sitewide_discount_pct !== '' ? Number(promoForm.sitewide_discount_pct) : null,
         bogo_free_count: promoForm.bogo_free_count !== '' ? Number(promoForm.bogo_free_count) : null,
       }
       const res = await fetch('/api/admin/promos', {
@@ -547,6 +550,48 @@ export default function AdminClient() {
     } finally {
       setPromoSaving(false)
     }
+  }
+
+  async function fetchDiscountCodes() {
+    const res = await fetch('/api/admin/discount-codes', {
+      headers: { 'x-admin-password': password },
+    })
+    if (res.ok) setDiscountCodes(await res.json())
+  }
+
+  async function createDiscountCode() {
+    setDcSaving(true)
+    setDcMsg('')
+    try {
+      const res = await fetch('/api/admin/discount-codes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ code: dcForm.code, pct: Number(dcForm.pct) }),
+      })
+      if (res.ok) {
+        const created = await res.json()
+        setDiscountCodes((prev) => {
+          const without = prev.filter((c) => c.code !== created.code)
+          return [created, ...without]
+        })
+        setDcForm({ code: '', pct: '' })
+        setDcMsg('Code saved!')
+      } else {
+        const err = await res.json().catch(() => ({}))
+        setDcMsg(`Error: ${err.error ?? 'Failed to save'}`)
+      }
+    } finally {
+      setDcSaving(false)
+    }
+  }
+
+  async function deleteDiscountCode(code: string) {
+    const res = await fetch('/api/admin/discount-codes', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ code }),
+    })
+    if (res.ok) setDiscountCodes((prev) => prev.filter((c) => c.code !== code))
   }
 
   async function toggleActive(beat: Beat) {
@@ -911,7 +956,7 @@ export default function AdminClient() {
         <h1 className="text-2xl font-black text-white">Admin Panel</h1>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => { fetchBeats(); fetchOrders(); fetchPromos() }}
+            onClick={() => { fetchBeats(); fetchOrders(); fetchPromos(); fetchDiscountCodes() }}
             className="flex items-center gap-2 rounded-lg border border-line-card px-3 py-2 text-xs text-muted-mid hover:text-white transition-colors"
           >
             <RefreshCw size={14} /> Refresh
@@ -930,7 +975,7 @@ export default function AdminClient() {
         {(['beats', 'orders', 'upload', 'promos', 'melody-packs', 'drum-packs'] as const).map((t) => (
           <button
             key={t}
-            onClick={() => { setTab(t); if (t === 'promos') fetchPromos(); if (t === 'melody-packs') fetchMelodyPacks(); if (t === 'drum-packs') fetchDrumPacks() }}
+            onClick={() => { setTab(t); if (t === 'promos') { fetchPromos(); fetchDiscountCodes() } if (t === 'melody-packs') fetchMelodyPacks(); if (t === 'drum-packs') fetchDrumPacks() }}
             className={`px-4 py-3 text-sm font-semibold whitespace-nowrap capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? 'border-white text-white'
@@ -1180,23 +1225,14 @@ export default function AdminClient() {
 
       {/* Promos tab */}
       {tab === 'promos' && (
-        <div className="max-w-xl space-y-6">
-          <div>
-            <h2 className="text-lg font-bold text-white mb-1">Promotions</h2>
-            <p className="text-xs text-muted">Changes apply immediately to all visitors. Set a value to 0 or leave blank to disable.</p>
-          </div>
-
-          {/* Status cards */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className={`rounded-xl border px-4 py-3 ${promo.sitewide_discount_pct ? 'border-accent/30 bg-accent/10' : 'border-line-card bg-surface-1'}`}>
-              <div className="flex items-center gap-2 mb-1">
-                <Tag size={13} className={promo.sitewide_discount_pct ? 'text-accent' : 'text-muted-low'} />
-                <p className="text-xs font-semibold text-muted-mid">Sitewide Discount</p>
-              </div>
-              <p className={`text-2xl font-black ${promo.sitewide_discount_pct ? 'text-accent' : 'text-muted-low'}`}>
-                {promo.sitewide_discount_pct ? `${promo.sitewide_discount_pct}% OFF` : 'Off'}
-              </p>
+        <div className="max-w-xl space-y-8">
+          {/* BOGO section */}
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">Promotions</h2>
+              <p className="text-xs text-muted">Changes apply immediately to all visitors. Leave blank or set to 0 to disable.</p>
             </div>
+
             <div className={`rounded-xl border px-4 py-3 ${promo.bogo_free_count ? 'border-promo/30 bg-promo/10' : 'border-line-card bg-surface-1'}`}>
               <div className="flex items-center gap-2 mb-1">
                 <Zap size={13} className={promo.bogo_free_count ? 'text-promo' : 'text-muted-low'} />
@@ -1206,34 +1242,8 @@ export default function AdminClient() {
                 {promo.bogo_free_count ? `Buy 1 Get ${promo.bogo_free_count}` : 'Off'}
               </p>
             </div>
-          </div>
 
-          {/* Edit form */}
-          <div className="rounded-xl border border-line-card bg-surface-1 p-5 space-y-5">
-            {/* Sitewide discount */}
-            <div>
-              <label className="block text-xs font-semibold text-muted-mid mb-1.5">
-                Sitewide Discount (%)
-              </label>
-              <p className="text-[11px] text-muted-low mb-2">Applies a % off all beats at checkout. Takes effect over any coupon code that gives less.</p>
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={promoForm.sitewide_discount_pct}
-                  onChange={(e) => setPromoForm((f) => ({ ...f, sitewide_discount_pct: e.target.value }))}
-                  placeholder="0 = off"
-                  className="w-32 rounded-xl border border-line-card bg-surface-3 px-4 py-2.5 text-sm text-white outline-none focus:border-muted"
-                />
-                <span className="text-sm text-muted">% off all beats</span>
-              </div>
-            </div>
-
-            <div className="h-px bg-line-card" />
-
-            {/* BOGO */}
-            <div>
+            <div className="rounded-xl border border-line-card bg-surface-1 p-5">
               <label className="block text-xs font-semibold text-muted-mid mb-1.5">
                 BOGO — Free Beats Count
               </label>
@@ -1257,22 +1267,100 @@ export default function AdminClient() {
                 </span>
               </div>
             </div>
+
+            {promoMsg && (
+              <p className={`text-sm ${promoMsg.startsWith('Error') ? 'text-danger' : 'text-green-400'}`}>
+                {promoMsg}
+              </p>
+            )}
+
+            <button
+              onClick={savePromos}
+              disabled={promoSaving}
+              className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
+            >
+              <Check size={14} />
+              {promoSaving ? 'Saving…' : 'Save Promotions'}
+            </button>
           </div>
 
-          {promoMsg && (
-            <p className={`text-sm ${promoMsg.startsWith('Error') ? 'text-danger' : 'text-green-400'}`}>
-              {promoMsg}
-            </p>
-          )}
+          <div className="h-px bg-line-card" />
 
-          <button
-            onClick={savePromos}
-            disabled={promoSaving}
-            className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-50"
-          >
-            <Check size={14} />
-            {promoSaving ? 'Saving…' : 'Save Promotions'}
-          </button>
+          {/* Discount Codes section */}
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">Discount Codes</h2>
+              <p className="text-xs text-muted">Create codes customers can enter at checkout for a % off.</p>
+            </div>
+
+            <div className="rounded-xl border border-line-card bg-surface-1 p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-muted-mid mb-1.5">Code</label>
+                  <input
+                    type="text"
+                    value={dcForm.code}
+                    onChange={(e) => setDcForm((f) => ({ ...f, code: e.target.value }))}
+                    placeholder="e.g. SUMMER20"
+                    maxLength={50}
+                    className="w-full rounded-xl border border-line-card bg-surface-3 px-4 py-2.5 text-sm text-white uppercase outline-none focus:border-muted placeholder:normal-case"
+                  />
+                </div>
+                <div className="w-32">
+                  <label className="block text-xs font-semibold text-muted-mid mb-1.5">% Off</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={100}
+                    value={dcForm.pct}
+                    onChange={(e) => setDcForm((f) => ({ ...f, pct: e.target.value }))}
+                    placeholder="e.g. 20"
+                    className="w-full rounded-xl border border-line-card bg-surface-3 px-4 py-2.5 text-sm text-white outline-none focus:border-muted"
+                  />
+                </div>
+              </div>
+
+              {dcMsg && (
+                <p className={`text-sm ${dcMsg.startsWith('Error') ? 'text-danger' : 'text-green-400'}`}>
+                  {dcMsg}
+                </p>
+              )}
+
+              <button
+                onClick={createDiscountCode}
+                disabled={dcSaving || !dcForm.code.trim() || !dcForm.pct}
+                className="flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-black hover:bg-white-hover transition-colors disabled:opacity-40"
+              >
+                <Tag size={13} />
+                {dcSaving ? 'Saving…' : 'Create Code'}
+              </button>
+            </div>
+
+            {discountCodes.length > 0 && (
+              <div className="rounded-xl border border-line-card bg-surface-1 divide-y divide-line-card overflow-hidden">
+                {discountCodes.map((dc) => (
+                  <div key={dc.code} className="flex items-center justify-between px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Tag size={13} className="text-accent shrink-0" />
+                      <span className="text-sm font-bold text-white">{dc.code}</span>
+                      <span className="text-xs font-semibold text-accent bg-accent/10 rounded-lg px-2 py-0.5">{dc.pct}% OFF</span>
+                    </div>
+                    <button
+                      onClick={() => deleteDiscountCode(dc.code)}
+                      className="p-1.5 text-muted-low hover:text-danger transition-colors"
+                      title="Delete code"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {discountCodes.length === 0 && (
+              <p className="text-xs text-muted-low text-center py-4">No discount codes yet.</p>
+            )}
+          </div>
         </div>
       )}
 
