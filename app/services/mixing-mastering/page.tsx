@@ -4,7 +4,8 @@ import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
   title: 'Mixing & Mastering — PRODKJBEATS',
-  description: 'Professional mix and master services. 48-hour turnaround, stem-level mixdowns, streaming-ready masters.',
+  description: 'Professional mixing and mastering services from PRODKJBEATS. 48-hour turnaround, stem-level mixdowns, and streaming-ready masters for commercial releases.',
+  alternates: { canonical: '/services/mixing-mastering' },
 }
 
 export default function MixingMasteringPage() {

@@ -173,11 +173,11 @@ export default function FeaturedTrack({ beat }: { beat: Beat }) {
                   <Link
                     key={i}
                     href="/about"
-                    aria-label="Inquire about exclusive license"
+                    aria-label="Full ownership — inquire about exclusive license"
                     className="bg-surface-2 flex flex-col justify-between p-4 hover:bg-surface-1 transition-colors duration-150 group min-h-[88px]"
                   >
                     <div>
-                      <div className="font-montserrat text-[10px] text-muted-low sm:hidden mb-1">{opt.name}</div>
+                      <div className="font-montserrat text-[10px] text-muted-low sm:hidden mb-1" aria-hidden="true">{opt.name}</div>
                       <div className="font-montserrat text-[11px] text-muted-low">{opt.desc}</div>
                     </div>
                     <span className="font-montserrat mt-3 text-[11px] font-semibold text-foreground group-hover:text-accent transition-colors">

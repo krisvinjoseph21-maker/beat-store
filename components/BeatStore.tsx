@@ -163,12 +163,13 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             {t.store.fullCatalog}
           </p>
 
-          <h1
+          <div
             className="font-display uppercase leading-none mb-8"
             style={{ fontSize: 'clamp(52px, 9vw, 112px)', color: 'var(--foreground)' }}
+            aria-hidden="true"
           >
             {t.store.allBeatsHeading}
-          </h1>
+          </div>
 
           {/* Placement credit strip */}
           <div

@@ -46,7 +46,7 @@ export default function LocaleSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label="Change language or currency"
+        aria-label={`${mounted ? currency : 'USD'} — change language or currency`}
         aria-expanded={open}
         aria-haspopup="true"
         className="h-11 inline-flex items-center gap-1.5 text-[12px] text-muted hover:text-foreground transition-colors"

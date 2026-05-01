@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase-admin'
 
 export const revalidate = 3600
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prodkjbeats.com'
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://beat-store-d3iw.vercel.app'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createAdminClient()

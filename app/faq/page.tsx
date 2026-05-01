@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Beat Licensing FAQ — PRODKJBEATS | Leases, Downloads & Formats',
+  title: 'Beat Licensing FAQ — PRODKJBEATS | All Your Questions',
   description: 'Answers to common questions about beat licensing, file formats, download links, refund policy, and how to use PRODKJBEATS beats.',
   alternates: { canonical: '/faq' },
 }

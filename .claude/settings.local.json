@@ -41,7 +41,9 @@
       "Bash(squirrel --version)",
       "Bash(mkdir -p \"/c/Users/AWSExam/bin\")",
       "Bash(squirrel audit *)",
-      "Bash(curl -sI --max-time 10 https://prodkjbeats.com)"
+      "Bash(curl -sI --max-time 10 https://prodkjbeats.com)",
+      "Bash(curl -v --max-time 15 https://prodkjbeats.com)",
+      "Bash(curl -sI --max-time 10 https://google.com)"
     ]
   }
 }

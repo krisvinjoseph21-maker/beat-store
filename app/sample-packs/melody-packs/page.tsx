@@ -6,7 +6,8 @@ export const revalidate = 60
 
 export const metadata = {
   title: 'Melody Packs — PRODKJBEATS',
-  description: 'Browse and purchase premium melody loop kits and sample packs.',
+  description: 'Browse premium melody loop kits and sample packs from PRODKJBEATS. Designed for trap, drill, R&B, and Afrobeats producers. Instant download, royalty-free.',
+  alternates: { canonical: '/sample-packs/melody-packs' },
 }
 
 export default async function MelodyPacksPage() {

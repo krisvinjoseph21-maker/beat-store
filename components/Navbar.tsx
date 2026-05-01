@@ -279,7 +279,7 @@ export default function Navbar() {
         className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
           mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
-        aria-hidden={!mobileOpen}
+
       >
         <div key={`menu-${mobileOpen}`} className="px-6 py-4 flex flex-col gap-1">
           {NAV_LINKS.map((link, idx) => {

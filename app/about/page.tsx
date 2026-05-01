@@ -3,7 +3,7 @@ import ContactForm from '@/components/AboutClient'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Contact PRODKJBEATS — Inquiries, Collabs & Custom Beat Requests',
+  title: 'Contact PRODKJBEATS — Beat Requests & Collabs',
   description: 'Reach out to PRODKJBEATS for custom beat requests, collaboration inquiries, or licensing questions. Response within 24–48 hours.',
   alternates: { canonical: '/about' },
 }

@@ -26,7 +26,7 @@ export default function ShareButton({ beatId }: { beatId: string }) {
           ? 'border-accent/40 bg-accent/10 text-accent'
           : 'border-line-input text-muted hover:border-muted hover:text-white'
       }`}
-      aria-label={copied ? 'Link copied' : 'Copy link'}
+      aria-label={copied ? 'Copied!' : 'Share'}
     >
       {copied ? <><Check size={12} /> Copied!</> : <><Share2 size={12} /> Share</>}
     </button>

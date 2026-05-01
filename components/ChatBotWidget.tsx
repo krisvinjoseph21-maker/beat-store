@@ -12,7 +12,7 @@ type Message = { role: 'bot' | 'user'; text: string; id: number }
 
 const QA: Array<{ kw: string[]; answer: string }> = [
   {
-    kw: ['license', 'licenses', 'types', 'tiers', 'options', 'offer', 'plans', 'available'],
+    kw: ['license', 'licenses', 'types', 'tiers', 'options', 'plans', 'available'],
     answer:
       'We have 4 license options:\n• **Basic Lease** — from $39.95 (MP3, 100K streams)\n• **Premium Lease** — from $49.95 (WAV, 500K streams)\n• **Unlimited Lease** — from $149.95 (WAV + Stems, 1.5M streams)\n• **Exclusive** — $500+ (full exclusive rights)\n\nAll leases are non-exclusive. [View full comparison →](/licensing)',
   },
@@ -27,6 +27,11 @@ const QA: Array<{ kw: string[]; answer: string }> = [
       'Files included per license:\n• Basic — MP3 (320kbps)\n• Premium — WAV (24-bit)\n• Unlimited — WAV + full trackout stems\n• Exclusive — WAV + Stems + MP3\n\nYour download link arrives by email instantly after purchase.',
   },
   {
+    kw: ['non-exclusive', 'nonexclusive', 'what is non', 'still sell', 'sell to others', 'other artists'],
+    answer:
+      'Non-exclusive means **PRODKJBEATS can still lease the same beat to other artists**. Your license gives you full use rights within your tier limits, but the beat stays in the store.\n\nWant to be the only one with it? Buy the **Exclusive** license.',
+  },
+  {
     kw: ['exclusive', 'buyout', 'buy out', 'full rights', 'ownership', 'own the beat'],
     answer:
       'Yes — exclusive rights start at **$500+**. With an exclusive:\n• Beat is removed from the store permanently\n• Full exclusive ownership\n• Unlimited streams, copies, and music videos\n• WAV + Stems + MP3 included\n\nContact us on the [About page](/about) to check availability.',
@@ -37,7 +42,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
       'All leases allow streaming on every major platform — Spotify, Apple Music, YouTube, SoundCloud, and more.\n\nStream limits:\n• Basic — 100K streams\n• Premium — 500K streams\n• Unlimited — 1.5M streams\n\nYouTube monetization is included in all tiers. Credit **Prod. PRODKJBEATS** in your descriptions.',
   },
   {
-    kw: ['credit', 'credits', 'tag', 'producer tag', 'attribute', 'mention', 'prod.'],
+    kw: ['credit', 'credits', 'producer tag', 'attribute', 'mention', 'prod.'],
     answer:
       'Credit is required on all leased beats. Use **"Prod. PRODKJBEATS"** in:\n• Song title — e.g. "Song Name (Prod. PRODKJBEATS)"\n• YouTube and social video descriptions\n• Streaming platform song credits\n\nNo credit required on exclusive purchases.',
   },
@@ -52,7 +57,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
       'Your download link arrives by email right after payment and is valid for 48 hours. You can re-download any time by logging into your account at **prodkjbeats.com/purchases**.',
   },
   {
-    kw: ['radio', 'broadcast', 'broadcasting', 'station', 'fm', 'am'],
+    kw: ['radio', 'broadcast', 'broadcasting', 'station', 'fm'],
     answer:
       'Radio broadcasting limits:\n• Basic — up to 2 stations\n• Premium — up to 5 stations\n• Unlimited & Exclusive — unlimited stations',
   },
@@ -60,11 +65,6 @@ const QA: Array<{ kw: string[]; answer: string }> = [
     kw: ['music video', 'video', 'visual', 'film', 'shoot', 'mv', 'sync'],
     answer:
       'Music video rights:\n• Basic & Premium — 1 music video\n• Unlimited & Exclusive — unlimited music videos\n\nTV / film sync requires an exclusive license.',
-  },
-  {
-    kw: ['non-exclusive', 'nonexclusive', 'what is non', 'still sell', 'sell to others', 'other artists'],
-    answer:
-      'Non-exclusive means **PRODKJBEATS can still lease the same beat to other artists**. Your license gives you full use rights within your tier limits, but the beat stays in the store.\n\nWant to be the only one with it? Buy the **Exclusive** license.',
   },
   {
     kw: ['live', 'performance', 'perform', 'concert', 'show', 'tour', 'gig', 'stage'],
@@ -82,7 +82,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
       'Custom beat production is available. Head to the [Services page](/services) or reach out on the [About page](/about) to discuss your vision, budget, and turnaround time.',
   },
   {
-    kw: ['mixing', 'mastering', 'mix', 'master', 'audio engineering', 'engineer'],
+    kw: ['mixing', 'mastering', 'master', 'audio engineering', 'engineer'],
     answer:
       'Professional mixing & mastering services are available. Check out the [Mixing & Mastering page](/services/mixing-mastering) for details and pricing.',
   },
@@ -92,7 +92,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
       'The best way to reach us is through the [Contact / About page](/about). For exclusive beat or custom production inquiries, that is the place to start — we respond quickly.',
   },
   {
-    kw: ['hello', 'hi', 'hey', 'sup', 'help', 'yo', 'what can'],
+    kw: ['hello', 'hey', 'sup', 'help', 'yo', 'what can'],
     answer:
       'Hey! Ask me anything about licensing, prices, file formats, or downloads — I am here to help.',
   },
