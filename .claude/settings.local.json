@@ -29,7 +29,14 @@
       "Bash(git stash *)",
       "Bash(npm view *)",
       "Bash(grep -E \"\\\\.tsx$\")",
-      "Bash(awk '{print $9, \"\\(\" $5 \"\\)\"}')"
+      "Bash(awk '{print $9, \"\\(\" $5 \"\\)\"}')",
+      "Bash(where squirrel *)",
+      "Read(//c/Users/AWSExam/.local/bin/**)",
+      "Read(//usr/local/**)",
+      "Bash(~/.local/bin/squirrel.exe *)",
+      "Skill(claude-api)",
+      "PowerShell(squirrel *)",
+      "WebFetch(domain:squirrelscan.com)"
     ]
   }
 }

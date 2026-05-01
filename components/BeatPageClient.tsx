@@ -118,6 +118,7 @@ function BeatWaveform({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(0)
+  const drawRef = useRef<(() => void) | null>(null)
   const progressRef = useRef(progressPct)
   const isPlayingRef = useRef(isPlaying)
   const liveDataRef = useRef<Uint8Array<ArrayBuffer> | null>(null)
@@ -127,11 +128,24 @@ function BeatWaveform({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
 
-  useEffect(() => { progressRef.current = progressPct }, [progressPct])
-  useEffect(() => { isPlayingRef.current = isPlaying }, [isPlaying])
+  useEffect(() => {
+    progressRef.current = progressPct
+    // Trigger a single redraw when seeking while paused
+    if (!isPlayingRef.current && drawRef.current && rafRef.current === 0) {
+      rafRef.current = requestAnimationFrame(drawRef.current)
+    }
+  }, [progressPct])
 
   useEffect(() => {
-    staticBars.current = seededBars(beatId, 140)
+    isPlayingRef.current = isPlaying
+    if (isPlaying && drawRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(drawRef.current)
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
+    staticBars.current = seededBars(beatId, 400)
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -139,23 +153,15 @@ function BeatWaveform({
     const dpr = window.devicePixelRatio || 1
     const CSS_H = 80
 
-    function resize() {
-      if (!canvas) return
-      const w = canvas.offsetWidth
-      if (!w) return
-      canvas.width = Math.round(w * dpr)
-      canvas.height = Math.round(CSS_H * dpr)
-    }
-
-    const ro = new ResizeObserver(resize)
-    ro.observe(canvas)
-    resize()
-
     const AR = 200, AG = 168, AB = 106 // --accent colour
 
     function draw() {
       const ctx = canvas!.getContext('2d')
-      if (!ctx) { rafRef.current = requestAnimationFrame(draw); return }
+      if (!ctx) {
+        if (isPlayingRef.current) rafRef.current = requestAnimationFrame(draw)
+        else rafRef.current = 0
+        return
+      }
 
       const W = canvas!.width
       const H = canvas!.height
@@ -200,11 +206,34 @@ function BeatWaveform({
         ctx.fillRect(x, y, BAR_W, barH)
       }
 
+      // Only continue the loop while playing; static view needs just one frame
+      if (isPlayingRef.current) {
+        rafRef.current = requestAnimationFrame(draw)
+      } else {
+        rafRef.current = 0
+      }
+    }
+
+    drawRef.current = draw
+
+    function resize() {
+      if (!canvas) return
+      const w = canvas.offsetWidth
+      if (!w) return
+      const newW = Math.round(w * dpr)
+      const newH = Math.round(CSS_H * dpr)
+      if (canvas.width === newW && canvas.height === newH) return
+      canvas.width = newW
+      canvas.height = newH
+      // Draw initial frame; loop continues only if currently playing
+      cancelAnimationFrame(rafRef.current)
       rafRef.current = requestAnimationFrame(draw)
     }
 
-    rafRef.current = requestAnimationFrame(draw)
-    return () => { cancelAnimationFrame(rafRef.current); ro.disconnect() }
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas)
+    resize()
+    return () => { cancelAnimationFrame(rafRef.current); rafRef.current = 0; ro.disconnect(); drawRef.current = null }
   }, [beatId])
 
   return (
@@ -259,7 +288,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
       const audio = sharedAudioElement.current
       if (audio && beat.preview_url) {
         audio.src = beat.preview_url
-        audio.play().catch(() => {})
+        audio.play().catch(() => { setPlaying(false) })
       }
       setCurrentBeat(beat)
       setPlaying(true)
@@ -350,7 +379,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
                 <button
                   onClick={handleAddToCart}
                   disabled={inCart}
-                  className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-sm font-bold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2.5 text-sm font-bold transition-colors ${
                     inCart
                       ? 'bg-white/10 text-muted-mid cursor-default'
                       : 'bg-accent text-black hover:brightness-110'
@@ -385,14 +414,13 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
         <p id="license-picker-label" className="mb-3 text-[10px] font-normal uppercase tracking-[0.12em] text-muted-low">
           Select License
         </p>
-        <div role="radiogroup" aria-labelledby="license-picker-label" className="grid grid-cols-2 gap-2 mb-3">
+        <div aria-labelledby="license-picker-label" className="grid grid-cols-2 gap-2 mb-3">
           {TIERS.map((tier) => {
             const isSelected = selectedTier === tier.id
             return (
               <button
                 key={tier.id}
-                role="radio"
-                aria-checked={isSelected}
+                aria-pressed={isSelected}
                 onClick={() => handleSelectTier(tier.id)}
                 className={`relative text-left rounded-sm border p-3 transition-[border-color,background-color] ${
                   isSelected
@@ -439,8 +467,9 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
           Compare all licenses
         </button>
 
-        {compareOpen && (
-          <div className="mb-4 rounded-sm border border-white/[0.08] overflow-hidden">
+        <div className={`compare-grid${compareOpen ? ' is-open' : ''}`} aria-hidden={!compareOpen}>
+          <div className="compare-inner">
+            <div className="mb-4 rounded-sm border border-white/[0.08] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse min-w-[480px]">
                 <thead>
@@ -505,7 +534,8 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
               </Link>
             </div>
           </div>
-        )}
+          </div>
+        </div>
 
         {/* CTA */}
         {selectedTier !== 'exclusive' ? (

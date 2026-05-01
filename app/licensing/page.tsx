@@ -5,8 +5,9 @@ import { PRICES } from '@/lib/prices'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Beat Licensing — PRODKJBEATS',
+  title: 'Beat Licensing — PRODKJBEATS | Compare All License Tiers',
   description: 'Compare Standard, Premium, Unlimited, and Exclusive beat licenses. Transparent pricing, instant download, non-exclusive leases starting at $39.95.',
+  alternates: { canonical: '/licensing' },
 }
 
 const TIERS = [

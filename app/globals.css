@@ -173,19 +173,13 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 }
 .hero-headline { animation: shimmer 8s ease infinite 3s; }
 
-/* ── Ticker ───────────────────────────────────── */
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.ticker-wrap { animation: ticker 28s linear infinite; will-change: transform; }
-.ticker-wrap:hover { animation-play-state: paused; }
-
-/* ── Marquee ──────────────────────────────────── */
+/* ── Ticker / Marquee ────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+.ticker-wrap { animation: marquee 28s linear infinite; will-change: transform; }
+.ticker-wrap:hover { animation-play-state: paused; }
 .animate-marquee { animation: marquee 30s linear infinite; will-change: transform; }
 .animate-marquee:hover { animation-play-state: paused; }
 
@@ -287,6 +281,19 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
     from { transform: translateY(18px); }
     to   { transform: translateY(-10px); }
   }
+}
+
+/* ── Compare table expand ─────────────────────── */
+.compare-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.compare-grid.is-open {
+  grid-template-rows: 1fr;
+}
+.compare-inner {
+  overflow: hidden;
 }
 
 /* ── License drawer expand ────────────────────── */

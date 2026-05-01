@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Cookie Preferences — PRODKJBEATS',
-  description: 'Manage cookie settings for PRODKJBEATS — essential, analytics, and preference cookies explained.',
+  title: 'Cookie Preferences — PRODKJBEATS | Manage Your Cookie Settings',
+  description: 'Manage cookie settings for PRODKJBEATS — learn about essential, analytics, and preference cookies and how each one affects your experience.',
+  alternates: { canonical: '/cookies' },
 }
 
 const COOKIE_TYPES = [

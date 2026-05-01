@@ -4,17 +4,20 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'PRODKJBEATS — Premium Beats',
+  title: 'PRODKJBEATS — Placement-Proven Beats | Trap, Drill, R&B & Afrobeats',
   description: 'Verified placements with GloRilla, DeeBaby, Shenseea & more. Shop trap, drill, R&B, and Afrobeats beats — instant download.',
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'PRODKJBEATS — Premium Beats',
+    title: 'PRODKJBEATS — Placement-Proven Beats | Trap, Drill, R&B & Afrobeats',
     description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
     type: 'website',
+    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS' }],
   },
   twitter: {
     card: 'summary',
-    title: 'PRODKJBEATS — Premium Beats',
+    title: 'PRODKJBEATS — Placement-Proven Beats | Trap, Drill, R&B & Afrobeats',
     description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
+    images: ['/android-chrome-512x512.png'],
   },
 }
 import { BadgeCheck } from 'lucide-react'
@@ -255,7 +258,7 @@ export default async function HomePage() {
             className="relative font-display leading-none mb-6 text-foreground"
             style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
           >
-            The Beat Is Ready.
+            Find Your Next Hit.
           </h2>
 
           <Link

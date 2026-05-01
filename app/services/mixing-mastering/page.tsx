@@ -12,8 +12,8 @@ export default function MixingMasteringPage() {
     <>
       <MixingMasteringClient />
       <CtaBanner
-        label="The Beats Are Waiting"
-        heading="The Beats Are Ready."
+        label="Your Sound Starts Here"
+        heading="Find Your Next Hit."
         subtext="Pick your sound, license instantly, and bring it in for a professional mix."
       />
     </>

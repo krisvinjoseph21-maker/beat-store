@@ -7,6 +7,7 @@ import BottomPlayer from '@/components/BottomPlayer'
 import AnalyticsScripts from '@/components/AnalyticsScripts'
 import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
 import HtmlLang from '@/components/HtmlLang'
+import ChatBotWidget from '@/components/ChatBotWidget'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -78,6 +79,7 @@ export default function RootLayout({
         <Footer />
         <BottomPlayer />
         <EmailCaptureModalClient />
+        <ChatBotWidget />
         <AnalyticsScripts />
       </body>
     </html>

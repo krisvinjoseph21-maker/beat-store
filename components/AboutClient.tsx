@@ -21,8 +21,12 @@ export default function ContactForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      if (res.ok) setSent(true)
-      else setError(t.contact.error)
+      if (res.ok) {
+        setSent(true)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error ?? t.contact.error)
+      }
     } catch {
       setError(t.contact.error)
     } finally {
@@ -60,6 +64,7 @@ export default function ContactForm() {
             required
             type="text"
             autoComplete="name"
+            maxLength={100}
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             className={inputClass}
@@ -73,6 +78,7 @@ export default function ContactForm() {
             required
             type="email"
             autoComplete="email"
+            maxLength={254}
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             className={inputClass}
@@ -89,6 +95,7 @@ export default function ContactForm() {
           required
           type="text"
           autoComplete="off"
+          maxLength={200}
           value={form.subject}
           onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
           className={inputClass}
@@ -103,6 +110,7 @@ export default function ContactForm() {
           id="c-message"
           required
           rows={5}
+          maxLength={2000}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
           className={`${inputClass} resize-none`}

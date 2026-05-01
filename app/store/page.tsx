@@ -29,17 +29,20 @@ async function getBeats(): Promise<Beat[]> {
 export const revalidate = 30
 
 export const metadata = {
-  title: 'Beat Store — PRODKJBEATS',
+  title: 'Beat Store — PRODKJBEATS | Trap, Drill, R&B & Afrobeats Instrumentals',
   description: 'Shop trap, drill, R&B, and Afrobeats instrumentals. Instant download. Standard, Premium, and Unlimited leases available.',
+  alternates: { canonical: '/store' },
   openGraph: {
-    title: 'Beat Store — PRODKJBEATS',
+    title: 'Beat Store — PRODKJBEATS | Trap, Drill, R&B & Afrobeats Instrumentals',
     description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
     type: 'website',
+    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS Beat Store' }],
   },
   twitter: {
     card: 'summary',
-    title: 'Beat Store — PRODKJBEATS',
+    title: 'Beat Store — PRODKJBEATS | Trap, Drill, R&B & Afrobeats Instrumentals',
     description: 'Shop trap, drill, R&B, and Afrobeats instrumentals.',
+    images: ['/android-chrome-512x512.png'],
   },
 }
 

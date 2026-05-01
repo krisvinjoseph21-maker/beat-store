@@ -81,7 +81,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
       const audio = sharedAudioElement.current
       if (audio && beat.preview_url) {
         audio.src = beat.preview_url
-        audio.play().catch(() => {})
+        audio.play().catch(() => { setPlaying(false) })
       }
       setCurrentBeat(beat)
       setPlaying(true)
@@ -193,16 +193,6 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
                   </span>
                 </span>
               )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {beat.subgenre && (
-                <span className="font-montserrat" style={{ fontSize: '10px', color: 'var(--muted-low)' }}>
-                  {beat.subgenre.toLowerCase()}
-                </span>
-              )}
-              <span className="font-montserrat" style={{ fontSize: '10px', color: 'var(--muted-low)' }}>
-                {beat.genre.toLowerCase()} {t.beatCard.typeBeat}
-              </span>
             </div>
             {/* BPM + key — visible on mobile where the metadata columns are hidden */}
             <div className="flex md:hidden gap-2 mt-0.5">
