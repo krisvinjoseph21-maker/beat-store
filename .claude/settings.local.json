@@ -36,7 +36,12 @@
       "Bash(~/.local/bin/squirrel.exe *)",
       "Skill(claude-api)",
       "PowerShell(squirrel *)",
-      "WebFetch(domain:squirrelscan.com)"
+      "WebFetch(domain:squirrelscan.com)",
+      "Bash(cp __TRACKED_VAR__/.local/bin/squirrel.exe /c/Users/AWSExam/bin/squirrel.exe)",
+      "Bash(squirrel --version)",
+      "Bash(mkdir -p \"/c/Users/AWSExam/bin\")",
+      "Bash(squirrel audit *)",
+      "Bash(curl -sI --max-time 10 https://prodkjbeats.com)"
     ]
   }
 }

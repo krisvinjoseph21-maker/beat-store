@@ -150,19 +150,19 @@ function parseInline(text: string, lineKey: string): React.ReactNode {
 function BotText({ text }: { text: string }) {
   const lines = text.split('\n')
   return (
-    <div className="text-[13px] leading-[1.6] text-muted">
+    <div className="text-[13px] leading-[1.65] text-muted">
       {lines.map((line, i) => {
         if (line.startsWith('• ')) {
           return (
-            <div key={i} className="flex gap-1.5 pl-0.5 mt-0.5 first:mt-0">
+            <div key={i} className="flex gap-2 pl-0.5 mt-1.5 first:mt-0">
               <span className="text-muted-low shrink-0 select-none">•</span>
               <span>{parseInline(line.slice(2), String(i))}</span>
             </div>
           )
         }
-        if (line === '') return <div key={i} className="h-2" />
+        if (line === '') return <div key={i} className="h-3" />
         return (
-          <div key={i} className={i > 0 ? 'mt-1' : ''}>
+          <div key={i} className={i > 0 ? 'mt-1.5' : ''}>
             {parseInline(line, String(i))}
           </div>
         )
@@ -248,16 +248,16 @@ export default function ChatBotWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2.5">
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[86%] rounded-xl px-3.5 py-2.5 ${
+                  className={`max-w-[86%] rounded-2xl px-4 py-3 ${
                     m.role === 'user'
-                      ? 'bg-white/[0.07] text-[13px] leading-[1.5] text-foreground'
+                      ? 'bg-white/[0.07] text-[13px] leading-[1.55] text-foreground'
                       : 'bg-surface-1 border border-white/[0.06]'
                   }`}
                 >
