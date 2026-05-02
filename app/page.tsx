@@ -29,6 +29,7 @@ import HeroShader from '@/components/HeroShader'
 import HeadlineParallax from '@/components/HeadlineParallax'
 import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
+import LicenseTierGrid from '@/components/LicenseTierGrid'
 
 async function getPageData(): Promise<{ featured: Beat | null }> {
   try {
@@ -169,6 +170,21 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ═══ LICENSING INFO ══════════════════════════════════════ */}
+      <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
+          <ScrollReveal className="mb-12">
+            <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Licensing Info</p>
+            <h2 className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
+              Choose Your License.
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal>
+            <LicenseTierGrid />
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
       <section className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
@@ -239,6 +255,26 @@ export default async function HomePage() {
               </ScrollReveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══ CONTACT ══════════════════════════════════════════════ */}
+      <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
+          <ScrollReveal className="mb-14">
+            <h2
+              className="font-display text-foreground leading-none mb-3"
+              style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
+            >
+              Get in Touch.
+            </h2>
+            <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
+              Custom beats, collabs, licensing questions — reach out direct.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal>
+            <ContactForm />
+          </ScrollReveal>
         </div>
       </section>
 
