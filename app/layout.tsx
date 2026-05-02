@@ -8,6 +8,7 @@ import AnalyticsScripts from '@/components/AnalyticsScripts'
 import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
 import HtmlLang from '@/components/HtmlLang'
 import ChatBotWidget from '@/components/ChatBotWidget'
+import BodyPlayerPadding from '@/components/BodyPlayerPadding'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -66,7 +67,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${bebasNeue.variable} ${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]" style={{ paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))' }}>
+      <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[999] focus:rounded-full focus:bg-white focus:px-5 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-black focus:shadow-lg"
@@ -74,6 +75,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <HtmlLang />
+        <BodyPlayerPadding />
         <Navbar />
         <main id="main-content" className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
         <Footer />

@@ -134,12 +134,12 @@ export default function LicensingPage() {
             {TIERS.map((tier) => (
               <div
                 key={tier.name}
-                className={`card-hover relative flex flex-col rounded-2xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
+                className={`card-hover relative flex flex-col rounded-xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
                   tier.tag ? 'border-white/20' : 'border-white/[0.08]'
                 }`}
               >
                 {tier.tag && (
-                  <div className="bg-white px-4 py-1.5 text-center rounded-t-2xl">
+                  <div className="bg-white px-4 py-1.5 text-center rounded-t-xl">
                     <span className="text-[9px] font-bold uppercase tracking-widest text-black">{tier.tag}</span>
                   </div>
                 )}
