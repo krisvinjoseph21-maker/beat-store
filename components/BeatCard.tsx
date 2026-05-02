@@ -228,7 +228,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
                 <button
                   onClick={(e) => { e.stopPropagation(); openCart() }}
                   aria-label={`${beat.title} — already in cart, click to view cart`}
-                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-80 bg-white/[0.1]"
+                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] whitespace-nowrap transition-opacity hover:opacity-80 bg-white/[0.1]"
                   style={{ color: 'var(--foreground)', fontSize: '12px', fontWeight: 600 }}
                 >
                   <Check
@@ -243,7 +243,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
                 <button
                   onClick={handleAddToCart}
                   aria-label={`Add ${beat.title} to cart`}
-                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] sm:h-[40px] whitespace-nowrap transition-opacity hover:opacity-90"
+                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] whitespace-nowrap transition-opacity hover:opacity-90"
                   style={{ background: 'var(--white-hover)', color: 'var(--surface-1)', fontSize: '12px', fontWeight: 600 }}
                 >
                   <ShoppingCart size={12} aria-hidden="true" />

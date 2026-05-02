@@ -163,18 +163,18 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             {t.store.fullCatalog}
           </p>
 
-          <div
+          <h1
             className="font-display uppercase leading-none mb-8"
             style={{ fontSize: 'clamp(52px, 9vw, 112px)', color: 'var(--foreground)' }}
-            aria-hidden="true"
           >
             {t.store.allBeatsHeading}
-          </div>
+          </h1>
 
           {/* Placement credit strip */}
           <div
             className="mb-6 flex items-center gap-0 overflow-hidden border-y border-white/[0.07]"
             style={{ height: '30px' }}
+            role="region"
             aria-label="Verified artist placements"
           >
             <div className="flex items-center gap-1.5 pr-4 shrink-0 border-r border-white/[0.07]">

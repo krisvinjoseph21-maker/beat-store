@@ -150,6 +150,15 @@ export default function Navbar() {
   useEffect(() => { mobileOpenRef.current = mobileOpen }, [mobileOpen])
 
   useEffect(() => {
+    if (!mobileOpen) return
+    const frame = requestAnimationFrame(() => {
+      const menu = document.getElementById('mobile-nav-menu')
+      menu?.querySelector<HTMLElement>('a, button')?.focus()
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [mobileOpen])
+
+  useEffect(() => {
     let lastScrollY = window.scrollY
     function onScroll() {
       const y = window.scrollY

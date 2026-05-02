@@ -188,6 +188,8 @@ export default function EmailCaptureModal() {
               Join the list and be first to hear new drops, get free samples, and unlock subscriber-only discounts.
             </p>
 
+            <p className="mb-2 text-[10px] text-muted-low">Fields marked * are required.</p>
+
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {/* Full Name */}
               <div className="flex flex-col gap-1.5">
