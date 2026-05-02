@@ -30,6 +30,7 @@ import HeadlineParallax from '@/components/HeadlineParallax'
 import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
 import LicenseTierGrid from '@/components/LicenseTierGrid'
+import ContactForm from '@/components/AboutClient'
 
 async function getPageData(): Promise<{ featured: Beat | null }> {
   try {
