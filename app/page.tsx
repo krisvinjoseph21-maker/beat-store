@@ -261,7 +261,7 @@ export default async function HomePage() {
 
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
       <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
+        <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-20">
           <ScrollReveal className="mb-14">
             <h2
               className="font-display text-foreground leading-none mb-3"
