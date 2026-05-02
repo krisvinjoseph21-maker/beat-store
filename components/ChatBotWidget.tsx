@@ -225,7 +225,7 @@ export default function ChatBotWidget() {
       {open && (
         <div
           className="w-[320px] flex flex-col rounded-2xl border border-white/[0.1] bg-surface-3 shadow-2xl overflow-hidden"
-          style={{ height: 'min(460px, calc(100dvh - 120px))' }}
+          style={{ height: playerActive ? 'min(460px, calc(100dvh - 182px))' : 'min(460px, calc(100dvh - 120px))' }}
         >
           {/* Header */}
           <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/[0.06] bg-surface-2 shrink-0">

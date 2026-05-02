@@ -43,7 +43,11 @@
       "Bash(squirrel audit *)",
       "Bash(curl -sI --max-time 10 https://prodkjbeats.com)",
       "Bash(curl -v --max-time 15 https://prodkjbeats.com)",
-      "Bash(curl -sI --max-time 10 https://google.com)"
+      "Bash(curl -sI --max-time 10 https://google.com)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\" -Directory)",
+      "Bash(Select-Object Name)",
+      "WebFetch(domain:beat-store-d3iw.vercel.app)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

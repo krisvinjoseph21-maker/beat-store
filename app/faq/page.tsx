@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'What licenses do you offer?',
-    a: 'We offer Standard Lease and Unlimited Lease. Standard allows up to 500k streams and 5,000 paid downloads. Unlimited allows unlimited streams and downloads. Both are non-exclusive.',
+    a: 'We offer four license tiers: Basic Lease (MP3, 100K streams), Premium Lease (WAV, 500K streams), Unlimited Lease (WAV + stems, 1.5M streams), and Exclusive (full ownership, $500+). All leases except Exclusive are non-exclusive.',
   },
   {
     q: 'How do I receive my beats after purchase?',
@@ -18,7 +18,7 @@ const FAQS = [
   },
   {
     q: 'What file formats are included?',
-    a: 'All leases include MP3 and WAV files. Unlimited leases also include track stems.',
+    a: 'Basic Lease includes MP3 (320kbps). Premium Lease includes WAV (24-bit). Unlimited Lease includes WAV + full trackout stems. Exclusive includes WAV, stems, and MP3.',
   },
   {
     q: 'Can I re-download my beats?',
