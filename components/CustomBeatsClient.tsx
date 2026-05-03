@@ -336,7 +336,7 @@ export default function CustomBeatsClient() {
             <div className="inline-flex items-center border border-line-card" style={{ height: '44px' }}>
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                aria-label="Decrease quantity"
+                aria-label="− decrease quantity"
                 className="flex items-center justify-center text-foreground hover:bg-white/5 transition-colors"
                 style={{ width: '44px', height: '44px', fontSize: '18px' }}
               >
@@ -350,7 +350,7 @@ export default function CustomBeatsClient() {
               </span>
               <button
                 onClick={() => setQty((q) => q + 1)}
-                aria-label="Increase quantity"
+                aria-label="+ increase quantity"
                 className="flex items-center justify-center text-foreground hover:bg-white/5 transition-colors"
                 style={{ width: '44px', height: '44px', fontSize: '18px' }}
               >

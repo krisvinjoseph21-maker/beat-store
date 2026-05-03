@@ -36,7 +36,11 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://beat-store-d3iw.vercel.app'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL && !process.env.NEXT_PUBLIC_SITE_URL.includes('localhost')
+      ? process.env.NEXT_PUBLIC_SITE_URL
+      : 'https://beat-store-d3iw.vercel.app'
+  ),
   title: 'PRODKJBEATS — Premium Beats',
   description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
   icons: {
@@ -67,6 +71,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${bebasNeue.variable} ${inter.variable} ${montserrat.variable}`}>
+      <head>
+        {/* Ensure scroll-reveal content is visible when JS is disabled or blocked */}
+        <noscript><style>{`.scroll-reveal { opacity: 1 !important; }`}</style></noscript>
+      </head>
       <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]">
         <a
           href="#main-content"

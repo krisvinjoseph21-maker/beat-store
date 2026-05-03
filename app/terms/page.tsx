@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Use — PRODKJBEATS',
+  title: 'Terms of Use — PRODKJBEATS | Beat Licensing Agreement',
   description: 'Terms and conditions for purchasing and licensing beats from PRODKJBEATS — leases, prohibited uses, refund policy, and intellectual property.',
+  alternates: { canonical: '/terms' },
 }
 
 const SECTIONS = [

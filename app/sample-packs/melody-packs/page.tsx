@@ -5,7 +5,7 @@ import CtaBanner from '@/components/CtaBanner'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Melody Packs — PRODKJBEATS',
+  title: 'Melody Loop Kits — PRODKJBEATS | Trap, Drill & R&B Samples',
   description: 'Browse premium melody loop kits and sample packs from PRODKJBEATS. Designed for trap, drill, R&B, and Afrobeats producers. Instant download, royalty-free.',
   alternates: { canonical: '/sample-packs/melody-packs' },
 }
@@ -20,9 +20,9 @@ export default async function MelodyPacksPage() {
 
   return (
     <>
-      <main className="min-h-screen pt-[48px]">
+      <div className="min-h-screen pt-[48px]">
         <MelodyPacksGrid initialPacks={packs ?? []} />
-      </main>
+      </div>
       <CtaBanner
         label="Shop the Beats"
         heading="Shop the Beats Too."

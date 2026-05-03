@@ -3,8 +3,9 @@ import CustomBeatsClient from '@/components/CustomBeatsClient'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Custom Beats — PRODKJBEATS',
+  title: 'Custom Beat Production — PRODKJBEATS | Pro Beat Packages',
   description: 'Custom beat production packages for serious artists. Basic, Full, Mix Bundle, Executive Producer, and Project Launch packages.',
+  alternates: { canonical: '/services/custom-beats' },
 }
 
 export default function CustomBeatsPage() {

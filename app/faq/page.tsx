@@ -55,7 +55,7 @@ export default function FAQPage() {
         <div className="space-y-3">
           {FAQS.map(({ q, a }) => (
             <div key={q} className="rounded-xl border border-line bg-surface-2 p-5">
-              <h3 className="mb-2 font-medium text-foreground text-[15px]">{q}</h3>
+              <h2 className="mb-2 font-medium text-foreground text-[15px]">{q}</h2>
               <p className="text-sm text-muted leading-relaxed">{a}</p>
             </div>
           ))}

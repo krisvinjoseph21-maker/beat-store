@@ -50,7 +50,6 @@ export default async function StorePage() {
   const beats = await getBeats()
   return (
     <div className="flex justify-center w-full">
-      <h1 className="sr-only">Beat Store — PRODKJBEATS</h1>
       <BeatStore initialBeats={beats} />
     </div>
   )
