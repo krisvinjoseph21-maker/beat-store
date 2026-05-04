@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
+import { loopSubscriptionBodySchema } from '@/lib/schemas'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
@@ -23,14 +24,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = (await req.json()) as { planId?: unknown }
-    const planId = body.planId
-
-    if (typeof planId !== 'string' || !(VALID_PLANS as readonly string[]).includes(planId)) {
+    const result = loopSubscriptionBodySchema.safeParse(await req.json())
+    if (!result.success) {
       return Response.json({ error: 'Invalid plan selected.' }, { status: 400 })
     }
-
-    const plan = PLAN_PRICES[planId as PlanId]
+    const { planId } = result.data
+    const plan = PLAN_PRICES[planId]
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',

@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server'
 import { sendContactEmail } from '@/lib/resend'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { containsHarmfulContent } from '@/lib/content-filter'
+import { contactBodySchema } from '@/lib/schemas'
 
 export async function POST(req: NextRequest) {
   const key = getRateLimitKey(req, '/api/contact')
@@ -18,30 +19,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, email, subject, message } = await req.json()
-
-    const emailRegex = /^[^\s@\r\n]+@[^\s@\r\n]+\.[^\s@\r\n]+$/
-    if (
-      typeof name !== 'string' || !name.trim() || name.length > 100 ||
-      typeof email !== 'string' || !email.trim() || email.length > 254 || !emailRegex.test(email.trim()) ||
-      typeof subject !== 'string' || !subject.trim() || subject.length > 200 ||
-      typeof message !== 'string' || !message.trim() || message.length > 2000
-    ) {
-      return Response.json({ error: 'All fields are required' }, { status: 400 })
+    const result = contactBodySchema.safeParse(await req.json())
+    if (!result.success) {
+      return Response.json({ error: result.error.issues[0].message }, { status: 400 })
     }
+    const { name, email, subject, message } = result.data
 
-    const trimmed = {
-      name: name.trim(),
-      email: email.trim(),
-      subject: subject.trim(),
-      message: message.trim(),
-    }
-
-    if (containsHarmfulContent(trimmed.subject, trimmed.message)) {
+    if (containsHarmfulContent(subject, message)) {
       return Response.json({ error: 'Your message could not be sent. Please review your content and try again.' }, { status: 422 })
     }
 
-    await sendContactEmail(trimmed)
+    await sendContactEmail({ name, email, subject, message })
     return Response.json({ success: true })
   } catch {
     return Response.json({ error: 'Failed to send message' }, { status: 500 })

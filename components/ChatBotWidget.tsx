@@ -193,6 +193,8 @@ export default function ChatBotWidget() {
   const [chipsShown, setChipsShown] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const currentBeat = usePlayerStore((s) => s.currentBeat)
   const playerActive = !!currentBeat
 
@@ -201,6 +203,32 @@ export default function ChatBotWidget() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     setTimeout(() => inputRef.current?.focus(), 80)
   }, [open, messages.length])
+
+  useEffect(() => {
+    if (!open) return
+    const panel = panelRef.current
+    if (!panel) return
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    const first = panel.querySelector<HTMLElement>(FOCUSABLE)
+    first?.focus()
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') { setOpen(false); return }
+      if (e.key !== 'Tab') return
+      const focusable = Array.from(panel!.querySelectorAll<HTMLElement>(FOCUSABLE))
+      const firstEl = focusable[0]
+      const lastEl  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) { e.preventDefault(); lastEl?.focus() }
+      } else {
+        if (document.activeElement === lastEl) { e.preventDefault(); firstEl?.focus() }
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      triggerRef.current?.focus()
+    }
+  }, [open])
 
   const send = useCallback((text: string) => {
     const trimmed = text.trim()
@@ -224,6 +252,10 @@ export default function ChatBotWidget() {
       {/* Chat panel */}
       {open && (
         <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Chat support"
           className="w-[320px] flex flex-col rounded-2xl border border-white/[0.1] bg-surface-3 shadow-2xl overflow-hidden"
           style={{ height: playerActive ? 'min(460px, calc(100dvh - 182px))' : 'min(460px, calc(100dvh - 120px))' }}
         >
@@ -316,8 +348,11 @@ export default function ChatBotWidget() {
 
       {/* Trigger button */}
       <button
+        ref={triggerRef}
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? 'Close chat' : 'Chat with us'}
+        aria-expanded={open}
+        aria-haspopup="dialog"
         className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition-[opacity,transform]"
       >
         {open ? (

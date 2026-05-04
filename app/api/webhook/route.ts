@@ -6,6 +6,8 @@ import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { sendDownloadEmail } from '@/lib/resend'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
+import { getTracer } from '@/lib/tracer'
+import { SpanStatusCode } from '@opentelemetry/api'
 import crypto from 'crypto'
 
 // Maximum webhook body size: 1 MB. Stripe payloads are tiny (<10 KB);
@@ -45,18 +47,30 @@ export async function POST(req: NextRequest) {
     return new Response('Server misconfiguration', { status: 500 })
   }
 
+  const tracer = getTracer()
+
   let event
-  try {
-    event = stripe.webhooks.constructEvent(body, sig, secret)
-  } catch {
+  const sigVerifyOk = await tracer.startActiveSpan('stripe.signature.verify', async (span) => {
+    try {
+      event = stripe.webhooks.constructEvent(body, sig, secret)
+      return true
+    } catch {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: 'Invalid signature' })
+      return false
+    } finally {
+      span.end()
+    }
+  })
+
+  if (!sigVerifyOk) {
     return new Response('Invalid signature', { status: 400 })
   }
 
-  if (event.type !== 'checkout.session.completed') {
+  if (event!.type !== 'checkout.session.completed') {
     return new Response('OK', { status: 200 })
   }
 
-  const session = event.data.object
+  const session = event!.data.object
   const { beatIds, licenseType, quantityTier, beatTitles, packIds, packTitles } = session.metadata ?? {}
 
   const customerEmail = session.customer_details?.email ?? ''
@@ -84,14 +98,21 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   // Idempotency — if Stripe retries the webhook, don't create a duplicate order
-  const { data: existing } = await supabase
-    .from('orders')
-    .select('id')
-    .eq('stripe_session_id', session.id)
-    .single()
+  const alreadyProcessed = await tracer.startActiveSpan('supabase.orders.idempotency_check', async (span) => {
+    try {
+      const { data: existing } = await supabase
+        .from('orders')
+        .select('id')
+        .eq('stripe_session_id', session.id)
+        .single()
+      span.setAttribute('order.exists', !!existing)
+      return !!existing
+    } finally {
+      span.end()
+    }
+  })
 
-  if (existing) {
-    // Already processed — return 200 so Stripe stops retrying
+  if (alreadyProcessed) {
     return new Response('OK', { status: 200 })
   }
 
@@ -99,49 +120,76 @@ export async function POST(req: NextRequest) {
   const parsedTier = Number(quantityTier ?? 1)
   const validatedTier = VALID_QTY_TIERS.includes(parsedTier) ? parsedTier : 1
 
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({
-      customer_email: customerEmail,
-      customer_name: customerName,
-      beat_ids: parsedBeatIds,
-      melody_pack_ids: parsedPackIds,
-      license_type: licenseType ?? 'standard',
-      quantity_tier: validatedTier,
-      total_price: (session.amount_total ?? 0) / 100,
-      stripe_session_id: session.id,
-      status: 'paid',
-    })
-    .select()
-    .single()
+  const order = await tracer.startActiveSpan('supabase.orders.insert', async (span) => {
+    try {
+      span.setAttribute('order.beat_count', parsedBeatIds.length)
+      span.setAttribute('order.pack_count', parsedPackIds.length)
+      const { data, error } = await supabase
+        .from('orders')
+        .insert({
+          customer_email: customerEmail,
+          customer_name: customerName,
+          beat_ids: parsedBeatIds,
+          melody_pack_ids: parsedPackIds,
+          license_type: licenseType ?? 'standard',
+          quantity_tier: validatedTier,
+          total_price: (session.amount_total ?? 0) / 100,
+          stripe_session_id: session.id,
+          status: 'paid',
+        })
+        .select()
+        .single()
+      if (error) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: error.message })
+        console.error('[webhook] order insert error:', error.message)
+      } else {
+        span.setAttribute('order.id', data.id)
+      }
+      return { data, error }
+    } finally {
+      span.end()
+    }
+  })
 
-  if (orderError) {
-    console.error('[webhook] order insert error:', orderError.message)
+  if (order.error) {
     return new Response('DB error', { status: 500 })
   }
 
   const token = crypto.randomBytes(32).toString('hex')
   const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
 
-  await supabase.from('downloads').insert({
-    order_id: order.id,
-    token,
-    expires_at: expiresAt,
-    used: false,
+  await tracer.startActiveSpan('supabase.downloads.insert', async (span) => {
+    try {
+      await supabase.from('downloads').insert({
+        order_id: order.data.id,
+        token,
+        expires_at: expiresAt,
+        used: false,
+      })
+    } finally {
+      span.end()
+    }
   })
 
-  try {
-    await sendDownloadEmail({
-      customerEmail,
-      customerName,
-      beatTitles: [...parsedBeatTitles, ...parsedPackTitles],
-      downloadToken: token,
-      licenseType: licenseType ?? 'standard',
-    })
-  } catch (emailErr) {
-    // Log but don't fail — order is recorded, customer can contact support
-    console.error('[webhook] email send failed:', emailErr)
-  }
+  await tracer.startActiveSpan('resend.email.send', async (span) => {
+    try {
+      await sendDownloadEmail({
+        customerEmail,
+        customerName,
+        beatTitles: [...parsedBeatTitles, ...parsedPackTitles],
+        downloadToken: token,
+        licenseType: licenseType ?? 'standard',
+      })
+      span.setAttribute('email.delivered', true)
+    } catch (emailErr) {
+      // Log but don't fail — order is recorded, customer can contact support
+      console.error('[webhook] email send failed:', emailErr)
+      span.setAttribute('email.delivered', false)
+      span.setStatus({ code: SpanStatusCode.ERROR })
+    } finally {
+      span.end()
+    }
+  })
 
   return new Response('OK', { status: 200 })
 }

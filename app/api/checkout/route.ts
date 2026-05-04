@@ -5,6 +5,9 @@ import { stripe, getLicensePrice } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 import { getDiscountPct } from '@/lib/discount-codes'
+import { checkoutBodySchema } from '@/lib/schemas'
+import { getTracer } from '@/lib/tracer'
+import { SpanStatusCode } from '@opentelemetry/api'
 import type { LicenseType } from '@/lib/stripe'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
@@ -15,26 +18,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json()
-
-    const VALID_LICENSE_TYPES: LicenseType[] = ['standard', 'premium', 'unlimited']
+    const parsed = checkoutBodySchema.safeParse(await req.json())
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.issues[0].message }, { status: 400 })
+    }
 
     // Per-item format (from CartDrawer): { items: [{ beatId, licenseType }] }
-    // Global format (from HomeFeaturedBeats/LicenseModal): { beatIds, licenseType, quantityTier? }
+    // Global format (from HomeFeaturedBeats/LicenseModal): { beatIds, licenseType }
     let beatIds: string[]
     let licenseType: LicenseType
     let perItemLicenses: Record<string, LicenseType> | null = null
 
-    if (Array.isArray(body.items)) {
-      const items = body.items as Array<{ beatId: string; licenseType: LicenseType }>
-      if (!items.length) return Response.json({ error: 'No beats selected' }, { status: 400 })
-      if (items.length > 20) return Response.json({ error: 'Too many beats' }, { status: 400 })
-      if (!items.every((i) => typeof i.beatId === 'string' && i.beatId.length < 128)) {
-        return Response.json({ error: 'Invalid beat ID' }, { status: 400 })
-      }
-      if (!items.every((i) => VALID_LICENSE_TYPES.includes(i.licenseType))) {
-        return Response.json({ error: 'Invalid license type' }, { status: 400 })
-      }
+    if ('items' in parsed.data) {
+      const { items } = parsed.data
       beatIds = items.map((i) => i.beatId)
       // Dominant license for DB/email fallback: unlimited > premium > standard
       const LICENSE_RANK: Record<LicenseType, number> = { standard: 0, premium: 1, unlimited: 2 }
@@ -42,30 +38,29 @@ export async function POST(req: NextRequest) {
         LICENSE_RANK[i.licenseType] > LICENSE_RANK[best] ? i.licenseType : best, 'standard')
       perItemLicenses = Object.fromEntries(items.map((i) => [i.beatId, i.licenseType]))
     } else {
-      beatIds = body.beatIds as string[]
-      licenseType = body.licenseType as LicenseType
-      if (!beatIds?.length || !Array.isArray(beatIds)) {
-        return Response.json({ error: 'No beats selected' }, { status: 400 })
-      }
-      if (beatIds.length > 20) {
-        return Response.json({ error: 'Too many beats' }, { status: 400 })
-      }
-      if (!beatIds.every((id) => typeof id === 'string' && id.length < 128)) {
-        return Response.json({ error: 'Invalid beat ID' }, { status: 400 })
-      }
-      if (!VALID_LICENSE_TYPES.includes(licenseType)) {
-        return Response.json({ error: 'Invalid license type' }, { status: 400 })
-      }
+      beatIds = parsed.data.beatIds
+      licenseType = parsed.data.licenseType
     }
 
+    const tracer = getTracer()
     const supabase = createAdminClient()
 
     // Verify all requested beats exist and are active — reject before touching Stripe
-    const { data: validBeats, error: beatsError } = await supabase
-      .from('beats')
-      .select('id, title')
-      .in('id', beatIds)
-      .eq('is_active', true)
+    const { validBeats, beatsError } = await tracer.startActiveSpan('supabase.beats.verify', async (span) => {
+      try {
+        span.setAttribute('beat.requested', beatIds.length)
+        const { data, error } = await supabase
+          .from('beats')
+          .select('id, title')
+          .in('id', beatIds)
+          .eq('is_active', true)
+        span.setAttribute('beat.valid', data?.length ?? 0)
+        if (error) span.setStatus({ code: SpanStatusCode.ERROR, message: error.message })
+        return { validBeats: data, beatsError: error }
+      } finally {
+        span.end()
+      }
+    })
 
     if (beatsError) {
       return Response.json({ error: 'Failed to verify beats' }, { status: 500 })
@@ -86,16 +81,27 @@ export async function POST(req: NextRequest) {
       : Math.max(getLicensePrice(licenseType, 1) * beatIds.length, 1)
 
     // Server-side discount validation — never trust the client-computed price
-    const rawDiscountCode = typeof body.discountCode === 'string' ? body.discountCode.trim() : null
+    const rawDiscountCode = parsed.data.discountCode ?? null
     let appliedDiscountPct = 0
     let validatedCode: string | null = null
-    if (rawDiscountCode && rawDiscountCode.length <= 50) {
-      const pct = getDiscountPct(rawDiscountCode)
-      if (pct !== null) {
-        appliedDiscountPct = pct
-        validatedCode = rawDiscountCode.toUpperCase()
+
+    await tracer.startActiveSpan('discount.validate', async (span) => {
+      try {
+        span.setAttribute('discount.code_present', !!rawDiscountCode)
+        if (rawDiscountCode) {
+          const pct = getDiscountPct(rawDiscountCode)
+          if (pct !== null) {
+            appliedDiscountPct = pct
+            validatedCode = rawDiscountCode.toUpperCase()
+          }
+          span.setAttribute('discount.applied', pct !== null)
+          span.setAttribute('discount.pct', appliedDiscountPct)
+        }
+      } finally {
+        span.end()
       }
-    }
+    })
+
     const price = appliedDiscountPct > 0
       ? Math.max(Math.round(rawPrice * (1 - appliedDiscountPct / 100) * 100) / 100, 1)
       : rawPrice
@@ -117,26 +123,40 @@ export async function POST(req: NextRequest) {
       metadata.discountPct = String(appliedDiscountPct)
     }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: 'usd',
-            unit_amount: Math.round(price * 100),
-            product_data: {
-              name: `PRODKJBEATS — ${licenseLabel}`,
-              description,
+    const session = await tracer.startActiveSpan('stripe.checkout.session.create', async (span) => {
+      try {
+        span.setAttribute('checkout.beat_count', beatIds.length)
+        span.setAttribute('checkout.price_usd', price)
+        span.setAttribute('checkout.license_type', licenseType)
+        const s = await stripe.checkout.sessions.create({
+          mode: 'payment',
+          line_items: [
+            {
+              quantity: 1,
+              price_data: {
+                currency: 'usd',
+                unit_amount: Math.round(price * 100),
+                product_data: {
+                  name: `PRODKJBEATS — ${licenseLabel}`,
+                  description,
+                },
+              },
             },
-          },
-        },
-      ],
-      metadata,
-      customer_email: undefined,
-      billing_address_collection: 'auto',
-      success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/cancel`,
+          ],
+          metadata,
+          customer_email: undefined,
+          billing_address_collection: 'auto',
+          success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${SITE_URL}/cancel`,
+        })
+        span.setAttribute('checkout.session_id', s.id)
+        return s
+      } catch (err) {
+        span.setStatus({ code: SpanStatusCode.ERROR })
+        throw err
+      } finally {
+        span.end()
+      }
     })
 
     return Response.json({ url: session.url })
