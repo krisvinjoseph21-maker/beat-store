@@ -2,11 +2,15 @@ export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
+import { createAnonClient } from '@/lib/supabase-anon'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
-export async function GET() {
-  const supabase = createAdminClient()
+export async function GET(req: NextRequest) {
+  if (!rateLimit(getRateLimitKey(req, '/api/reviews'), 30, 60_000)) {
+    return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
+  }
+  const supabase = createAnonClient()
   const { data, error } = await supabase
     .from('mixing_mastering_reviews')
     .select('id, author, rating, body, created_at')

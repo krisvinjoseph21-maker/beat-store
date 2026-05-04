@@ -1,7 +1,7 @@
 export const runtime = 'edge'
 
 import { type NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase-admin'
+import { createAnonClient } from '@/lib/supabase-anon'
 import { PROMO_DEFAULTS } from '@/lib/promos'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
@@ -9,10 +9,10 @@ import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 // No auth required; no sensitive data exposed.
 export async function GET(req: NextRequest) {
   if (!rateLimit(getRateLimitKey(req, '/api/promos'), 60, 60_000)) {
-    return Response.json(PROMO_DEFAULTS, { status: 429 })
+    return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   try {
-    const supabase = createAdminClient()
+    const supabase = createAnonClient()
     const { data, error } = await supabase
       .from('promos')
       .select('sitewide_discount_pct, bogo_free_count')

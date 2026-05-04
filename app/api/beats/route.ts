@@ -1,7 +1,7 @@
 export const runtime = 'edge'
 
 import { NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase-admin'
+import { createAnonClient } from '@/lib/supabase-anon'
 import { validateEnv } from '@/lib/env'
 import { rateLimit, getRateLimitKey } from '@/lib/rate-limit'
 
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: 'Too many requests.' }, { status: 429 })
   }
   validateEnv()
-  const supabase = createAdminClient()
+  const supabase = createAnonClient()
   // Never select file_url, file_path, or stems_path — they must never reach the client.
   const { data, error } = await supabase
     .from('beats')

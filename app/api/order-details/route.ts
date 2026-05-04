@@ -16,6 +16,11 @@ export async function GET(req: NextRequest) {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+    if (session.payment_status !== 'paid') {
+      return Response.json({ error: 'Session not found' }, { status: 404 })
+    }
+
     const { beatIds, licenseType, beatTitles, packIds, packTitles } = session.metadata ?? {}
 
     let parsedBeatIds: string[] = []

@@ -9,7 +9,6 @@
   --muted-low: #787878;   /* 4.54:1 on #000 — WCAG AA ✓ (raised from #767676) */
   --border: rgba(255,255,255,0.1);
   --glow-soft: rgba(255,255,255,0.04);  /* Hero radial glow tint */
-  --card: #1d1d1f;
   --player-height: 64px;
   --accent: #c8a86a;
   --accent-dim: rgba(200,168,106,0.6);
@@ -18,7 +17,7 @@
   --line-hover: #3a3a3a;
 
   /* ── Surface scale ──────────────────────────────── */
-  --surface-1: #111111;   /* Component BG: inputs, cards, option tiles */
+  --surface-1: #111111;   /* Component BG: inputs, beat cards, option tiles */
   --surface-2: #0d0d0d;   /* Deeper BG: modals, drawers, license panel */
   --surface-3: #0a0a0a;   /* Featured sections, elevated cards */
   --surface-4: #050505;   /* Deepest BG: receipts, rules cards */
@@ -76,9 +75,6 @@
   /* Borders & glows */
   --color-border: rgba(255,255,255,0.1);
   --color-glow-soft: rgba(255,255,255,0.04);
-
-  /* Card */
-  --color-card: #1d1d1f;
 }
 
 * {
@@ -262,11 +258,25 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes revealRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 .scroll-reveal {
   opacity: 0;
 }
 .scroll-reveal.is-visible {
   animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.reveal-left.is-visible {
+  animation: revealLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.reveal-right.is-visible {
+  animation: revealRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* ── Receipts: heading parallax + scroll-driven card cascade ── */

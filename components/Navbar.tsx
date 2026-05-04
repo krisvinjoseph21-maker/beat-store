@@ -303,7 +303,7 @@ export default function Navbar() {
                       key={child.href}
                       href={child.href}
                       onClick={() => { setMobileOpen(false); menuTriggerRef.current?.focus() }}
-                      className="block pl-4 py-2.5 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.03] last:border-0"
+                      className="animate-menu-item-in block pl-4 py-2.5 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.03] last:border-0"
                       style={{ animationDelay: `${(idx + cIdx + 1) * 55}ms` }}
                     >
                       {NAV_LABEL_MAP[child.href] ?? child.label}

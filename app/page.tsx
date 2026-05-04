@@ -139,7 +139,7 @@ export default async function HomePage() {
           <div className="relative flex-1 overflow-hidden" aria-hidden="true">
             <div className="ticker-wrap flex items-center whitespace-nowrap pl-5" style={{ animationDuration: '28s' }}>
               {RECEIPTS_DOUBLED.map(({ artist, detail }, i) => (
-                <span key={i} className="inline-flex items-center gap-3 mr-8">
+                <span key={`${artist}-${i}`} className="inline-flex items-center gap-3 mr-8">
                   <span
                     className="font-montserrat text-[10px] font-semibold"
                     style={{ color: 'var(--foreground)' }}
@@ -172,11 +172,11 @@ export default async function HomePage() {
       )}
 
       {/* ═══ LICENSING INFO ══════════════════════════════════════ */}
-      <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+      <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-black">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Licensing Info</p>
-            <h2 className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
+            <h2 id="licensing-heading" className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
               Choose Your License.
             </h2>
           </ScrollReveal>
@@ -187,11 +187,11 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
-      <section className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+      <section aria-labelledby="receipts-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <div className="receipts-heading">
-              <h2 className="font-display text-foreground leading-none mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
+              <h2 id="receipts-heading" className="font-display text-foreground leading-none mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
                 The Receipts.
               </h2>
               <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
@@ -260,10 +260,11 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
-      <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+      <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-black">
         <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-20">
           <ScrollReveal className="mb-14">
             <h2
+              id="contact-heading"
               className="font-display text-foreground leading-none mb-3"
               style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
             >
@@ -280,7 +281,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ FINAL CTA ═══════════════════════════════════════════ */}
-      <section className="relative w-full py-36 flex flex-col items-center text-center px-6 overflow-hidden bg-black">
+      <section aria-labelledby="cta-heading" className="relative w-full py-36 flex flex-col items-center text-center px-6 overflow-hidden bg-black">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -292,6 +293,7 @@ export default async function HomePage() {
             Available Now
           </p>
           <h2
+            id="cta-heading"
             className="relative font-display leading-none mb-6 text-foreground"
             style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
           >
