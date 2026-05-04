@@ -7,8 +7,7 @@ import BottomPlayer from '@/components/BottomPlayer'
 import AnalyticsScripts from '@/components/AnalyticsScripts'
 import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
 import HtmlLang from '@/components/HtmlLang'
-import dynamic from 'next/dynamic'
-const ChatBotWidget = dynamic(() => import('@/components/ChatBotWidget'), { ssr: false })
+import ChatBotWidget from '@/components/ChatBotWidgetLoader'
 import BodyPlayerPadding from '@/components/BodyPlayerPadding'
 
 const bebasNeue = Bebas_Neue({
