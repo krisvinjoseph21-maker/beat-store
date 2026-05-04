@@ -31,22 +31,25 @@ import ScrollReveal from '@/components/ScrollReveal'
 import HeroVideo from '@/components/HeroVideo'
 import LicenseTierGrid from '@/components/LicenseTierGrid'
 import ContactForm from '@/components/AboutClient'
+import HomeBeatsPreview from '@/components/HomeBeatsPreview'
 
-async function getPageData(): Promise<{ featured: Beat | null }> {
+async function getPageData(): Promise<{ featured: Beat | null; beats: Beat[] }> {
   try {
     const supabase = createAdminClient()
     // Never select file_url, file_path, stems_path, preview_path — they must never reach the client.
-    const { data } = await supabase
-      .from('beats')
-      .select('id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, is_featured, created_at, pin_order')
-      .eq('is_active', true)
-      .eq('is_featured', true)
-      .limit(1)
-      .single()
-    const featured = data ? { ...data, file_url: null, stems_path: null } as Beat : null
-    return { featured }
+    const SELECT = 'id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, is_featured, created_at, pin_order'
+    const [featuredRes, beatsRes] = await Promise.all([
+      supabase.from('beats').select(SELECT).eq('is_active', true).eq('is_featured', true).limit(1).single(),
+      supabase.from('beats').select(SELECT).eq('is_active', true)
+        .order('pin_order', { ascending: true, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .limit(6),
+    ])
+    const featured = featuredRes.data ? { ...featuredRes.data, file_url: null, stems_path: null } as Beat : null
+    const beats = (beatsRes.data ?? []).map((b) => ({ ...b, file_url: null, stems_path: null })) as Beat[]
+    return { featured, beats }
   } catch {
-    return { featured: null }
+    return { featured: null, beats: [] }
   }
 }
 
@@ -63,7 +66,7 @@ const RECEIPTS_DOUBLED = [...RECEIPTS, ...RECEIPTS]
 
 
 export default async function HomePage() {
-  const { featured } = await getPageData()
+  const { featured, beats } = await getPageData()
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -72,13 +75,13 @@ export default async function HomePage() {
       {/* ═══ HERO ═══════════════════════════════════════════════ */}
       <section
         id="hero-section"
-        className="relative bg-black overflow-hidden flex flex-col w-full min-h-screen"
+        className="relative bg-background overflow-hidden flex flex-col w-full min-h-screen"
       >
         {/* Video background — client component prevents download on mobile */}
         <HeroVideo />
 
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60 z-[1]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-background/60 z-[1]" aria-hidden="true" />
 
         {/* Subtle radial glow */}
         <div
@@ -123,10 +126,14 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          <p className="sr-only">
+            Verified placements with GloRilla, DeeBaby, Shenseea, Seyi Vibez, and Est Gee.
+          </p>
+
         </div>
 
         {/* Ticker */}
-        <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-black/80 backdrop-blur-sm overflow-hidden flex items-center">
+        <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-background/80 backdrop-blur-sm overflow-hidden flex items-center">
           <div className="flex items-center gap-1.5 px-4 shrink-0 border-r border-white/[0.07]">
             <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
             <span
@@ -162,7 +169,7 @@ export default async function HomePage() {
 
       {/* ═══ FEATURED TRACK ══════════════════════════════════════ */}
       {featured && (
-        <section className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+        <section className="w-full flex justify-center border-b border-white/[0.06] bg-background">
           <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-10">
             <ScrollReveal>
               <FeaturedTrack beat={featured} />
@@ -171,8 +178,53 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ═══ BEATS PREVIEW ══════════════════════════════════════ */}
+      {beats.length > 0 && (
+        <section aria-labelledby="beats-preview-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+          <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-12">
+            <ScrollReveal className="mb-8">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <p className="font-montserrat text-[11px] font-semibold uppercase mb-3" style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}>
+                    Latest Beats
+                  </p>
+                  <h2
+                    id="beats-preview-heading"
+                    className="font-display text-foreground leading-none"
+                    style={{ fontSize: 'clamp(36px, 5vw, 60px)', fontWeight: 300 }}
+                  >
+                    Hear the Work.
+                  </h2>
+                </div>
+                <Link
+                  href="/store"
+                  className="hidden sm:inline-flex shrink-0 items-center pb-1 text-[12px] text-muted-low hover:text-foreground transition-colors"
+                  style={{ fontFamily: 'var(--font-inter)' }}
+                >
+                  Browse all beats →
+                </Link>
+              </div>
+            </ScrollReveal>
+
+            <div className="border border-line overflow-hidden">
+              <HomeBeatsPreview beats={beats} />
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <Link
+                href="/store"
+                className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+                style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
+              >
+                Shop All Beats
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ═══ LICENSING INFO ══════════════════════════════════════ */}
-      <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+      <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Licensing Info</p>
@@ -260,7 +312,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
-      <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+      <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
         <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-20">
           <ScrollReveal className="mb-14">
             <h2
@@ -281,7 +333,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ FINAL CTA ═══════════════════════════════════════════ */}
-      <section aria-labelledby="cta-heading" className="relative w-full py-36 flex flex-col items-center text-center px-6 overflow-hidden bg-black">
+      <section aria-labelledby="cta-heading" className="relative w-full py-36 flex flex-col items-center text-center px-6 overflow-hidden bg-background">
         <div
           className="pointer-events-none absolute inset-0"
           style={{

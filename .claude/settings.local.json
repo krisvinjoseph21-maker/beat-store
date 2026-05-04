@@ -47,7 +47,14 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\" -Directory)",
       "Bash(Select-Object Name)",
       "WebFetch(domain:beat-store-d3iw.vercel.app)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Select-Object -Skip 1)",
+      "Bash(Select-String -Pattern \"homepage|url|domain|vercel|deploy\" -SimpleMatch)",
+      "Bash(Remove-Item *)",
+      "Bash(Test-Path *)"
     ]
   }
 }

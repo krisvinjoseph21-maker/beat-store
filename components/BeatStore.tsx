@@ -301,7 +301,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           <>
             <div ref={listContainerRef} className="relative border border-line overflow-hidden" style={{ perspective: '1200px' }}>
               <StoreAmbient />
-              <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-black">
+              <div className="hidden sm:flex items-center gap-3 px-4 sm:px-10 py-3 border-b border-line bg-background">
                 <span className="w-6 flex-shrink-0" />
                 <span className="w-11 flex-shrink-0" />
                 <span

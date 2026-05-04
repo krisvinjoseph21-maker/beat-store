@@ -22,7 +22,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="w-full flex justify-center border-t border-white/[0.06] bg-black pb-24">
+    <footer className="w-full flex justify-center border-t border-white/[0.06] bg-background" style={{ paddingBottom: 'calc(var(--player-height) + 1.5rem)' }}>
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pt-12 pb-8">
 
         <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">

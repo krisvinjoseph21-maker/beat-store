@@ -89,11 +89,11 @@ export { TIERS }
 
 export default function LicenseTierGrid() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 pb-3 sm:pb-0">
       {TIERS.map((tier) => (
         <div
           key={tier.name}
-          className={`card-hover relative flex flex-col rounded-xl border bg-surface-3 transition-colors hover:bg-surface-1 ${
+          className={`relative flex flex-col rounded-xl border bg-surface-3 transition-colors hover:bg-surface-1 min-w-[280px] sm:min-w-0 flex-shrink-0 snap-start ${
             tier.tag ? 'border-white/20' : 'border-white/[0.08]'
           }`}
         >

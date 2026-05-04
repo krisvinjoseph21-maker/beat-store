@@ -53,7 +53,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto" aria-describedby={error ? 'contact-form-error' : undefined}>
 
       {/* Name + Email row */}
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-10 mb-12">
@@ -118,7 +118,7 @@ export default function ContactForm() {
         />
       </div>
 
-      {error && <p role="alert" className="animate-shake text-[12px] text-danger mb-4">{error}</p>}
+      {error && <p id="contact-form-error" role="alert" className="animate-shake text-[12px] text-danger mb-4">{error}</p>}
 
       {/* Submit — right-aligned */}
       <div className="flex justify-end">
