@@ -253,30 +253,122 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
 }
 .animate-menu-item-in { animation: menuItemIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-/* ── Scroll reveal ────────────────────────────── */
-@keyframes revealUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes revealLeft {
-  from { opacity: 0; transform: translateX(-28px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes revealRight {
-  from { opacity: 0; transform: translateX(28px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
+/* ── Scroll reveal (transition-based — bidirectional replay) ── */
 .scroll-reveal {
   opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .scroll-reveal.is-visible {
-  animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 1;
+  transform: translateY(0);
 }
-.reveal-left.is-visible {
-  animation: revealLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+/* Directional variants */
+.scroll-reveal.reveal-left  { transform: translateX(-28px); }
+.scroll-reveal.reveal-right { transform: translateX(28px); }
+.scroll-reveal.reveal-left.is-visible,
+.scroll-reveal.reveal-right.is-visible { transform: translateX(0); }
+
+/* Fade — opacity only, no movement */
+.scroll-reveal.reveal-fade { transform: none; }
+.scroll-reveal.reveal-fade.is-visible { transform: none; }
+
+/* Scale — subtle zoom */
+.scroll-reveal.reveal-scale { transform: scale(0.95); }
+.scroll-reveal.reveal-scale.is-visible { transform: scale(1); }
+
+/* ── Word-split heading curtain reveal ─────────── */
+.word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: inherit;
 }
-.reveal-right.is-visible {
-  animation: revealRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.word-inner {
+  display: inline-block;
+  transform: translateY(108%);
+  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.word-inner.word-in { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .word-inner { transform: none !important; transition: none !important; }
+}
+
+/* ── Section accent line — draws left-to-right when parent ScrollReveal fires ── */
+.section-accent-line {
+  display: block;
+  height: 1px;
+  width: 2.5rem;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+  margin-bottom: 1.25rem;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+              opacity 0.01s 0.12s;
+}
+.scroll-reveal.is-visible .section-accent-line {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* ── Hero exit fade — hero content drifts up as you scroll past ── */
+@supports (animation-timeline: scroll()) {
+  #hero-content {
+    will-change: opacity, transform;
+    animation: heroExit linear both;
+    animation-timeline: view(block);
+    animation-range: exit 0% exit 60%;
+  }
+  @keyframes heroExit {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-28px); }
+  }
+}
+
+/* ── Section heading scroll-driven parallax — subtle drift as content scrolls past ── */
+@supports (animation-timeline: scroll()) {
+  .section-heading {
+    animation: headingDrift linear both;
+    animation-timeline: view(block);
+    animation-range: contain 0% exit 100%;
+  }
+  @keyframes headingDrift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-18px); }
+  }
+}
+
+/* ── Beat row reveal stagger ─────────────────────────────────── */
+.beat-reveal-row {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Exit stagger: bottom row disappears first (reversed on scroll-up) */
+.beat-reveal-row:nth-child(1) { transition-delay: 270ms; }
+.beat-reveal-row:nth-child(2) { transition-delay: 210ms; }
+.beat-reveal-row:nth-child(3) { transition-delay: 150ms; }
+.beat-reveal-row:nth-child(4) { transition-delay: 90ms; }
+.beat-reveal-row:nth-child(5) { transition-delay: 40ms; }
+.beat-reveal-row:nth-child(6) { transition-delay: 0ms; }
+
+/* Entry stagger: top row appears first (overrides exit delays) */
+.beats-preview-visible .beat-reveal-row { opacity: 1; transform: translateY(0); }
+.beats-preview-visible .beat-reveal-row:nth-child(1) { transition-delay: 0ms; }
+.beats-preview-visible .beat-reveal-row:nth-child(2) { transition-delay: 65ms; }
+.beats-preview-visible .beat-reveal-row:nth-child(3) { transition-delay: 130ms; }
+.beats-preview-visible .beat-reveal-row:nth-child(4) { transition-delay: 195ms; }
+.beats-preview-visible .beat-reveal-row:nth-child(5) { transition-delay: 260ms; }
+.beats-preview-visible .beat-reveal-row:nth-child(6) { transition-delay: 325ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .beat-reveal-row,
+  .beat-reveal-row:nth-child(n) { opacity: 1; transform: none; transition: none; transition-delay: 0ms; }
 }
 
 /* ── Receipts: heading parallax + scroll-driven card cascade ── */

@@ -32,6 +32,7 @@ import HeroVideo from '@/components/HeroVideo'
 import LicenseTierGrid from '@/components/LicenseTierGrid'
 import ContactForm from '@/components/AboutClient'
 import HomeBeatsPreview from '@/components/HomeBeatsPreview'
+import SplitHeading from '@/components/SplitHeading'
 
 async function getPageData(): Promise<{ featured: Beat | null; beats: Beat[] }> {
   try {
@@ -95,7 +96,7 @@ export default async function HomePage() {
         <HeroShader />
 
         {/* Hero content */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">
+        <div id="hero-content" className="relative z-10 flex flex-col items-center justify-center text-center flex-grow pt-28 pb-36 px-6 lg:px-16">
 
           {/* Headline */}
           <HeadlineParallax>
@@ -171,7 +172,7 @@ export default async function HomePage() {
       {featured && (
         <section className="w-full flex justify-center border-b border-white/[0.06] bg-background">
           <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-10">
-            <ScrollReveal>
+            <ScrollReveal variant="fade">
               <FeaturedTrack beat={featured} />
             </ScrollReveal>
           </div>
@@ -185,16 +186,17 @@ export default async function HomePage() {
             <ScrollReveal className="mb-8">
               <div className="flex items-end justify-between gap-4">
                 <div>
+                  <span className="section-accent-line" aria-hidden="true" />
                   <p className="font-montserrat text-[11px] font-semibold uppercase mb-3" style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}>
                     Latest Beats
                   </p>
-                  <h2
+                  <SplitHeading
                     id="beats-preview-heading"
-                    className="font-display text-foreground leading-none"
+                    className="font-display text-foreground leading-none section-heading"
                     style={{ fontSize: 'clamp(36px, 5vw, 60px)', fontWeight: 300 }}
                   >
                     Hear the Work.
-                  </h2>
+                  </SplitHeading>
                 </div>
                 <Link
                   href="/store"
@@ -227,14 +229,13 @@ export default async function HomePage() {
       <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
+            <span className="section-accent-line" aria-hidden="true" />
             <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Licensing Info</p>
-            <h2 id="licensing-heading" className="font-display text-foreground leading-none" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
+            <SplitHeading id="licensing-heading" className="font-display text-foreground leading-none section-heading" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
               Choose Your License.
-            </h2>
+            </SplitHeading>
           </ScrollReveal>
-          <ScrollReveal>
-            <LicenseTierGrid />
-          </ScrollReveal>
+          <LicenseTierGrid />
         </div>
       </section>
 
@@ -243,9 +244,10 @@ export default async function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <div className="receipts-heading">
-              <h2 id="receipts-heading" className="font-display text-foreground leading-none mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
+              <span className="section-accent-line" aria-hidden="true" />
+              <SplitHeading id="receipts-heading" className="font-display text-foreground leading-none mb-4 section-heading" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
                 The Receipts.
-              </h2>
+              </SplitHeading>
               <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
                 5 placements&ensp;<span className="text-accent/50">·</span>&ensp;4 genres&ensp;<span className="text-accent/50">·</span>&ensp;GloRilla, DeeBaby, Shenseea &amp; more
               </p>
@@ -314,19 +316,20 @@ export default async function HomePage() {
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
       <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
         <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-20">
-          <ScrollReveal className="mb-14">
-            <h2
+          <ScrollReveal variant="fade" className="mb-14">
+            <span className="section-accent-line" aria-hidden="true" />
+            <SplitHeading
               id="contact-heading"
-              className="font-display text-foreground leading-none mb-3"
+              className="font-display text-foreground leading-none mb-3 section-heading"
               style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
             >
               Get in Touch.
-            </h2>
+            </SplitHeading>
             <p className="text-[12px] text-muted-low" style={{ fontFamily: 'var(--font-inter)' }}>
               Custom beats, collabs, licensing questions — reach out direct.
             </p>
           </ScrollReveal>
-          <ScrollReveal>
+          <ScrollReveal variant="fade">
             <ContactForm />
           </ScrollReveal>
         </div>
@@ -340,28 +343,34 @@ export default async function HomePage() {
             background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
           }}
         />
-        <ScrollReveal>
-          <p className="relative text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-5">
+
+        <ScrollReveal variant="fade">
+          <p className="relative text-[11px] font-normal uppercase text-muted-low mb-5" style={{ letterSpacing: '0.1em' }}>
             Available Now
           </p>
-          <h2
-            id="cta-heading"
-            className="relative font-display leading-none mb-6 text-foreground"
-            style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
-          >
-            Find Your Next Hit.
-          </h2>
+        </ScrollReveal>
 
-          <Link
-            href="/store"
-            className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
-            style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
-          >
-            Shop Beats
-          </Link>
-          <p className="relative mt-5 text-[11px] text-muted-low">
-            From $39.95 · Instant Download · All Licenses Available
-          </p>
+        <SplitHeading
+          id="cta-heading"
+          className="relative font-display leading-none mb-6 text-foreground section-heading"
+          style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 300 }}
+        >
+          Find Your Next Hit.
+        </SplitHeading>
+
+        <ScrollReveal variant="scale" delay={240}>
+          <div className="flex flex-col items-center gap-5">
+            <Link
+              href="/store"
+              className="cta-primary relative inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+              style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
+            >
+              Shop Beats
+            </Link>
+            <p className="text-[11px] text-muted-low">
+              From $39.95 · Instant Download · All Licenses Available
+            </p>
+          </div>
         </ScrollReveal>
       </section>
 

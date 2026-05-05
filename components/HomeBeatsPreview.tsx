@@ -11,11 +11,29 @@ export default function HomeBeatsPreview({ beats }: { beats: Beat[] }) {
   const t = useT()
   const { setQueue } = usePlayerStore()
   const listContainerRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
   useRowSpring(listContainerRef)
 
   useEffect(() => {
     if (beats.length > 0) setQueue(beats)
   }, [beats, setQueue])
+
+  useEffect(() => {
+    const el = listRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('beats-preview-visible')
+        } else {
+          el.classList.remove('beats-preview-visible')
+        }
+      },
+      { threshold: 0.08 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div ref={listContainerRef} className="relative overflow-hidden" style={{ perspective: '1200px' }}>
@@ -36,14 +54,15 @@ export default function HomeBeatsPreview({ beats }: { beats: Beat[] }) {
         </span>
         <span style={{ width: '160px' }} />
       </div>
-      <div role="list" aria-label="Beat tracks">
+      <div ref={listRef} role="list" aria-label="Beat tracks">
         {beats.map((beat, i) => (
-          <BeatCard
-            key={beat.id}
-            beat={beat}
-            index={i + 1}
-            onBuyClick={() => {}}
-          />
+          <div key={beat.id} className="beat-reveal-row">
+            <BeatCard
+              beat={beat}
+              index={i + 1}
+              onBuyClick={() => {}}
+            />
+          </div>
         ))}
       </div>
     </div>

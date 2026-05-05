@@ -54,7 +54,15 @@
       "Bash(Select-Object -Skip 1)",
       "Bash(Select-String -Pattern \"homepage|url|domain|vercel|deploy\" -SimpleMatch)",
       "Bash(Remove-Item *)",
-      "Bash(Test-Path *)"
+      "Bash(Test-Path *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\" -Depth 2 -Directory)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\AWSExam\\\\Desktop\\\\Projects\\\\prodkjbeats\" -Force)",
+      "Bash(Select-Object Mode, Name, FullName)",
+      "Bash(Get-ChildItem *)",
+      "Bash(npm test *)",
+      "Bash(Select-Object -Property FullName, PSIsContainer)",
+      "Bash(Sort-Object FullName)",
+      "Bash(grep -E \"\\\\.\\(json|mjs|yml\\)$\")"
     ]
   }
 }

@@ -20,11 +20,11 @@ export default function ScrollReveal({ children, className = '', delay = 0, dire
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (delay > 0) {
-            el.style.animationDelay = `${delay}ms`
-          }
+          el.style.transitionDelay = delay > 0 ? `${delay}ms` : ''
           el.classList.add('is-visible')
-          observer.disconnect()
+        } else {
+          el.style.transitionDelay = '0ms'
+          el.classList.remove('is-visible')
         }
       },
       { threshold: 0.08 }

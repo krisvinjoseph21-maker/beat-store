@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
 import { PRICES } from '@/lib/prices'
+import ScrollReveal from './ScrollReveal'
 
 const TIERS = [
   {
@@ -90,10 +93,10 @@ export { TIERS }
 export default function LicenseTierGrid() {
   return (
     <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 pb-3 sm:pb-0">
-      {TIERS.map((tier) => (
+      {TIERS.map((tier, idx) => (
+        <ScrollReveal key={tier.name} delay={idx * 90} className="min-w-[280px] sm:min-w-0 flex-shrink-0 snap-start flex flex-col">
         <div
-          key={tier.name}
-          className={`relative flex flex-col rounded-xl border bg-surface-3 transition-colors hover:bg-surface-1 min-w-[280px] sm:min-w-0 flex-shrink-0 snap-start ${
+          className={`relative flex flex-col rounded-xl border bg-surface-3 transition-colors hover:bg-surface-1 h-full ${
             tier.tag ? 'border-white/20' : 'border-white/[0.08]'
           }`}
         >
@@ -142,6 +145,7 @@ export default function LicenseTierGrid() {
             </div>
           </div>
         </div>
+        </ScrollReveal>
       ))}
     </div>
   )

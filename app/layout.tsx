@@ -9,6 +9,7 @@ import EmailCaptureModalClient from '@/components/EmailCaptureModalClient'
 import HtmlLang from '@/components/HtmlLang'
 import ChatBotWidget from '@/components/ChatBotWidgetLoader'
 import BodyPlayerPadding from '@/components/BodyPlayerPadding'
+import ScrollProgress from '@/components/ScrollProgress'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -83,6 +84,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <HtmlLang />
+        <ScrollProgress />
         <BodyPlayerPadding />
         <Navbar />
         <main id="main-content" className="flex-1 w-full" style={{ paddingTop: '48px' }}>{children}</main>
