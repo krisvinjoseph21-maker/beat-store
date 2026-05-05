@@ -5,12 +5,18 @@ import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
-import { BadgeCheck, ChevronDown, Heart } from 'lucide-react'
+import { BadgeCheck, ChevronDown, Heart, Loader2, Sparkles } from 'lucide-react'
 import { useT } from '@/lib/i18n'
 import { useRowSpring } from '@/lib/use-row-spring'
 
 const LicenseModal = dynamic(() => import('./LicenseModal'), { ssr: false })
 const StoreAmbient = dynamic(() => import('./StoreAmbient'), { ssr: false })
+
+interface AiResult {
+  id: string
+  title: string
+  reason: string
+}
 
 const PLACEMENT_CREDITS = [
   { artist: 'GloRilla',     detail: 'CMG / Interscope' },
@@ -78,6 +84,11 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const [sortBy, setSortBy] = useState('default')
   const [showAll, setShowAll] = useState(false)
   const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const [aiMode, setAiMode] = useState(false)
+  const [aiQuery, setAiQuery] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiResults, setAiResults] = useState<AiResult[]>([])
+  const [aiError, setAiError] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const MAX_QUERY_LEN = 100
   const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
@@ -143,6 +154,37 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   function handleModalCheckout() {
     setModalOpen(false)
     openCart()
+  }
+
+  async function handleAiSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!aiQuery.trim() || aiLoading) return
+    setAiLoading(true)
+    setAiError(null)
+    setAiResults([])
+    try {
+      const res = await fetch('/api/ai/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: aiQuery }),
+      })
+      const data = await res.json() as { recommendations?: AiResult[]; error?: string }
+      if (!res.ok) {
+        setAiError(data.error ?? 'Something went wrong.')
+      } else {
+        setAiResults(data.recommendations ?? [])
+      }
+    } catch {
+      setAiError('Failed to reach AI service.')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  function toggleAiMode() {
+    setAiMode((prev) => !prev)
+    setAiResults([])
+    setAiError(null)
   }
 
   return (
@@ -211,16 +253,31 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
           {/* Search + genre pills row */}
           <div className="flex flex-wrap items-center gap-3">
-            <input
-              type="text"
-              aria-label={t.store.searchPlaceholder}
-              placeholder={t.store.searchPlaceholder}
-              value={search}
-              onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
-              maxLength={MAX_QUERY_LEN}
-              className="border border-line-input bg-black/60 py-2.5 px-4 text-[13px] outline-none focus:border-white/30 transition-colors placeholder:text-muted-low backdrop-blur-sm"
-              style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)', width: 'clamp(180px, 22vw, 280px)' }}
-            />
+            {!aiMode && (
+              <input
+                type="text"
+                aria-label={t.store.searchPlaceholder}
+                placeholder={t.store.searchPlaceholder}
+                value={search}
+                onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
+                maxLength={MAX_QUERY_LEN}
+                className="border border-line-input bg-black/60 py-2.5 px-4 text-[13px] outline-none focus:border-white/30 transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)', width: 'clamp(180px, 22vw, 280px)' }}
+              />
+            )}
+            <button
+              onClick={toggleAiMode}
+              aria-pressed={aiMode}
+              className="font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-semibold transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0"
+              style={{
+                background: aiMode ? 'var(--accent)' : 'transparent',
+                borderColor: aiMode ? 'var(--accent)' : 'var(--line-input)',
+                color: aiMode ? '#000' : 'var(--muted-low)',
+              }}
+            >
+              <Sparkles size={11} aria-hidden="true" />
+              AI PICKS
+            </button>
 
             <div className="relative min-w-0 flex-1">
               <div role="group" aria-label="Filter by genre" className="flex items-center gap-2 overflow-x-auto pb-0.5">
@@ -246,6 +303,41 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-[#0a0a0a] to-transparent" aria-hidden="true" />
             </div>
           </div>
+
+          {/* AI query form */}
+          {aiMode && (
+            <form onSubmit={handleAiSubmit} className="mt-4 flex gap-3">
+              <input
+                type="text"
+                placeholder="Describe the vibe you need — dark 808s, melodic, around 140 BPM..."
+                value={aiQuery}
+                onChange={(e) => setAiQuery(e.target.value.slice(0, 500))}
+                maxLength={500}
+                autoFocus
+                className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                style={{
+                  borderColor: 'rgba(245,158,11,0.4)',
+                  color: 'var(--foreground)',
+                  fontFamily: 'var(--font-inter)',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={aiLoading || !aiQuery.trim()}
+                className="font-montserrat flex items-center gap-1.5 border h-11 px-5 text-[11px] font-semibold whitespace-nowrap disabled:opacity-40 transition-opacity"
+                style={{
+                  borderColor: 'rgba(245,158,11,0.4)',
+                  background: 'rgba(245,158,11,0.08)',
+                  color: 'var(--foreground)',
+                }}
+              >
+                {aiLoading
+                  ? <><Loader2 size={11} className="animate-spin" aria-hidden="true" /> THINKING</>
+                  : <><Sparkles size={11} aria-hidden="true" /> FIND BEATS</>
+                }
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
@@ -285,6 +377,66 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           </p>
         </div>
       </div>
+
+      {/* AI results */}
+      {aiMode && (aiResults.length > 0 || aiError) && (
+        <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={12} style={{ color: 'var(--accent)' }} aria-hidden="true" />
+            <span
+              className="font-montserrat text-[10px] font-bold uppercase"
+              style={{ letterSpacing: '0.18em', color: 'var(--accent)' }}
+            >
+              AI PICKS
+            </span>
+          </div>
+          {aiError ? (
+            <p
+              className="text-[13px]"
+              style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+            >
+              {aiError}
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {aiResults.map((r) => {
+                const beat = initialBeats.find((b) => b.id === r.id)
+                return (
+                  <div
+                    key={r.id}
+                    className="flex flex-col gap-3 border p-5"
+                    style={{
+                      borderColor: 'rgba(245,158,11,0.25)',
+                      background: 'rgba(245,158,11,0.03)',
+                    }}
+                  >
+                    <p
+                      className="font-display uppercase leading-tight"
+                      style={{ fontSize: 'clamp(16px, 2vw, 22px)', color: 'var(--foreground)' }}
+                    >
+                      {r.title}
+                    </p>
+                    <p
+                      className="text-[12px] italic flex-1"
+                      style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+                    >
+                      &ldquo;{r.reason}&rdquo;
+                    </p>
+                    {beat && (
+                      <p
+                        className="text-[11px]"
+                        style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+                      >
+                        {beat.bpm} BPM{beat.genre ? ` · ${beat.genre}` : ''}{beat.key ? ` · ${beat.key}` : ''}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Beat list */}
       <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-12">

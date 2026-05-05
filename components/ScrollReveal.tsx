@@ -7,9 +7,10 @@ interface Props {
   className?: string
   delay?: number
   direction?: 'up' | 'left' | 'right'
+  variant?: 'up' | 'fade' | 'scale'
 }
 
-export default function ScrollReveal({ children, className = '', delay = 0, direction = 'up' }: Props) {
+export default function ScrollReveal({ children, className = '', delay = 0, direction = 'up', variant = 'up' }: Props) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -37,11 +38,15 @@ export default function ScrollReveal({ children, className = '', delay = 0, dire
     direction === 'left'  ? 'reveal-left'  :
     direction === 'right' ? 'reveal-right' : ''
 
+  const variantClass =
+    variant === 'fade'  ? 'reveal-fade'  :
+    variant === 'scale' ? 'reveal-scale' : ''
+
   return (
     <div
       ref={ref}
       data-dir={direction !== 'up' ? direction : undefined}
-      className={`scroll-reveal ${dirClass} ${className}`.trim()}
+      className={`scroll-reveal ${dirClass} ${variantClass} ${className}`.trim()}
     >
       {children}
     </div>

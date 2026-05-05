@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'PRODKJBEATS',
     locale: 'en_US',
-    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS' }],
+    images: [{ url: '/og', width: 1200, height: 630, alt: 'PRODKJBEATS' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'PRODKJBEATS — Premium Beats',
     description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
-    images: ['/android-chrome-512x512.png'],
+    images: ['/og'],
   },
 }
 

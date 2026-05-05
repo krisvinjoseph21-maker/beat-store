@@ -5,6 +5,11 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
+    coverage: {
+      provider: 'v8',
+      include: ['lib/content-filter.ts', 'lib/rate-limit.ts'],
+      thresholds: { lines: 80 },
+    },
   },
   resolve: {
     alias: {

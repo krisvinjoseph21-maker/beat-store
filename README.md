@@ -1,5 +1,9 @@
 # PRODKJBEATS
 
+[![CI](https://github.com/krisvinjoseph21-maker/prodkjbeats/actions/workflows/ci.yml/badge.svg)](https://github.com/krisvinjoseph21-maker/prodkjbeats/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](tsconfig.json)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](vitest.config.ts)
+
 A full-stack music production marketplace for buying beats, sample packs, and booking custom production services. Built with Next.js, Supabase, and Stripe.
 
 **Live:** [prodkjbeats.com](https://prodkjbeats.com) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
@@ -93,6 +97,7 @@ npm run build        # production build
 npm run type-check   # TypeScript type checking
 npm run lint         # ESLint
 npm test             # unit tests (vitest)
+npm run test:coverage  # unit tests with coverage report
 ```
 
 ---
