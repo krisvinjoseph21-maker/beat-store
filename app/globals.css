@@ -337,7 +337,7 @@ input[type='range']::-moz-range-thumb { width: 10px; height: 10px; background: v
   }
   @keyframes headingDrift {
     from { transform: translateY(0); }
-    to   { transform: translateY(-18px); }
+    to   { transform: translateY(-10px); }
   }
 }
 

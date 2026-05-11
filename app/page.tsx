@@ -187,7 +187,7 @@ export default async function HomePage() {
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <span className="section-accent-line" aria-hidden="true" />
-                  <p className="font-montserrat text-[11px] font-semibold uppercase mb-3" style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}>
+                  <p className="font-montserrat text-[11px] font-semibold uppercase mb-5" style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}>
                     Latest Beats
                   </p>
                   <SplitHeading
@@ -230,7 +230,7 @@ export default async function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <span className="section-accent-line" aria-hidden="true" />
-            <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Licensing Info</p>
+            <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-6">Licensing Info</p>
             <SplitHeading id="licensing-heading" className="font-display text-foreground leading-none section-heading" style={{ fontSize: 'clamp(40px, 6vw, 72px)', fontWeight: 300 }}>
               Choose Your License.
             </SplitHeading>
@@ -343,12 +343,6 @@ export default async function HomePage() {
             background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%)',
           }}
         />
-
-        <ScrollReveal variant="fade">
-          <p className="relative text-[11px] font-normal uppercase text-muted-low mb-5" style={{ letterSpacing: '0.1em' }}>
-            Available Now
-          </p>
-        </ScrollReveal>
 
         <SplitHeading
           id="cta-heading"
