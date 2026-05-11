@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
 import CtaBanner from '@/components/CtaBanner'
-import LicenseTierGrid, { TIERS } from '@/components/LicenseTierGrid'
+import LicenseTierGrid from '@/components/LicenseTierGrid'
+import { TIERS } from '@/lib/license-tiers'
 
 export const metadata: Metadata = {
   title: 'Beat Licensing — PRODKJBEATS | Compare All License Tiers',
