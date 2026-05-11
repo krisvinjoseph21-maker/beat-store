@@ -73,19 +73,18 @@ void main() {
   vec3 amber = vec3(0.784, 0.659, 0.416);
 
   /* ── Spatial mask ────────────────────────────────────────────────────────
-   * Glow is concentrated at the bottom 40% of the screen and the outer edges.
-   * The top 60% remains completely dark so text and beat cards stay readable.
+   * Glow is confined to the bottom ~18% of the screen — just above the player.
    * ─────────────────────────────────────────────────────────────────────── */
 
-  /* Bottom ramp: 1.0 at very bottom → 0.0 at 40% up */
-  float bottomRamp = clamp(1.0 - uv.y * 2.5, 0.0, 1.0);
-  bottomRamp = pow(bottomRamp, 1.4);
+  /* Bottom ramp: 1.0 at very bottom → 0.0 at ~18% up */
+  float bottomRamp = clamp(1.0 - uv.y * 5.5, 0.0, 1.0);
+  bottomRamp = pow(bottomRamp, 2.2);
 
-  /* Side edges: x-axis distance from centre, dampened above bottom third */
+  /* Side edges: tightly hugged to the bottom strip */
   float xEdge    = pow(abs(uv.x * 2.0 - 1.0), 2.2);
-  float sideRamp = xEdge * clamp(1.0 - uv.y * 3.2, 0.0, 1.0);
+  float sideRamp = xEdge * clamp(1.0 - uv.y * 7.0, 0.0, 1.0);
 
-  float mask = clamp(bottomRamp + sideRamp * 0.45, 0.0, 1.0);
+  float mask = clamp(bottomRamp + sideRamp * 0.3, 0.0, 1.0);
 
   /* ── Audio reactivity ────────────────────────────────────────────────────
    * Bass drives the primary glow. Mid adds a faint secondary layer.
@@ -94,8 +93,8 @@ void main() {
   float energy  = u_bass * 0.75 + u_mid * 0.12;
   float glow    = n * mask * energy * u_playing;
 
-  /* Cap: 38% of full amber at absolute maximum so it never competes with content */
-  vec3 col = amber * clamp(glow * 1.9, 0.0, 0.38);
+  /* Cap: 14% of full amber — super faint, just a hint of warmth */
+  vec3 col = amber * clamp(glow * 1.1, 0.0, 0.14);
 
   gl_FragColor = vec4(col, 1.0);
 }
