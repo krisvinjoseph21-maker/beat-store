@@ -10,6 +10,7 @@ import HtmlLang from '@/components/HtmlLang'
 import ChatBotWidget from '@/components/ChatBotWidgetLoader'
 import BodyPlayerPadding from '@/components/BodyPlayerPadding'
 import ScrollProgress from '@/components/ScrollProgress'
+import AudioReactiveStage from '@/components/AudioReactiveStageLoader'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -77,6 +78,7 @@ export default function RootLayout({
         <noscript><style>{`.scroll-reveal { opacity: 1 !important; }`}</style></noscript>
       </head>
       <body className="min-h-screen flex flex-col bg-black text-foreground font-[family-name:var(--font-inter)]">
+        <AudioReactiveStage />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[999] focus:rounded-full focus:bg-white focus:px-5 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-black focus:shadow-lg"

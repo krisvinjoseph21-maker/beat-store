@@ -104,7 +104,7 @@ export default async function HomePage() {
               className="hero-headline font-display leading-[0.88] text-foreground"
               style={{ fontSize: 'clamp(60px, 11vw, 148px)', letterSpacing: '-0.01em' }}
             >
-              PLACEMENT-PROVEN BEATS.
+              FIND YOUR FIRST HIT HERE.
             </h1>
           </HeadlineParallax>
 
