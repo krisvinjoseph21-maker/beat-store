@@ -315,7 +315,7 @@ export default async function HomePage() {
 
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
       <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
-        <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-20">
+        <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-32">
           <ScrollReveal variant="fade" className="mb-14">
             <span className="section-accent-line" aria-hidden="true" />
             <SplitHeading

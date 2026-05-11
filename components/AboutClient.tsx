@@ -125,8 +125,8 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={sending}
-          className="bg-white text-black text-[12px] font-bold uppercase px-8 py-3.5 hover:bg-white-hover transition-colors disabled:opacity-50"
-          style={{ fontFamily: 'var(--font-montserrat)' }}
+          className="inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95 disabled:opacity-50"
+          style={{ padding: '14px 36px', fontFamily: 'var(--font-inter)' }}
         >
           {sending ? t.contact.sending : t.contact.send}
         </button>
