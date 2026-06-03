@@ -1,4 +1,4 @@
-﻿import { createAdminClient } from '@/lib/supabase-admin'
+import { createAdminClient } from '@/lib/supabase-admin'
 import MelodyPacksGrid from '@/components/MelodyPacksGrid'
 import CtaBanner from '@/components/CtaBanner'
 

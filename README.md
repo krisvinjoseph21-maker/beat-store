@@ -1,4 +1,4 @@
-﻿# KJYOUCRAZY
+# KJYOUCRAZY
 
 [![CI](https://github.com/krisvinjoseph21-maker/kjyoucrazy/actions/workflows/ci.yml/badge.svg)](https://github.com/krisvinjoseph21-maker/kjyoucrazy/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](tsconfig.json)

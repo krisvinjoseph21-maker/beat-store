@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import ContactForm from '@/components/AboutClient'
 import CtaBanner from '@/components/CtaBanner'
 

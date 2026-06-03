@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import WeeklyLoopSubscriptionClient from '@/components/WeeklyLoopSubscriptionClient'
 import CtaBanner from '@/components/CtaBanner'
 

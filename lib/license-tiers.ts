@@ -1,4 +1,4 @@
-﻿import { PRICES } from '@/lib/prices'
+import { PRICES } from '@/lib/prices'
 
 export const TIERS = [
   {

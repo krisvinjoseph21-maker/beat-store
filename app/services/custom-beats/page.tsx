@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import CustomBeatsClient from '@/components/CustomBeatsClient'
 import CtaBanner from '@/components/CtaBanner'
 

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * KJYOUCRAZY — Bulk Beat Importer
  *

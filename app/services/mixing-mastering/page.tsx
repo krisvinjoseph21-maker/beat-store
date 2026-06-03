@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import MixingMasteringClient from '@/components/MixingMasteringClient'
 import CtaBanner from '@/components/CtaBanner'
 
