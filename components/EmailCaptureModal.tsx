@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { X, Check } from 'lucide-react'
@@ -244,7 +244,7 @@ export default function EmailCaptureModal() {
                     className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--accent)]"
                   />
                   <span className="text-xs text-muted leading-relaxed">
-                    I agree to receive email updates, free beats, and promotional offers from PRODKJBEATS. I can unsubscribe at any time.
+                    I agree to receive email updates, free beats, and promotional offers from KJYOUCRAZY. I can unsubscribe at any time.
                   </span>
                 </label>
                 {errors.consent && (

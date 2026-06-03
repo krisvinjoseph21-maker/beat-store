@@ -1,15 +1,15 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Use — PRODKJBEATS | Beat Licensing Agreement',
-  description: 'Terms and conditions for purchasing and licensing beats from PRODKJBEATS — leases, prohibited uses, refund policy, and intellectual property.',
+  title: 'Terms of Use — KJYOUCRAZY | Beat Licensing Agreement',
+  description: 'Terms and conditions for purchasing and licensing beats from KJYOUCRAZY — leases, prohibited uses, refund policy, and intellectual property.',
   alternates: { canonical: '/terms' },
 }
 
 const SECTIONS = [
   {
     title: 'Acceptance of Terms',
-    body: 'By accessing or using PRODKJBEATS ("the Site"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Site.',
+    body: 'By accessing or using KJYOUCRAZY ("the Site"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Site.',
   },
   {
     title: 'Purchases and Licenses',
@@ -25,7 +25,7 @@ const SECTIONS = [
   },
   {
     title: 'Intellectual Property',
-    body: 'All beats, production, and content on this Site are the intellectual property of PRODKJBEATS unless otherwise stated. Unauthorized reproduction or redistribution is strictly prohibited.',
+    body: 'All beats, production, and content on this Site are the intellectual property of KJYOUCRAZY unless otherwise stated. Unauthorized reproduction or redistribution is strictly prohibited.',
   },
   {
     title: 'User Accounts',
@@ -33,11 +33,11 @@ const SECTIONS = [
   },
   {
     title: 'Disclaimer of Warranties',
-    body: 'The Site and its content are provided "as is" without warranties of any kind. PRODKJBEATS does not warrant that the Site will be uninterrupted, error-free, or free of viruses or other harmful components.',
+    body: 'The Site and its content are provided "as is" without warranties of any kind. KJYOUCRAZY does not warrant that the Site will be uninterrupted, error-free, or free of viruses or other harmful components.',
   },
   {
     title: 'Limitation of Liability',
-    body: 'To the fullest extent permitted by law, PRODKJBEATS shall not be liable for any indirect, incidental, special, or consequential damages arising out of your use of the Site or purchase of beats.',
+    body: 'To the fullest extent permitted by law, KJYOUCRAZY shall not be liable for any indirect, incidental, special, or consequential damages arising out of your use of the Site or purchase of beats.',
   },
   {
     title: 'Changes to Terms',

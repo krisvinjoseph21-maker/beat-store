@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, ShoppingCart, Check, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
@@ -355,7 +355,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
           {/* Title / meta / actions */}
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <h1 className="text-xl font-black text-foreground leading-tight">{beat.title}</h1>
-            <p className="mt-0.5 text-sm text-muted">PRODKJBEATS</p>
+            <p className="mt-0.5 text-sm text-muted">KJYOUCRAZY</p>
 
             {/* BPM · Key · Date */}
             <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">

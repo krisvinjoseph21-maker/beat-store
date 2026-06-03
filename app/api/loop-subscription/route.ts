@@ -1,4 +1,4 @@
-export const runtime = 'nodejs'
+﻿export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe'
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
             currency: 'usd',
             unit_amount: plan.usdPrice * 100,
             product_data: {
-              name: 'PRODKJBEATS — Loop Subscription',
+              name: 'KJYOUCRAZY — Loop Subscription',
               description: plan.label,
             },
           },

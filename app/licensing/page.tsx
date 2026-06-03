@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
 import CtaBanner from '@/components/CtaBanner'
@@ -6,7 +6,7 @@ import LicenseTierGrid from '@/components/LicenseTierGrid'
 import { TIERS } from '@/lib/license-tiers'
 
 export const metadata: Metadata = {
-  title: 'Beat Licensing — PRODKJBEATS | Compare All License Tiers',
+  title: 'Beat Licensing — KJYOUCRAZY | Compare All License Tiers',
   description: 'Compare Standard, Premium, Unlimited, and Exclusive beat licenses. Transparent pricing, instant download, non-exclusive leases starting at $39.95.',
   alternates: { canonical: '/licensing' },
 }
@@ -18,7 +18,7 @@ const RULES = [
   'You may not resell, lease, or sublicense beats to third parties.',
   'Credit is required on all streaming platforms and video descriptions for leased beats.',
   'Leases do not transfer copyright ownership of the underlying composition.',
-  'PRODKJBEATS retains the right to continue licensing the beat to others under non-exclusive agreements.',
+  'KJYOUCRAZY retains the right to continue licensing the beat to others under non-exclusive agreements.',
   'Beats purchased under a lease may not be used in TV/film sync without upgrading to exclusive rights.',
   'Lease terms begin on the date of purchase.',
 ]

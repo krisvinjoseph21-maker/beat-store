@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { Check, X, ChevronDown } from 'lucide-react'
@@ -243,7 +243,7 @@ export default function CustomBeatsClient() {
                 Built for Serious Artists
               </p>
               <p className="mt-4 text-[11px] text-muted-low" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}>
-                @PRODKJBEATS
+                @KJYOUCRAZY
               </p>
             </div>
           </div>
@@ -270,7 +270,7 @@ export default function CustomBeatsClient() {
 
           {/* Brand */}
           <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
-            PRODKJBEATS
+            KJYOUCRAZY
           </p>
 
           {/* Title */}

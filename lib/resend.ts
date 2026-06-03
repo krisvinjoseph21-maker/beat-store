@@ -1,4 +1,4 @@
-import 'server-only'
+﻿import 'server-only'
 import { Resend } from 'resend'
 
 function esc(str: string): string {
@@ -23,7 +23,7 @@ function getResend() {
 }
 
 function getFrom() {
-  return process.env.RESEND_FROM_EMAIL ?? 'beats@prodkjbeats.com'
+  return process.env.RESEND_FROM_EMAIL ?? 'beats@kjyoucrazy.com'
 }
 function getToAdmin() {
   return process.env.RESEND_TO_EMAIL ?? 'kjbeats6@gmail.com'
@@ -49,9 +49,9 @@ export async function sendDownloadEmail({
   const beatsHtml = beatTitles.map((t) => `<li>${esc(t)}</li>`).join('')
 
   const result = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: customerEmail,
-    subject: 'Your PRODKJBEATS Download is Ready',
+    subject: 'Your KJYOUCRAZY Download is Ready',
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
         <h1 style="color:#fff;font-size:24px;margin-bottom:8px">Your beats are ready 🎧</h1>
@@ -62,7 +62,7 @@ export async function sendDownloadEmail({
           Download Your Beats
         </a>
         <p style="color:#555;font-size:12px;margin-top:24px">This link expires in 48 hours.</p>
-        <p style="color:#555;font-size:12px">— PRODKJBEATS</p>
+        <p style="color:#555;font-size:12px">— KJYOUCRAZY</p>
       </div>
     `,
   })
@@ -81,7 +81,7 @@ export async function sendServiceInquiryEmail({
   projectDetails: string
 }) {
   const { error } = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: getToAdmin(),
     subject: subj(`New Service Inquiry: ${serviceType} — ${artistName}`),
     html: `
@@ -116,7 +116,7 @@ export async function sendExclusiveOfferEmail({
 }) {
   const siteUrl = getSiteUrl()
   const { error } = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
     subject: subj(`Exclusive Offer: $${offerPrice} for "${beatTitle}" — ${artistName}`),
@@ -174,7 +174,7 @@ export async function sendBookingEmail({
     ? `<tr style="border-bottom:1px solid #222"><td style="padding:10px 8px;color:#888;font-size:13px;vertical-align:top">Reference Tracks</td><td style="padding:10px 8px;color:#fff;white-space:pre-wrap">${esc(referenceTracks)}</td></tr>`
     : ''
   const { error } = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
     subject: subj(`New Booking: ${projectType} — ${artistName}`),
@@ -228,9 +228,9 @@ export async function sendBookingConfirmationEmail({
   deadline: string
 }) {
   await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: email,
-    subject: 'Booking Request Received — PRODKJBEATS',
+    subject: 'Booking Request Received — KJYOUCRAZY',
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px;border-radius:8px">
         <h1 style="color:#fff;font-size:24px;margin-bottom:8px">We got your request</h1>
@@ -246,7 +246,7 @@ export async function sendBookingConfirmationEmail({
             <td style="padding:10px 8px;color:#fff">${esc(deadline)}</td>
           </tr>
         </table>
-        <p style="color:#555;font-size:12px;margin-top:32px">— PRODKJBEATS</p>
+        <p style="color:#555;font-size:12px;margin-top:32px">— KJYOUCRAZY</p>
       </div>
     `,
   })
@@ -260,7 +260,7 @@ export async function sendSubscribeNotificationEmail({
   email: string
 }) {
   const { error } = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: getToAdmin(),
     subject: subj(`New Subscriber: ${name || email}`),
     html: `
@@ -271,7 +271,7 @@ export async function sendSubscribeNotificationEmail({
           ${name ? `<tr style="border-bottom:1px solid #222"><td style="padding:10px 8px;color:#888;font-size:13px">Name</td><td style="padding:10px 8px;color:#fff;font-weight:700">${esc(name)}</td></tr>` : ''}
           <tr><td style="padding:10px 8px;color:#888;font-size:13px">Email</td><td style="padding:10px 8px;color:#fff"><a href="mailto:${esc(email)}" style="color:#c8a86a">${esc(email)}</a></td></tr>
         </table>
-        <p style="color:#555;font-size:12px;margin-top:24px">— PRODKJBEATS site</p>
+        <p style="color:#555;font-size:12px;margin-top:24px">— KJYOUCRAZY site</p>
       </div>
     `,
   })
@@ -290,7 +290,7 @@ export async function sendContactEmail({
   message: string
 }) {
   const { error } = await getResend().emails.send({
-    from: `PRODKJBEATS <${getFrom()}>`,
+    from: `KJYOUCRAZY <${getFrom()}>`,
     to: getToAdmin(),
     replyTo: email,
     subject: subj(`Contact: ${subject} — ${name}`),

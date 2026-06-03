@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useLocaleStore } from './locale'
 
@@ -107,7 +107,7 @@ const translations = {
       bookPackage: 'Book This Package',
       enquireNow: 'Enquire Now',
       addToCart: 'Add to Cart',
-      bookWith: 'Book with PRODKJBEATS',
+      bookWith: 'Book with KJYOUCRAZY',
       morePayment: 'More payment options',
       artistName: 'Artist Name',
       projectDetails: 'Project Details',
@@ -261,7 +261,7 @@ const translations = {
       bookPackage: 'Reservar Este Paquete',
       enquireNow: 'Consultar Ahora',
       addToCart: 'Agregar al Carrito',
-      bookWith: 'Reservar con PRODKJBEATS',
+      bookWith: 'Reservar con KJYOUCRAZY',
       morePayment: 'Más opciones de pago',
       artistName: 'Nombre Artístico',
       projectDetails: 'Detalles del Proyecto',
@@ -415,7 +415,7 @@ const translations = {
       bookPackage: 'Réserver ce Package',
       enquireNow: 'En savoir plus',
       addToCart: 'Ajouter au Panier',
-      bookWith: 'Réserver avec PRODKJBEATS',
+      bookWith: 'Réserver avec KJYOUCRAZY',
       morePayment: "Plus d'options de paiement",
       artistName: "Nom d'Artiste",
       projectDetails: 'Détails du Projet',

@@ -1,3 +1,3 @@
-import { trace } from '@opentelemetry/api'
+﻿import { trace } from '@opentelemetry/api'
 
-export const getTracer = () => trace.getTracer('prodkjbeats')
+export const getTracer = () => trace.getTracer('kjyoucrazy')

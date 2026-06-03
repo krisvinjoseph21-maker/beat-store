@@ -1,4 +1,4 @@
-import { cache } from 'react'
+﻿import { cache } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase-admin'
@@ -31,27 +31,27 @@ export async function generateMetadata(
   const { id } = await params
   const data = await getBeat(id)
 
-  if (!data) return { title: 'Beat — PRODKJBEATS' }
+  if (!data) return { title: 'Beat — KJYOUCRAZY' }
 
   const ogImages = data.cover_url
-    ? [{ url: data.cover_url, width: 1200, height: 630, alt: `${data.title} by PRODKJBEATS` }]
+    ? [{ url: data.cover_url, width: 1200, height: 630, alt: `${data.title} by KJYOUCRAZY` }]
     : []
 
-  const desc = `${data.genre} beat by PRODKJBEATS · ${data.bpm} BPM · ${data.key} · Buy from $39.95 — Standard, Premium & Unlimited leases available.`
+  const desc = `${data.genre} beat by KJYOUCRAZY · ${data.bpm} BPM · ${data.key} · Buy from $39.95 — Standard, Premium & Unlimited leases available.`
   const shortDesc = `${data.genre} · ${data.bpm} BPM · ${data.key} · From $39.95`
 
   return {
-    title: `${data.title} — PRODKJBEATS`,
+    title: `${data.title} — KJYOUCRAZY`,
     description: desc,
     openGraph: {
-      title: `${data.title} — PRODKJBEATS`,
+      title: `${data.title} — KJYOUCRAZY`,
       description: shortDesc,
       type: 'website',
       ...(ogImages.length > 0 ? { images: ogImages } : {}),
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data.title} — PRODKJBEATS`,
+      title: `${data.title} — KJYOUCRAZY`,
       description: shortDesc,
       ...(data.cover_url ? { images: [data.cover_url] } : {}),
     },
@@ -78,8 +78,8 @@ export default async function BeatPage(
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: data.title,
-    description: `${data.genre} beat by PRODKJBEATS · ${data.bpm} BPM · ${data.key}`,
-    brand: { '@type': 'Brand', name: 'PRODKJBEATS' },
+    description: `${data.genre} beat by KJYOUCRAZY · ${data.bpm} BPM · ${data.key}`,
+    brand: { '@type': 'Brand', name: 'KJYOUCRAZY' },
     offers: {
       '@type': 'AggregateOffer',
       lowPrice: '39.95',

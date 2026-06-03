@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
@@ -219,7 +219,7 @@ export default function MixingMasteringClient() {
 
           {/* Brand label */}
           <p className="text-[11px] font-normal uppercase text-muted-low mb-3" style={{ letterSpacing: '0.1em', fontFamily: 'var(--font-montserrat)' }}>
-            PRODKJBEATS
+            KJYOUCRAZY
           </p>
 
           {/* Title */}

@@ -1,21 +1,21 @@
-export const revalidate = 60
+﻿export const revalidate = 60
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'PRODKJBEATS — Trap, Drill, R&B & Afrobeats Beats',
+  title: 'KJYOUCRAZY — Trap, Drill, R&B & Afrobeats Beats',
   description: 'Verified placements with GloRilla, DeeBaby, Shenseea & more. Shop trap, drill, R&B, and Afrobeats beats — instant download.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'PRODKJBEATS — Trap, Drill, R&B & Afrobeats Beats',
+    title: 'KJYOUCRAZY — Trap, Drill, R&B & Afrobeats Beats',
     description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
     type: 'website',
-    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'PRODKJBEATS' }],
+    images: [{ url: '/android-chrome-512x512.png', width: 512, height: 512, alt: 'KJYOUCRAZY' }],
   },
   twitter: {
     card: 'summary',
-    title: 'PRODKJBEATS — Trap, Drill, R&B & Afrobeats Beats',
+    title: 'KJYOUCRAZY — Trap, Drill, R&B & Afrobeats Beats',
     description: 'Verified placements. Shop trap, drill, R&B, and Afrobeats instrumentals.',
     images: ['/android-chrome-512x512.png'],
   },

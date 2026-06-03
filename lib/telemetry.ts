@@ -1,4 +1,4 @@
-import { NodeSDK } from '@opentelemetry/sdk-node'
+﻿import { NodeSDK } from '@opentelemetry/sdk-node'
 import { resourceFromAttributes } from '@opentelemetry/resources'
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_DEPLOYMENT_ENVIRONMENT } from '@opentelemetry/semantic-conventions'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
@@ -6,7 +6,7 @@ import { ConsoleSpanExporter, SimpleSpanProcessor, BatchSpanProcessor } from '@o
 
 export function setupTelemetry() {
   const resource = resourceFromAttributes({
-    [SEMRESATTRS_SERVICE_NAME]: 'prodkjbeats',
+    [SEMRESATTRS_SERVICE_NAME]: 'kjyoucrazy',
     [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV ?? 'development',
   })
 

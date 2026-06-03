@@ -1,8 +1,8 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { X } from 'lucide-react'
 
 export const metadata = {
-  title: 'Order Cancelled — PRODKJBEATS',
+  title: 'Order Cancelled — KJYOUCRAZY',
   robots: { index: false, follow: false },
 }
 

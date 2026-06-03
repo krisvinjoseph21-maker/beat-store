@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
@@ -107,9 +107,9 @@ function normalizeKey(raw: string): string {
 // from what came before and the key from what came after.
 //
 // Examples:
-//   "! lifetime 153 c min @prodkjbeats @andrzxz.wav"
+//   "! lifetime 153 c min @kjyoucrazy @andrzxz.wav"
 //     → { title: "Lifetime", bpm: 153, key: "Cm" }
-//   "(2000s, tecca) whispering to you 104 prodkjbeats x pantydiamanty.mp3"
+//   "(2000s, tecca) whispering to you 104 kjyoucrazy x pantydiamanty.mp3"
 //     → { title: "Whispering To You", bpm: 104, key: "Am" }
 function parseBeatFilename(filename: string): { title: string; key: string; bpm: number | null } {
   let s = filename.replace(/\.[^.]+$/, '')       // strip extension
@@ -247,7 +247,7 @@ export default function AdminClient() {
   const [melodyPacks, setMelodyPacks] = useState<MelodyPack[]>([])
   const [mpEditId, setMpEditId] = useState<string | null>(null)
   const [mpEditForm, setMpEditForm] = useState<Partial<MelodyPack>>({})
-  const [mpNewPack, setMpNewPack] = useState({ title: '', vendor: 'PRODKJBEATS', description: '', price: '', compare_at_price: '' })
+  const [mpNewPack, setMpNewPack] = useState({ title: '', vendor: 'KJYOUCRAZY', description: '', price: '', compare_at_price: '' })
   const [mpError, setMpError] = useState<string | null>(null)
   const [mpUploading, setMpUploading] = useState(false)
   const [mpUploadMsg, setMpUploadMsg] = useState('')
@@ -264,7 +264,7 @@ export default function AdminClient() {
   const [drumPacks, setDrumPacks] = useState<DrumPack[]>([])
   const [dpEditId, setDpEditId] = useState<string | null>(null)
   const [dpEditForm, setDpEditForm] = useState<Partial<DrumPack>>({})
-  const [dpNewPack, setDpNewPack] = useState({ title: '', vendor: 'PRODKJBEATS', description: '', price: '', compare_at_price: '' })
+  const [dpNewPack, setDpNewPack] = useState({ title: '', vendor: 'KJYOUCRAZY', description: '', price: '', compare_at_price: '' })
   const [dpError, setDpError] = useState<string | null>(null)
   const [dpUploading, setDpUploading] = useState(false)
   const [dpUploadMsg, setDpUploadMsg] = useState('')
@@ -379,7 +379,7 @@ export default function AdminClient() {
       const data = await res.json()
       if (!res.ok) { setMpError(data.error ?? 'Failed to create'); return }
       setMelodyPacks((prev) => [data, ...prev])
-      setMpNewPack({ title: '', vendor: 'PRODKJBEATS', description: '', price: '', compare_at_price: '' })
+      setMpNewPack({ title: '', vendor: 'KJYOUCRAZY', description: '', price: '', compare_at_price: '' })
       setMpCoverUrl('')
       setMpFilePath('')
       setMpUploadMsg('Pack created successfully.')
@@ -462,7 +462,7 @@ export default function AdminClient() {
       const data = await res.json()
       if (!res.ok) { setDpError(data.error ?? 'Failed to create'); return }
       setDrumPacks((prev) => [data, ...prev])
-      setDpNewPack({ title: '', vendor: 'PRODKJBEATS', description: '', price: '', compare_at_price: '' })
+      setDpNewPack({ title: '', vendor: 'KJYOUCRAZY', description: '', price: '', compare_at_price: '' })
       setDpCoverUrl('')
       setDpFilePath('')
       setDpUploadMsg('Pack created successfully.')
@@ -1676,7 +1676,7 @@ export default function AdminClient() {
                 <div>
                   <label className="block text-xs font-medium text-muted-mid mb-1.5">Vendor</label>
                   <input value={mpNewPack.vendor} onChange={(e) => setMpNewPack((f) => ({ ...f, vendor: e.target.value }))}
-                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="PRODKJBEATS" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="KJYOUCRAZY" />
                 </div>
               </div>
 
@@ -1887,7 +1887,7 @@ export default function AdminClient() {
                 <div>
                   <label className="block text-xs font-medium text-muted-mid mb-1.5">Vendor</label>
                   <input value={dpNewPack.vendor} onChange={(e) => setDpNewPack((f) => ({ ...f, vendor: e.target.value }))}
-                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="PRODKJBEATS" />
+                    className="w-full rounded-xl border border-line-card bg-surface-1 px-4 py-3 text-sm text-white outline-none focus:border-muted" placeholder="KJYOUCRAZY" />
                 </div>
               </div>
 

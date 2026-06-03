@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import DrumKitsClient from '@/components/DrumKitsClient'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Drum Kits — PRODKJBEATS | Trap, Drill & R&B Samples',
-  description: 'Download premium drum kits from PRODKJBEATS. Trap, drill, R&B, and Afrobeats one-shots and samples crafted for modern music production — instant download.',
+  title: 'Drum Kits — KJYOUCRAZY | Trap, Drill & R&B Samples',
+  description: 'Download premium drum kits from KJYOUCRAZY. Trap, drill, R&B, and Afrobeats one-shots and samples crafted for modern music production — instant download.',
   alternates: { canonical: '/sample-packs/drum-kits' },
 }
 

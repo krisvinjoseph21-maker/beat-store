@@ -1,12 +1,12 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import PurchasesClient from '@/components/PurchasesClient'
 
 export const metadata: Metadata = {
-  title: 'Purchases — PRODKJBEATS',
-  description: 'View and re-download your purchased beats from PRODKJBEATS.',
+  title: 'Purchases — KJYOUCRAZY',
+  description: 'View and re-download your purchased beats from KJYOUCRAZY.',
   robots: { index: false, follow: false },
 }
 

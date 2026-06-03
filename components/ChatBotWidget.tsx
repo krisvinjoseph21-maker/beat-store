@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { MessageCircle, X, Send } from 'lucide-react'
@@ -29,7 +29,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
   {
     kw: ['non-exclusive', 'nonexclusive', 'what is non', 'still sell', 'sell to others', 'other artists'],
     answer:
-      'Non-exclusive means **PRODKJBEATS can still lease the same beat to other artists**. Your license gives you full use rights within your tier limits, but the beat stays in the store.\n\nWant to be the only one with it? Buy the **Exclusive** license.',
+      'Non-exclusive means **KJYOUCRAZY can still lease the same beat to other artists**. Your license gives you full use rights within your tier limits, but the beat stays in the store.\n\nWant to be the only one with it? Buy the **Exclusive** license.',
   },
   {
     kw: ['exclusive', 'buyout', 'buy out', 'full rights', 'ownership', 'own the beat'],
@@ -39,12 +39,12 @@ const QA: Array<{ kw: string[]; answer: string }> = [
   {
     kw: ['youtube', 'spotify', 'soundcloud', 'apple music', 'streaming', 'stream', 'monetize', 'monetization', 'dsp', 'tidal'],
     answer:
-      'All leases allow streaming on every major platform — Spotify, Apple Music, YouTube, SoundCloud, and more.\n\nStream limits:\n• Basic — 100K streams\n• Premium — 500K streams\n• Unlimited — 1.5M streams\n\nYouTube monetization is included in all tiers. Credit **Prod. PRODKJBEATS** in your descriptions.',
+      'All leases allow streaming on every major platform — Spotify, Apple Music, YouTube, SoundCloud, and more.\n\nStream limits:\n• Basic — 100K streams\n• Premium — 500K streams\n• Unlimited — 1.5M streams\n\nYouTube monetization is included in all tiers. Credit **Prod. KJYOUCRAZY** in your descriptions.',
   },
   {
     kw: ['credit', 'credits', 'producer tag', 'attribute', 'mention', 'prod.'],
     answer:
-      'Credit is required on all leased beats. Use **"Prod. PRODKJBEATS"** in:\n• Song title — e.g. "Song Name (Prod. PRODKJBEATS)"\n• YouTube and social video descriptions\n• Streaming platform song credits\n\nNo credit required on exclusive purchases.',
+      'Credit is required on all leased beats. Use **"Prod. KJYOUCRAZY"** in:\n• Song title — e.g. "Song Name (Prod. KJYOUCRAZY)"\n• YouTube and social video descriptions\n• Streaming platform song credits\n\nNo credit required on exclusive purchases.',
   },
   {
     kw: ['refund', 'return', 'money back', 'cancel', 'policy'],
@@ -54,7 +54,7 @@ const QA: Array<{ kw: string[]; answer: string }> = [
   {
     kw: ['download', 're-download', 'redownload', 'access', 'lost', 'account', 'purchases', 'link expired'],
     answer:
-      'Your download link arrives by email right after payment and is valid for 48 hours. You can re-download any time by logging into your account at **prodkjbeats.com/purchases**.',
+      'Your download link arrives by email right after payment and is valid for 48 hours. You can re-download any time by logging into your account at **kjyoucrazy.com/purchases**.',
   },
   {
     kw: ['radio', 'broadcast', 'broadcasting', 'station', 'fm'],
@@ -266,7 +266,7 @@ export default function ChatBotWidget() {
                 <span className="text-[10px] font-bold text-black leading-none">KJ</span>
               </div>
               <div>
-                <p className="text-[12px] font-semibold text-foreground leading-none">PRODKJBEATS</p>
+                <p className="text-[12px] font-semibold text-foreground leading-none">KJYOUCRAZY</p>
                 <p className="text-[10px] text-muted-low mt-[3px]">Licensing & Beat Support</p>
               </div>
             </div>

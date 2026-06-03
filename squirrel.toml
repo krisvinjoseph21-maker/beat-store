@@ -1,6 +1,6 @@
-[project]
+﻿[project]
 domains = []
-name = "prodkjbeats"
+name = "kjyoucrazy"
 
 [crawler]
 max_pages = 100

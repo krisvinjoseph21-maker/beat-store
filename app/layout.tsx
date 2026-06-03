@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+﻿import type { Metadata, Viewport } from 'next'
 import { Bebas_Neue, Inter, Montserrat } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
@@ -43,25 +43,25 @@ export const metadata: Metadata = {
       ? process.env.NEXT_PUBLIC_SITE_URL
       : 'https://beat-store-d3iw.vercel.app'
   ),
-  title: 'PRODKJBEATS — Premium Beats',
-  description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
+  title: 'KJYOUCRAZY — Premium Beats',
+  description: 'Buy exclusive and leased beats from KJYOUCRAZY. Trap, Drill, R&B, Afrobeats.',
   icons: {
     icon: { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
     shortcut: '/android-chrome-512x512.png',
     apple: '/android-chrome-512x512.png',
   },
   openGraph: {
-    title: 'PRODKJBEATS — Premium Beats',
-    description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
+    title: 'KJYOUCRAZY — Premium Beats',
+    description: 'Buy exclusive and leased beats from KJYOUCRAZY. Trap, Drill, R&B, Afrobeats.',
     type: 'website',
-    siteName: 'PRODKJBEATS',
+    siteName: 'KJYOUCRAZY',
     locale: 'en_US',
-    images: [{ url: '/og', width: 1200, height: 630, alt: 'PRODKJBEATS' }],
+    images: [{ url: '/og', width: 1200, height: 630, alt: 'KJYOUCRAZY' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PRODKJBEATS — Premium Beats',
-    description: 'Buy exclusive and leased beats from PRODKJBEATS. Trap, Drill, R&B, Afrobeats.',
+    title: 'KJYOUCRAZY — Premium Beats',
+    description: 'Buy exclusive and leased beats from KJYOUCRAZY. Trap, Drill, R&B, Afrobeats.',
     images: ['/og'],
   },
 }

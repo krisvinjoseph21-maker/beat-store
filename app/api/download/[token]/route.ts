@@ -1,4 +1,4 @@
-export const runtime = 'nodejs'
+﻿export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
@@ -123,7 +123,7 @@ export async function GET(
       const { data: signedData, error: signedError } = await supabase.storage
         .from('beats')
         .createSignedUrl(path, SIGNED_URL_TTL, {
-          download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@prodkjbeats.mp3`,
+          download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@kjyoucrazy.mp3`,
         })
 
       if (!signedError && signedData?.signedUrl) {
@@ -155,7 +155,7 @@ export async function GET(
       const { data: signedData, error: signedError } = await supabase.storage
         .from('beats')
         .createSignedUrl(pack.file_path, SIGNED_URL_TTL, {
-          download: `${safeFilename(pack.title)}_@prodkjbeats.zip`,
+          download: `${safeFilename(pack.title)}_@kjyoucrazy.zip`,
         })
       if (!signedError && signedData?.signedUrl) {
         signed.push({ title: pack.title, signedUrl: signedData.signedUrl })
@@ -191,7 +191,7 @@ export async function GET(
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your Downloads — PRODKJBEATS</title>
+  <title>Your Downloads — KJYOUCRAZY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { background: #0a0a0a; color: #fff; font-family: sans-serif; max-width: 500px; margin: 80px auto; padding: 20px; }

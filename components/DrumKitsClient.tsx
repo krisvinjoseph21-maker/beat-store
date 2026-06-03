@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
@@ -19,7 +19,7 @@ const DRUM_KITS: DrumKit[] = [
   {
     id: '1',
     title: 'Go-To Drum Kit 2025',
-    vendor: 'PRODKJBEATS',
+    vendor: 'KJYOUCRAZY',
     originalPrice: 28,
     salePrice: 14,
     image: null,

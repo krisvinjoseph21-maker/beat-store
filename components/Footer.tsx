@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useT } from '@/lib/i18n'
@@ -40,10 +40,10 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 mt-1">
               <p className="text-[11px] text-muted-low">
-                © {new Date().getFullYear()} PRODKJBEATS. {t.footer.allRights}
+                © {new Date().getFullYear()} KJYOUCRAZY. {t.footer.allRights}
               </p>
               <a
-                href="https://www.instagram.com/prodkjbeats/"
+                href="https://www.instagram.com/kjyoucrazy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"

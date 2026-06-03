@@ -1,4 +1,4 @@
-export const runtime = 'nodejs'
+﻿export const runtime = 'nodejs'
 
 import { NextRequest } from 'next/server'
 import { stripe, getLicensePrice } from '@/lib/stripe'
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
                 currency: 'usd',
                 unit_amount: Math.round(price * 100),
                 product_data: {
-                  name: `PRODKJBEATS — ${licenseLabel}`,
+                  name: `KJYOUCRAZY — ${licenseLabel}`,
                   description,
                 },
               },

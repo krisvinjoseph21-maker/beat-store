@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import BookingForm from '@/components/BookingForm'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Book a Session — PRODKJBEATS',
+  title: 'Book a Session — KJYOUCRAZY',
   description: 'Submit a booking request for custom beats, mixing, mastering, and more.',
 }
 

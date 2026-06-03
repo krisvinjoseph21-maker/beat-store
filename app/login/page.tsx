@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import AuthClient from '@/components/AuthClient'
 
 export const metadata: Metadata = {
-  title: 'Sign In — PRODKJBEATS',
-  description: 'Sign in to access your PRODKJBEATS purchases and download history.',
+  title: 'Sign In — KJYOUCRAZY',
+  description: 'Sign in to access your KJYOUCRAZY purchases and download history.',
   robots: { index: false, follow: false },
 }
 

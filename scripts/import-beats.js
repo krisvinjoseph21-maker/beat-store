@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
- * PRODKJBEATS — Bulk Beat Importer
+ * KJYOUCRAZY — Bulk Beat Importer
  *
  * Usage:
  *   node scripts/import-beats.js <beats-folder> [--previews <previews-folder>]
@@ -233,7 +233,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log('\n🎵  PRODKJBEATS — Bulk Beat Importer')
+  console.log('\n🎵  KJYOUCRAZY — Bulk Beat Importer')
   console.log(`📁  Beats   : ${beatsFolder}`)
   if (previewsFolder) console.log(`🎧  Previews: ${previewsFolder}`)
   else console.log(`🎧  Previews: none (full beat will be used as preview — replace later in admin)`)

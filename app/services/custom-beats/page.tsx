@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import CustomBeatsClient from '@/components/CustomBeatsClient'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Custom Beat Production — PRODKJBEATS | Pro Beat Packages',
+  title: 'Custom Beat Production — KJYOUCRAZY | Pro Beat Packages',
   description: 'Custom beat production packages for serious artists. Basic, Full, Mix Bundle, Executive Producer, and Project Launch packages.',
   alternates: { canonical: '/services/custom-beats' },
 }

@@ -1,4 +1,4 @@
-import { PRICES } from '@/lib/prices'
+﻿import { PRICES } from '@/lib/prices'
 
 export const TIERS = [
   {
@@ -16,7 +16,7 @@ export const TIERS = [
       { label: 'Music Videos',       value: '1 music video' },
       { label: 'Radio Broadcasting', value: 'Up to 2 stations' },
       { label: 'Monetization',       value: 'YouTube monetization' },
-      { label: 'Credit Required',    value: 'Prod. PRODKJBEATS' },
+      { label: 'Credit Required',    value: 'Prod. KJYOUCRAZY' },
       { label: 'Ownership',          value: 'Non-exclusive' },
       { label: 'Live Performances',  value: 'Unlimited' },
     ],
@@ -36,7 +36,7 @@ export const TIERS = [
       { label: 'Music Videos',       value: '1 music video' },
       { label: 'Radio Broadcasting', value: 'Up to 5 stations' },
       { label: 'Monetization',       value: 'YouTube monetization' },
-      { label: 'Credit Required',    value: 'Prod. PRODKJBEATS' },
+      { label: 'Credit Required',    value: 'Prod. KJYOUCRAZY' },
       { label: 'Ownership',          value: 'Non-exclusive' },
       { label: 'Live Performances',  value: 'Unlimited' },
     ],
@@ -56,7 +56,7 @@ export const TIERS = [
       { label: 'Music Videos',       value: 'Unlimited' },
       { label: 'Radio Broadcasting', value: 'Unlimited' },
       { label: 'Monetization',       value: 'Full monetization' },
-      { label: 'Credit Required',    value: 'Prod. PRODKJBEATS' },
+      { label: 'Credit Required',    value: 'Prod. KJYOUCRAZY' },
       { label: 'Ownership',          value: 'Non-exclusive' },
       { label: 'Live Performances',  value: 'Unlimited' },
     ],
@@ -76,7 +76,7 @@ export const TIERS = [
       { label: 'Music Videos',       value: 'Unlimited' },
       { label: 'Radio Broadcasting', value: 'Unlimited' },
       { label: 'Monetization',       value: 'Full monetization' },
-      { label: 'Credit Required',    value: 'Prod. PRODKJBEATS' },
+      { label: 'Credit Required',    value: 'Prod. KJYOUCRAZY' },
       { label: 'Ownership',          value: 'Full exclusive rights' },
       { label: 'Live Performances',  value: 'Unlimited' },
     ],

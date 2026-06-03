@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Invalid Link — PRODKJBEATS',
+  title: 'Invalid Link — KJYOUCRAZY',
   robots: { index: false, follow: false },
 }
 

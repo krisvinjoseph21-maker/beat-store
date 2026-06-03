@@ -1,10 +1,10 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { Suspense } from 'react'
 import PurchaseTracker from '@/components/PurchaseTracker'
 
 export const metadata = {
-  title: 'Order Confirmed — PRODKJBEATS',
+  title: 'Order Confirmed — KJYOUCRAZY',
   robots: { index: false, follow: false },
 }
 

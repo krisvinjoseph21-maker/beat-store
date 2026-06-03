@@ -1,4 +1,4 @@
-import { ImageResponse } from 'next/og'
+﻿import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
@@ -104,7 +104,7 @@ export async function GET() {
               fontFamily: 'sans-serif',
             }}
           >
-            prodkjbeats.com
+            kjyoucrazy.com
           </div>
         </div>
       </div>

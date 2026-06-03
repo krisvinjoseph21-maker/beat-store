@@ -1,12 +1,12 @@
-import { createAdminClient } from '@/lib/supabase-admin'
+﻿import { createAdminClient } from '@/lib/supabase-admin'
 import MelodyPacksGrid from '@/components/MelodyPacksGrid'
 import CtaBanner from '@/components/CtaBanner'
 
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Melody Loop Kits — PRODKJBEATS | Trap, Drill & R&B Samples',
-  description: 'Browse premium melody loop kits and sample packs from PRODKJBEATS. Designed for trap, drill, R&B, and Afrobeats producers. Instant download, royalty-free.',
+  title: 'Melody Loop Kits — KJYOUCRAZY | Trap, Drill & R&B Samples',
+  description: 'Browse premium melody loop kits and sample packs from KJYOUCRAZY. Designed for trap, drill, R&B, and Afrobeats producers. Instant download, royalty-free.',
   alternates: { canonical: '/sample-packs/melody-packs' },
 }
 

@@ -1,12 +1,12 @@
-# PRODKJBEATS
+﻿# KJYOUCRAZY
 
-[![CI](https://github.com/krisvinjoseph21-maker/prodkjbeats/actions/workflows/ci.yml/badge.svg)](https://github.com/krisvinjoseph21-maker/prodkjbeats/actions)
+[![CI](https://github.com/krisvinjoseph21-maker/kjyoucrazy/actions/workflows/ci.yml/badge.svg)](https://github.com/krisvinjoseph21-maker/kjyoucrazy/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](tsconfig.json)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](vitest.config.ts)
 
 A full-stack music production marketplace for buying beats, sample packs, and booking custom production services. Built with Next.js, Supabase, and Stripe.
 
-**Live:** [prodkjbeats.com](https://prodkjbeats.com) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
+**Live:** [kjyoucrazy.com](https://kjyoucrazy.com) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
 
 ---
 
@@ -65,8 +65,8 @@ A full-stack music production marketplace for buying beats, sample packs, and bo
 ### Setup
 
 ```bash
-git clone https://github.com/krisvinjoseph21-maker/prodkjbeats
-cd prodkjbeats
+git clone https://github.com/krisvinjoseph21-maker/kjyoucrazy
+cd kjyoucrazy
 npm install
 cp .env.example .env.local   # fill in your keys
 npm run dev

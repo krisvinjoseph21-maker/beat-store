@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — PRODKJBEATS | Data Collection & Your Rights',
-  description: 'How PRODKJBEATS collects, uses, and protects your personal data when you purchase beats or create an account. No data sold to third parties.',
+  title: 'Privacy Policy — KJYOUCRAZY | Data Collection & Your Rights',
+  description: 'How KJYOUCRAZY collects, uses, and protects your personal data when you purchase beats or create an account. No data sold to third parties.',
   alternates: { canonical: '/privacy' },
 }
 

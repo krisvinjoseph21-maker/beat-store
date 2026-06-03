@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import CtaBanner from '@/components/CtaBanner'
 
 export const metadata: Metadata = {
-  title: 'Beat Licensing FAQ — PRODKJBEATS | All Your Questions',
-  description: 'Answers to common questions about beat licensing, file formats, download links, refund policy, and how to use PRODKJBEATS beats.',
+  title: 'Beat Licensing FAQ — KJYOUCRAZY | All Your Questions',
+  description: 'Answers to common questions about beat licensing, file formats, download links, refund policy, and how to use KJYOUCRAZY beats.',
   alternates: { canonical: '/faq' },
 }
 
@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: 'Can I re-download my beats?',
-    a: 'Yes. Sign into your account at prodkjbeats.com/purchases to access all your past orders and re-download at any time.',
+    a: 'Yes. Sign into your account at kjyoucrazy.com/purchases to access all your past orders and re-download at any time.',
   },
   {
     q: 'Do you offer exclusive rights?',
@@ -30,7 +30,7 @@ const FAQS = [
   },
   {
     q: 'Can I use these beats on YouTube?',
-    a: 'Yes. Standard and Unlimited leases allow YouTube use. Make sure to credit PRODKJBEATS in your video description.',
+    a: 'Yes. Standard and Unlimited leases allow YouTube use. Make sure to credit KJYOUCRAZY in your video description.',
   },
   {
     q: 'What is your refund policy?',
