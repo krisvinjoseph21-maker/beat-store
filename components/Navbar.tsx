@@ -186,7 +186,7 @@ export default function Navbar() {
             href="/"
             className="text-[13px] font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity shrink-0"
           >
-            PRODKJ<span style={{ color: 'var(--muted-low)' }}>BEATS</span>
+            KJYOU<span style={{ color: 'var(--muted-low)' }}>CRAZY</span>
           </Link>
 
           {/* Desktop nav */}
