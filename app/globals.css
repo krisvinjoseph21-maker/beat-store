@@ -83,6 +83,13 @@
   margin: 0;
 }
 
+/* ── Text wrapping — kill orphaned words on headings, balance prose ── */
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* ── Smooth in-page anchor scrolling (hero → beats) ── */
+html { scroll-behavior: smooth; }
+
 /* ── Focus visible ────────────────────────────────── */
 :focus-visible {
   outline: 2px solid rgba(255,255,255,0.5);
@@ -92,6 +99,7 @@
 
 /* ── Reduced motion ───────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

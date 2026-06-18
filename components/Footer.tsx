@@ -33,7 +33,7 @@ export default function Footer() {
               href="/"
               className="text-[13px] font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity"
             >
-              PRODKJ<span className="text-muted-low">BEATS</span>
+              KJYOU<span className="text-muted-low">CRAZY</span>
             </Link>
             <p className="text-[12px] text-muted-low leading-relaxed max-w-[200px]">
               {t.footer.tagline}

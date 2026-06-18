@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KJYOUCRAZY — Homepage (Conversion v1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ── Real tokens from app/globals.css ───────────────────────── */
+  :root{
+    --background:#000; --foreground:#f5f5f7;
+    --muted:#747477; --muted-mid:#a1a1a6; --muted-low:#787878;
+    --border:rgba(255,255,255,.1);
+    --accent:#c8a86a; --accent-dim:rgba(200,168,106,.6);
+    --danger:#e07b39;
+    --surface-1:#111; --surface-2:#0d0d0d; --surface-3:#0a0a0a; --surface-4:#050505;
+    --line:#1a1a1a; --line-card:#1f1f1f; --line-input:#2a2a2a;
+    --line-hover:#3a3a3a; --white-hover:#e8e8ed;
+    --promo:#52b788; --promo-dim:rgba(82,183,136,.1); --promo-border:rgba(82,183,136,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--background);color:var(--foreground);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  .font-display{font-family:'Bebas Neue','Impact',sans-serif;}
+  .font-mont{font-family:'Montserrat',sans-serif;}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1152px;margin:0 auto;padding-left:24px;padding-right:24px;width:100%}
+  @media(min-width:1024px){.wrap{padding-left:64px;padding-right:64px}}
+  .eyebrow{font-family:'Montserrat';font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--accent)}
+  .accent-line{display:block;height:1px;width:40px;background:var(--accent);margin-bottom:20px}
+  section{border-bottom:1px solid rgba(255,255,255,.06)}
+
+  /* Buttons */
+  .btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:9999px;background:#fff;color:#000;font-size:13px;font-weight:600;
+    padding:14px 32px;border:none;cursor:pointer;position:relative;overflow:hidden;
+    transition:background-color .2s,transform .2s,box-shadow .2s;
+  }
+  .btn-primary:hover{background:var(--white-hover);transform:translateY(-1px);box-shadow:0 8px 32px rgba(255,255,255,.15)}
+  .btn-primary:active{transform:scale(.96)}
+  .btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.06),transparent);transform:translateX(-100%);transition:transform .5s ease}
+  .btn-primary:hover::before{transform:translateX(100%)}
+  .btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:9999px;background:transparent;color:var(--foreground);font-size:13px;font-weight:600;
+    padding:14px 28px;border:1px solid rgba(255,255,255,.18);cursor:pointer;
+    transition:border-color .2s,background-color .2s,color .2s;
+  }
+  .btn-ghost:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.03)}
+
+  /* Hero */
+  #hero{position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;background:
+      radial-gradient(ellipse 70% 55% at 50% 8%, rgba(200,168,106,.10) 0%, transparent 60%),
+      radial-gradient(ellipse 90% 70% at 50% 120%, rgba(200,168,106,.05) 0%, transparent 55%),
+      #000;
+    z-index:0}
+  .hero-grain{position:absolute;inset:0;opacity:.5;z-index:1;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.025) 1px, transparent 1px);background-size:3px 3px}
+  .hero-content{position:relative;z-index:5;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 110px}
+
+  /* fade-up stagger */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  .fu{opacity:0;animation:fadeUp .85s cubic-bezier(.16,1,.3,1) forwards}
+  .d1{animation-delay:.1s}.d2{animation-delay:.28s}.d3{animation-delay:.46s}.d4{animation-delay:.62s}.d5{animation-delay:.78s}
+
+  .trust-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);border-radius:9999px;padding:7px 16px}
+  .trust-pill .dot{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .hero-h1{font-size:clamp(58px,11vw,150px);line-height:.86;letter-spacing:-.01em}
+  .micro-trust{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 20px;color:var(--muted);font-size:11.5px}
+  .micro-trust .sep{color:rgba(255,255,255,.18)}
+  .micro-trust .ic{color:var(--accent)}
+
+  /* Marquee */
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-wrap{display:flex;align-items:center;white-space:nowrap;animation:marquee 30s linear infinite;will-change:transform}
+  .ticker-wrap:hover{animation-play-state:paused}
+
+  /* Logo / proof bar */
+  .proof-bar{background:var(--surface-4)}
+  .proof-name{font-family:'Bebas Neue';font-size:clamp(22px,3vw,34px);color:#fff;letter-spacing:.02em;opacity:.62;transition:opacity .25s}
+  .proof-name:hover{opacity:1}
+
+  /* Beat rows */
+  .beat-list{border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  .beat-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);transition:background-color .15s;cursor:pointer}
+  .beat-row:last-child{border-bottom:none}
+  .beat-row:hover{background:var(--surface-1)}
+  .play-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line-hover);background:var(--surface-1);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;transition:background-color .15s,transform .12s}
+  .beat-row:hover .play-btn{background:#fff;color:#000}
+  .play-btn:active{transform:scale(.9)}
+  .beat-cover{width:44px;height:44px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:18px;color:rgba(255,255,255,.5)}
+  .beat-meta-pill{font-size:10px;color:var(--muted-low);border:1px solid var(--line-input);border-radius:9999px;padding:3px 9px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  .beat-price{font-family:'Bebas Neue';font-size:22px;color:var(--foreground);letter-spacing:.03em;line-height:1}
+  .cart-btn{border:1px solid var(--line-input);background:transparent;color:var(--muted);border-radius:9999px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .beat-row:hover .cart-btn{border-color:rgba(255,255,255,.4);color:var(--foreground)}
+  .cart-btn.added{background:var(--accent);border-color:var(--accent);color:#000}
+
+  /* Value stack */
+  .value-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06)}
+  @media(min-width:880px){.value-grid{grid-template-columns:repeat(4,1fr)}}
+  .value-card{background:var(--background);padding:32px 24px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between}
+  .value-num{font-family:'Bebas Neue';font-size:34px;color:var(--accent);line-height:1}
+  .value-card h3{font-size:15px;font-weight:600;margin-top:auto;margin-bottom:8px}
+  .value-card p{font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+  /* License cards */
+  .lic-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:640px){.lic-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1024px){.lic-grid{grid-template-columns:repeat(4,1fr)}}
+  .lic-card{position:relative;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:var(--surface-3);transition:background-color .2s,border-color .2s,transform .2s}
+  .lic-card:hover{background:var(--surface-1);transform:translateY(-3px)}
+  .lic-card.popular{border-color:rgba(200,168,106,.5)}
+  .lic-tag{background:var(--accent);color:#000;text-align:center;border-radius:12px 12px 0 0;padding:6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;font-family:'Montserrat'}
+  .lic-body{padding:20px;display:flex;flex-direction:column;gap:18px;flex:1}
+  .lic-name{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-low);margin-bottom:8px}
+  .lic-price{font-size:30px;font-weight:400;line-height:1}
+  .lic-feats{border-top:1px solid rgba(255,255,255,.06)}
+  .lic-feat{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+  .lic-feat:last-child{border-bottom:none}
+  .lic-feat .lab{color:var(--muted-low);text-transform:uppercase;letter-spacing:.04em}
+  .lic-feat .val{font-weight:600;text-align:right}
+  .lic-feat .val.yes{color:var(--accent)}
+  .lic-cta{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:9999px;padding:11px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+  .lic-cta.fill{background:#fff;color:#000}.lic-cta.fill:hover{background:var(--white-hover)}
+  .lic-cta.out{border:1px solid rgba(255,255,255,.1);color:var(--muted)}.lic-cta.out:hover{border-color:rgba(255,255,255,.25);color:#fff}
+
+  /* Receipts */
+  .receipts-grid{display:grid;grid-template-columns:1fr;gap:1px;background:rgba(255,255,255,.06)}
+  @media(min-width:640px){.receipts-grid{grid-template-columns:repeat(2,1fr)}}
+  .receipt-card{background:var(--surface-4);padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);transition:background-color .2s}
+  .receipt-card.feat{box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+  .receipt-card:hover{background:var(--surface-3)}
+  .spotify-stub{height:80px;border-radius:12px;background:linear-gradient(90deg,#1a1a1a,#101010);display:flex;align-items:center;gap:14px;padding:0 18px;border:1px solid var(--line-card)}
+  .spotify-stub .pp{width:44px;height:44px;border-radius:50%;background:#1DB954;display:flex;align-items:center;justify-content:center;color:#000;flex-shrink:0}
+  .unrel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.06);margin-top:1px}
+  @media(min-width:1024px){.unrel-grid{grid-template-columns:repeat(4,1fr)}}
+  .unrel-card{background:var(--surface-4);padding:20px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);min-height:120px;display:flex;flex-direction:column;justify-content:space-between;transition:background-color .2s}
+  .unrel-card:hover{background:var(--surface-3)}
+
+  /* Offer band */
+  .offer-band{background:var(--surface-4);position:relative;overflow:hidden}
+  .offer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;border:1px solid var(--promo-border);background:var(--promo-dim);border-radius:14px;padding:28px 32px}
+  .offer-badge{display:inline-flex;align-items:center;gap:8px;background:var(--promo);color:#04150d;border-radius:9999px;padding:5px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-family:'Montserrat'}
+
+  /* Final CTA */
+  #final{position:relative;text-align:center;padding:140px 24px;overflow:hidden}
+  .final-glow{position:absolute;inset:0;background:radial-gradient(ellipse 55% 50% at 50% 50%,rgba(200,168,106,.07) 0%,transparent 70%)}
+
+  /* Email capture */
+  .email-row{display:flex;gap:8px;max-width:420px;margin:0 auto;width:100%}
+  .email-row input{flex:1;background:var(--surface-1);border:1px solid var(--line-input);border-radius:9999px;padding:13px 20px;color:#fff;font-size:13px;font-family:inherit;outline:none}
+  .email-row input:focus{border-color:var(--accent-dim)}
+  .email-row input::placeholder{color:var(--muted-low)}
+
+  /* Annotation badges (prototype only) */
+  .anno{position:absolute;z-index:60;background:var(--accent);color:#000;font-family:'Montserrat';font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 9px;border-radius:9999px;box-shadow:0 4px 14px rgba(0,0,0,.5);pointer-events:none}
+  body.hide-anno .anno{display:none}
+  .anno-toggle{position:fixed;bottom:18px;left:18px;z-index:200;background:var(--surface-1);border:1px solid var(--line-input);color:var(--muted);font-size:11px;font-family:'Montserrat';font-weight:600;padding:8px 14px;border-radius:9999px;cursor:pointer}
+
+  .section-num{font-family:'Montserrat';font-size:11px;font-weight:600;color:var(--muted-low);letter-spacing:.1em}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <span class="anno" style="top:90px;left:50%;transform:translateX(-50%)">① Hero · dual CTA + trust strip</span>
+
+  <div class="hero-content">
+    <!-- NEW: trust pill above headline -->
+    <div class="fu d1" style="margin-bottom:28px">
+      <span class="trust-pill font-mont" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-mid)">
+        <span class="dot"></span>Verified placements · GloRilla · DeeBaby · Shenseea
+      </span>
+    </div>
+
+    <h1 class="hero-h1 font-display fu d2" style="margin-bottom:24px">FIND YOUR<br>FIRST HIT HERE.</h1>
+
+    <p class="fu d3" style="font-size:15px;line-height:1.7;max-width:500px;color:var(--muted);margin-bottom:32px">
+      Industry-quality trap, drill, R&amp;B &amp; Afrobeats — the same catalog placed with major artists. Hear it, license it, release it today.
+    </p>
+
+    <!-- NEW: dual CTA -->
+    <div class="fu d4" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:28px">
+      <a href="#beats" class="btn-primary">Shop Beats</a>
+      <a href="#beats" class="btn-ghost">▶&nbsp; Hear Free Beats</a>
+    </div>
+
+    <!-- NEW: micro-trust line -->
+    <div class="fu d5 micro-trust">
+      <span><span class="ic">✓</span> Instant download</span><span class="sep">·</span>
+      <span><span class="ic">✓</span> Secure checkout</span><span class="sep">·</span>
+      <span><span class="ic">✓</span> Stems &amp; exclusive available</span><span class="sep">·</span>
+      <span><span class="ic">★</span> From $39.95</span>
+    </div>
+  </div>
+
+  <!-- Ticker (kept from original) -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:34px;z-index:20;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:6px;padding:0 16px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07)">
+      <span style="color:var(--accent);font-size:11px">✦</span>
+      <span class="font-mont" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--accent);white-space:nowrap">Verified Credits</span>
+    </div>
+    <div style="flex:1;overflow:hidden;position:relative">
+      <div class="ticker-wrap" style="padding-left:20px" id="ticker"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ② SOCIAL PROOF BAR (moved up) ════════════════ -->
+<section class="proof-bar" style="position:relative">
+  <span class="anno" style="top:14px;left:24px">② Social proof — moved ABOVE the sale</span>
+  <div class="wrap" style="padding-top:34px;padding-bottom:34px">
+    <p style="text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted-low);margin-bottom:22px" class="font-mont">As heard on records by</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px 44px">
+      <span class="proof-name">GloRilla</span>
+      <span class="proof-name">DeeBaby</span>
+      <span class="proof-name">Shenseea</span>
+      <span class="proof-name">Seyi Vibez</span>
+      <span class="proof-name">Est Gee</span>
+      <span class="proof-name">Paris Bryant</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 28px;margin-top:24px;font-size:12px;color:var(--muted)">
+      <span><strong style="color:var(--accent);font-family:'Bebas Neue';font-size:18px">500K+</strong>&nbsp; streams on placed records</span>
+      <span style="color:rgba(255,255,255,.18)">·</span>
+      <span><strong style="color:var(--accent);font-family:'Bebas Neue';font-size:18px">5</strong>&nbsp; verified placements</span>
+      <span style="color:rgba(255,255,255,.18)">·</span>
+      <span><strong style="color:var(--accent);font-family:'Bebas Neue';font-size:18px">4</strong>&nbsp; genres</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ③ BEATS PREVIEW w/ inline pricing ════════════════ -->
+<section id="beats" style="position:relative">
+  <span class="anno" style="top:14px;left:24px">③ Beats audible + priced + add-to-cart on homepage</span>
+  <div class="wrap" style="padding-top:64px;padding-bottom:64px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:32px">
+      <div>
+        <span class="accent-line"></span>
+        <p class="eyebrow" style="margin-bottom:14px">Latest Beats</p>
+        <h2 class="font-display" style="font-size:clamp(36px,5vw,60px);line-height:.95;font-weight:300">HEAR THE WORK.</h2>
+      </div>
+      <a href="#" style="font-size:12px;color:var(--muted-low);white-space:nowrap" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted-low)'">Browse all beats →</a>
+    </div>
+
+    <div class="beat-list" id="beatList"></div>
+
+    <div style="display:flex;justify-content:center;margin-top:32px">
+      <a href="#" class="btn-primary" style="padding:14px 36px">Shop All Beats</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ④ VALUE STACK (new) ════════════════ -->
+<section style="position:relative;background:var(--surface-4)">
+  <span class="anno" style="top:14px;left:24px">④ Value stack — why buy from KJ (NEW)</span>
+  <div class="wrap" style="padding-top:64px;padding-bottom:64px">
+    <div style="margin-bottom:40px">
+      <span class="accent-line"></span>
+      <p class="eyebrow" style="margin-bottom:14px">Why KJYOUCRAZY</p>
+      <h2 class="font-display" style="font-size:clamp(36px,5vw,56px);line-height:.95;font-weight:300">NOT YOUR AVERAGE BEAT STORE.</h2>
+    </div>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-num">01</div>
+        <div><h3>Real placements, not promises</h3><p>The same catalog placed with GloRilla, DeeBaby &amp; Shenseea — proof in the receipts below.</p></div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">02</div>
+        <div><h3>Instant, automatic delivery</h3><p>Files hit your inbox the second you check out. MP3, WAV, or full trackout stems.</p></div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">03</div>
+        <div><h3>Mix-ready &amp; pro-tuned</h3><p>Every beat is mixed to release standard — drop your vocals and go straight to streaming.</p></div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">04</div>
+        <div><h3>Licensing made simple</h3><p>Clear tiers from lease to full exclusive. Know exactly what you can do before you buy.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ⑤ LICENSING w/ Most Popular anchor ════════════════ -->
+<section style="position:relative">
+  <span class="anno" style="top:14px;left:24px">⑤ Licensing — "Most Popular" anchored, real tiers</span>
+  <div class="wrap" style="padding-top:72px;padding-bottom:72px">
+    <div style="margin-bottom:44px">
+      <span class="accent-line"></span>
+      <p class="eyebrow" style="color:var(--muted-low);font-weight:400;letter-spacing:.1em;margin-bottom:14px;text-transform:uppercase">Licensing Info</p>
+      <h2 class="font-display" style="font-size:clamp(40px,6vw,72px);line-height:.95;font-weight:300">CHOOSE YOUR LICENSE.</h2>
+    </div>
+    <div class="lic-grid" id="licGrid"></div>
+  </div>
+</section>
+
+<!-- ════════════════ ⑥ THE RECEIPTS (deep proof) ════════════════ -->
+<section style="position:relative;background:var(--surface-4)">
+  <span class="anno" style="top:14px;left:24px">⑥ The Receipts — deep social proof w/ players</span>
+  <div class="wrap" style="padding-top:72px;padding-bottom:72px">
+    <div style="margin-bottom:44px">
+      <span class="accent-line"></span>
+      <h2 class="font-display" style="font-size:clamp(40px,6vw,72px);line-height:.95;font-weight:300;margin-bottom:14px">THE RECEIPTS.</h2>
+      <p style="font-size:12px;color:var(--muted-low)">5 placements&ensp;<span style="color:var(--accent-dim)">·</span>&ensp;4 genres&ensp;<span style="color:var(--accent-dim)">·</span>&ensp;GloRilla, DeeBaby, Shenseea &amp; more</p>
+    </div>
+
+    <div class="receipts-grid">
+      <div class="receipt-card feat">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#fff"><span style="color:var(--accent)">★</span> Featured Credit</span>
+          <span class="font-display" style="font-size:15px;color:var(--accent);letter-spacing:.04em">500K+ STREAMS</span>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;line-height:1.2">DeeBaby</p><p style="font-size:13px;color:var(--muted);margin-top:4px">"Chicago Baby" · Producer</p></div>
+        <div class="spotify-stub"><div class="pp">▶</div><div><p style="font-size:13px;font-weight:600">Chicago Baby</p><p style="font-size:11px;color:var(--muted-low)">DeeBaby</p></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:11px;color:var(--muted-low)">Producer · Verified Credit</span><span style="font-size:9px;color:var(--accent)">✓ Verified</span></div>
+      </div>
+      <div class="receipt-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-low)">Credit</span>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;line-height:1.2">Paris Bryant</p><p style="font-size:13px;color:var(--muted);margin-top:4px">"A Crush" · Producer</p></div>
+        <div class="spotify-stub"><div class="pp">▶</div><div><p style="font-size:13px;font-weight:600">A Crush</p><p style="font-size:11px;color:var(--muted-low)">Paris Bryant</p></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:11px;color:var(--muted-low)">Producer · Verified Credit</span><span style="font-size:9px;color:var(--accent)">✓ Verified</span></div>
+      </div>
+    </div>
+
+    <div class="unrel-grid">
+      <div class="unrel-card"><div><p style="font-size:15px;font-weight:600;margin-bottom:4px">GloRilla</p><p style="font-size:11px;color:var(--muted-low);line-height:1.4">CMG / Interscope · Unreleased</p></div><span style="font-size:8px;color:var(--muted-low);text-transform:uppercase;letter-spacing:.1em;margin-top:14px">Unreleased</span></div>
+      <div class="unrel-card"><div><p style="font-size:15px;font-weight:600;margin-bottom:4px">Shenseea</p><p style="font-size:11px;color:var(--muted-low);line-height:1.4">Interscope Records · Unreleased</p></div><span style="font-size:8px;color:var(--muted-low);text-transform:uppercase;letter-spacing:.1em;margin-top:14px">Unreleased</span></div>
+      <div class="unrel-card"><div><p style="font-size:15px;font-weight:600;margin-bottom:4px">Seyi Vibez</p><p style="font-size:11px;color:var(--muted-low);line-height:1.4">Afrobeats · Unreleased</p></div><span style="font-size:8px;color:var(--muted-low);text-transform:uppercase;letter-spacing:.1em;margin-top:14px">Unreleased</span></div>
+      <div class="unrel-card"><div><p style="font-size:15px;font-weight:600;margin-bottom:4px">Est Gee</p><p style="font-size:11px;color:var(--muted-low);line-height:1.4">Trap · Unreleased</p></div><span style="font-size:8px;color:var(--muted-low);text-transform:uppercase;letter-spacing:.1em;margin-top:14px">Unreleased</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ⑦ LIMITED OFFER BAND (new) ════════════════ -->
+<section class="offer-band" style="position:relative">
+  <span class="anno" style="top:14px;left:24px">⑦ Urgency band — uses your unused --promo green (NEW)</span>
+  <div class="wrap" style="padding-top:48px;padding-bottom:48px">
+    <div class="offer-inner">
+      <div>
+        <span class="offer-badge">⚡ Limited Time</span>
+        <h3 class="font-display" style="font-size:clamp(28px,4vw,42px);line-height:1;margin-top:14px;font-weight:300">BUY 1, GET 1 FREE — ALL LEASES.</h3>
+        <p style="font-size:13px;color:var(--muted);margin-top:8px">Add any two beats to your cart and the cheaper one's on the house. Auto-applied at checkout.</p>
+      </div>
+      <a href="#" class="btn-primary" style="background:var(--promo);color:#04150d">Claim the deal</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ⑧ FINAL CTA + risk reversal + email ════════════════ -->
+<section id="final">
+  <div class="final-glow"></div>
+  <span class="anno" style="top:14px;left:50%;transform:translateX(-50%)">⑧ Final CTA + risk reversal + email fallback</span>
+  <div style="position:relative;z-index:5;max-width:560px;margin:0 auto">
+    <h2 class="font-display" style="font-size:clamp(52px,8vw,96px);line-height:.92;font-weight:300;margin-bottom:24px">FIND YOUR<br>NEXT HIT.</h2>
+    <div style="display:flex;justify-content:center;margin-bottom:18px"><a href="#beats" class="btn-primary" style="padding:15px 40px">Shop Beats</a></div>
+    <p style="font-size:11px;color:var(--muted-low);margin-bottom:44px">From $39.95 · Instant download · Secure checkout · All licenses available</p>
+
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:36px">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:6px">Not ready yet? Get a <span style="color:var(--accent)">free beat</span> + new drops in your inbox.</p>
+      <p style="font-size:11px;color:var(--muted-low);margin-bottom:18px">No spam. Unsubscribe anytime.</p>
+      <form class="email-row" onsubmit="this.querySelector('input').value='Thanks — check your email ✓';this.querySelector('input').blur();return false">
+        <input type="email" placeholder="your@email.com" />
+        <button class="btn-primary" type="submit" style="padding:13px 24px">Get free beat</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<button class="anno-toggle" onclick="document.body.classList.toggle('hide-anno');this.textContent=document.body.classList.contains('hide-anno')?'Show notes':'Hide notes'">Hide notes</button>
+
+<script>
+  // ── Ticker data ──
+  const RECEIPTS=[['DeeBaby','Producer · Verified Credit'],['Paris Bryant','Producer · Verified Credit'],['GloRilla','CMG / Interscope · Unreleased'],['Shenseea','Interscope Records · Unreleased'],['Seyi Vibez','Afrobeats · Unreleased'],['Est Gee','Trap · Unreleased']];
+  const ticker=document.getElementById('ticker');
+  ticker.innerHTML=[...RECEIPTS,...RECEIPTS].map(([a,d])=>`<span style="display:inline-flex;align-items:center;gap:12px;margin-right:32px"><span class="font-mont" style="font-size:10px;font-weight:600;color:var(--foreground)">${a}</span><span style="font-size:9px;color:var(--muted-low)">${d}</span><span style="font-size:8px;color:rgba(255,255,255,.15)">·</span></span>`).join('');
+
+  // ── Beat preview rows (representative demo data — key/bpm/genre) ──
+  const COVERS=['#2a2118','#1c2226','#241a24','#1f2620','#26201a','#1a1f26'];
+  const BEATS=[
+    ['Midnight Run','Bm','140','Trap','39.95'],
+    ['No Hook Needed','F#m','145','Drill','39.95'],
+    ['Slow Wine','Amaj','102','Afrobeats','39.95'],
+    ['Velvet','Ebm','88','R&B','39.95'],
+    ['Pressure','Gm','150','Trap','39.95'],
+    ['Late Night Drive','Dm','96','R&B','39.95'],
+  ];
+  const list=document.getElementById('beatList');
+  list.innerHTML=BEATS.map(([t,k,bpm,g,p],i)=>`
+    <div class="beat-row" data-i="${i}">
+      <button class="play-btn" aria-label="Play ${t}">▶</button>
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <div class="beat-cover" style="background:${COVERS[i]}">${t[0]}</div>
+        <div style="min-width:0">
+          <p style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t} <span style="color:var(--muted-low);font-weight:400">@kjyoucrazy</span></p>
+          <p style="font-size:11px;color:var(--muted-low);margin-top:2px">${g}</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px" class="beat-pills">
+        <span class="beat-meta-pill">${k}</span>
+        <span class="beat-meta-pill">${bpm} BPM</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span class="beat-price">$${p}</span>
+        <button class="cart-btn">Add</button>
+      </div>
+    </div>`).join('');
+
+  // play toggle (visual only)
+  let playing=null;
+  list.querySelectorAll('.beat-row').forEach(row=>{
+    const btn=row.querySelector('.play-btn');
+    btn.addEventListener('click',e=>{e.stopPropagation();
+      if(playing&&playing!==btn){playing.textContent='▶';}
+      const on=btn.textContent.trim()!=='❚❚';
+      btn.textContent=on?'❚❚':'▶';playing=on?btn:null;});
+    row.querySelector('.cart-btn').addEventListener('click',e=>{e.stopPropagation();
+      const b=e.target;if(b.classList.contains('added'))return;
+      b.classList.add('added');b.textContent='✓ Added';});
+  });
+
+  // ── License tiers (real data from lib/license-tiers.ts) ──
+  const TIERS=[
+    {tag:null,name:'Basic Lease',price:'From $39.95',cta:'Shop Beats',accent:false,feats:[['Format','MP3 320'],['Distribution','10,000'],['Streaming','100K'],['Stems','—']]},
+    {tag:null,name:'Premium Lease',price:'From $49.95',cta:'Shop Beats',accent:false,feats:[['Format','WAV 24-bit'],['Distribution','25,000'],['Streaming','500K'],['Stems','—']]},
+    {tag:'Most Popular',name:'Unlimited Lease',price:'From $149.95',cta:'Shop Beats',accent:true,feats:[['Format','WAV + Stems'],['Distribution','75,000'],['Streaming','1.5M'],['Stems','✓']]},
+    {tag:null,name:'Exclusive',price:'$500+',cta:'Contact Us',accent:false,feats:[['Format','WAV+Stems+MP3'],['Distribution','Unlimited'],['Streaming','Unlimited'],['Stems','✓']]},
+  ];
+  document.getElementById('licGrid').innerHTML=TIERS.map(t=>`
+    <div class="lic-card ${t.tag?'popular':''}">
+      ${t.tag?`<div class="lic-tag">${t.tag}</div>`:''}
+      <div class="lic-body">
+        <div>
+          <p class="lic-name">${t.name}</p>
+          <p class="lic-price">${t.price}</p>
+        </div>
+        <div class="lic-cta ${t.accent?'fill':'out'}">${t.cta} →</div>
+        <div class="lic-feats">
+          ${t.feats.map(([l,v])=>`<div class="lic-feat"><span class="lab">${l}</span><span class="val ${v==='✓'?'yes':''}">${v}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+</script>
+</body>
+</html>

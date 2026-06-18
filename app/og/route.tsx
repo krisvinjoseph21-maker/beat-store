@@ -54,9 +54,9 @@ export async function GET() {
               fontFamily: 'sans-serif',
             }}
           >
-            PRODKJ
+            KJYOU
             <br />
-            BEATS
+            CRAZY
           </div>
           <div
             style={{

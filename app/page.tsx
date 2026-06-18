@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     images: ['/android-chrome-512x512.png'],
   },
 }
-import { BadgeCheck } from 'lucide-react'
+import { BadgeCheck, Play } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase-admin'
 import type { Beat } from '@/lib/store'
 import SpotifyEmbed from '@/components/SpotifyEmbed'
@@ -33,6 +33,7 @@ import LicenseTierGrid from '@/components/LicenseTierGrid'
 import ContactForm from '@/components/AboutClient'
 import HomeBeatsPreview from '@/components/HomeBeatsPreview'
 import SplitHeading from '@/components/SplitHeading'
+import EmailSignup from '@/components/EmailSignup'
 
 async function getPageData(): Promise<{ featured: Beat | null; beats: Beat[] }> {
   try {
@@ -65,6 +66,13 @@ const RECEIPTS = [
 
 const RECEIPTS_DOUBLED = [...RECEIPTS, ...RECEIPTS]
 
+const VALUE_PROPS = [
+  { num: '01', title: 'Real placements, not promises', body: 'The same catalog placed with GloRilla, DeeBaby & Shenseea — proof in the receipts below.' },
+  { num: '02', title: 'Instant, automatic delivery', body: 'Files hit your inbox the moment you check out. MP3, WAV, or full trackout stems.' },
+  { num: '03', title: 'Mix-ready & pro-tuned', body: 'Every beat is mixed to release standard — drop your vocals and go straight to streaming.' },
+  { num: '04', title: 'Licensing made simple', body: 'Clear tiers from lease to full exclusive. Know exactly what you can do before you buy.' },
+]
+
 
 export default async function HomePage() {
   const { featured, beats } = await getPageData()
@@ -76,7 +84,7 @@ export default async function HomePage() {
       {/* ═══ HERO ═══════════════════════════════════════════════ */}
       <section
         id="hero-section"
-        className="relative bg-background overflow-hidden flex flex-col w-full min-h-screen"
+        className="relative bg-background overflow-hidden flex flex-col w-full min-h-dvh"
       >
         {/* Video background — client component prevents download on mobile */}
         <HeroVideo />
@@ -117,14 +125,35 @@ export default async function HomePage() {
           </p>
 
           {/* CTAs */}
-          <div className="hero-ctas flex items-center justify-center">
-            <Link
-              href="/store"
-              className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
-              style={{ padding: '14px 28px', fontFamily: 'var(--font-inter)' }}
+          <div className="hero-ctas flex flex-col items-center gap-5">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/store"
+                className="cta-primary inline-flex items-center justify-center rounded-full bg-white text-black text-[13px] font-semibold transition-[background-color,transform,box-shadow] hover:bg-white-hover hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] active:scale-95"
+                style={{ padding: '14px 28px', fontFamily: 'var(--font-inter)' }}
+              >
+                Shop Beats
+              </Link>
+              <Link
+                href="#latest-beats"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-foreground text-[13px] font-semibold transition-[border-color,background-color,transform] hover:border-white/40 hover:bg-white/[0.03] active:scale-95"
+                style={{ padding: '14px 24px', fontFamily: 'var(--font-inter)' }}
+              >
+                <Play size={12} fill="currentColor" stroke="none" aria-hidden="true" /> Hear Beats
+              </Link>
+            </div>
+
+            {/* Micro-trust line — kill buying anxiety above the fold */}
+            <div
+              className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted"
+              style={{ fontFamily: 'var(--font-inter)' }}
             >
-              Shop Beats
-            </Link>
+              <span className="inline-flex items-center gap-1.5"><BadgeCheck size={11} className="text-accent" aria-hidden="true" /> Instant download</span>
+              <span className="text-white/15" aria-hidden="true">·</span>
+              <span className="inline-flex items-center gap-1.5"><BadgeCheck size={11} className="text-accent" aria-hidden="true" /> Secure checkout</span>
+              <span className="text-white/15" aria-hidden="true">·</span>
+              <span className="inline-flex items-center gap-1.5"><span className="text-accent" aria-hidden="true">★</span> From $39.95</span>
+            </div>
           </div>
 
           <p className="sr-only">
@@ -168,6 +197,28 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ═══ SOCIAL PROOF BAR ════════════════════════════════════ */}
+      <section aria-label="Verified placements" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-9">
+          <ScrollReveal variant="fade">
+            <p className="text-center font-montserrat text-[11px] font-semibold uppercase mb-6" style={{ letterSpacing: '0.16em', color: 'var(--muted-low)' }}>
+              As heard on records by
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
+              {['GloRilla', 'DeeBaby', 'Shenseea', 'Seyi Vibez', 'Est Gee', 'Paris Bryant'].map((name) => (
+                <span
+                  key={name}
+                  className="font-display text-foreground/60 hover:text-foreground transition-colors"
+                  style={{ fontSize: 'clamp(20px, 2.6vw, 30px)', letterSpacing: '0.02em' }}
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ═══ FEATURED TRACK ══════════════════════════════════════ */}
       {featured && (
         <section className="w-full flex justify-center border-b border-white/[0.06] bg-background">
@@ -181,7 +232,7 @@ export default async function HomePage() {
 
       {/* ═══ BEATS PREVIEW ══════════════════════════════════════ */}
       {beats.length > 0 && (
-        <section aria-labelledby="beats-preview-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+        <section id="latest-beats" aria-labelledby="beats-preview-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
           <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-12">
             <ScrollReveal className="mb-8">
               <div className="flex items-end justify-between gap-4">
@@ -224,6 +275,39 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ═══ WHY KJYOUCRAZY (value stack) ════════════════════════ */}
+      <section aria-labelledby="why-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
+          <ScrollReveal className="mb-12">
+            <span className="section-accent-line" aria-hidden="true" />
+            <p className="font-montserrat text-[11px] font-semibold uppercase mb-5" style={{ letterSpacing: '0.15em', color: 'var(--accent)' }}>
+              Why KJYOUCRAZY
+            </p>
+            <SplitHeading
+              id="why-heading"
+              className="font-display text-foreground leading-none section-heading"
+              style={{ fontSize: 'clamp(36px, 5vw, 60px)', fontWeight: 300 }}
+            >
+              Not your average beat store.
+            </SplitHeading>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/[0.06]">
+            {VALUE_PROPS.map(({ num, title, body }, idx) => (
+              <ScrollReveal key={num} delay={idx * 80}>
+                <div className="flex flex-col gap-5 bg-surface-4 p-7 h-full ring-1 ring-inset ring-white/[0.05]">
+                  <span className="font-display text-accent leading-none" style={{ fontSize: '34px', letterSpacing: '0.04em' }}>{num}</span>
+                  <div className="mt-auto">
+                    <p className="text-[15px] font-semibold text-foreground leading-snug mb-2">{title}</p>
+                    <p className="text-[12.5px] leading-relaxed text-muted">{body}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ═══ LICENSING INFO ══════════════════════════════════════ */}
       <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
@@ -365,6 +449,14 @@ export default async function HomePage() {
               From $39.95 · Instant Download · All Licenses Available
             </p>
           </div>
+        </ScrollReveal>
+
+        {/* Email capture — recover visitors who aren't ready to buy today */}
+        <ScrollReveal variant="fade" delay={320} className="relative w-full max-w-md mt-16 pt-12 border-t border-white/[0.07] flex flex-col items-center">
+          <p className="text-[13px] text-muted mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
+            Not ready yet? Get a <span className="text-accent">free beat</span> + first dibs on new drops.
+          </p>
+          <EmailSignup />
         </ScrollReveal>
       </section>
 
