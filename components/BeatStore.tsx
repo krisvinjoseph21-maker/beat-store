@@ -310,20 +310,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
               />
             )}
             <button
-              onClick={toggleAiMode}
-              aria-pressed={aiMode}
-              className="font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-semibold transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0"
-              style={{
-                background: aiMode ? 'var(--accent)' : 'transparent',
-                borderColor: aiMode ? 'var(--accent)' : 'var(--line-input)',
-                color: aiMode ? '#000' : 'var(--muted-low)',
-              }}
-            >
-              <Sparkles size={11} aria-hidden="true" />
-              AI PICKS
-            </button>
-
-            <button
               onClick={toggleVibeMode}
               aria-pressed={vibeMode}
               className="font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-semibold transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0"

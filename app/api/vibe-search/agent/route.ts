@@ -46,8 +46,17 @@ const EXTRACT_TOOL: Groq.Chat.Completions.ChatCompletionTool = {
       type: 'object',
       properties: {
         priceMax: { type: 'number', description: 'Maximum price in USD the user mentioned (e.g. "under $30" -> 30).' },
-        bpmMin: { type: 'number', description: 'Minimum BPM mentioned.' },
-        bpmMax: { type: 'number', description: 'Maximum BPM mentioned.' },
+        bpmMin: {
+          type: 'number',
+          description:
+            'Lower bound of the tempo the user wants. Producers never mean an exact BPM, so always extract a window, never a single point: ' +
+            '"around 140 bpm" or "140 bpm" -> bpmMin 132, bpmMax 148 (±8). ' +
+            '"uptempo"/"fast"/"high energy"/"hype" -> bpmMin 140 (no bpmMax). ' +
+            '"slow"/"chill"/"laid back"/"mellow"/"relaxed" -> bpmMax 95 (no bpmMin). ' +
+            'An explicit range like "130-150 bpm" -> use those exact bounds. ' +
+            'Do not set this for purely emotional/mood words (dark, moody, smooth, sad) that are not about tempo.',
+        },
+        bpmMax: { type: 'number', description: 'Upper bound of the tempo window — see bpmMin for how to derive it.' },
         key: { type: 'string', description: 'Musical key mentioned, e.g. "Am", "F#m".' },
         licenseType: { type: 'string', enum: ['standard', 'premium', 'unlimited'], description: 'License tier mentioned, if any.' },
         genre: { type: 'string', description: 'Genre mentioned, e.g. "Trap", "Drill", "R&B", "Afrobeats".' },
@@ -62,7 +71,7 @@ async function extractFilters(query: string): Promise<ExtractedFilters | null> {
     model: 'llama-3.1-8b-instant',
     max_tokens: 256,
     messages: [
-      { role: 'system', content: 'Extract structured beat-search filters from the user query by calling extract_filters. Only include fields explicitly implied by the query.' },
+      { role: 'system', content: 'Extract structured beat-search filters from the user query by calling extract_filters. Only include a field if the query actually implies it — omit any field entirely rather than guessing a default or placeholder value (e.g. never invent priceMax: 0 just because price was not mentioned).' },
       { role: 'user', content: query },
     ],
     tools: [EXTRACT_TOOL],
@@ -74,7 +83,10 @@ async function extractFilters(query: string): Promise<ExtractedFilters | null> {
 
   const parsed = JSON.parse(call.function.arguments)
   return {
-    priceMax: typeof parsed.priceMax === 'number' ? parsed.priceMax : null,
+    // The model occasionally hallucinates priceMax: 0 for queries that never
+    // mention price at all — nobody actually asks for a $0 beat, and 0 would
+    // otherwise trip the price-floor short-circuit and wipe every result.
+    priceMax: typeof parsed.priceMax === 'number' && parsed.priceMax > 0 ? parsed.priceMax : null,
     bpmMin: typeof parsed.bpmMin === 'number' ? parsed.bpmMin : null,
     bpmMax: typeof parsed.bpmMax === 'number' ? parsed.bpmMax : null,
     key: typeof parsed.key === 'string' ? parsed.key : null,
