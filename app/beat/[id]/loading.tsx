@@ -20,7 +20,7 @@ export default function BeatLoading() {
           </div>
         </div>
         {/* Waveform placeholder */}
-        <div className="border-t border-white/[0.04] px-4 py-4">
+        <div className="border-t border-border-faint px-4 py-4">
           <div className="h-20 w-full rounded bg-white/5 animate-pulse" />
         </div>
       </div>

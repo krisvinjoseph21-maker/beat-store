@@ -184,12 +184,12 @@ export default function CartDrawer({ open, onClose }: Props) {
     <div className="fixed inset-0 z-[200] flex justify-end">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden="true" />
       <div ref={drawerRef} className="relative flex w-full max-w-sm flex-col border-l border-line animate-slide-in-right overflow-y-auto" style={{ background: 'var(--surface-1)' }} role="dialog" aria-modal="true" aria-label="Cart">
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-border-subtle px-5 py-4">
           <div>
             <h2 className="text-xl font-bold text-foreground uppercase tracking-tight">{t.cart.cartTitle}</h2>
             <p className="text-xs text-muted mt-0.5">{items.length} {items.length !== 1 ? t.cart.itemPlural : t.cart.itemSingle}</p>
           </div>
-          <button onClick={onClose} aria-label="Close cart" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground">
+          <button onClick={onClose} aria-label="Close cart" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-border-soft transition-colors text-muted hover:text-foreground">
             <X size={16} aria-hidden="true" />
           </button>
         </div>
@@ -215,7 +215,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 return (
                   <div
                     key={beat.id}
-                    className={`flex items-start justify-between gap-3 rounded-sm border border-white/[0.06] bg-white/[0.03] px-4 py-3 ${
+                    className={`flex items-start justify-between gap-3 rounded-sm border border-border-subtle bg-border-faint px-4 py-3 ${
                       removingId === beat.id ? 'animate-item-fade-out' : ''
                     }`}
                     onAnimationEnd={() => handleRemoveAnimationEnd(beat.id)}
@@ -228,7 +228,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                     <button
                       onClick={() => handleRemove(beat.id)}
                       aria-label={`Remove ${beat.title} from cart`}
-                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] text-muted-low hover:text-foreground transition-colors mt-0.5"
+                      className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-border-soft text-muted-low hover:text-foreground transition-colors -mt-1.5 -mr-1.5"
                     >
                       <X size={14} aria-hidden="true" />
                     </button>
@@ -237,7 +237,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               })}
             </div>
 
-            <div className="border-t border-white/[0.06] px-5 py-5 space-y-3">
+            <div className="border-t border-border-subtle px-5 py-5 space-y-3">
               {/* Discount code input */}
               <div className="space-y-1.5">
                 {discountStatus !== 'valid' ? (
@@ -252,14 +252,16 @@ export default function CartDrawer({ open, onClose }: Props) {
                       onKeyDown={(e) => { if (e.key === 'Enter') handleApplyDiscount() }}
                       placeholder="DISCOUNT CODE"
                       aria-label="Discount code"
+                      aria-invalid={discountStatus === 'invalid'}
+                      aria-describedby={discountStatus === 'invalid' ? 'discount-code-error' : undefined}
                       maxLength={50}
                       disabled={discountStatus === 'loading'}
-                      className="flex-1 min-w-0 rounded bg-white/[0.04] border border-white/[0.08] px-3 py-2 text-[11px] font-bold text-foreground placeholder:text-muted-low uppercase focus:outline-none focus:border-white/[0.18] transition-colors disabled:opacity-50"
+                      className="flex-1 min-w-0 rounded bg-border-faint border border-border-soft px-3 py-2 text-[11px] font-bold text-foreground placeholder:text-muted-low uppercase focus:outline-none focus:border-border-mid transition-colors disabled:opacity-50"
                     />
                     <button
                       onClick={handleApplyDiscount}
                       disabled={!discountInput.trim() || discountStatus === 'loading'}
-                      className="px-3 py-2 rounded bg-white/[0.08] text-[11px] font-bold text-foreground hover:bg-white/[0.14] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                      className="px-3 py-2 rounded bg-border-soft text-[11px] font-bold text-foreground hover:bg-border-mid transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                     >
                       {discountStatus === 'loading' ? (
                         <svg className="animate-spin h-3 w-3 text-foreground" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -270,19 +272,19 @@ export default function CartDrawer({ open, onClose }: Props) {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between rounded bg-white/[0.04] border border-white/[0.08] px-3 py-2">
+                  <div className="flex items-center justify-between rounded bg-border-faint border border-border-soft px-3 py-2">
                     <span className="text-[11px] font-bold text-accent uppercase">{appliedCode} — {discountPct}% off</span>
                     <button
                       onClick={handleRemoveDiscount}
                       aria-label="Remove discount code"
-                      className="flex items-center justify-center h-5 w-5 rounded-full hover:bg-white/[0.08] text-muted-low hover:text-foreground transition-colors ml-2 shrink-0"
+                      className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-border-soft text-muted-low hover:text-foreground transition-colors ml-2 -my-2 -mr-1 shrink-0"
                     >
                       <X size={10} aria-hidden="true" />
                     </button>
                   </div>
                 )}
                 {discountStatus === 'invalid' && (
-                  <p role="alert" className="text-[10px] text-danger">Invalid or expired code.</p>
+                  <p id="discount-code-error" role="alert" className="text-[10px] text-danger">Invalid or expired code.</p>
                 )}
               </div>
 

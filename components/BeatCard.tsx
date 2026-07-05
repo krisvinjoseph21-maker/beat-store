@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import Link from 'next/link'
 
@@ -11,14 +11,14 @@ import ShareButton from './ShareButton'
 import { PRICES } from '@/lib/prices'
 import { useT } from '@/lib/i18n'
 import { trackAddToCart } from '@/lib/analytics'
+import { useIsMounted } from '@/lib/use-mounted'
 
 interface Props {
   beat: Beat
   index: number
-  onBuyClick: (beat: Beat) => void
 }
 
-function BeatCard({ beat, index, onBuyClick }: Props) {
+function BeatCard({ beat, index }: Props) {
   const t = useT()
   // Fine-grained player selector: inactive beats won't re-render on progress/duration changes
   const { isThisActive, isThisPlaying, progressPct, setCurrentBeat, togglePlay, setPlaying } =
@@ -49,25 +49,25 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
   // Granular favorites selector: only re-renders when this beat's favorite status changes
   const isFavoritedRaw = useFavoritesStore((s) => s.ids.includes(beat.id))
   const toggleFavorite = useFavoritesStore((s) => s.toggle)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const [licenseOpen, setLicenseOpen] = useState(false)
   const [heartPlaying, setHeartPlaying] = useState(false)
   const [showCheckAnim, setShowCheckAnim] = useState(false)
-  const prevInCartRef = useRef(false)
-  useEffect(() => { setMounted(true) }, [])
+  const [now] = useState(() => Date.now())
 
   const favorited = mounted && isFavoritedRaw
   const inCart    = mounted && isInCartRaw
 
-  useEffect(() => {
-    if (inCart && !prevInCartRef.current) setShowCheckAnim(true)
-    prevInCartRef.current = inCart
-  }, [inCart])
+  const [prevInCart, setPrevInCart] = useState(inCart)
+  if (inCart !== prevInCart) {
+    setPrevInCart(inCart)
+    if (inCart) setShowCheckAnim(true)
+  }
   const hasAudio = !!beat.preview_url
   const hasCredit = beat.tags.includes('verified-credit')
   const isNew = useMemo(
-    () => beat.created_at && Date.now() - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000,
-    [beat.created_at]
+    () => !!beat.created_at && now - new Date(beat.created_at).getTime() < 7 * 24 * 60 * 60 * 1000,
+    [beat.created_at, now]
   )
 
   function handlePlay() {
@@ -163,13 +163,13 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
           {/* Track info */}
           <div className="flex-1 flex flex-col justify-center mr-2 sm:mr-8 min-w-0">
             <div className="flex items-baseline gap-2" style={{ marginBottom: '4px' }}>
-              <h3
+              <h2
                 className="font-montserrat leading-tight truncate"
                 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--foreground)' }}
                 title={beat.title}
               >
                 {beat.title}
-              </h3>
+              </h2>
               {isNew && (
                 <span
                   className="font-montserrat text-[9px] font-bold uppercase tracking-wider shrink-0"
@@ -228,7 +228,7 @@ function BeatCard({ beat, index, onBuyClick }: Props) {
                 <button
                   onClick={(e) => { e.stopPropagation(); openCart() }}
                   aria-label={`${beat.title} — already in cart, click to view cart`}
-                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] whitespace-nowrap transition-opacity hover:opacity-80 bg-white/[0.1]"
+                  className="font-montserrat w-full flex items-center justify-center gap-1.5 h-[44px] whitespace-nowrap transition-opacity hover:opacity-80 bg-border"
                   style={{ color: 'var(--foreground)', fontSize: '12px', fontWeight: 600 }}
                 >
                   <Check

@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
-import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
+import { Beat, usePlayerStore, useFavoritesStore } from '@/lib/store'
 import { BadgeCheck, ChevronDown, Heart, Loader2, Search, Sparkles } from 'lucide-react'
 import { useT } from '@/lib/i18n'
 import { useRowSpring } from '@/lib/use-row-spring'
 
-const LicenseModal = dynamic(() => import('./LicenseModal'), { ssr: false })
 const StoreAmbient = dynamic(() => import('./StoreAmbient'), { ssr: false })
 
 interface AiResult {
@@ -105,8 +104,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     const t = setTimeout(() => setDebouncedSearch(search), 300)
     return () => clearTimeout(t)
   }, [search])
-  const [modalOpen, setModalOpen] = useState(false)
-  const { openCart } = useCartStore()
   const { ids: favoriteIds } = useFavoritesStore()
   const { setQueue } = usePlayerStore()
   const listContainerRef = useRef<HTMLDivElement>(null)
@@ -156,13 +153,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
     return results
   }, [initialBeats, category, bpmRange, sortBy, debouncedSearch, favoritesOnly, favoriteIds])
-
-  const handleBuyClick = useCallback(() => setModalOpen(true), [])
-
-  function handleModalCheckout() {
-    setModalOpen(false)
-    openCart()
-  }
 
   async function handleAiSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -261,12 +251,12 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
           {/* Placement credit strip */}
           <div
-            className="mb-6 flex items-center gap-0 overflow-hidden border-y border-white/[0.07]"
+            className="mb-6 flex items-center gap-0 overflow-hidden border-y border-border-subtle"
             style={{ height: '30px' }}
             role="region"
             aria-label="Verified artist placements"
           >
-            <div className="flex items-center gap-1.5 pr-4 shrink-0 border-r border-white/[0.07]">
+            <div className="flex items-center gap-1.5 pr-4 shrink-0 border-r border-border-subtle">
               <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
               <span
                 className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
@@ -308,7 +298,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value.slice(0, MAX_QUERY_LEN))}
                 maxLength={MAX_QUERY_LEN}
-                className="border border-line-input bg-black/60 py-2.5 px-4 text-[13px] outline-none focus:border-white/30 transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                className="border border-line-input bg-black/60 py-2.5 px-4 text-[13px] outline-none focus:border-white/30 transition-colors placeholder:text-muted-low"
                 style={{ color: 'var(--foreground)', fontFamily: 'var(--font-inter)', width: 'clamp(180px, 22vw, 280px)' }}
               />
             )}
@@ -361,9 +351,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 onChange={(e) => setAiQuery(e.target.value.slice(0, 500))}
                 maxLength={500}
                 autoFocus
-                className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low"
                 style={{
-                  borderColor: 'rgba(245,158,11,0.4)',
+                  borderColor: 'rgba(200,168,106,0.4)',
                   color: 'var(--foreground)',
                   fontFamily: 'var(--font-inter)',
                 }}
@@ -373,8 +363,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 disabled={aiLoading || !aiQuery.trim()}
                 className="font-montserrat flex items-center gap-1.5 border h-11 px-5 text-[11px] font-semibold whitespace-nowrap disabled:opacity-40 transition-opacity"
                 style={{
-                  borderColor: 'rgba(245,158,11,0.4)',
-                  background: 'rgba(245,158,11,0.08)',
+                  borderColor: 'rgba(200,168,106,0.4)',
+                  background: 'rgba(200,168,106,0.08)',
                   color: 'var(--foreground)',
                 }}
               >
@@ -397,9 +387,9 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                   onChange={(e) => setVibeQuery(e.target.value.slice(0, 200))}
                   maxLength={200}
                   autoFocus
-                  className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                  className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low"
                   style={{
-                    borderColor: 'rgba(245,158,11,0.4)',
+                    borderColor: 'rgba(200,168,106,0.4)',
                     color: 'var(--foreground)',
                     fontFamily: 'var(--font-inter)',
                   }}
@@ -409,8 +399,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                   disabled={vibeLoading || !vibeQuery.trim()}
                   className="font-montserrat flex items-center gap-1.5 border h-11 px-5 text-[11px] font-semibold whitespace-nowrap disabled:opacity-40 transition-opacity"
                   style={{
-                    borderColor: 'rgba(245,158,11,0.4)',
-                    background: 'rgba(245,158,11,0.08)',
+                    borderColor: 'rgba(200,168,106,0.4)',
+                    background: 'rgba(200,168,106,0.08)',
                     color: 'var(--foreground)',
                   }}
                 >
@@ -437,7 +427,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
               </label>
               <p
                 className="mt-1.5 text-[11px] max-w-xl"
-                style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)', opacity: 0.7 }}
+                style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
               >
                 {vibeSmartFilters
                   ? 'Beats that don’t match a stated genre, BPM range, key, or price will be excluded.'
@@ -513,8 +503,8 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={r.id}
                     className="flex flex-col gap-3 border p-5"
                     style={{
-                      borderColor: 'rgba(245,158,11,0.25)',
-                      background: 'rgba(245,158,11,0.03)',
+                      borderColor: 'rgba(200,168,106,0.25)',
+                      background: 'rgba(200,168,106,0.03)',
                     }}
                   >
                     <p
@@ -582,7 +572,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={beat.id}
                     beat={beat}
                     index={i + 1}
-                    onBuyClick={handleBuyClick}
                   />
                 ))}
               </div>
@@ -629,7 +618,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                     key={beat.id}
                     beat={beat}
                     index={i + 1}
-                    onBuyClick={handleBuyClick}
                   />
                 ))}
               </div>
@@ -649,12 +637,6 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
           </>
         )}
       </div>
-
-      <LicenseModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCheckout={handleModalCheckout}
-      />
     </div>
   )
 }

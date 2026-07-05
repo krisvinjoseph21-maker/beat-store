@@ -60,7 +60,6 @@ export default function HomeBeatsPreview({ beats }: { beats: Beat[] }) {
             <BeatCard
               beat={beat}
               index={i + 1}
-              onBuyClick={() => {}}
             />
           </div>
         ))}

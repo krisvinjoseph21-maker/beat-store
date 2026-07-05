@@ -26,7 +26,7 @@ export async function GET() {
             left: '-100px',
             width: '700px',
             height: '700px',
-            background: 'radial-gradient(ellipse, rgba(245,158,11,0.12) 0%, transparent 65%)',
+            background: 'radial-gradient(ellipse, rgba(200,168,106,0.12) 0%, transparent 65%)',
           }}
         />
 
@@ -37,7 +37,7 @@ export async function GET() {
               fontSize: '13px',
               fontWeight: 700,
               letterSpacing: '0.22em',
-              color: '#f59e0b',
+              color: '#c8a86a',
               fontFamily: 'sans-serif',
               textTransform: 'uppercase',
             }}
@@ -84,12 +84,12 @@ export async function GET() {
               <div
                 key={artist}
                 style={{
-                  background: 'rgba(245,158,11,0.08)',
-                  border: '1px solid rgba(245,158,11,0.28)',
+                  background: 'rgba(200,168,106,0.08)',
+                  border: '1px solid rgba(200,168,106,0.28)',
                   padding: '7px 16px',
                   fontSize: '13px',
                   fontWeight: 600,
-                  color: '#f59e0b',
+                  color: '#c8a86a',
                   fontFamily: 'sans-serif',
                 }}
               >

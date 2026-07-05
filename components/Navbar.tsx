@@ -100,7 +100,7 @@ function DropdownMenu({ link, pathname }: { link: NavLink & { children: NavChild
           ref={menuRef}
           role="menu"
           aria-labelledby={`nav-trigger${link.href.replaceAll('/', '-')}`}
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-44 glass border border-white/[0.08] py-1"
+          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-44 glass border border-border-soft py-1"
         >
           {link.children.map((child) => (
             <Link
@@ -127,7 +127,15 @@ export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false)
   const menuTriggerRef = useRef<HTMLButtonElement>(null)
   const [cartAnnouncement, setCartAnnouncement] = useState('')
+  const [prevItemsLength, setPrevItemsLength] = useState(items.length)
   const pathname = usePathname()
+
+  if (items.length !== prevItemsLength) {
+    setPrevItemsLength(items.length)
+    if (items.length > 0) {
+      setCartAnnouncement(`${items.length} item${items.length === 1 ? '' : 's'} in cart`)
+    }
+  }
 
   const NAV_LABEL_MAP = useMemo<Record<string, string>>(() => ({
     '/store': t.nav.beats,
@@ -141,11 +149,6 @@ export default function Navbar() {
     '/licensing': t.nav.licensing,
     '/about': t.nav.contact,
   }), [t])
-
-  useEffect(() => {
-    if (items.length === 0) return
-    setCartAnnouncement(`${items.length} item${items.length === 1 ? '' : 's'} in cart`)
-  }, [items.length])
 
   useEffect(() => { mobileOpenRef.current = mobileOpen }, [mobileOpen])
 
@@ -175,7 +178,7 @@ export default function Navbar() {
       <nav
         aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-[100] transition-[background,border-color,backdrop-filter] duration-300 ${
-          scrolled ? 'glass border-b border-white/[0.06]' : 'bg-transparent'
+          scrolled ? 'glass border-b border-border-subtle' : 'bg-transparent'
         }`}
         style={{ height: '48px', fontFamily: 'var(--font-inter)' }}
       >
@@ -285,7 +288,7 @@ export default function Navbar() {
         id="mobile-nav-menu"
         aria-label="Mobile navigation"
         inert={!mobileOpen}
-        className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-white/[0.06] transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed top-[48px] left-0 right-0 z-[99] glass border-b border-border-subtle transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
           mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
 
@@ -295,7 +298,7 @@ export default function Navbar() {
             if (link.children) {
               return (
                 <div key={link.href} className="animate-menu-item-in" style={{ animationDelay: `${idx * 55}ms` }}>
-                  <span className="block py-3 text-[11px] font-semibold uppercase text-muted-low border-b border-white/[0.05]" style={{ letterSpacing: '0.15em' }}>
+                  <span className="block py-3 text-[11px] font-semibold uppercase text-muted-low border-b border-border-faint" style={{ letterSpacing: '0.15em' }}>
                     {NAV_LABEL_MAP[link.href] ?? link.label}
                   </span>
                   {link.children.map((child, cIdx) => (
@@ -303,7 +306,7 @@ export default function Navbar() {
                       key={child.href}
                       href={child.href}
                       onClick={() => { setMobileOpen(false); menuTriggerRef.current?.focus() }}
-                      className="animate-menu-item-in block pl-4 py-2.5 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.03] last:border-0"
+                      className="animate-menu-item-in block pl-4 py-2.5 text-[14px] text-muted hover:text-foreground transition-colors border-b border-border-faint last:border-0"
                       style={{ animationDelay: `${(idx + cIdx + 1) * 55}ms` }}
                     >
                       {NAV_LABEL_MAP[child.href] ?? child.label}
@@ -317,7 +320,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => { setMobileOpen(false); menuTriggerRef.current?.focus() }}
-                className="py-3 text-[14px] text-muted hover:text-foreground transition-colors border-b border-white/[0.05] last:border-0 animate-menu-item-in"
+                className="py-3 text-[14px] text-muted hover:text-foreground transition-colors border-b border-border-faint last:border-0 animate-menu-item-in"
                 style={{ animationDelay: `${idx * 55}ms` }}
               >
                 {NAV_LABEL_MAP[link.href] ?? link.label}

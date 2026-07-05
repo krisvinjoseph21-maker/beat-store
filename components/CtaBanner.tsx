@@ -8,7 +8,7 @@ interface Props {
 
 export default function CtaBanner({ label, heading, subtext }: Props) {
   return (
-    <section className="relative w-full py-28 flex flex-col items-center text-center px-6 overflow-hidden bg-black border-t border-white/[0.06]">
+    <section className="relative w-full py-28 flex flex-col items-center text-center px-6 overflow-hidden bg-black border-t border-border-subtle">
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.025) 0%, transparent 70%)' }}

@@ -6,15 +6,15 @@ import { useRouter } from 'next/navigation'
 import { User } from 'lucide-react'
 import { createBrowserClient } from '@/lib/supabase'
 import type { AuthUser as SupabaseUser } from '@supabase/supabase-js'
+import { useIsMounted } from '@/lib/use-mounted'
 
 export default function NavAuthButton() {
   const [user, setUser] = useState<SupabaseUser | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const router = useRouter()
   const supabase = createBrowserClient()
 
   useEffect(() => {
-    setMounted(true)
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)

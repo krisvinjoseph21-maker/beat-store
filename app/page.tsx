@@ -136,7 +136,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="#latest-beats"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-foreground text-[13px] font-semibold transition-[border-color,background-color,transform] hover:border-white/40 hover:bg-white/[0.03] active:scale-95"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-foreground text-[13px] font-semibold transition-[border-color,background-color,transform] hover:border-white/40 hover:bg-border-faint active:scale-95"
                 style={{ padding: '14px 24px', fontFamily: 'var(--font-inter)' }}
               >
                 <Play size={12} fill="currentColor" stroke="none" aria-hidden="true" /> Hear Beats
@@ -163,8 +163,8 @@ export default async function HomePage() {
         </div>
 
         {/* Ticker */}
-        <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-white/[0.05] bg-background/80 backdrop-blur-sm overflow-hidden flex items-center">
-          <div className="flex items-center gap-1.5 px-4 shrink-0 border-r border-white/[0.07]">
+        <div className="absolute bottom-0 inset-x-0 h-8 z-20 border-t border-border-faint bg-background/80 backdrop-blur-sm overflow-hidden flex items-center">
+          <div className="flex items-center gap-1.5 px-4 shrink-0 border-r border-border-subtle">
             <BadgeCheck size={11} style={{ color: 'var(--accent)' }} aria-hidden="true" />
             <span
               className="font-montserrat text-[9px] font-bold uppercase whitespace-nowrap"
@@ -198,7 +198,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ SOCIAL PROOF BAR ════════════════════════════════════ */}
-      <section aria-label="Verified placements" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+      <section aria-label="Verified placements" className="w-full flex justify-center border-b border-border-subtle bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-9">
           <ScrollReveal variant="fade">
             <p className="text-center font-montserrat text-[11px] font-semibold uppercase mb-6" style={{ letterSpacing: '0.16em', color: 'var(--muted-low)' }}>
@@ -221,7 +221,7 @@ export default async function HomePage() {
 
       {/* ═══ FEATURED TRACK ══════════════════════════════════════ */}
       {featured && (
-        <section className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+        <section className="w-full flex justify-center border-b border-border-subtle bg-background">
           <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-10">
             <ScrollReveal variant="fade">
               <FeaturedTrack beat={featured} />
@@ -232,7 +232,7 @@ export default async function HomePage() {
 
       {/* ═══ BEATS PREVIEW ══════════════════════════════════════ */}
       {beats.length > 0 && (
-        <section id="latest-beats" aria-labelledby="beats-preview-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+        <section id="latest-beats" aria-labelledby="beats-preview-heading" className="w-full flex justify-center border-b border-border-subtle bg-background">
           <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-12">
             <ScrollReveal className="mb-8">
               <div className="flex items-end justify-between gap-4">
@@ -277,7 +277,7 @@ export default async function HomePage() {
       )}
 
       {/* ═══ WHY KJYOUCRAZY (value stack) ════════════════════════ */}
-      <section aria-labelledby="why-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+      <section aria-labelledby="why-heading" className="w-full flex justify-center border-b border-border-subtle bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <span className="section-accent-line" aria-hidden="true" />
@@ -293,7 +293,7 @@ export default async function HomePage() {
             </SplitHeading>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/[0.06]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-border-subtle">
             {VALUE_PROPS.map(({ num, title, body }, idx) => (
               <ScrollReveal key={num} delay={idx * 80}>
                 <div className="flex flex-col gap-5 bg-surface-4 p-7 h-full ring-1 ring-inset ring-white/[0.05]">
@@ -310,7 +310,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ LICENSING INFO ══════════════════════════════════════ */}
-      <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+      <section aria-labelledby="licensing-heading" className="w-full flex justify-center border-b border-border-subtle bg-background">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <span className="section-accent-line" aria-hidden="true" />
@@ -324,7 +324,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ THE RECEIPTS ════════════════════════════════════════ */}
-      <section aria-labelledby="receipts-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-surface-4">
+      <section aria-labelledby="receipts-heading" className="w-full flex justify-center border-b border-border-subtle bg-surface-4">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <ScrollReveal className="mb-12">
             <div className="receipts-heading">
@@ -339,7 +339,7 @@ export default async function HomePage() {
           </ScrollReveal>
 
           {/* Verified credits — full cards with Spotify embeds */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[1px] bg-white/[0.06] mb-[1px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[1px] bg-border-subtle mb-[1px]">
             {RECEIPTS.filter(r => r.role !== 'Unreleased').map(({ role, artist, song, detail, spotifyId, streams }, idx) => {
               const isFeatured = role === 'Featured Credit'
               return (
@@ -365,7 +365,7 @@ export default async function HomePage() {
                   <p className="text-[13px] mt-1 text-muted">{song} · Producer</p>
                 </div>
                 {spotifyId && <SpotifyEmbed trackId={spotifyId} />}
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.06]">
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border-subtle">
                   <span className="text-[11px] text-muted-low">{detail}</span>
                   <div className="flex items-center gap-1">
                     <BadgeCheck size={11} className="text-accent" />
@@ -379,7 +379,7 @@ export default async function HomePage() {
           </div>
 
           {/* Unreleased — compact 2×2 grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/[0.06]">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-border-subtle">
             {RECEIPTS.filter(r => r.role === 'Unreleased').map(({ artist, detail }, idx) => (
               <ScrollReveal key={artist} delay={(idx + 2) * 80}>
               <div className="group flex flex-col justify-between bg-surface-4 p-5 hover:bg-surface-3 transition-colors duration-200 h-full ring-1 ring-inset ring-white/[0.04]">
@@ -398,7 +398,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ CONTACT ══════════════════════════════════════════════ */}
-      <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-white/[0.06] bg-background">
+      <section aria-labelledby="contact-heading" className="w-full flex justify-center border-b border-border-subtle bg-background">
         <div className="mx-auto w-full max-w-2xl px-6 sm:px-10 py-32">
           <ScrollReveal variant="fade" className="mb-14">
             <span className="section-accent-line" aria-hidden="true" />
@@ -452,7 +452,7 @@ export default async function HomePage() {
         </ScrollReveal>
 
         {/* Email capture — recover visitors who aren't ready to buy today */}
-        <ScrollReveal variant="fade" delay={320} className="relative w-full max-w-md mt-16 pt-12 border-t border-white/[0.07] flex flex-col items-center">
+        <ScrollReveal variant="fade" delay={320} className="relative w-full max-w-md mt-16 pt-12 border-t border-border-subtle flex flex-col items-center">
           <p className="text-[13px] text-muted mb-6" style={{ fontFamily: 'var(--font-inter)' }}>
             Not ready yet? Get a <span className="text-accent">free beat</span> + first dibs on new drops.
           </p>

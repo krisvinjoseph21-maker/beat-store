@@ -148,13 +148,13 @@ export default function EmailCaptureModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="email-modal-title"
-        className="relative w-full max-w-md rounded-sm border border-white/[0.08] bg-surface-1 p-7 animate-fade-in"
+        className="relative w-full max-w-md rounded-sm border border-border-soft bg-surface-1 p-7 animate-fade-in"
       >
         {/* Close button */}
         <button
           onClick={dismiss}
           aria-label="Close"
-          className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-muted-low hover:bg-white/[0.08] hover:text-foreground transition-colors"
+          className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-muted-low hover:bg-border-soft hover:text-foreground transition-colors"
         >
           <X size={18} aria-hidden="true" />
         </button>

@@ -1,15 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
+
+function subscribe(callback: () => void) {
+  const mql = window.matchMedia('(min-width: 640px)')
+  mql.addEventListener('change', callback)
+  return () => mql.removeEventListener('change', callback)
+}
+
+function getSnapshot() {
+  return window.matchMedia('(min-width: 640px)').matches
+}
+
+function getServerSnapshot() {
+  return false
+}
 
 export default function HeroVideo() {
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    if (window.matchMedia('(min-width: 640px)').matches) {
-      setShow(true)
-    }
-  }, [])
+  const show = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
   if (!show) return null
 

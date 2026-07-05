@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // CommonJS CLI scripts (require() is intentional here) and Claude Code
+    // skill tooling — not app code, not meant to be linted against Next rules.
+    "scripts/**",
+    ".agents/**",
+    ".claude/**",
   ]),
 ]);
 

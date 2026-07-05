@@ -36,7 +36,7 @@ export default function LicensingPage() {
     <div className="w-full">
 
       {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="w-full flex justify-center border-b border-white/[0.06] bg-black">
+      <div className="w-full flex justify-center border-b border-border-subtle bg-black">
         <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16 py-20">
           <p className="text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low mb-4">Beat Licensing</p>
           <h1 className="font-display text-foreground leading-none mb-5" style={{ fontSize: 'clamp(44px, 7vw, 88px)', fontWeight: 300 }}>
@@ -53,7 +53,7 @@ export default function LicensingPage() {
       </div>
 
       {/* ── Full Comparison ────────────────────────────────────── */}
-      <div className="flex justify-center w-full border-t border-white/[0.06]">
+      <div className="flex justify-center w-full border-t border-border-subtle">
         <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
 
           <h2 className="font-display text-foreground leading-none mb-14" style={{ fontSize: 'clamp(40px, 6vw, 80px)' }}>
@@ -63,7 +63,7 @@ export default function LicensingPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse min-w-[640px]">
               <thead>
-                <tr className="border-b border-white/[0.12]">
+                <tr className="border-b border-border-mid">
                   <th className="text-left pb-4 text-[10px] font-normal uppercase tracking-[0.18em] text-muted-low w-[22%]">
                     Feature
                   </th>
@@ -83,7 +83,7 @@ export default function LicensingPage() {
                 {ROW_LABELS.map((label, rowIdx) => (
                   <tr
                     key={label}
-                    className="border-b border-white/[0.04]"
+                    className="border-b border-border-faint"
                     style={{ background: rowIdx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)' }}
                   >
                     <td className="py-3.5 text-[12px] text-muted-low">{label}</td>
@@ -121,12 +121,12 @@ export default function LicensingPage() {
       </div>
 
       {/* ── General Rules ──────────────────────────────────────── */}
-      <div className="flex justify-center w-full border-t border-white/[0.06]">
+      <div className="flex justify-center w-full border-t border-border-subtle">
         <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 py-16">
           <h2 className="mb-6 text-[11px] font-normal uppercase tracking-[0.1em] text-muted-low">General Rules</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {RULES.map((rule) => (
-              <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-surface-4 p-4">
+              <div key={rule} className="flex items-start gap-3 rounded-xl border border-border-subtle bg-surface-4 p-4">
                 <span className="mt-0.5 text-muted-low text-[12px] flex-shrink-0">—</span>
                 <p className="text-[13px] text-muted leading-[1.6]">{rule}</p>
               </div>

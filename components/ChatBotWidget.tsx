@@ -256,11 +256,11 @@ export default function ChatBotWidget() {
           role="dialog"
           aria-modal="true"
           aria-label="Chat support"
-          className="w-[320px] flex flex-col rounded-2xl border border-white/[0.1] bg-surface-3 shadow-2xl overflow-hidden"
+          className="w-[320px] flex flex-col rounded-2xl border border-border bg-surface-3 shadow-2xl overflow-hidden"
           style={{ height: playerActive ? 'min(460px, calc(100dvh - 182px))' : 'min(460px, calc(100dvh - 120px))' }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/[0.06] bg-surface-2 shrink-0">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border-subtle bg-surface-2 shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-full bg-accent shrink-0 flex items-center justify-center">
                 <span className="text-[10px] font-bold text-black leading-none">KJ</span>
@@ -273,7 +273,7 @@ export default function ChatBotWidget() {
             <button
               onClick={() => setOpen(false)}
               aria-label="Close chat"
-              className="text-muted-low hover:text-foreground transition-colors p-1 rounded-lg hover:bg-white/[0.06]"
+              className="text-muted-low hover:text-foreground transition-colors p-1 rounded-lg hover:bg-border-subtle"
             >
               <X size={15} />
             </button>
@@ -289,8 +289,8 @@ export default function ChatBotWidget() {
                 <div
                   className={`max-w-[86%] rounded-2xl px-4 py-3 ${
                     m.role === 'user'
-                      ? 'bg-white/[0.07] text-[13px] leading-[1.55] text-foreground'
-                      : 'bg-surface-1 border border-white/[0.06]'
+                      ? 'bg-border-subtle text-[13px] leading-[1.55] text-foreground'
+                      : 'bg-surface-1 border border-border-subtle'
                   }`}
                 >
                   {m.role === 'bot' ? <BotText text={m.text} /> : m.text}
@@ -305,7 +305,7 @@ export default function ChatBotWidget() {
                   <button
                     key={chip}
                     onClick={() => send(chip)}
-                    className="text-[11px] px-3 py-2 rounded-full border border-white/[0.1] bg-white/[0.03] text-muted hover:border-white/25 hover:text-foreground hover:bg-white/[0.06] transition-colors"
+                    className="text-[11px] px-3 py-2 rounded-full border border-border bg-border-faint text-muted hover:border-white/25 hover:text-foreground hover:bg-border-subtle transition-colors"
                   >
                     {chip}
                   </button>
@@ -317,13 +317,13 @@ export default function ChatBotWidget() {
           </div>
 
           {/* Input bar */}
-          <div className="shrink-0 px-3 pb-3 pt-2 border-t border-white/[0.06]">
+          <div className="shrink-0 px-3 pb-3 pt-2 border-t border-border-subtle">
             <form
               onSubmit={(e) => {
                 e.preventDefault()
                 send(input)
               }}
-              className="flex items-center gap-2 bg-surface-1 border border-white/[0.08] rounded-full px-3.5 py-2 focus-within:border-white/[0.18] transition-colors"
+              className="flex items-center gap-2 bg-surface-1 border border-border-soft rounded-full px-3.5 py-2 focus-within:border-border-mid transition-colors"
             >
               <input
                 ref={inputRef}

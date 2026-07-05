@@ -30,7 +30,7 @@ const LERP_SPEED      = 0.035   // how fast the tint shifts between genres
 export default function StoreAmbient() {
   const genre    = usePlayerStore((s) => s.currentBeat?.genre ?? null)
   const genreRef = useRef<string | null>(null)
-  genreRef.current = genre
+  useEffect(() => { genreRef.current = genre }, [genre])
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
 

@@ -4,9 +4,9 @@
 :root {
   --background: #000000;
   --foreground: #f5f5f7;
-  --muted: #747477;       /* 4.6:1 on #000 — WCAG AA ✓ */
+  --muted: #808080;       /* 4.78:1 on --surface-1 (the lightest surface these sit on) — WCAG AA ✓ */
   --muted-mid: #a1a1a6;
-  --muted-low: #787878;   /* 4.54:1 on #000 — WCAG AA ✓ (raised from #767676) */
+  --muted-low: #848484;   /* 5.05:1 on --surface-1 — WCAG AA ✓ */
   --border: rgba(255,255,255,0.1);
   --glow-soft: rgba(255,255,255,0.04);  /* Hero radial glow tint */
   --player-height: 64px;
@@ -36,6 +36,9 @@
   --promo-border: rgba(82,183,136,0.3);
 
   /* ── Utility alphas ──────────────────────────────── */
+  --border-faint: rgba(255,255,255,0.04);    /* Barely-there dividers */
+  --border-subtle: rgba(255,255,255,0.06);   /* Default subtle border — the most common case */
+  --border-soft: rgba(255,255,255,0.08);     /* Slightly more visible than subtle */
   --border-mid: rgba(255,255,255,0.18);   /* Genre pill / mid-opacity border */
   --surface-overlay: rgba(0,0,0,0.5);    /* Inactive pill / overlay surface bg */
 }
@@ -44,9 +47,9 @@
 @theme {
   --color-background: #000000;
   --color-foreground: #f5f5f7;
-  --color-muted: #747477;
+  --color-muted: #808080;
   --color-muted-mid: #a1a1a6;
-  --color-muted-low: #787878;
+  --color-muted-low: #848484;
   --color-accent: #c8a86a;
   --color-accent-dim: rgba(200,168,106,0.6);
   --color-danger: #e07b39;
@@ -69,6 +72,9 @@
   --color-promo: #52b788;
 
   /* Utility alphas */
+  --color-border-faint: rgba(255,255,255,0.04);
+  --color-border-subtle: rgba(255,255,255,0.06);
+  --color-border-soft: rgba(255,255,255,0.08);
   --color-border-mid: rgba(255,255,255,0.18);
   --color-surface-overlay: rgba(0,0,0,0.5);
 

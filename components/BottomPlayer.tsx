@@ -121,6 +121,10 @@ export default function BottomPlayer() {
     const audio = audioRef.current
     if (!audio || !currentBeat) return
     const src = currentBeat.preview_url ?? ''
+    // Resets must land in the same tick as the audio.load()/play() calls below —
+    // splitting them into a render-time adjustment would desync UI state from
+    // the iOS Safari gesture-handling path (see comment above).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreviewEnded(false)
     setHasError(false)
     localProgressRef.current = 0
@@ -218,7 +222,7 @@ export default function BottomPlayer() {
         onError={() => { setPlaying(false); setIsBuffering(false); setHasError(true) }}
       />
 
-      {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] animate-slide-up" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="region" aria-label="Music player">
+      {currentBeat && <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border-subtle animate-slide-up" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="region" aria-label="Music player">
         {/* Progress track */}
         <div className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none" style={{ background: 'rgba(255,255,255,0.06)', zIndex: 0 }} aria-hidden="true">
           <div ref={progressBarRef} className="h-full" style={{ width: '0%', background: 'var(--accent)', transition: 'none' }} />
@@ -290,7 +294,7 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-1">
             <button
               onClick={playPrev}
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-border-soft transition-colors text-muted hover:text-foreground"
               aria-label="Previous"
             >
               <SkipBack size={15} aria-hidden="true" />
@@ -347,7 +351,7 @@ export default function BottomPlayer() {
 
             <button
               onClick={playNext}
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-border-soft transition-colors text-muted hover:text-foreground"
               aria-label="Next"
             >
               <SkipForward size={15} aria-hidden="true" />
@@ -362,7 +366,7 @@ export default function BottomPlayer() {
             </span>
             <button
               onClick={toggleMute}
-              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/[0.08] transition-colors text-muted hover:text-foreground"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full hover:bg-border-soft transition-colors text-muted hover:text-foreground"
               aria-label={muted ? 'Unmute' : 'Mute'}
             >
               {muted || volume === 0 ? <VolumeX size={13} aria-hidden="true" /> : <Volume2 size={13} aria-hidden="true" />}

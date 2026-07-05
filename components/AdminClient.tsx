@@ -975,6 +975,7 @@ export default function AdminClient() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            aria-label="Admin password"
             className="mb-4 w-full rounded-xl border border-line-card bg-surface-3 px-4 py-3 text-sm text-white outline-none focus:border-muted"
           />
           {authError && <p className="mb-3 text-sm text-danger">{authError}</p>}
@@ -1033,7 +1034,7 @@ export default function AdminClient() {
           {actionError && (
             <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
               <span>{actionError}</span>
-              <button onClick={() => setActionError(null)} className="ml-3 text-danger/60 hover:text-danger">
+              <button onClick={() => setActionError(null)} aria-label="Dismiss error" className="ml-3 text-danger/60 hover:text-danger">
                 <X size={14} />
               </button>
             </div>
@@ -1195,11 +1196,13 @@ export default function AdminClient() {
                         <Pin size={12} /> Pin
                       </button>
                     )}
-                    <button onClick={() => startEdit(beat)} className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-muted-mid hover:text-white transition-colors">
+                    <button onClick={() => startEdit(beat)} aria-label={`Edit ${beat.title}`} className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 text-muted-mid hover:text-white transition-colors">
                       <Edit3 size={14} />
                     </button>
                     <button
                       onClick={() => toggleActive(beat)}
+                      aria-label={beat.is_active ? `Deactivate ${beat.title}` : `Activate ${beat.title}`}
+                      aria-pressed={beat.is_active}
                       className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
                         beat.is_active
                           ? 'text-green-400 hover:bg-green-400/10'
@@ -1221,6 +1224,7 @@ export default function AdminClient() {
                       onClick={() => deleteBeat(beat)}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-low hover:bg-danger/10 hover:text-danger transition-colors"
                       title="Delete beat"
+                      aria-label={`Delete ${beat.title}`}
                     >
                       <Trash2 size={14} />
                     </button>
@@ -1390,6 +1394,7 @@ export default function AdminClient() {
                       onClick={() => deleteDiscountCode(dc.code)}
                       className="p-1.5 text-muted-low hover:text-danger transition-colors"
                       title="Delete code"
+                      aria-label={`Delete discount code ${dc.code}`}
                     >
                       <Trash2 size={14} />
                     </button>
@@ -1426,9 +1431,10 @@ export default function AdminClient() {
                 {' '}— uploaded {new Date(tagInfo.uploaded_at).toLocaleString()}
               </p>
             )}
-            <div
+            <button
+              type="button"
               onClick={() => tagRef.current?.click()}
-              className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-5 text-center transition-colors hover:border-line-hover"
+              className="w-full cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-5 text-center transition-colors hover:border-line-hover"
             >
               <input
                 ref={tagRef}
@@ -1441,7 +1447,7 @@ export default function AdminClient() {
                 ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-muted animate-spin" /><p className="text-xs text-muted">Uploading…</p></>
                 : <><Upload size={16} className="mx-auto mb-1.5 text-muted" /><p className="text-xs text-muted-mid">Drop tag audio here or click to browse</p></>
               }
-            </div>
+            </button>
             {tagUploadMsg && <p className="text-xs text-muted-mid mt-2">{tagUploadMsg}</p>}
           </div>
 
@@ -1505,7 +1511,8 @@ export default function AdminClient() {
             </div>
 
             {/* Multi-file drop zone */}
-            <div
+            <button
+              type="button"
               onDragOver={(e) => { e.preventDefault(); setBatchDragOver(true) }}
               onDragLeave={() => setBatchDragOver(false)}
               onDrop={(e) => {
@@ -1514,7 +1521,7 @@ export default function AdminClient() {
                 if (files.length) handleBatchFiles(files)
               }}
               onClick={() => batchFileRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors mb-4 ${batchDragOver ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
+              className={`w-full cursor-pointer rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors mb-4 ${batchDragOver ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
             >
               <input ref={batchFileRef} type="file" accept="audio/*" multiple className="hidden"
                 onChange={(e) => {
@@ -1526,7 +1533,7 @@ export default function AdminClient() {
               <Upload size={20} className="mx-auto mb-2 text-muted" />
               <p className="text-sm text-muted-mid">Drop multiple audio files here or click to browse</p>
               <p className="text-xs text-muted-low mt-1">Upload WAV masters — previews auto-generated from first 30s. Run `node scripts/convert-mp3.js` afterwards to generate MP3s.</p>
-            </div>
+            </button>
 
             {/* Beat queue */}
             {batchBeats.length > 0 && (
@@ -1649,17 +1656,18 @@ export default function AdminClient() {
 
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Beat File — upload the WAV master (MP3 is auto-generated by scripts/convert-mp3.js)</label>
-                <div
+                <button
+                  type="button"
                   onDragOver={(e) => { e.preventDefault(); setDragOver('beat') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) handleBeatFile(f) }}
                   onClick={() => fileRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
+                  className={`w-full cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'beat' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleBeatFile(e.target.files[0]) }} />
                   <Upload size={16} className="mx-auto mb-1.5 text-muted" />
                   <p className="text-xs text-muted-mid">{droppedBeat ? droppedBeat.name : 'Drop file here or click to browse'}</p>
-                </div>
+                </button>
               </div>
 
               <div>
@@ -1667,50 +1675,53 @@ export default function AdminClient() {
                   Preview File (30s clip)
                   {autoPreview && <span className="ml-2 text-promo">· auto-generated ✓</span>}
                 </label>
-                <div
+                <button
+                  type="button"
                   onDragOver={(e) => { e.preventDefault(); setDragOver('preview') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) { setDroppedPreview(f); setAutoPreview(false) } }}
                   onClick={() => previewRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-promo/30 bg-promo/5 hover:border-promo/50' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
+                  className={`w-full cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'preview' ? 'border-white/40 bg-white/5' : autoPreview ? 'border-promo/30 bg-promo/5 hover:border-promo/50' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={previewRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { setDroppedPreview(e.target.files[0]); setAutoPreview(false) } }} />
                   {generatingPreview
                     ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-muted animate-spin" /><p className="text-xs text-muted">Generating 30s preview…</p></>
                     : <><Upload size={16} className="mx-auto mb-1.5 text-muted" /><p className="text-xs text-muted-mid">{droppedPreview ? droppedPreview.name : 'Drop file here or click to browse'}</p></>
                   }
-                </div>
+                </button>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (optional — replaces the genre square)</label>
-                <div
+                <button
+                  type="button"
                   onDragOver={(e) => { e.preventDefault(); setDragOver('cover') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedCover(f) }}
                   onClick={() => coverRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
+                  className={`w-full cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'cover' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedCover(e.target.files[0]) }} />
                   <Upload size={16} className="mx-auto mb-1.5 text-muted" />
                   <p className="text-xs text-muted-mid">{droppedCover ? droppedCover.name : 'Drop file here or click to browse'}</p>
-                </div>
+                </button>
                 <p className="mt-1 text-[10px] text-muted-low">JPG, PNG, WEBP — will show in the beat list and player bar</p>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Stems (optional — ZIP file of all track stems)</label>
-                <div
+                <button
+                  type="button"
                   onDragOver={(e) => { e.preventDefault(); setDragOver('stems') }}
                   onDragLeave={() => setDragOver(null)}
                   onDrop={(e) => { e.preventDefault(); setDragOver(null); const f = e.dataTransfer.files[0]; if (f) setDroppedStems(f) }}
                   onClick={() => stemsRef.current?.click()}
-                  className={`cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
+                  className={`w-full cursor-pointer rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${dragOver === 'stems' ? 'border-white/40 bg-white/5' : 'border-line-card bg-surface-1 hover:border-line-hover'}`}
                 >
                   <input ref={stemsRef} type="file" accept=".zip,application/zip" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDroppedStems(e.target.files[0]) }} />
                   <Upload size={16} className="mx-auto mb-1.5 text-muted" />
                   <p className="text-xs text-muted-mid">{droppedStems ? droppedStems.name : 'Drop file here or click to browse'}</p>
-                </div>
+                </button>
                 <p className="mt-1 text-[10px] text-muted-low">ZIP only — delivered automatically to customers who buy the Stems License</p>
               </div>
 
@@ -1736,7 +1747,7 @@ export default function AdminClient() {
           {mpError && (
             <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
               <span>{mpError}</span>
-              <button onClick={() => setMpError(null)} className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
+              <button onClick={() => setMpError(null)} aria-label="Dismiss error" className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
             </div>
           )}
 
@@ -1779,9 +1790,10 @@ export default function AdminClient() {
               {/* Cover image upload */}
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
-                <div
+                <button
+                  type="button"
                   onClick={() => mpCoverRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                  className="w-full cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={mpCoverRef} type="file" accept="image/*" className="hidden"
                     onChange={async (e) => {
@@ -1797,15 +1809,16 @@ export default function AdminClient() {
                   />
                   <Upload size={16} className="mx-auto mb-1 text-muted" />
                   <p className="text-xs text-muted-mid">{mpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
-                </div>
+                </button>
               </div>
 
               {/* Pack file upload */}
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
-                <div
+                <button
+                  type="button"
                   onClick={() => mpFileRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                  className="w-full cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={mpFileRef} type="file" accept=".zip,application/zip" className="hidden"
                     onChange={async (e) => {
@@ -1821,7 +1834,7 @@ export default function AdminClient() {
                   />
                   <Upload size={16} className="mx-auto mb-1 text-muted" />
                   <p className="text-xs text-muted-mid">{mpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
-                </div>
+                </button>
               </div>
 
               {mpUploadMsg && <p className="text-sm text-green-400">{mpUploadMsg}</p>}
@@ -1921,14 +1934,16 @@ export default function AdminClient() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button onClick={() => handleMpToggle(pack)} title={pack.is_active ? 'Deactivate' : 'Activate'}
+                          aria-label={pack.is_active ? `Deactivate ${pack.title}` : `Activate ${pack.title}`} aria-pressed={pack.is_active}
                           className="text-muted hover:text-white transition-colors">
                           {pack.is_active ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />}
                         </button>
                         <button onClick={() => { setMpEditId(pack.id); setMpEditForm({ title: pack.title, vendor: pack.vendor, description: pack.description, price: pack.price, compare_at_price: pack.compare_at_price }) }}
+                          aria-label={`Edit ${pack.title}`}
                           className="text-muted hover:text-white transition-colors">
                           <Edit3 size={15} />
                         </button>
-                        <button onClick={() => handleMpDelete(pack.id)} className="text-muted-low hover:text-danger transition-colors">
+                        <button onClick={() => handleMpDelete(pack.id)} aria-label={`Delete ${pack.title}`} className="text-muted-low hover:text-danger transition-colors">
                           <Trash2 size={15} />
                         </button>
                       </div>
@@ -1947,7 +1962,7 @@ export default function AdminClient() {
           {dpError && (
             <div className="flex items-center justify-between rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
               <span>{dpError}</span>
-              <button onClick={() => setDpError(null)} className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
+              <button onClick={() => setDpError(null)} aria-label="Dismiss error" className="ml-3 text-danger/60 hover:text-danger"><X size={14} /></button>
             </div>
           )}
 
@@ -1990,9 +2005,10 @@ export default function AdminClient() {
               {/* Cover image upload */}
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Cover Image (JPG/PNG/WEBP)</label>
-                <div
+                <button
+                  type="button"
                   onClick={() => dpCoverRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                  className="w-full cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={dpCoverRef} type="file" accept="image/*" className="hidden"
                     onChange={async (e) => {
@@ -2008,15 +2024,16 @@ export default function AdminClient() {
                   />
                   <Upload size={16} className="mx-auto mb-1 text-muted" />
                   <p className="text-xs text-muted-mid">{dpCoverUrl ? '✓ Cover uploaded' : 'Click to upload cover art'}</p>
-                </div>
+                </button>
               </div>
 
               {/* Pack file upload */}
               <div>
                 <label className="block text-xs font-medium text-muted-mid mb-1.5">Pack File (ZIP — delivered to customer after purchase)</label>
-                <div
+                <button
+                  type="button"
                   onClick={() => dpFileRef.current?.click()}
-                  className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
+                  className="w-full cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-4 text-center hover:border-line-hover transition-colors"
                 >
                   <input ref={dpFileRef} type="file" accept=".zip,application/zip" className="hidden"
                     onChange={async (e) => {
@@ -2032,7 +2049,7 @@ export default function AdminClient() {
                   />
                   <Upload size={16} className="mx-auto mb-1 text-muted" />
                   <p className="text-xs text-muted-mid">{dpFilePath ? '✓ File uploaded' : 'Click to upload ZIP file'}</p>
-                </div>
+                </button>
               </div>
 
               {dpUploadMsg && <p className="text-sm text-green-400">{dpUploadMsg}</p>}
@@ -2132,14 +2149,16 @@ export default function AdminClient() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button onClick={() => handleDpToggle(pack)} title={pack.is_active ? 'Deactivate' : 'Activate'}
+                          aria-label={pack.is_active ? `Deactivate ${pack.title}` : `Activate ${pack.title}`} aria-pressed={pack.is_active}
                           className="text-muted hover:text-white transition-colors">
                           {pack.is_active ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />}
                         </button>
                         <button onClick={() => { setDpEditId(pack.id); setDpEditForm({ title: pack.title, vendor: pack.vendor, description: pack.description, price: pack.price, compare_at_price: pack.compare_at_price }) }}
+                          aria-label={`Edit ${pack.title}`}
                           className="text-muted hover:text-white transition-colors">
                           <Edit3 size={15} />
                         </button>
-                        <button onClick={() => handleDpDelete(pack.id)} className="text-muted-low hover:text-danger transition-colors">
+                        <button onClick={() => handleDpDelete(pack.id)} aria-label={`Delete ${pack.title}`} className="text-muted-low hover:text-danger transition-colors">
                           <Trash2 size={15} />
                         </button>
                       </div>

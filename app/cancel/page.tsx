@@ -9,7 +9,7 @@ export const metadata = {
 export default function CancelPage() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/[0.08]">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-border-soft">
         <X size={40} className="text-muted" />
       </div>
       <h1 className="mb-3 text-3xl font-black text-white">Payment Cancelled</h1>

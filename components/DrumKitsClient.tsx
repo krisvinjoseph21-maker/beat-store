@@ -77,7 +77,7 @@ function Dropdown({
   return (
     <div
       ref={ref}
-      className={`absolute top-full mt-1 w-52 bg-surface-2 border border-white/[0.08] rounded-xl shadow-2xl z-30 overflow-hidden ${align === 'right' ? 'right-0' : 'left-0'}`}
+      className={`absolute top-full mt-1 w-52 bg-surface-2 border border-border-soft rounded-xl shadow-2xl z-30 overflow-hidden ${align === 'right' ? 'right-0' : 'left-0'}`}
     >
       {children}
     </div>
@@ -124,7 +124,7 @@ export default function DrumKitsClient() {
       </div>
 
       {/* Filter / sort bar */}
-      <div className="border-t border-b border-white/[0.06] bg-surface-1 sticky top-12 z-20">
+      <div className="border-t border-b border-border-subtle bg-surface-1 sticky top-12 z-20">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-2.5 flex items-center justify-between gap-4">
           {/* Filter */}
           <div className="flex items-center gap-2.5">
@@ -132,7 +132,7 @@ export default function DrumKitsClient() {
             <div className="relative">
               <button
                 onClick={() => { setFilterOpen((v) => !v); setSortOpen(false) }}
-                className="flex items-center gap-2 text-[12px] text-foreground border border-white/[0.1] rounded-full px-3.5 py-1.5 hover:border-white/25 transition-colors"
+                className="flex items-center gap-2 text-[12px] text-foreground border border-border rounded-full px-3.5 py-1.5 hover:border-white/25 transition-colors"
                 aria-expanded={filterOpen}
               >
                 {currentAvailLabel}
@@ -162,7 +162,7 @@ export default function DrumKitsClient() {
               <div className="relative">
                 <button
                   onClick={() => { setSortOpen((v) => !v); setFilterOpen(false) }}
-                  className="flex items-center gap-2 text-[12px] text-foreground border border-white/[0.1] rounded-full px-3.5 py-1.5 hover:border-white/25 transition-colors min-w-[120px] justify-between"
+                  className="flex items-center gap-2 text-[12px] text-foreground border border-border rounded-full px-3.5 py-1.5 hover:border-white/25 transition-colors min-w-[120px] justify-between"
                   aria-expanded={sortOpen}
                 >
                   {currentSortLabel}
@@ -208,7 +208,7 @@ function KitCard({ kit }: { kit: DrumKit }) {
   return (
     <div className="flex flex-col group">
       {/* Image */}
-      <div className="relative aspect-square bg-surface-1 rounded-2xl overflow-hidden border border-white/[0.06] mb-3">
+      <div className="relative aspect-square bg-surface-1 rounded-2xl overflow-hidden border border-border-subtle mb-3">
         {kit.image ? (
           <Image
             src={kit.image}
@@ -260,7 +260,7 @@ function KitCard({ kit }: { kit: DrumKit }) {
       </div>
 
       {/* CTA */}
-      <button className="w-full border border-white/[0.12] text-foreground text-[12px] font-medium py-2.5 rounded-lg hover:bg-surface-1 hover:border-white/25 transition-colors active:scale-[0.98]">
+      <button className="w-full border border-border-mid text-foreground text-[12px] font-medium py-2.5 rounded-lg hover:bg-surface-1 hover:border-white/25 transition-colors active:scale-[0.98]">
         Add to cart
       </button>
     </div>

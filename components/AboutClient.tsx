@@ -43,7 +43,7 @@ export default function ContactForm() {
   if (sent) {
     return (
       <div className="w-full max-w-2xl mx-auto text-center py-16">
-        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/[0.06]">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-border-subtle">
           <Check size={24} className="text-accent" />
         </div>
         <p className="font-display text-4xl text-foreground uppercase">{t.contact.sent}</p>

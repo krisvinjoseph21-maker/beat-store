@@ -1,5 +1,5 @@
 /**
- * Singleton audio analyser — shared between BottomPlayer and WaveformVisualizer.
+ * Singleton audio analyser — shared between BottomPlayer and the beat-detail waveform.
  *
  * AudioContext creation is deferred until the first user-initiated play (browser
  * policy requires a user gesture). Safe to call connectAudioElement() multiple
