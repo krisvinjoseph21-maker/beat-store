@@ -30,7 +30,7 @@ export const TIERS = [
     href: '/store',
     accent: false,
     features: [
-      { label: 'File Format',        value: 'WAV (24-bit)' },
+      { label: 'File Format',        value: 'WAV (24-bit) + MP3 (320kbps)' },
       { label: 'Distribution Limit', value: '25,000 copies' },
       { label: 'Streaming Limit',    value: '500,000 streams' },
       { label: 'Music Videos',       value: '1 music video' },
@@ -50,7 +50,7 @@ export const TIERS = [
     href: '/store',
     accent: true,
     features: [
-      { label: 'File Format',        value: 'WAV Trackout Stems' },
+      { label: 'File Format',        value: 'WAV + MP3 + Trackout Stems' },
       { label: 'Distribution Limit', value: '75,000 copies' },
       { label: 'Streaming Limit',    value: '1,500,000 streams' },
       { label: 'Music Videos',       value: 'Unlimited' },

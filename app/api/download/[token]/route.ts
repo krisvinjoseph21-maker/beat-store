@@ -108,26 +108,42 @@ export async function GET(
   type SignedItem = { title: string; bpm?: number; signedUrl: string; isStems?: boolean }
   const signed: SignedItem[] = []
 
+  // Premium and Unlimited get both the WAV master and the MP3; Basic gets MP3 only
+  // (falling back to the WAV if it hasn't been converted yet by scripts/convert-mp3.js).
+  const includeWav = licenseType === 'premium' || licenseType === 'unlimited'
+
   // Generate signed URLs for each beat
   if (beatIds.length > 0) {
     const { data: beats } = await supabase
       .from('beats')
-      .select('id, title, bpm, file_url, file_path, stems_path')
+      .select('id, title, bpm, file_url, file_path, mp3_path, stems_path')
       .in('id', beatIds)
 
     for (const beat of (beats ?? [])) {
-      if (!beat.file_url) continue
-      const path = beat.file_path ?? storagePathFromUrl(beat.file_url)
-      if (!path) continue
+      const wavPath = beat.file_path ?? (beat.file_url ? storagePathFromUrl(beat.file_url) : null)
+      const mp3Path = beat.mp3_path
 
-      const { data: signedData, error: signedError } = await supabase.storage
-        .from('beats')
-        .createSignedUrl(path, SIGNED_URL_TTL, {
-          download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@kjyoucrazy.mp3`,
-        })
+      if (mp3Path) {
+        const { data: signedData, error: signedError } = await supabase.storage
+          .from('beats')
+          .createSignedUrl(mp3Path, SIGNED_URL_TTL, {
+            download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@kjyoucrazy.mp3`,
+          })
+        if (!signedError && signedData?.signedUrl) {
+          signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
+        }
+      }
 
-      if (!signedError && signedData?.signedUrl) {
-        signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
+      // WAV master: always for Premium/Unlimited, or as the Basic fallback if no MP3 exists yet
+      if (wavPath && (includeWav || !mp3Path)) {
+        const { data: signedData, error: signedError } = await supabase.storage
+          .from('beats')
+          .createSignedUrl(wavPath, SIGNED_URL_TTL, {
+            download: `${safeFilename(beat.title)}_${beat.bpm}BPM_@kjyoucrazy.wav`,
+          })
+        if (!signedError && signedData?.signedUrl) {
+          signed.push({ title: beat.title, bpm: beat.bpm, signedUrl: signedData.signedUrl })
+        }
       }
 
       if (includeStems && beat.stems_path) {

@@ -69,6 +69,7 @@ function sanitizeBeatBody(body: Record<string, unknown>) {
       preview_is_manual: body.preview_is_manual === true,
       cover_url: sanitizeUrl(body.cover_url),
       stems_path: sanitizePath(body.stems_path),
+      mp3_path: sanitizePath(body.mp3_path),
       is_active: body.is_active !== false,
     },
   }
@@ -114,7 +115,7 @@ export async function DELETE(req: NextRequest) {
     // Fetch the beat first so we have the file paths
     const { data: beat } = await supabase
       .from('beats')
-      .select('file_url, file_path, preview_url, preview_path')
+      .select('file_url, file_path, preview_url, preview_path, mp3_path, stems_path')
       .eq('id', id)
       .single()
 
@@ -127,6 +128,9 @@ export async function DELETE(req: NextRequest) {
 
       const previewPath = beat.preview_path ?? (beat.preview_url ? storagePathFromUrl(beat.preview_url) : null)
       if (previewPath && previewPath !== fullPath) toDelete.push(previewPath)
+
+      if (beat.mp3_path) toDelete.push(beat.mp3_path)
+      if (beat.stems_path) toDelete.push(beat.stems_path)
 
       if (toDelete.length > 0) {
         await supabase.storage.from('beats').remove(toDelete)
@@ -185,6 +189,7 @@ export async function PATCH(req: NextRequest) {
     if ('preview_is_manual' in body) updates.preview_is_manual = body.preview_is_manual === true
     if ('cover_url' in body) updates.cover_url = sanitizeUrl(body.cover_url)
     if ('stems_path' in body) updates.stems_path = sanitizePath(body.stems_path)
+    if ('mp3_path' in body) updates.mp3_path = sanitizePath(body.mp3_path)
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('beats')

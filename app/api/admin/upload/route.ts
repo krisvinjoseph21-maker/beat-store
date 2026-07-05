@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
-const VALID_TYPES = ['full', 'preview', 'cover', 'stems', 'tag'] as const
+const VALID_TYPES = ['full', 'preview', 'cover', 'stems', 'tag', 'mp3'] as const
 type UploadType = typeof VALID_TYPES[number]
 
 // Strip everything except safe characters to prevent path traversal.
@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
                 'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
       tag:     ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
                 'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
+      mp3:     ['audio/mpeg'],
       cover:   ['image/jpeg', 'image/png', 'image/webp'],
       stems:   ['application/zip', 'application/x-zip-compressed',
                 'application/x-zip', 'application/octet-stream'],

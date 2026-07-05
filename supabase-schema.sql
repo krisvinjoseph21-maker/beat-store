@@ -18,7 +18,8 @@ create table if not exists public.beats (
   subgenre     text not null default '',
   tags         text[] not null default '{}',
   file_url     text,          -- full/clean beat (NEVER returned to public API)
-  file_path    text,          -- storage object path for signed URL generation
+  file_path    text,          -- storage object path for signed URL generation (WAV master)
+  mp3_path     text,          -- auto-converted 320kbps MP3, generated from the WAV master by scripts/convert-mp3.js
   preview_url  text,          -- tagged/watermarked preview (safe for public)
   preview_path text,          -- storage object path for signed preview URLs
   is_active    boolean not null default true,
@@ -99,6 +100,12 @@ alter table public.downloads enable row level security;
 -- alter table public.beats add column if not exists is_featured boolean not null default false;
 -- alter table public.beats add column if not exists stems_path text;
 -- alter table public.beats add column if not exists stems_url text;
+--
+-- MP3 delivery — beat file uploads are now the WAV master (file_path).
+-- Run scripts/convert-mp3.js afterwards to auto-generate mp3_path for
+-- every beat missing one (used to serve Basic-tier downloads, and
+-- alongside the WAV for Premium/Unlimited):
+-- alter table public.beats add column if not exists mp3_path text;
 
 -- -------------------------------------------------------
 -- Indexes
