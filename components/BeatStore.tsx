@@ -96,6 +96,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const [vibeResults, setVibeResults] = useState<Beat[]>([])
   const [vibeError, setVibeError] = useState<string | null>(null)
   const [vibePriceWarning, setVibePriceWarning] = useState<string | null>(null)
+  const [vibeHasSearched, setVibeHasSearched] = useState(false)
   const searchParams = useSearchParams()
   const MAX_QUERY_LEN = 100
   const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
@@ -202,6 +203,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     setVibeError(null)
     setVibeResults([])
     setVibePriceWarning(null)
+    setVibeHasSearched(true)
     try {
       const endpoint = vibeSmartFilters ? '/api/vibe-search/agent' : '/api/vibe-search'
       const res = await fetch(endpoint, {
@@ -228,6 +230,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     setVibeResults([])
     setVibeError(null)
     setVibePriceWarning(null)
+    setVibeHasSearched(false)
     setAiMode(false)
   }
 
@@ -432,6 +435,14 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                   Smart filters — also parse price/BPM/key/genre from your query
                 </span>
               </label>
+              <p
+                className="mt-1.5 text-[11px] max-w-xl"
+                style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)', opacity: 0.7 }}
+              >
+                {vibeSmartFilters
+                  ? 'Beats that don’t match a stated genre, BPM range, key, or price will be excluded.'
+                  : 'This ranks every beat by relevance to your description — it won’t exclude any. Turn on Smart Filters to actually exclude beats outside a stated genre/BPM/price.'}
+              </p>
             </div>
           )}
         </div>
@@ -535,7 +546,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
       )}
 
       {/* Vibe search results */}
-      {vibeMode && (vibeResults.length > 0 || vibeError || vibePriceWarning || vibeLoading) && (
+      {vibeMode && (vibeHasSearched || vibeLoading) && (
         <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-6">
           <div className="flex items-center gap-2 mb-4">
             <Search size={12} style={{ color: 'var(--accent)' }} aria-hidden="true" />
@@ -558,6 +569,11 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             <div className="flex h-24 items-center justify-center border border-line">
               <Loader2 size={16} className="animate-spin" style={{ color: 'var(--muted-low)' }} aria-hidden="true" />
             </div>
+          ) : vibeResults.length === 0 ? (
+            <p className="text-[13px]" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+              No beats match this search{vibeSmartFilters ? ' with those filters' : ''}. Try a different description
+              {vibeSmartFilters ? ', or turn off Smart Filters to search by vibe only.' : '.'}
+            </p>
           ) : (
             <div className="border border-line overflow-hidden">
               <div role="list" aria-label="Vibe search results">
