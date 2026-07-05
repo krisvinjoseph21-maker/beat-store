@@ -45,6 +45,12 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  // @huggingface/transformers pulls in onnxruntime-node, which ships native
+  // .node bindings — keep it out of the webpack bundle, load it from
+  // node_modules at runtime instead (same reasoning as the sharp/next-image
+  // native binary case).
+  serverExternalPackages: ['@huggingface/transformers', 'onnxruntime-node'],
+
   async headers() {
     return [
       {

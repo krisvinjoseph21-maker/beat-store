@@ -69,3 +69,11 @@ export const recommendBodySchema = z.object({
     .min(3, 'query must be at least 3 characters')
     .max(500, 'query must be 500 characters or fewer'),
 })
+
+export const vibeSearchBodySchema = z.object({
+  query: z
+    .string()
+    .trim()
+    .min(3, 'query must be at least 3 characters')
+    .max(200, 'query must be 200 characters or fewer'),
+})

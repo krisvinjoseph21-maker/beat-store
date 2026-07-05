@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import BeatCard from './BeatCard'
 import { Beat, useCartStore, usePlayerStore, useFavoritesStore } from '@/lib/store'
-import { BadgeCheck, ChevronDown, Heart, Loader2, Sparkles } from 'lucide-react'
+import { BadgeCheck, ChevronDown, Heart, Loader2, Search, Sparkles } from 'lucide-react'
 import { useT } from '@/lib/i18n'
 import { useRowSpring } from '@/lib/use-row-spring'
 
@@ -89,6 +89,13 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
   const [aiLoading, setAiLoading] = useState(false)
   const [aiResults, setAiResults] = useState<AiResult[]>([])
   const [aiError, setAiError] = useState<string | null>(null)
+  const [vibeMode, setVibeMode] = useState(false)
+  const [vibeQuery, setVibeQuery] = useState('')
+  const [vibeSmartFilters, setVibeSmartFilters] = useState(false)
+  const [vibeLoading, setVibeLoading] = useState(false)
+  const [vibeResults, setVibeResults] = useState<Beat[]>([])
+  const [vibeError, setVibeError] = useState<string | null>(null)
+  const [vibePriceWarning, setVibePriceWarning] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const MAX_QUERY_LEN = 100
   const [search, setSearch] = useState((searchParams.get('q') ?? '').slice(0, MAX_QUERY_LEN))
@@ -185,6 +192,43 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
     setAiMode((prev) => !prev)
     setAiResults([])
     setAiError(null)
+    setVibeMode(false)
+  }
+
+  async function handleVibeSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!vibeQuery.trim() || vibeLoading) return
+    setVibeLoading(true)
+    setVibeError(null)
+    setVibeResults([])
+    setVibePriceWarning(null)
+    try {
+      const endpoint = vibeSmartFilters ? '/api/vibe-search/agent' : '/api/vibe-search'
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: vibeQuery }),
+      })
+      const data = await res.json() as { results?: Beat[]; error?: string; priceWarning?: string }
+      if (!res.ok) {
+        setVibeError(data.error ?? 'Something went wrong.')
+      } else {
+        setVibeResults(data.results ?? [])
+        if (data.priceWarning) setVibePriceWarning(data.priceWarning)
+      }
+    } catch {
+      setVibeError('Failed to reach search service.')
+    } finally {
+      setVibeLoading(false)
+    }
+  }
+
+  function toggleVibeMode() {
+    setVibeMode((prev) => !prev)
+    setVibeResults([])
+    setVibeError(null)
+    setVibePriceWarning(null)
+    setAiMode(false)
   }
 
   return (
@@ -253,7 +297,7 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
 
           {/* Search + genre pills row */}
           <div className="flex flex-wrap items-center gap-3">
-            {!aiMode && (
+            {!aiMode && !vibeMode && (
               <input
                 type="text"
                 aria-label={t.store.searchPlaceholder}
@@ -277,6 +321,20 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
             >
               <Sparkles size={11} aria-hidden="true" />
               AI PICKS
+            </button>
+
+            <button
+              onClick={toggleVibeMode}
+              aria-pressed={vibeMode}
+              className="font-montserrat flex items-center gap-1.5 border h-11 px-3.5 text-[11px] font-semibold transition-[background-color,border-color,color] whitespace-nowrap flex-shrink-0"
+              style={{
+                background: vibeMode ? 'var(--accent)' : 'transparent',
+                borderColor: vibeMode ? 'var(--accent)' : 'var(--line-input)',
+                color: vibeMode ? '#000' : 'var(--muted-low)',
+              }}
+            >
+              <Search size={11} aria-hidden="true" />
+              VIBE SEARCH
             </button>
 
             <div className="relative min-w-0 flex-1">
@@ -337,6 +395,58 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                 }
               </button>
             </form>
+          )}
+
+          {/* Vibe search query form */}
+          {vibeMode && (
+            <div className="mt-4">
+              <form onSubmit={handleVibeSubmit} className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Describe the sound and mood — dark moody trap beat with piano..."
+                  value={vibeQuery}
+                  onChange={(e) => setVibeQuery(e.target.value.slice(0, 200))}
+                  maxLength={200}
+                  autoFocus
+                  className="flex-1 border bg-black/60 py-2.5 px-4 text-[13px] outline-none transition-colors placeholder:text-muted-low backdrop-blur-sm"
+                  style={{
+                    borderColor: 'rgba(245,158,11,0.4)',
+                    color: 'var(--foreground)',
+                    fontFamily: 'var(--font-inter)',
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={vibeLoading || !vibeQuery.trim()}
+                  className="font-montserrat flex items-center gap-1.5 border h-11 px-5 text-[11px] font-semibold whitespace-nowrap disabled:opacity-40 transition-opacity"
+                  style={{
+                    borderColor: 'rgba(245,158,11,0.4)',
+                    background: 'rgba(245,158,11,0.08)',
+                    color: 'var(--foreground)',
+                  }}
+                >
+                  {vibeLoading
+                    ? <><Loader2 size={11} className="animate-spin" aria-hidden="true" /> SEARCHING</>
+                    : <><Search size={11} aria-hidden="true" /> SEARCH</>
+                  }
+                </button>
+              </form>
+              <label className="mt-2 flex items-center gap-1.5 w-fit cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={vibeSmartFilters}
+                  onChange={(e) => setVibeSmartFilters(e.target.checked)}
+                  className="accent-current"
+                  style={{ accentColor: 'var(--accent)' }}
+                />
+                <span
+                  className="text-[11px]"
+                  style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}
+                >
+                  Smart filters — also parse price/BPM/key/genre from your query
+                </span>
+              </label>
+            </div>
           )}
         </div>
       </div>
@@ -433,6 +543,47 @@ export default function BeatStore({ initialBeats }: { initialBeats: Beat[] }) {
                   </div>
                 )
               })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Vibe search results */}
+      {vibeMode && (vibeResults.length > 0 || vibeError || vibePriceWarning || vibeLoading) && (
+        <div className="w-full max-w-6xl px-6 sm:px-10 lg:px-16 pb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Search size={12} style={{ color: 'var(--accent)' }} aria-hidden="true" />
+            <span
+              className="font-montserrat text-[10px] font-bold uppercase"
+              style={{ letterSpacing: '0.18em', color: 'var(--accent)' }}
+            >
+              Vibe Search Results
+            </span>
+          </div>
+          {vibeError ? (
+            <p className="text-[13px]" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+              {vibeError}
+            </p>
+          ) : vibePriceWarning ? (
+            <p className="text-[13px]" style={{ color: 'var(--muted-low)', fontFamily: 'var(--font-inter)' }}>
+              {vibePriceWarning}
+            </p>
+          ) : vibeLoading ? (
+            <div className="flex h-24 items-center justify-center border border-line">
+              <Loader2 size={16} className="animate-spin" style={{ color: 'var(--muted-low)' }} aria-hidden="true" />
+            </div>
+          ) : (
+            <div className="border border-line overflow-hidden">
+              <div role="list" aria-label="Vibe search results">
+                {vibeResults.map((beat, i) => (
+                  <BeatCard
+                    key={beat.id}
+                    beat={beat}
+                    index={i + 1}
+                    onBuyClick={handleBuyClick}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
