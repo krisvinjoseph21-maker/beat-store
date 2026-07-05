@@ -39,23 +39,24 @@ create or replace function public.match_beats(
   min_similarity float default 0.0
 )
 returns table (
-  id           uuid,
-  title        text,
-  bpm          integer,
-  key          text,
-  genre        text,
-  subgenre     text,
-  tags         text[],
-  cover_url    text,
-  preview_url  text,
-  created_at   timestamptz,
-  similarity   float
+  id                 uuid,
+  title              text,
+  bpm                integer,
+  key                text,
+  genre              text,
+  subgenre           text,
+  tags               text[],
+  cover_url          text,
+  preview_url        text,
+  preview_is_tagged  boolean,
+  created_at         timestamptz,
+  similarity         float
 )
 language sql stable security definer set search_path = public
 as $$
   select
     b.id, b.title, b.bpm, b.key, b.genre, b.subgenre, b.tags,
-    b.cover_url, b.preview_url, b.created_at,
+    b.cover_url, b.preview_url, b.preview_is_tagged, b.created_at,
     1 - (be.embedding <=> query_embedding) as similarity
   from public.beat_embeddings be
   join public.beats b on b.id = be.beat_id

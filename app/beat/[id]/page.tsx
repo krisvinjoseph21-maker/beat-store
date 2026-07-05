@@ -9,7 +9,7 @@ const getBeat = cache(async (id: string) => {
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('beats')
-    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, created_at')
+    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, preview_is_tagged, cover_url, is_active, created_at')
     .eq('id', id)
     .eq('is_active', true)
     .single()

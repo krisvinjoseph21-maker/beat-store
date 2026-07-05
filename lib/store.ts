@@ -13,6 +13,7 @@ export interface Beat {
   tags: string[]
   file_url: string | null
   preview_url: string | null
+  preview_is_tagged: boolean
   cover_url: string | null
   stems_path: string | null
   is_active: boolean

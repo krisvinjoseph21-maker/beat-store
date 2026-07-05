@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   // Never select file_url, file_path, or stems_path — they must never reach the client.
   const { data, error } = await supabase
     .from('beats')
-    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, created_at, pin_order')
+    .select('id, title, bpm, key, genre, subgenre, tags, preview_url, preview_is_tagged, cover_url, is_active, created_at, pin_order')
     .eq('is_active', true)
     .order('pin_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })

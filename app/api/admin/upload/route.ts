@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
-const VALID_TYPES = ['full', 'preview', 'cover', 'stems'] as const
+const VALID_TYPES = ['full', 'preview', 'cover', 'stems', 'tag'] as const
 type UploadType = typeof VALID_TYPES[number]
 
 // Strip everything except safe characters to prevent path traversal.
@@ -52,10 +52,10 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: 'Failed to create upload URL' }, { status: 500 })
   }
 
-  // Pre-calculate public URL for preview and cover assets.
+  // Pre-calculate public URL for preview, cover, and tag assets.
   // Full beat files and stems are private — never expose their public URLs.
   let publicUrl: string | undefined
-  if (type === 'preview' || type === 'cover') {
+  if (type === 'preview' || type === 'cover' || type === 'tag') {
     const { data: urlData } = supabase.storage.from('beats').getPublicUrl(path)
     publicUrl = urlData.publicUrl
   }
@@ -83,6 +83,8 @@ export async function POST(req: NextRequest) {
       full:    ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
                 'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
       preview: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
+                'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
+      tag:     ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
                 'audio/x-wav', 'audio/wave', 'audio/vnd.wave', 'audio/flac'],
       cover:   ['image/jpeg', 'image/png', 'image/webp'],
       stems:   ['application/zip', 'application/x-zip-compressed',
@@ -113,7 +115,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'Upload failed' }, { status: 500 })
     }
 
-    if (type === 'preview' || type === 'cover') {
+    if (type === 'preview' || type === 'cover' || type === 'tag') {
       const { data: urlData } = supabase.storage.from('beats').getPublicUrl(data.path)
       return Response.json({ url: urlData.publicUrl, path: data.path })
     }

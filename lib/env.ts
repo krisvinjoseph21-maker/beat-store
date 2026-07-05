@@ -13,7 +13,6 @@ const REQUIRED_SERVER_VARS = [
   'ADMIN_PASSWORD',
   'ADMIN_HMAC_SECRET',
   'NEXT_PUBLIC_SITE_URL',
-  'ANTHROPIC_API_KEY',
 ] as const
 
 export function validateEnv(): void {

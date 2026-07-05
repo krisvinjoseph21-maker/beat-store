@@ -224,6 +224,10 @@ export default function AdminClient() {
   const [dcForm, setDcForm] = useState({ code: '', pct: '' })
   const [dcSaving, setDcSaving] = useState(false)
   const [dcMsg, setDcMsg] = useState('')
+  const [tagInfo, setTagInfo] = useState<{ storage_path: string; public_url: string; uploaded_at: string } | null>(null)
+  const [tagUploading, setTagUploading] = useState(false)
+  const [tagUploadMsg, setTagUploadMsg] = useState('')
+  const tagRef = useRef<HTMLInputElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -312,6 +316,7 @@ export default function AdminClient() {
         setBeats(data)
         fetchOrders()
         fetchPromos()
+        fetchTag()
       } else {
         setAuthError('Wrong password')
       }
@@ -327,6 +332,38 @@ export default function AdminClient() {
       headers: { 'x-admin-password': password },
     })
     if (res.ok) setBeats(await res.json())
+  }
+
+  async function fetchTag() {
+    const res = await fetch('/api/admin/tag', {
+      headers: { 'x-admin-password': password },
+    })
+    if (res.ok) setTagInfo(await res.json())
+  }
+
+  async function handleTagUpload(file: File) {
+    setTagUploading(true)
+    setTagUploadMsg('Uploading tag…')
+    try {
+      const { path, url } = await uploadFile(file, 'tag')
+      if (!url) throw new Error('Upload succeeded but no public URL was returned')
+      const res = await fetch('/api/admin/tag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ storagePath: path, publicUrl: url }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error ?? 'Failed to save tag')
+      }
+      setTagInfo(await res.json())
+      setTagUploadMsg('Tag saved! Run `node scripts/tag-beats.js` to apply it to your catalog.')
+      if (tagRef.current) tagRef.current.value = ''
+    } catch (err) {
+      setTagUploadMsg(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setTagUploading(false)
+    }
   }
 
   async function fetchOrders() {
@@ -721,7 +758,7 @@ export default function AdminClient() {
 
   async function uploadFile(
     file: File,
-    type: 'full' | 'preview' | 'cover' | 'stems'
+    type: 'full' | 'preview' | 'cover' | 'stems' | 'tag'
   ): Promise<{ path: string; url?: string }> {
     // Step 1 — get a pre-signed Supabase upload URL (tiny request, no file body).
     const params = new URLSearchParams({ type, filename: file.name })
@@ -893,6 +930,7 @@ export default function AdminClient() {
           file_path: filePath,
           preview_url: previewUrl,
           preview_path: previewPath,
+          preview_is_manual: !!prevFile && !autoPreview,
           cover_url: coverUrl,
           stems_path: stemsPath,
           bpm: Number(newBeat.bpm),
@@ -1367,6 +1405,42 @@ export default function AdminClient() {
       {/* Upload tab */}
       {tab === 'upload' && (
         <div className="max-w-2xl space-y-8">
+
+          {/* ── PRODUCER TAG ─────────────────────────────────── */}
+          <div className="rounded-xl border border-line-card bg-surface-2 p-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Tag size={16} className="text-muted" />
+              <h2 className="text-lg font-bold text-white">Producer Tag</h2>
+            </div>
+            <p className="text-xs text-muted mb-4">
+              Upload one reusable voice tag. Run <code className="text-promo">node scripts/tag-beats.js</code> afterward
+              to bake it into every beat&apos;s full-length preview (every ~30s), replacing the 30-second-cap preview
+              with the whole song — protected by the tag instead of a hard cutoff.
+            </p>
+            {tagInfo && (
+              <p className="text-xs text-muted-mid mb-3">
+                Current tag: <span className="text-white">{tagInfo.storage_path.split('/').pop()}</span>
+                {' '}— uploaded {new Date(tagInfo.uploaded_at).toLocaleString()}
+              </p>
+            )}
+            <div
+              onClick={() => tagRef.current?.click()}
+              className="cursor-pointer rounded-xl border-2 border-dashed border-line-card bg-surface-1 px-4 py-5 text-center transition-colors hover:border-line-hover"
+            >
+              <input
+                ref={tagRef}
+                type="file"
+                accept="audio/*"
+                className="hidden"
+                onChange={(e) => { if (e.target.files?.[0]) handleTagUpload(e.target.files[0]) }}
+              />
+              {tagUploading
+                ? <><RefreshCw size={16} className="mx-auto mb-1.5 text-muted animate-spin" /><p className="text-xs text-muted">Uploading…</p></>
+                : <><Upload size={16} className="mx-auto mb-1.5 text-muted" /><p className="text-xs text-muted-mid">Drop tag audio here or click to browse</p></>
+              }
+            </div>
+            {tagUploadMsg && <p className="text-xs text-muted-mid mt-2">{tagUploadMsg}</p>}
+          </div>
 
           {/* ── BATCH UPLOAD ─────────────────────────────────── */}
           <div>

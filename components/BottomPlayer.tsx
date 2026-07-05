@@ -101,13 +101,18 @@ export default function BottomPlayer() {
     setPlaying(true)
   }
 
+  // Tagged beats have the tag baked into the full-length audio itself, so the
+  // 30s safety cutoff (which exists to stop an untagged full song being taken
+  // for free) no longer applies — only cap playback for untagged/manual previews.
+  const previewLimit = currentBeat?.preview_is_tagged ? Infinity : PREVIEW_LIMIT
+
   // Update seek input, time text, and progress bar directly via DOM — no React re-render.
   function updateProgressDOM(t: number) {
-    const cappedT   = Math.min(t, PREVIEW_LIMIT)
-    const barMaxLocal = durationRef.current > 0 ? Math.min(durationRef.current, PREVIEW_LIMIT) : PREVIEW_LIMIT
+    const cappedT   = Math.min(t, previewLimit)
+    const barMaxLocal = durationRef.current > 0 ? Math.min(durationRef.current, previewLimit) : previewLimit
     if (seekInputRef.current)   seekInputRef.current.value      = String(cappedT)
     if (timeTextRef.current)    timeTextRef.current.textContent =
-      `${formatTime(cappedT)} / ${formatTime(Math.min(durationRef.current || 0, PREVIEW_LIMIT))}`
+      `${formatTime(cappedT)} / ${formatTime(Math.min(durationRef.current || 0, previewLimit))}`
     if (progressBarRef.current) progressBarRef.current.style.width =
       `${barMaxLocal > 0 ? Math.min(cappedT / barMaxLocal, 1) * 100 : 0}%`
   }
@@ -166,7 +171,7 @@ export default function BottomPlayer() {
   }, [isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Derive display values from Zustand state (only recalculated on Zustand changes, not every tick)
-  const barMax = duration > 0 ? Math.min(duration, PREVIEW_LIMIT) : PREVIEW_LIMIT
+  const barMax = duration > 0 ? Math.min(duration, previewLimit) : previewLimit
 
   // Safe to compute with optional chaining — audio element always renders
   const dot = GENRE_COLORS[currentBeat?.genre ?? ''] ?? GENRE_COLOR_FALLBACK
@@ -190,12 +195,12 @@ export default function BottomPlayer() {
 
           // Sync to Zustand only every STORE_SYNC_INTERVAL ms to avoid flooding BeatCard re-renders
           const now = Date.now()
-          if (now - lastStoreSyncRef.current >= STORE_SYNC_INTERVAL || t >= PREVIEW_LIMIT) {
+          if (now - lastStoreSyncRef.current >= STORE_SYNC_INTERVAL || t >= previewLimit) {
             lastStoreSyncRef.current = now
             setProgress(t)
           }
 
-          if (t >= PREVIEW_LIMIT) {
+          if (t >= previewLimit) {
             ;(e.target as HTMLAudioElement).pause()
             setPlaying(false)
             setPreviewEnded(true)
@@ -231,7 +236,7 @@ export default function BottomPlayer() {
             defaultValue={0}
             onChange={(e) => {
               const val = Number(e.target.value)
-              if (val >= PREVIEW_LIMIT) return
+              if (val >= previewLimit) return
               localProgressRef.current = val
               lastStoreSyncRef.current = Date.now()
               setProgress(val)
@@ -317,7 +322,7 @@ export default function BottomPlayer() {
             ) : (
               <button
                 onClick={() => {
-                  if (localProgressRef.current >= PREVIEW_LIMIT && audioRef.current) {
+                  if (localProgressRef.current >= previewLimit && audioRef.current) {
                     audioRef.current.currentTime = 0
                     localProgressRef.current = 0
                     setProgress(0)
@@ -353,7 +358,7 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
             {/* Updated via DOM ref — no React re-render on every tick */}
             <span ref={timeTextRef} className="hidden sm:block text-[10px] text-muted-low tabular-nums">
-              0:00 / 0:30
+              0:00 / {formatTime(barMax)}
             </span>
             <button
               onClick={toggleMute}

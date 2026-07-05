@@ -10,7 +10,6 @@ import ShareButton from './ShareButton'
 import ExclusiveOfferForm from './ExclusiveOfferForm'
 import { PRICES } from '@/lib/prices'
 import { trackViewItem, trackAddToCart } from '@/lib/analytics'
-import { getAnalyser } from '@/lib/audio-analyser'
 
 type TierId = LicenseType | 'exclusive'
 
@@ -111,22 +110,19 @@ function BeatWaveform({
   beatId,
   progressPct,
   isPlaying,
+  onSeek,
 }: {
   beatId: string
   progressPct: number
   isPlaying: boolean
+  onSeek: (fraction: number) => void
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(0)
   const drawRef = useRef<(() => void) | null>(null)
   const progressRef = useRef(progressPct)
   const isPlayingRef = useRef(isPlaying)
-  const liveDataRef = useRef<Uint8Array<ArrayBuffer> | null>(null)
   const staticBars = useRef<number[]>([])
-  const reducedMotion = useRef(
-    typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
 
   useEffect(() => {
     progressRef.current = progressPct
@@ -175,27 +171,8 @@ function BeatWaveform({
       const progressFrac = Math.min(progressRef.current / 100, 1)
       const playedCount  = Math.round(numBars * progressFrac)
 
-      let liveData: Uint8Array<ArrayBuffer> | null = null
-      if (!reducedMotion.current && isPlayingRef.current) {
-        const analyser = getAnalyser()
-        if (analyser) {
-          const binCount = analyser.frequencyBinCount
-          if (!liveDataRef.current || liveDataRef.current.length !== binCount) {
-            liveDataRef.current = new Uint8Array(binCount)
-          }
-          analyser.getByteFrequencyData(liveDataRef.current)
-          liveData = liveDataRef.current
-        }
-      }
-
       for (let i = 0; i < numBars; i++) {
-        let v = bars[i]
-        if (liveData) {
-          const bin  = Math.floor((i / numBars) * liveData.length * 0.72)
-          const live = liveData[bin] / 255
-          v = Math.max(v * 0.45, live)
-        }
-
+        const v = bars[i]
         const barH = Math.round(v * H * 0.88)
         const x    = i * STEP
         const y    = Math.round((H - barH) / 2)
@@ -236,11 +213,29 @@ function BeatWaveform({
     return () => { cancelAnimationFrame(rafRef.current); rafRef.current = 0; ro.disconnect(); drawRef.current = null }
   }, [beatId])
 
+  function handleClick(e: React.MouseEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const rect = canvas.getBoundingClientRect()
+    const fraction = (e.clientX - rect.left) / rect.width
+    onSeek(Math.min(Math.max(fraction, 0), 1))
+  }
+
   return (
     <canvas
       ref={canvasRef}
-      aria-hidden="true"
-      className="w-full block"
+      onClick={handleClick}
+      role="slider"
+      aria-label="Seek"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(progressPct)}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight') onSeek(Math.min((progressPct + 5) / 100, 1))
+        if (e.key === 'ArrowLeft') onSeek(Math.max((progressPct - 5) / 100, 0))
+      }}
+      className="w-full block cursor-pointer"
       style={{ height: '80px' }}
     />
   )
@@ -293,6 +288,27 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
       setCurrentBeat(beat)
       setPlaying(true)
     }
+  }
+
+  function handleSeek(fraction: number) {
+    const audio = sharedAudioElement.current
+    if (!audio || !beat.preview_url) return
+
+    if (currentBeat?.id !== beat.id) {
+      // Not the beat currently loaded — load it, then seek once we know its duration.
+      audio.src = beat.preview_url
+      const onLoaded = () => {
+        audio.currentTime = fraction * (audio.duration || 0)
+        audio.removeEventListener('loadedmetadata', onLoaded)
+      }
+      audio.addEventListener('loadedmetadata', onLoaded)
+      audio.play().catch(() => setPlaying(false))
+      setCurrentBeat(beat)
+      setPlaying(true)
+    } else {
+      audio.currentTime = fraction * (audio.duration || 0)
+    }
+    setProgress(fraction * 100)
   }
 
   function handleSelectTier(id: TierId) {
@@ -405,7 +421,7 @@ export default function BeatPageClient({ beat }: { beat: Beat }) {
 
         {/* Waveform */}
         <div className="border-t border-white/[0.04] px-4 py-4">
-          <BeatWaveform beatId={beat.id} progressPct={progress} isPlaying={isThisPlaying} />
+          <BeatWaveform beatId={beat.id} progressPct={progress} isPlaying={isThisPlaying} onSeek={handleSeek} />
         </div>
       </div>
 

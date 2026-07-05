@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@huggingface/transformers": "^4.2.0",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.216.0",
@@ -23,6 +25,7 @@
     "@stripe/stripe-js": "^8.11.0",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.100.0",
+    "fluent-ffmpeg": "^2.1.3",
     "groq-sdk": "^1.3.0",
     "lucide-react": "^1.6.0",
     "next": "^16.2.4",

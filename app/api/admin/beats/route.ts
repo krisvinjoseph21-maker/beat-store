@@ -66,6 +66,7 @@ function sanitizeBeatBody(body: Record<string, unknown>) {
       file_path: sanitizePath(body.file_path),
       preview_url: sanitizeUrl(body.preview_url),
       preview_path: sanitizePath(body.preview_path),
+      preview_is_manual: body.preview_is_manual === true,
       cover_url: sanitizeUrl(body.cover_url),
       stems_path: sanitizePath(body.stems_path),
       is_active: body.is_active !== false,
@@ -181,6 +182,7 @@ export async function PATCH(req: NextRequest) {
     if ('file_path' in body) updates.file_path = sanitizePath(body.file_path)
     if ('preview_url' in body) updates.preview_url = sanitizeUrl(body.preview_url)
     if ('preview_path' in body) updates.preview_path = sanitizePath(body.preview_path)
+    if ('preview_is_manual' in body) updates.preview_is_manual = body.preview_is_manual === true
     if ('cover_url' in body) updates.cover_url = sanitizeUrl(body.cover_url)
     if ('stems_path' in body) updates.stems_path = sanitizePath(body.stems_path)
     const supabase = createAdminClient()

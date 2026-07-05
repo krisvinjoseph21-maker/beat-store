@@ -31,7 +31,7 @@ export async function GET(
     const supabase = createAdminClient()
     const { data } = await supabase
       .from('beats')
-      .select('id, title, bpm, key, genre, subgenre, tags, is_active, file_url, preview_url, cover_url, stems_path, created_at')
+      .select('id, title, bpm, key, genre, subgenre, tags, is_active, file_url, preview_url, preview_is_tagged, cover_url, stems_path, created_at')
       .eq('is_active', true)
     if (data && data.length > 0) beats = data as Beat[]
   } catch {

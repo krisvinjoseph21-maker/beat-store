@@ -39,7 +39,7 @@ async function getPageData(): Promise<{ featured: Beat | null; beats: Beat[] }> 
   try {
     const supabase = createAdminClient()
     // Never select file_url, file_path, stems_path, preview_path — they must never reach the client.
-    const SELECT = 'id, title, bpm, key, genre, subgenre, tags, preview_url, cover_url, is_active, is_featured, created_at, pin_order'
+    const SELECT = 'id, title, bpm, key, genre, subgenre, tags, preview_url, preview_is_tagged, cover_url, is_active, is_featured, created_at, pin_order'
     const [featuredRes, beatsRes] = await Promise.all([
       supabase.from('beats').select(SELECT).eq('is_active', true).eq('is_featured', true).limit(1).single(),
       supabase.from('beats').select(SELECT).eq('is_active', true)

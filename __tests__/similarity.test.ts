@@ -12,6 +12,7 @@ const makeBeat = (overrides: Partial<Beat> = {}): Beat => ({
   tags: ['dark', 'hard'],
   file_url: null,
   preview_url: null,
+  preview_is_tagged: false,
   cover_url: null,
   stems_path: null,
   is_active: true,

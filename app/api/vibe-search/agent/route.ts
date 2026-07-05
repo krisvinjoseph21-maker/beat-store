@@ -33,6 +33,7 @@ interface MatchRow {
   tags: string[] | null
   cover_url: string | null
   preview_url: string | null
+  preview_is_tagged: boolean | null
   created_at: string
   similarity: number
 }
@@ -106,6 +107,7 @@ function toBeat(r: MatchRow): Beat {
     tags: r.tags ?? [],
     file_url: null,
     preview_url: r.preview_url,
+    preview_is_tagged: r.preview_is_tagged ?? false,
     cover_url: r.cover_url,
     stems_path: null,
     is_active: true,
