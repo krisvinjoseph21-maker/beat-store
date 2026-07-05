@@ -65,7 +65,9 @@
       "Bash(grep -E \"\\\\.\\(json|mjs|yml\\)$\")",
       "Bash(python .claude/skills/webapp-testing/scripts/with_server.py --help)",
       "Bash(where python3 *)",
-      "Bash(where py *)"
+      "Bash(where py *)",
+      "Skill(run)",
+      "Skill(run:*)"
     ]
   }
 }
