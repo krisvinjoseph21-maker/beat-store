@@ -51,6 +51,17 @@ const nextConfig: NextConfig = {
   // native binary case).
   serverExternalPackages: ['@huggingface/transformers', 'onnxruntime-node'],
 
+  // onnxruntime-node's native binary (libonnxruntime.so.1) is loaded via
+  // runtime platform-detection, not a static require() — Vercel's automatic
+  // file-tracing can't follow that, so it gets dropped from the deployed
+  // function unless explicitly included here. Without this, embedText()
+  // fails in production with "libonnxruntime.so.1: cannot open shared
+  // object file" while working fine locally (confirmed via prod logs).
+  outputFileTracingIncludes: {
+    '/api/vibe-search': ['./node_modules/onnxruntime-node/bin/napi-v6/linux/x64/**/*'],
+    '/api/vibe-search/agent': ['./node_modules/onnxruntime-node/bin/napi-v6/linux/x64/**/*'],
+  },
+
   async headers() {
     return [
       {
