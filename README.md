@@ -6,7 +6,7 @@
 
 A full-stack music production marketplace for buying beats, sample packs, and booking custom production services. Built with Next.js, Supabase, and Stripe.
 
-**Live:** [kjyoucrazy.com](https://kjyoucrazy.com) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
+**Live:** [kjyoucrazy.com](https://beat-store-d3iw.vercel.app/) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
 
 ---
 
