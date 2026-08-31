@@ -6,7 +6,7 @@
 
 A full-stack music production marketplace for buying beats, sample packs, and booking custom production services. Built with Next.js, Supabase, and Stripe.
 
-**Live:** [kjyoucrazy.com](https://beat-store-d3iw.vercel.app/) &nbsp;|&nbsp; **Placements:** GloRilla · DeeBaby · Shenseea
+**Live:** [kjyoucrazy.com](https://beat-store-d3iw.vercel.app/) &nbsp;|&nbsp; **Placements:**  YTB Fatt · GloRilla · DeeBaby · Shenseea · Seyi Vibez
 
 ---
 
@@ -82,8 +82,8 @@ STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 RESEND_API_KEY=
 ANTHROPIC_API_KEY=
-ADMIN_PASSWORD=
-ADMIN_HMAC_SECRET=
+ADMIN_PASSWORD=your_secure_admin_password_here
+ADMIN_HMAC_SECRET=your_secure_HMAC_secret_here
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
